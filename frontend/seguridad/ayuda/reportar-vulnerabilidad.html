@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../assets/css/mobile-responsive-master.css">
+    <title>Reportar Vulnerabilidad | CEMI Seguridad</title>
+    <link rel="stylesheet" href="../../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="security-header">
+        <div class="security-header-content">
+            <div class="security-icon"><i data-lucide="bug"></i></div>
+            <h1>Reportar Vulnerabilidad de Seguridad</h1>
+            <p>Ayúdanos a mantener CEMI seguro reportando problemas técnicos.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../../index.html" style="color: rgba(147, 161, 173, 0.9); text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../../cemi-seguridad.html" style="color: rgba(147, 161, 173, 0.9); text-decoration: none;">Centro de Ayuda</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Reportar vulnerabilidad</span>
+        </div>
+
+        <div class="security-alert">
+            <i data-lucide="heart"></i>
+            <div>
+                <strong>Gracias por ayudarnos</strong>
+                <p>Los investigadores de seguridad que reportan responsablemente vulnerabilidades son valorados y reconocidos por la comunidad CEMI.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="info"></i> ¿Qué es una vulnerabilidad?</h2>
+            <p>Una vulnerabilidad es un problema técnico en el sistema que podría ser explotado para comprometer la seguridad, privacidad o integridad de CEMI y sus usuarios.</p>
+            
+            <div style="margin-top: 30px;">
+                <strong style="display: block; margin-bottom: 15px; color: rgba(147, 161, 173, 0.9);">Ejemplos de vulnerabilidades:</strong>
+                <div class="security-grid">
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <span style="color: #5a6c7d; font-size: 14px;">• SQL Injection</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <span style="color: #5a6c7d; font-size: 14px;">• Cross-Site Scripting (XSS)</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <span style="color: #5a6c7d; font-size: 14px;">• Exposición de datos sensibles</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <span style="color: #5a6c7d; font-size: 14px;">• Bypass de autenticación</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <span style="color: #5a6c7d; font-size: 14px;">• Escalación de privilegios</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <span style="color: #5a6c7d; font-size: 14px;">• CSRF vulnerabilities</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="shield-check"></i> Divulgación Responsable</h2>
+            <p style="margin-bottom: 30px;">Seguimos el modelo de <strong>Responsible Disclosure</strong>. Por favor, sigue estas pautas:</p>
+            
+            <div style="background: #e8f5e9; padding: 25px; border-radius: 12px; border-left: 4px solid #28a745;">
+                <strong style="color: #28a745; display: block; margin-bottom: 15px;"> Haz esto:</strong>
+                <ul style="margin-left: 20px; color: #5a6c7d; line-height: 2;">
+                    <li>Reporta la vulnerabilidad a seguridad@cemi.edu.ar</li>
+                    <li>Proporciona detalles técnicos completos</li>
+                    <li>Danos tiempo razonable para solucionarla (90 días)</li>
+                    <li>Mantén la confidencialidad hasta que sea corregida</li>
+                </ul>
+            </div>
+
+            <div style="background: #ffebee; padding: 25px; border-radius: 12px; border-left: 4px solid #dc3545; margin-top: 20px;">
+                <strong style="color: #dc3545; display: block; margin-bottom: 15px;"> NO hagas esto:</strong>
+                <ul style="margin-left: 20px; color: #5a6c7d; line-height: 2;">
+                    <li>Explotar la vulnerabilidad más allá de lo necesario</li>
+                    <li>Acceder a datos de otros usuarios</li>
+                    <li>Publicar la vulnerabilidad públicamente antes de tiempo</li>
+                    <li>Realizar ataques de denegación de servicio (DoS)</li>
+                    <li>Modificar o eliminar datos</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="mail"></i> Cómo reportar</h2>
+            <p style="margin-bottom: 30px;">Tu reporte debe incluir la siguiente información:</p>
+            
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px;">
+                <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                    <strong style="color: rgba(147, 161, 173, 0.9); display: block; margin-bottom: 10px;"> Ubicación</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">URL específica, endpoint de API, o componente afectado</p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                    <strong style="color: rgba(147, 161, 173, 0.9); display: block; margin-bottom: 10px;"> Descripción</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Qué es la vulnerabilidad y qué permite hacer</p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                    <strong style="color: rgba(147, 161, 173, 0.9); display: block; margin-bottom: 10px;"> Pasos de reproducción</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Instrucciones detalladas paso a paso para replicar el problema</p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                    <strong style="color: rgba(147, 161, 173, 0.9); display: block; margin-bottom: 10px;"> Impacto</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Qué datos o funcionalidades están en riesgo</p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px;">
+                    <strong style="color: rgba(147, 161, 173, 0.9); display: block; margin-bottom: 10px;"> Evidencia</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Capturas de pantalla, videos o PoC (Proof of Concept)</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="mailto:seguridad@cemi.edu.ar?subject=Reporte de Vulnerabilidad" class="btn-primary-security" style="display: inline-flex;">
+                    <i data-lucide="send"></i>
+                    Enviar reporte a seguridad@cemi.edu.ar
+                </a>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="clock"></i> ¿Qué sucede después?</h2>
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, rgba(147, 161, 173, 0.15) 100%); padding: 30px; border-radius: 12px; margin: 30px 0;">
+                <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                    <div style="background: rgba(147, 161, 173, 0.9); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; flex-shrink: 0;">1</div>
+                    <div>
+                        <strong style="color: rgba(147, 161, 173, 0.9); display: block; font-size: 18px; margin-bottom: 10px;">Confirmación (24-48h)</strong>
+                        <p style="color: #5a6c7d; margin: 0;">Recibirás un email confirmando que recibimos tu reporte</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                    <div style="background: rgba(147, 161, 173, 0.9); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; flex-shrink: 0;">2</div>
+                    <div>
+                        <strong style="color: rgba(147, 161, 173, 0.9); display: block; font-size: 18px; margin-bottom: 10px;">Validación (3-7 días)</strong>
+                        <p style="color: #5a6c7d; margin: 0;">Nuestro equipo valida y reproduce la vulnerabilidad</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                    <div style="background: rgba(147, 161, 173, 0.9); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; flex-shrink: 0;">3</div>
+                    <div>
+                        <strong style="color: rgba(147, 161, 173, 0.9); display: block; font-size: 18px; margin-bottom: 10px;">Corrección (variable)</strong>
+                        <p style="color: #5a6c7d; margin: 0;">Trabajamos en el fix según la severidad (crítico: inmediato)</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <div style="background: #28a745; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; flex-shrink: 0;">4</div>
+                    <div>
+                        <strong style="color: #28a745; display: block; font-size: 18px; margin-bottom: 10px;">Reconocimiento</strong>
+                        <p style="color: #5a6c7d; margin: 0;">Te notificamos cuando esté solucionado y reconocemos tu contribución</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card" style="background: linear-gradient(135deg, rgba(147, 161, 173, 0.9) 0%, #0077ed 100%); color: white;">
+            <h2 style="color: white;"><i data-lucide="award"></i> Programa de Reconocimiento</h2>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 30px;">Valoramos a quienes nos ayudan a mejorar la seguridad:</p>
+            <div class="security-grid">
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px);">
+                    <i data-lucide="trophy" style="width: 28px; height: 28px; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px;">Hall of Fame</strong>
+                    <span style="opacity: 0.9; font-size: 14px;">Tu nombre en nuestro reconocimiento público (si lo deseas)</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px);">
+                    <i data-lucide="gift" style="width: 28px; height: 28px; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px;">Recompensas</strong>
+                    <span style="opacity: 0.9; font-size: 14px;">Según la severidad, podemos ofrecer recompensas monetarias o beneficios en CEMI</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px);">
+                    <i data-lucide="certificate" style="width: 28px; height: 28px; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px;">Certificado</strong>
+                    <span style="opacity: 0.9; font-size: 14px;">Certificado oficial de reconocimiento para tu portfolio</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="../../reportar-seguridad.html" class="security-action-btn">
+                    <i data-lucide="shield-alert"></i>
+                    <strong>Reportar otro problema</strong>
+                    <span>Otros tipos de reportes de seguridad</span>
+                </a>
+                <a href="../../cemi-seguridad.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Centro de Ayuda</strong>
+                    <span>Más temas de seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../../index.html">Inicio</a>
+            <a href="../../privacidad.html">Privacidad</a>
+            <a href="../../terminos.html">Términos</a>
+            <a href="../../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 CEMI. Todos los derechos reservados.</p>
+    </footer>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
+

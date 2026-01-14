@@ -1,0 +1,842 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e1e1e">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="apple-touch-icon" href="images/logo.png">
+  <title>CEMI Jóvenes - Centro de Enseñanza Multilingüe Integral</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Hero Section */
+    .program-hero {
+      position: relative;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+      overflow: hidden;
+    }
+
+    .program-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('images/jovenesaprendiendo.jpg') center/cover no-repeat;
+      opacity: 0.25;
+    }
+
+    .program-hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 80px;
+      text-align: center;
+    }
+
+    .program-hero-badge {
+      display: inline-block;
+      background: rgba(101, 111, 119, 0.2);
+      border: 1px solid rgba(147, 161, 173, 0.8);
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #a0a8b0;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.2s;
+    }
+
+    .program-hero h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 400;
+      color: #ffffff;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.4s;
+    }
+
+    .program-hero p {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.6s;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Info Section */
+    .program-info-section {
+      background: #f8f9fa;
+      padding: 100px 40px;
+    }
+
+    .program-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: center;
+    }
+
+    .program-info-content h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .program-info-content p {
+      font-size: 1.1rem;
+      color: #656f77;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .program-info-image {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+
+    .program-info-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Benefits Section */
+    .program-benefits {
+      background: #ffffff;
+      padding: 100px 40px;
+    }
+
+    .program-benefits-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .program-benefits-header h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      letter-spacing: -0.02em;
+    }
+
+    .program-benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .benefit-card {
+      text-align: center;
+      padding: 40px 24px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+
+    .benefit-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #656f77 0%, #4a5259 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+
+    .benefit-icon i {
+      width: 32px;
+      height: 32px;
+      color: #ffffff;
+    }
+
+    .benefit-card h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin-bottom: 12px;
+    }
+
+    .benefit-card p {
+      font-size: 0.95rem;
+      color: #656f77;
+      line-height: 1.6;
+    }
+
+    /* Levels Section */
+    .program-levels {
+      background: #1e1e1e;
+      padding: 100px 40px;
+    }
+
+    .program-levels-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .program-levels h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .levels-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .level-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .level-card:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-4px);
+    }
+
+    .level-number {
+      font-size: 3rem;
+      font-weight: 600;
+      color: #a0a8b0;
+      margin-bottom: 12px;
+    }
+
+    .level-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .level-desc {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Opportunities Section */
+    .program-opportunities {
+      background: #f8f9fa;
+      padding: 100px 40px;
+    }
+
+    .opportunities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+      align-items: center;
+    }
+
+    .opportunities-content h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      margin-bottom: 24px;
+    }
+
+    .opportunities-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .opportunities-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .opportunities-list li:last-child {
+      border-bottom: none;
+    }
+
+    .opp-icon {
+      width: 40px;
+      height: 40px;
+      background: #656f77;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .opp-icon i {
+      width: 20px;
+      height: 20px;
+      color: #ffffff;
+    }
+
+    .opp-text h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin-bottom: 4px;
+    }
+
+    .opp-text p {
+      font-size: 0.95rem;
+      color: #656f77;
+    }
+
+    .opportunities-image {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+
+    .opportunities-image img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+    }
+
+    /* CTA Section */
+    .program-cta {
+      background: linear-gradient(135deg, #656f77 0%, #4a5259 100%);
+      padding: 80px 40px;
+      text-align: center;
+    }
+
+    .program-cta h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .program-cta p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 32px;
+    }
+
+    .program-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 40px;
+      background: #ffffff;
+      color: #4a5259;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .program-cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(147, 161, 173, 0.45);
+    }
+
+    /* Scroll Animations */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .program-hero h1 { font-size: 2.5rem; }
+      .program-info-grid, .opportunities-grid { grid-template-columns: 1fr; gap: 40px; }
+      .program-benefits-grid { grid-template-columns: 1fr; }
+      .levels-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 576px) {
+      .program-hero-content { padding: 40px 24px; }
+      .program-hero h1 { font-size: 2rem; }
+      .levels-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolong.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva. Tareas, calificaciones, anuncios y más.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-funciones" data-image="images/STOCK2.jpg">Funciones Principales <span class="chevron">›</span></a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa de alumnos, profesores, cursos, pagos y estadísticas.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-paneles" data-image="images/STOCK3.webp">Paneles por Rol <span class="chevron">›</span></a>
+            <a href="#modulos" class="mega-sub-link">Ver Módulos</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-nosotros" data-image="images/menu/nosotros.jpg">
+          <a href="#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Conoce nuestra historia, misión y el equipo detrás de Cemi.</p>
+          <div class="mega-sub-links">
+            <a href="#historia" class="mega-sub-link">Nuestra Historia</a>
+            <a href="#filosofia" class="mega-sub-link">Misión y Visión</a>
+            <a href="#valores" class="mega-sub-link">Nuestros Valores</a>
+            <a href="#equipo" class="mega-sub-link">El Equipo</a>
+            <a href="#tecnologias" class="mega-sub-link">Tecnologías</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-soporte" data-image="images/menu/soporte.jpg">
+          <a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a>
+          <p class="mega-sub-description">¿Necesitas ayuda? Estamos aquí para asistirte.</p>
+          <div class="mega-sub-links">
+            <a href="#faq" class="mega-sub-link">Preguntas Frecuentes</a>
+            <a href="mailto:soporte@Cemiedu" class="mega-sub-link">Contactar Soporte</a>
+            <a href="status.html" class="mega-sub-link">Estado del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-seguridad" data-image="images/menu/seguridad.jpg">
+          <a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Reporta vulnerabilidades o infracciones de forma segura.</p>
+          <div class="mega-sub-links">
+            <a href="cemi-seguridad.html" class="mega-sub-link">Centro de Ayuda de Seguridad</a>
+            <a href="reportar-copyright.html" class="mega-sub-link">Reportar Infracción de Copyright</a>
+            <a href="privacidad.html" class="mega-sub-link">Política de Privacidad</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-recursos" data-image="images/menu/recursos.webp">
+          <a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Documentación, descargas y más recursos útiles.</p>
+          <div class="mega-sub-links">
+            <a href="https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk" class="mega-sub-link">Descargar App Android</a>
+            <a href="#caracteristicas" class="mega-sub-link">Características del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-accesibilidad" data-image="images/menu/accesibilidad.jpg">
+          <a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Herramientas de acceso y administración institucional.</p>
+          <div class="mega-sub-links">
+            <a href="login-selector.html" class="mega-sub-link">Acceso Público</a>
+            <a href="login-admin.html" class="mega-sub-link">Acceso Administrativo</a>
+            <a href="reglamento-institucional.html" class="mega-sub-link">Reglamento Institucional</a>
+            <a href="register.html" class="mega-sub-link">Registro</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mega-nav-tertiary-container">
+        <div class="mega-nav-tertiary" id="tertiary-funciones">
+          <div class="mega-tertiary-header">
+            <h4>Funciones del Classroom</h4>
+            <p>Explora todas las herramientas disponibles para el aprendizaje.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/tareas.webp">
+              <button class="mega-tertiary-link">Tareas y Entregas</button>
+              <div class="mega-tertiary-info">
+                <p>Gestiona tus tareas pendientes, sube entregas y revisa el historial de trabajos completados. Sistema de fechas límite con recordatorios automáticos.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/calificaciones.jpg">
+              <button class="mega-tertiary-link">Calificaciones</button>
+              <div class="mega-tertiary-info">
+                <p>Consulta tus notas por materia, promedios parciales y finales. Visualiza tu progreso académico con gráficos detallados.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/anuncios.jpg">
+              <button class="mega-tertiary-link">Anuncios</button>
+              <div class="mega-tertiary-info">
+                <p>Mantente informado con las últimas novedades de tus cursos. Notificaciones de profesores, cambios de horario y eventos importantes.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/recursos.jpg">
+              <button class="mega-tertiary-link">Recursos de Clase</button>
+              <div class="mega-tertiary-info">
+                <p>Accede a materiales de estudio, presentaciones, documentos PDF y recursos multimedia compartidos por tus profesores.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/foros.webp">
+              <button class="mega-tertiary-link">Foros de Discusión</button>
+              <div class="mega-tertiary-info">
+                <p>Participa en debates académicos, resuelve dudas con compañeros y colabora en proyectos grupales de forma organizada.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mega-nav-tertiary" id="tertiary-paneles">
+          <div class="mega-tertiary-header">
+            <h4>Paneles por Rol</h4>
+            <p>Accede al panel correspondiente a tu perfil.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/panel-alumno.jpg">
+              <button class="mega-tertiary-link">Panel del Alumno</button>
+              <div class="mega-tertiary-info">
+                <p>Tu espacio personal para gestionar inscripciones, ver horarios, estado de cuotas y acceder a tu historial académico completo.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-profesor.jpg">
+              <button class="mega-tertiary-link">Panel del Profesor</button>
+              <div class="mega-tertiary-info">
+                <p>Administra tus cursos, carga calificaciones, publica anuncios y gestiona la asistencia de tus alumnos de forma eficiente.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-administrador.jpg">
+              <button class="mega-tertiary-link">Panel Administrativo</button>
+              <div class="mega-tertiary-info">
+                <p>Control total del sistema: gestión de usuarios, reportes institucionales, configuración de cursos y monitoreo del sistema.</p>
+                <a href="login-admin.html" class="mega-tertiary-action">Acceso Admin →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mega-menu-footer">
+      <div class="mega-footer-inner">
+        <span class="mega-footer-label">
+          Enlaces rápidos <span class="chevron">›</span>
+        </span>
+        <div class="mega-footer-links">
+          <a href="terminos.html" class="mega-footer-link">Términos de Servicio</a>
+          <a href="privacidad.html" class="mega-footer-link">Privacidad</a>
+          <a href="ayuda.html" class="mega-footer-link">Ayuda</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="program-hero">
+    <div class="program-hero-content">
+      <span class="program-hero-badge">Programa Juvenil</span>
+      <h1>CEMI Jóvenes</h1>
+      <p>Preparamos a los adolescentes y jóvenes adultos para un mundo globalizado, con metodologías modernas y enfoque en la comunicación real.</p>
+    </div>
+  </section>
+
+  <section class="program-info-section">
+    <div class="program-info-grid">
+      <div class="program-info-content scroll-reveal">
+        <h2>El idioma como puerta al futuro</h2>
+        <p>CEMI Jóvenes está diseñado para adolescentes y adultos jóvenes que buscan dominar un idioma extranjero con fluidez y confianza.</p>
+        <p>Nuestro enfoque comunicativo prioriza las habilidades prácticas: conversación, comprensión auditiva, expresión escrita y lectura, preparándolos para exámenes internacionales y oportunidades laborales.</p>
+        <p>Con grupos por nivel y horarios flexibles, nos adaptamos a las necesidades de estudiantes secundarios y universitarios.</p>
+      </div>
+      <div class="program-info-image scroll-reveal">
+        <img src="images/jovenesaprendiendo.jpg" alt="Jóvenes aprendiendo idiomas">
+      </div>
+    </div>
+  </section>
+
+  <section class="program-benefits">
+    <div class="program-benefits-header scroll-reveal">
+      <h2>Ventajas del programa juvenil</h2>
+    </div>
+    <div class="program-benefits-grid">
+      <div class="benefit-card scroll-reveal">
+        <div class="benefit-icon">
+          <i data-lucide="message-circle"></i>
+        </div>
+        <h3>Enfoque Comunicativo</h3>
+        <p>Prioridad en la conversación real y situaciones cotidianas para desarrollar fluidez natural.</p>
+      </div>
+      <div class="benefit-card scroll-reveal">
+        <div class="benefit-icon">
+          <i data-lucide="trophy"></i>
+        </div>
+        <h3>Preparación de Exámenes</h3>
+        <p>Preparación para certificaciones internacionales reconocidas globalmente.</p>
+      </div>
+      <div class="benefit-card scroll-reveal">
+        <div class="benefit-icon">
+          <i data-lucide="laptop"></i>
+        </div>
+        <h3>Recursos Digitales</h3>
+        <p>Acceso a nuestra plataforma Classroom con materiales multimedia interactivos.</p>
+      </div>
+      <div class="benefit-card scroll-reveal">
+        <div class="benefit-icon">
+          <i data-lucide="clock"></i>
+        </div>
+        <h3>Horarios Flexibles</h3>
+        <p>Turnos mañana, tarde y noche para adaptarse a tu rutina de estudio.</p>
+      </div>
+      <div class="benefit-card scroll-reveal">
+        <div class="benefit-icon">
+          <i data-lucide="users"></i>
+        </div>
+        <h3>Grupos por Nivel</h3>
+        <p>Clases organizadas por nivel de conocimiento para un aprendizaje efectivo.</p>
+      </div>
+      <div class="benefit-card scroll-reveal">
+        <div class="benefit-icon">
+          <i data-lucide="globe"></i>
+        </div>
+        <h3>Inmersión Cultural</h3>
+        <p>Actividades culturales que enriquecen la experiencia de aprendizaje.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="program-levels">
+    <div class="program-levels-inner">
+      <h2 class="scroll-reveal">Niveles de aprendizaje</h2>
+      <div class="levels-grid">
+        <div class="level-card scroll-reveal">
+          <div class="level-number">A1</div>
+          <div class="level-name">Principiante</div>
+          <div class="level-desc">Comunicación básica</div>
+        </div>
+        <div class="level-card scroll-reveal">
+          <div class="level-number">A2</div>
+          <div class="level-name">Elemental</div>
+          <div class="level-desc">Expresiones cotidianas</div>
+        </div>
+        <div class="level-card scroll-reveal">
+          <div class="level-number">B1</div>
+          <div class="level-name">Intermedio</div>
+          <div class="level-desc">Conversación fluida</div>
+        </div>
+        <div class="level-card scroll-reveal">
+          <div class="level-number">B2</div>
+          <div class="level-name">Intermedio Alto</div>
+          <div class="level-desc">Argumentación compleja</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="program-opportunities">
+    <div class="opportunities-grid">
+      <div class="opportunities-content scroll-reveal">
+        <h2>Abre puertas a nuevas oportunidades</h2>
+        <ul class="opportunities-list">
+          <li>
+            <div class="opp-icon"><i data-lucide="briefcase"></i></div>
+            <div class="opp-text">
+              <h4>Oportunidades Laborales</h4>
+              <p>Aumenta tu empleabilidad en el mercado globalizado actual.</p>
+            </div>
+          </li>
+          <li>
+            <div class="opp-icon"><i data-lucide="graduation-cap"></i></div>
+            <div class="opp-text">
+              <h4>Estudios en el Exterior</h4>
+              <p>Prepárate para becas y programas universitarios internacionales.</p>
+            </div>
+          </li>
+          <li>
+            <div class="opp-icon"><i data-lucide="plane"></i></div>
+            <div class="opp-text">
+              <h4>Viajes y Experiencias</h4>
+              <p>Viaja con confianza y sumérgete en otras culturas.</p>
+            </div>
+          </li>
+          <li>
+            <div class="opp-icon"><i data-lucide="brain"></i></div>
+            <div class="opp-text">
+              <h4>Desarrollo Cognitivo</h4>
+              <p>Mejora tu memoria, concentración y habilidades mentales.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="opportunities-image scroll-reveal">
+        <img src="images/STOCK3.webp" alt="Oportunidades para jóvenes">
+      </div>
+    </div>
+  </section>
+
+  <section class="program-cta">
+    <h2 class="scroll-reveal">¡Comienza tu camino hacia el dominio de idiomas!</h2>
+    <p class="scroll-reveal">Únete a cientos de jóvenes que ya están transformando su futuro.</p>
+    <a href="register.html" class="program-cta-btn scroll-reveal">
+      <i data-lucide="user-plus" style="width: 20px; height: 20px;"></i>
+      Registrarse ahora
+    </a>
+  </section>
+
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long">
+        </div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <div class="footer-social">
+        </div>
+        <a href="register.html" class="footer-cta-link">
+          <i data-lucide="user-plus"></i> Registrarse
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <div class="footer-links-bottom">
+        <a href="porque-cemi.html">¿Por qué CEMI?</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    lucide.createIcons();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 100);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+  </script>
+  <script src="assets/js/harvard-menu.js?v=1.0"></script>
+</body>
+</html>

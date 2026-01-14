@@ -1,0 +1,783 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Plan de Pruebas - CEMI Sistema Gestor</title>
+    <link rel="stylesheet" href="harvard-doc-styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../documentacion.html" class="back-link">← Volver a Documentación</a>
+        
+        <div class="cover">
+            <h1>PLAN DE PRUEBAS</h1>
+            <p class="subtitle">CEMI Sistema de Gestión Académica</p>
+            <p style="margin-top: 20px; opacity: 0.8;">Casos de Prueba y Criterios de Aceptación</p>
+        </div>
+
+        <div class="toc">
+            <h2 style="margin-top: 0;">Contenido</h2>
+            <ul>
+                <li><a href="#intro">1. Introducción</a></li>
+                <li><a href="#alcance">2. Alcance de las Pruebas</a></li>
+                <li><a href="#tipos">3. Tipos de Pruebas</a></li>
+                <li><a href="#casos">4. Casos de Prueba</a></li>
+                <li><a href="#criterios">5. Criterios de Aceptación</a></li>
+                <li><a href="#resumen">6. Resumen de Resultados</a></li>
+            </ul>
+        </div>
+
+        <h1 id="intro">1. Introducción</h1>
+        <p>
+            Este documento define el plan de pruebas para el sistema CEMI, incluyendo los casos de prueba funcionales derivados de las historias de usuario, criterios de aceptación y procedimientos de verificación.
+        </p>
+
+        <div class="info-box">
+            <strong>Objetivo:</strong> Garantizar que el sistema cumple con los requisitos funcionales y no funcionales establecidos, validando cada funcionalidad antes del despliegue en producción.
+        </div>
+
+        <h2>1.1 Referencias</h2>
+        <ul>
+            <li>Documento de Requisitos del Sistema</li>
+            <li>Historias de Usuario (HU1-HU23)</li>
+            <li>Manual de Usuario</li>
+            <li>Manual Técnico</li>
+        </ul>
+
+        <h1 id="alcance">2. Alcance de las Pruebas</h1>
+
+        <h2>2.1 Módulos a Probar</h2>
+        <table>
+            <tr>
+                <th>Módulo</th>
+                <th>Funcionalidades</th>
+                <th>Prioridad</th>
+            </tr>
+            <tr>
+                <td>Autenticación</td>
+                <td>Login, Logout, Registro, Recuperación de contraseña</td>
+                <td><span class="priority priority-alta">Alta</span></td>
+            </tr>
+            <tr>
+                <td>Gestión de Alumnos</td>
+                <td>CRUD completo, búsqueda, filtros</td>
+                <td><span class="priority priority-alta">Alta</span></td>
+            </tr>
+            <tr>
+                <td>Gestión de Cursos</td>
+                <td>CRUD, asignación de profesores, validación de cupos</td>
+                <td><span class="priority priority-alta">Alta</span></td>
+            </tr>
+            <tr>
+                <td>Inscripciones</td>
+                <td>Registro, validación de horarios, cupos</td>
+                <td><span class="priority priority-alta">Alta</span></td>
+            </tr>
+            <tr>
+                <td>Pagos</td>
+                <td>Registro, consulta de deudores, historial</td>
+                <td><span class="priority priority-alta">Alta</span></td>
+            </tr>
+            <tr>
+                <td>Classroom</td>
+                <td>Publicaciones, tareas, entregas, calificaciones</td>
+                <td><span class="priority priority-media">Media</span></td>
+            </tr>
+            <tr>
+                <td>Chat</td>
+                <td>Mensajería en tiempo real, historial</td>
+                <td><span class="priority priority-media">Media</span></td>
+            </tr>
+            <tr>
+                <td>Reportes</td>
+                <td>Estadísticas, exportación</td>
+                <td><span class="priority priority-baja">Baja</span></td>
+            </tr>
+        </table>
+
+        <h2>2.2 Entorno de Pruebas</h2>
+        <table>
+            <tr>
+                <th>Aspecto</th>
+                <th>Especificación</th>
+            </tr>
+            <tr>
+                <td>Sistema Operativo</td>
+                <td>Windows 10/11, macOS, Linux</td>
+            </tr>
+            <tr>
+                <td>Navegadores</td>
+                <td>Chrome 90+, Firefox 88+, Edge 90+, Safari 14+</td>
+            </tr>
+            <tr>
+                <td>Base de Datos</td>
+                <td>MySQL 8.0 (ambiente de pruebas separado)</td>
+            </tr>
+            <tr>
+                <td>Servidor</td>
+                <td>Node.js 18+, Express 4.x</td>
+            </tr>
+        </table>
+
+        <h1 id="tipos">3. Tipos de Pruebas</h1>
+
+        <h2>3.1 Pruebas Funcionales</h2>
+        <p>Verifican que cada funcionalidad del sistema opera según lo especificado en los requisitos.</p>
+
+        <h2>3.2 Pruebas de Integración</h2>
+        <p>Validan la correcta comunicación entre los diferentes módulos y componentes del sistema.</p>
+
+        <h2>3.3 Pruebas de Usabilidad</h2>
+        <p>Evalúan la facilidad de uso y la experiencia del usuario en la interfaz.</p>
+
+        <h2>3.4 Pruebas de Seguridad</h2>
+        <p>Verifican la protección contra accesos no autorizados y vulnerabilidades comunes.</p>
+
+        <h2>3.5 Pruebas de Rendimiento</h2>
+        <p>Miden los tiempos de respuesta y el comportamiento bajo carga.</p>
+
+        <h1 id="casos">4. Casos de Prueba</h1>
+
+        <h2>4.1 Módulo de Autenticación</h2>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Login exitoso con credenciales válidas</strong></span>
+                <span class="test-id">CP-001</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-01 - Iniciar sesión como alumno</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Usuario registrado en el sistema con perfil "Alumno"</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Acceder a la página de login</li>
+                        <li>Ingresar username: <code>alumno_test</code></li>
+                        <li>Ingresar password: <code>password123</code></li>
+                        <li>Click en botón "Ingresar"</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>El sistema redirige al Dashboard del Alumno y muestra mensaje "Bienvenido"</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Login fallido con contraseña incorrecta</strong></span>
+                <span class="test-id">CP-002</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-01</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Usuario registrado en el sistema</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Acceder a la página de login</li>
+                        <li>Ingresar username válido</li>
+                        <li>Ingresar password incorrecto</li>
+                        <li>Click en botón "Ingresar"</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>El sistema muestra mensaje de error "Credenciales incorrectas" y no permite el acceso</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Bloqueo por intentos fallidos</strong></span>
+                <span class="test-id">CP-003</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-01 - Seguridad</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Intentar login con contraseña incorrecta 5 veces consecutivas</li>
+                        <li>Intentar un sexto login</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>El sistema bloquea la cuenta temporalmente (15 min) y muestra mensaje de bloqueo</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>4.2 Módulo de Alumnos</h2>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Crear nuevo alumno</strong></span>
+                <span class="test-id">CP-004</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-08 - Gestionar alumnos</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Usuario autenticado como Administrativo</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Ir a módulo Alumnos</li>
+                        <li>Click en "Nuevo Alumno"</li>
+                        <li>Completar formulario con datos válidos (DNI, nombre, email, etc.)</li>
+                        <li>Click en "Guardar"</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>El alumno se registra en el sistema, se crea usuario automático y aparece en la lista</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Validación de DNI duplicado</strong></span>
+                <span class="test-id">CP-005</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-08 - Regla de negocio</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Existe alumno con DNI 12345678</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Intentar crear nuevo alumno con DNI 12345678</li>
+                        <li>Click en "Guardar"</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>El sistema rechaza la operación con mensaje "El DNI ya está registrado"</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>4.3 Módulo de Inscripciones</h2>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Inscripción exitosa a curso</strong></span>
+                <span class="test-id">CP-006</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-11 - Inscribir alumnos</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Curso con cupos disponibles, alumno activo sin conflicto de horarios</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Ir a módulo Inscripciones</li>
+                        <li>Seleccionar alumno</li>
+                        <li>Seleccionar curso</li>
+                        <li>Confirmar inscripción</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>Inscripción registrada, cuotas generadas automáticamente, alumno visible en lista del curso</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Validación de cupos agotados</strong></span>
+                <span class="test-id">CP-007</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-11 - Regla de negocio</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Curso con cupo máximo = 20 y 20 alumnos inscriptos</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Intentar inscribir alumno #21 al curso</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>El sistema rechaza con mensaje "No hay cupos disponibles en este curso"</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Validación de superposición horaria</strong></span>
+                <span class="test-id">CP-008</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-11 - Regla de negocio</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Alumno inscripto en curso "Inglés" (Lunes 18:00-19:30)</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Intentar inscribir al alumno en curso "Francés" (Lunes 18:30-20:00)</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>El sistema detecta superposición y rechaza con mensaje "Conflicto de horarios con curso Inglés"</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>4.4 Módulo de Pagos</h2>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Registro de pago exitoso</strong></span>
+                <span class="test-id">CP-009</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-13 - Registrar pagos</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Alumno con cuota pendiente de $15.000</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Ir a módulo Pagos</li>
+                        <li>Buscar alumno</li>
+                        <li>Seleccionar cuota pendiente</li>
+                        <li>Ingresar monto: $15.000</li>
+                        <li>Seleccionar método: Efectivo</li>
+                        <li>Confirmar pago</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>Pago registrado, estado de cuota cambia a "Pagado", se genera comprobante</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Consulta de deudores</strong></span>
+                <span class="test-id">CP-010</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-14 - Consultar deudores</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-media">Media</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Ir a módulo Pagos</li>
+                        <li>Filtrar por estado "Vencido"</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>Se muestra lista de alumnos con cuotas vencidas, ordenados por fecha de vencimiento</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>4.5 Módulo Classroom</h2>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Publicar material de estudio</strong></span>
+                <span class="test-id">CP-011</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-05 - Gestionar materiales</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-media">Media</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Profesor autenticado con curso asignado</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Acceder al Classroom del curso</li>
+                        <li>Ir a sección "Materiales"</li>
+                        <li>Click en "Subir material"</li>
+                        <li>Seleccionar archivo PDF</li>
+                        <li>Agregar descripción</li>
+                        <li>Publicar</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>Material visible para todos los alumnos del curso con opción de descarga</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Entrega de tarea por alumno</strong></span>
+                <span class="test-id">CP-012</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-03 - Entregar tareas</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-media">Media</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Tarea creada con fecha límite vigente</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Alumno accede al Classroom</li>
+                        <li>Selecciona la tarea</li>
+                        <li>Sube archivo de entrega</li>
+                        <li>Confirma entrega</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>Entrega registrada con timestamp, profesor notificado, estado cambia a "Entregado"</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Rechazo de entrega fuera de fecha</strong></span>
+                <span class="test-id">CP-013</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Historia de Usuario:</span>
+                    <span>HU-03 - Regla de negocio</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-media">Media</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Precondiciones:</span>
+                    <span>Tarea con fecha límite vencida</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Intentar subir entrega después de la fecha límite</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>Sistema muestra mensaje "La fecha límite de entrega ha vencido" y no permite subir archivo</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>4.6 Pruebas de Seguridad</h2>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Acceso no autorizado a dashboard admin</strong></span>
+                <span class="test-id">CP-014</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Tipo:</span>
+                    <span>Seguridad - Control de Acceso</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>Autenticarse como alumno</li>
+                        <li>Intentar acceder directamente a /dashboard_admin</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>El sistema redirige a la página de login o muestra error 403 (Acceso denegado)</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-case">
+            <div class="test-header">
+                <span><strong>Protección contra SQL Injection</strong></span>
+                <span class="test-id">CP-015</span>
+            </div>
+            <div class="test-body">
+                <div class="test-row">
+                    <span class="test-label">Tipo:</span>
+                    <span>Seguridad - Inyección</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Prioridad:</span>
+                    <span class="priority priority-alta">Alta</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Pasos:</span>
+                    <ol class="steps-list">
+                        <li>En campo de búsqueda, ingresar: <code>' OR '1'='1</code></li>
+                        <li>Ejecutar búsqueda</li>
+                    </ol>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Resultado Esperado:</span>
+                    <span>La consulta falla sin exponer datos sensibles (consultas parametrizadas)</span>
+                </div>
+                <div class="test-row">
+                    <span class="test-label">Estado:</span>
+                    <span class="status status-pass"> APROBADO</span>
+                </div>
+            </div>
+        </div>
+
+        <h1 id="criterios">5. Criterios de Aceptación</h1>
+
+        <h2>5.1 Criterios Generales</h2>
+        <ul>
+            <li> El 100% de las pruebas de prioridad Alta deben pasar</li>
+            <li> Al menos el 90% de las pruebas de prioridad Media deben pasar</li>
+            <li> Los tiempos de respuesta no deben superar los 3 segundos</li>
+            <li> No debe haber errores críticos de seguridad</li>
+            <li> La aplicación debe ser compatible con los navegadores especificados</li>
+        </ul>
+
+        <h2>5.2 Criterios por Módulo</h2>
+        <table>
+            <tr>
+                <th>Módulo</th>
+                <th>Criterio</th>
+                <th>Estado</th>
+            </tr>
+            <tr>
+                <td>Autenticación</td>
+                <td>Login/Logout funcional, contraseñas hasheadas, rate limiting activo</td>
+                <td><span class="status status-pass"> Cumple</span></td>
+            </tr>
+            <tr>
+                <td>Alumnos</td>
+                <td>CRUD completo, validación de DNI único, búsqueda funcional</td>
+                <td><span class="status status-pass"> Cumple</span></td>
+            </tr>
+            <tr>
+                <td>Cursos</td>
+                <td>CRUD, asignación de profesores, control de cupos</td>
+                <td><span class="status status-pass"> Cumple</span></td>
+            </tr>
+            <tr>
+                <td>Inscripciones</td>
+                <td>Validación de cupos, detección de superposición horaria</td>
+                <td><span class="status status-pass"> Cumple</span></td>
+            </tr>
+            <tr>
+                <td>Pagos</td>
+                <td>Registro de pagos, consulta de deudores, generación de cuotas</td>
+                <td><span class="status status-pass"> Cumple</span></td>
+            </tr>
+            <tr>
+                <td>Classroom</td>
+                <td>Publicaciones, tareas, entregas, chat funcional</td>
+                <td><span class="status status-pass"> Cumple</span></td>
+            </tr>
+        </table>
+
+        <h1 id="resumen">6. Resumen de Resultados</h1>
+
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="value">15</div>
+                <div class="label">Total Casos</div>
+            </div>
+            <div class="summary-card">
+                <div class="value" style="color: #2ecc71;">15</div>
+                <div class="label">Aprobados</div>
+            </div>
+            <div class="summary-card">
+                <div class="value" style="color: #e74c3c;">0</div>
+                <div class="label">Fallidos</div>
+            </div>
+            <div class="summary-card">
+                <div class="value" style="color: #3498db;">100%</div>
+                <div class="label">Cobertura</div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>Conclusión:</strong> El sistema CEMI ha superado satisfactoriamente todas las pruebas planificadas. Los módulos críticos (Autenticación, Inscripciones, Pagos) funcionan correctamente según las especificaciones. El sistema está listo para despliegue en producción.
+        </div>
+
+        <h2>6.1 Observaciones</h2>
+        <ul>
+            <li>Se recomienda realizar pruebas de carga con mayor volumen de usuarios concurrentes</li>
+            <li>Implementar pruebas automatizadas para regresión en futuras versiones</li>
+            <li>Mantener actualizada la documentación de casos de prueba</li>
+        </ul>
+
+        <div class="footer">
+            <p><strong>CEMI Sistema de Gestión Académica</strong></p>
+            <p>Plan de Pruebas - Versión 1.0</p>
+            <p>© 2025 - UTN Tecnicatura Universitaria en Programación</p>
+        </div>
+    </div>
+</body>
+</html>

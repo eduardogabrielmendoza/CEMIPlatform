@@ -1,0 +1,824 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <meta name="theme-color" content="#0A2540">
+  <title>Sistema en Mantenimiento - Cemi</title>
+  <link rel="icon" href="images/logo.png">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    /* Estado: Mantenimiento - Tema azul/profesional */
+    body.maintenance {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+
+    /* Estado: Outage/Caída - Tema rojo/urgente con efecto más dramático */
+    body.outage {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0505 50%, #2d0a0a 100%);
+    }
+
+    /* Efecto de alerta para outage */
+    body.outage::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, transparent 30%, rgba(139, 0, 0, 0.15) 100%);
+      pointer-events: none;
+      animation: emergencyPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes emergencyPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .maintenance-container {
+      text-align: center;
+      max-width: 650px;
+      width: 100%;
+      animation: fadeInUp 0.8s ease-out;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Icono animado */
+    .icon-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 32px;
+    }
+
+    .icon-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      opacity: 0.15;
+    }
+
+    body.maintenance .icon-bg {
+      background: linear-gradient(135deg, #0070F3, #1d4ed8);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    body.outage .icon-bg {
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      animation: alertPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.15; }
+      50% { transform: scale(1.1); opacity: 0.25; }
+    }
+
+    @keyframes alertPulse {
+      0%, 100% { transform: scale(1); opacity: 0.2; }
+      50% { transform: scale(1.15); opacity: 0.4; }
+    }
+
+    .icon-main {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    body.maintenance .icon-main {
+      background: linear-gradient(135deg, #0070F3, #1d4ed8);
+      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+    }
+
+    body.outage .icon-main {
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      box-shadow: 0 8px 32px rgba(220, 38, 38, 0.5), 0 0 60px rgba(220, 38, 38, 0.3);
+      animation: iconGlow 1.5s ease-in-out infinite;
+    }
+
+    @keyframes iconGlow {
+      0%, 100% { box-shadow: 0 8px 32px rgba(220, 38, 38, 0.5), 0 0 60px rgba(220, 38, 38, 0.3); }
+      50% { box-shadow: 0 8px 48px rgba(220, 38, 38, 0.7), 0 0 80px rgba(220, 38, 38, 0.5); }
+    }
+
+    .icon-main i {
+      width: 40px;
+      height: 40px;
+      color: white;
+    }
+
+    body.maintenance .icon-main i {
+      animation: rotate 4s linear infinite;
+    }
+
+    body.outage .icon-main i {
+      animation: shake 0.5s ease-in-out infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px) rotate(-5deg); }
+      75% { transform: translateX(3px) rotate(5deg); }
+    }
+
+    /* Título */
+    .maintenance-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    body.outage .maintenance-title {
+      color: #fecaca;
+    }
+
+    .maintenance-subtitle {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    /* Card de mensaje */
+    .message-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+
+    body.outage .message-card {
+      background: rgba(220, 38, 38, 0.1);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+    }
+
+    .message-card h3 {
+      color: white;
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .message-card h3 i {
+      width: 22px;
+      height: 22px;
+    }
+
+    body.maintenance .message-card h3 i {
+      color: #60a5fa;
+    }
+
+    body.outage .message-card h3 i {
+      color: #f87171;
+    }
+
+    .message-card p {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .incident-description {
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      border-left: 3px solid;
+      text-align: left;
+    }
+
+    body.maintenance .incident-description {
+      border-left-color: #0070F3;
+    }
+
+    body.outage .incident-description {
+      border-left-color: #dc2626;
+      background: rgba(220, 38, 38, 0.1);
+    }
+
+    /* Actualizaciones del incidente */
+    .updates-section {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .updates-title {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .updates-title i {
+      width: 16px;
+      height: 16px;
+    }
+
+    .update-item {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-left: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .update-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .update-time {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+
+    .update-message {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Servicios afectados */
+    .affected-services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+      justify-content: center;
+    }
+
+    .service-tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    body.outage .service-tag {
+      background: rgba(220, 38, 38, 0.2);
+      color: #fca5a5;
+    }
+
+    .service-tag i {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Tiempo estimado */
+    .time-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      margin-bottom: 32px;
+    }
+
+    .time-info i {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Botones */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .btn-retry {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-retry:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .btn-retry i {
+      width: 20px;
+      height: 20px;
+    }
+
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-home:hover {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .btn-home i {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Link discreto para admin */
+    .admin-access {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .admin-access:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .admin-access i {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Status badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    body.maintenance .status-badge {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    body.outage .status-badge {
+      background: rgba(220, 38, 38, 0.25);
+      color: #f87171;
+      border: 1px solid rgba(220, 38, 38, 0.4);
+      animation: badgePulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .status-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    body.maintenance .status-badge .dot {
+      background: #60a5fa;
+    }
+
+    body.outage .status-badge .dot {
+      background: #f87171;
+      animation: fastBlink 0.8s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    @keyframes fastBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    /* Logo */
+    .logo-section {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .logo-section img {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+    }
+
+    .logo-section span {
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    /* Indicador de auto-refresh */
+    .refresh-indicator {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.75rem;
+      z-index: 10;
+    }
+
+    .refresh-indicator i {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .maintenance-title {
+        font-size: 1.7rem;
+      }
+
+      .maintenance-subtitle {
+        font-size: 1rem;
+      }
+
+      .message-card {
+        padding: 20px 16px;
+      }
+
+      .icon-container {
+        width: 110px;
+        height: 110px;
+      }
+
+      .icon-main {
+        width: 65px;
+        height: 65px;
+      }
+
+      .icon-main i {
+        width: 32px;
+        height: 32px;
+      }
+
+      .logo-section {
+        top: 16px;
+        left: 16px;
+      }
+
+      .admin-access {
+        bottom: 16px;
+        right: 16px;
+      }
+
+      .refresh-indicator {
+        bottom: 16px;
+        left: 16px;
+      }
+    }
+  </style>
+</head>
+<body class="maintenance">
+
+  <div class="logo-section">
+    <img src="images/logo.png" alt="Cemi">
+    <span>Cemi</span>
+  </div>
+
+  <div class="maintenance-container">
+    <div class="status-badge" id="statusBadge">
+      <span class="dot"></span>
+      <span id="statusText">Mantenimiento Programado</span>
+    </div>
+
+    <div class="icon-container">
+      <div class="icon-bg"></div>
+      <div class="icon-main">
+        <i data-lucide="settings" id="mainIcon"></i>
+      </div>
+    </div>
+
+    <h1 class="maintenance-title" id="mainTitle">Sistema en Mantenimiento</h1>
+    <p class="maintenance-subtitle" id="mainSubtitle">
+      Estamos realizando mejoras para brindarte una mejor experiencia.
+    </p>
+
+    <div class="message-card">
+      <h3>
+        <i data-lucide="info" id="messageIcon"></i>
+        <span id="incidentTitle">Información del Estado</span>
+      </h3>
+      <p class="incident-description" id="incidentDescription">
+        El sistema se encuentra temporalmente fuera de servicio. Por favor, intenta nuevamente en unos minutos.
+      </p>
+
+      <div class="affected-services" id="affectedServices"></div>
+
+      <div class="updates-section" id="updatesSection" style="display: none;">
+        <div class="updates-title">
+          <i data-lucide="message-circle"></i>
+          Actualizaciones
+        </div>
+        <div id="updatesList"></div>
+      </div>
+    </div>
+
+    <div class="time-info" id="timeInfo">
+      <i data-lucide="clock"></i>
+      <span>Última actualización: <span id="lastUpdate">--</span></span>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn-retry" onclick="checkStatus()">
+        <i data-lucide="refresh-cw"></i>
+        Verificar Estado
+      </button>
+      <a href="index.html" class="btn-home">
+        <i data-lucide="home"></i>
+        Volver al Inicio
+      </a>
+    </div>
+  </div>
+
+  <div class="refresh-indicator">
+    <i data-lucide="radio"></i>
+    <span>Actualización automática cada 30s</span>
+  </div>
+
+  <a href="login-admin.html" class="admin-access">
+    <i data-lucide="shield"></i>
+    Acceso Administrativo
+  </a>
+
+  <script src="assets/js/config.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // Obtener parámetro de redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectTo = urlParams.get('redirect') || 'login.html';
+
+    // Nombres de servicios para mostrar
+    const serviceNames = {
+      'platform': { name: 'Plataforma Principal', icon: 'layout-dashboard' },
+      'classroom': { name: 'Classroom', icon: 'book-open' },
+      'payments': { name: 'Sistema de Pagos', icon: 'credit-card' },
+      'chat': { name: 'Chat de Soporte', icon: 'message-circle' },
+      'api': { name: 'API / Backend', icon: 'server' }
+    };
+
+    // Cargar estado del sistema
+    async function loadStatus() {
+      try {
+        const response = await fetch(`${BASE_URL}/api/status`);
+        const data = await response.json();
+        
+        console.log('[mantenimiento] Datos recibidos:', data);
+        updateUI(data);
+      } catch (error) {
+        console.error('Error cargando estado:', error);
+      }
+    }
+
+    function updateUI(data) {
+      const body = document.body;
+      const statusText = document.getElementById('statusText');
+      const mainIcon = document.getElementById('mainIcon');
+      const messageIcon = document.getElementById('messageIcon');
+      const mainTitle = document.getElementById('mainTitle');
+      const mainSubtitle = document.getElementById('mainSubtitle');
+      const incidentTitle = document.getElementById('incidentTitle');
+      const incidentDescription = document.getElementById('incidentDescription');
+      const lastUpdate = document.getElementById('lastUpdate');
+      const affectedServices = document.getElementById('affectedServices');
+      const updatesSection = document.getElementById('updatesSection');
+      const updatesList = document.getElementById('updatesList');
+
+      const status = data.global_status;
+      const incident = data.active_incident;
+
+      // Configurar según el estado
+      if (status === 'maintenance') {
+        body.className = 'maintenance';
+        statusText.textContent = 'Mantenimiento Programado';
+        mainIcon.setAttribute('data-lucide', 'settings');
+        messageIcon.setAttribute('data-lucide', 'wrench');
+        mainTitle.textContent = 'Sistema en Mantenimiento';
+        mainSubtitle.textContent = 'Estamos realizando mejoras para brindarte una mejor experiencia. El servicio volverá pronto.';
+        incidentTitle.textContent = '¿Qué estamos haciendo?';
+      } else if (status === 'outage') {
+        body.className = 'outage';
+        statusText.textContent = '️ Interrupción del Servicio';
+        mainIcon.setAttribute('data-lucide', 'alert-triangle');
+        messageIcon.setAttribute('data-lucide', 'alert-octagon');
+        mainTitle.textContent = 'Servicio No Disponible';
+        mainSubtitle.textContent = 'Estamos experimentando problemas técnicos. Nuestro equipo está trabajando para resolver la situación.';
+        incidentTitle.textContent = '¿Qué está pasando?';
+      }
+
+      // Mostrar información del incidente si existe
+      if (incident) {
+        if (incident.title) {
+          incidentTitle.textContent = incident.title;
+        }
+        if (incident.description) {
+          incidentDescription.textContent = incident.description;
+        }
+
+        // Mostrar servicios afectados
+        if (incident.affected_services && incident.affected_services.length > 0) {
+          affectedServices.innerHTML = incident.affected_services.map(serviceId => {
+            const service = serviceNames[serviceId] || { name: serviceId, icon: 'circle' };
+            return `
+              <span class="service-tag">
+                <i data-lucide="${service.icon}"></i>
+                ${service.name}
+              </span>
+            `;
+          }).join('');
+          affectedServices.style.display = 'flex';
+        } else {
+          affectedServices.style.display = 'none';
+        }
+
+        // Mostrar actualizaciones
+        if (incident.updates && incident.updates.length > 0) {
+          updatesSection.style.display = 'block';
+          updatesList.innerHTML = incident.updates
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Más reciente primero
+            .map(update => {
+              const time = new Date(update.timestamp).toLocaleString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+              });
+              return `
+                <div class="update-item">
+                  <div class="update-time">${time}</div>
+                  <div class="update-message">${update.message}</div>
+                </div>
+              `;
+            }).join('');
+        } else {
+          updatesSection.style.display = 'none';
+        }
+      }
+
+      // Última actualización del sistema
+      if (data.last_updated) {
+        const date = new Date(data.last_updated);
+        lastUpdate.textContent = date.toLocaleString('es-AR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      // Re-renderizar iconos
+      lucide.createIcons();
+    }
+
+    // Verificar si el sistema ya está operativo
+    async function checkStatus() {
+      const btn = document.querySelector('.btn-retry');
+      const originalContent = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Verificando...';
+      btn.disabled = true;
+      lucide.createIcons();
+      
+      // Añadir animación de spin
+      const spinStyle = document.createElement('style');
+      spinStyle.textContent = '.spin { animation: spin 1s linear infinite; } @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+      document.head.appendChild(spinStyle);
+
+      try {
+        const response = await fetch(`${BASE_URL}/api/status`);
+        const data = await response.json();
+
+        if (data.global_status === 'operational' || data.global_status === 'degraded') {
+          // Sistema operativo, redirigir
+          btn.innerHTML = '<i data-lucide="check"></i> ¡Sistema Disponible!';
+          btn.style.background = 'rgba(76, 175, 80, 0.3)';
+          btn.style.borderColor = 'rgba(76, 175, 80, 0.5)';
+          lucide.createIcons();
+          
+          setTimeout(() => {
+            window.location.href = redirectTo;
+          }, 1000);
+        } else {
+          // Aún en mantenimiento/outage
+          updateUI(data);
+          btn.innerHTML = originalContent;
+          btn.disabled = false;
+          lucide.createIcons();
+        }
+      } catch (error) {
+        console.error('Error verificando estado:', error);
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    }
+
+    // Cargar al iniciar
+    loadStatus();
+
+    // Auto-refresh cada 30 segundos
+    setInterval(loadStatus, 30000);
+  </script>
+</body>
+</html>
+
+
+

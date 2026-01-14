@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Cambiar Contraseña | Cemi Seguridad</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .password-strength {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+        .strength-weak { background: #dc3545; width: 33%; }
+        .strength-medium { background: #FFC107; width: 66%; }
+        .strength-strong { background: #28a745; width: 100%; }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #0071e3;
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 45px;
+            cursor: pointer;
+            color: #5a6c7d;
+        }
+        .requirements-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            color: #5a6c7d;
+        }
+        .requirement.met {
+            color: #28a745;
+        }
+        .requirement i {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body class="seguridad">
+    <header class="security-header-blur bg-password">
+        <div class="security-header-content" style="text-align: center; position: relative; z-index: 2;">
+            <div class="security-icon" style="background: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i data-lucide="key" style="width: 40px; height: 40px;"></i>
+            </div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Cambiar Contraseña</h1>
+            <p style="font-size: 1.1rem; opacity: 0.95;">Actualiza tu contraseña para mantener tu cuenta segura.</p>
+        </div>
+    </header>
+
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-seguridad.html" style="color: #0071e3; text-decoration: none;">Centro de Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Cambiar contraseña</span>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #fff3cd 0%, #fffbf0 100%); border-left: 6px solid #FFC107; padding: 25px; margin: 30px 0; border-radius: 12px; box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);">
+            <div style="display: flex; align-items: start; gap: 20px;">
+                <i data-lucide="shield-alert" style="width: 32px; height: 32px; color: #FFC107; flex-shrink: 0; margin-top: 4px;"></i>
+                <div>
+                    <strong style="display: block; font-size: 1.2rem; margin-bottom: 10px; color: #856404;">️ Requiere Aprobación de Administrador</strong>
+                    <p style="margin: 0; color: #856404; line-height: 1.6;">Los cambios de contraseña deben ser solicitados y aprobados por un administrador del sistema. Esta medida de seguridad protege tu cuenta de accesos no autorizados.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2>
+                <i data-lucide="lock"></i>
+                Cómo Solicitar un Cambio de Contraseña
+            </h2>
+            <p style="color: #5a6c7d; margin: 20px 0;">Para cambiar tu contraseña, debes contactar al administrador. El formulario a continuación muestra los requisitos que debe cumplir tu nueva contraseña:</p>
+
+            <div style="background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%); padding: 30px; border-radius: 12px; margin: 25px 0; text-align: center; box-shadow: 0 4px 12px rgba(0,113,227,0.1);">
+                <h3 style="margin-bottom: 20px; color: #1a1f36;">
+                    <i data-lucide="headset" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"></i>
+                    Contacta al Soporte Técnico
+                </h3>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+                    <button onclick="window.location.href='mailto:soporte@Cemiedu.ar?subject=Solicitud: Cambio de Contraseña&body=Estimado equipo de soporte,%0D%0A%0D%0ASolicito realizar un cambio de contraseña para mi cuenta.%0D%0A%0D%0ADatos:%0D%0A- Usuario: [TU USUARIO]%0D%0A- DNI: [TU DNI]%0D%0A- Motivo: [DESCRIBE EL MOTIVO]%0D%0A%0D%0AGracias.'" 
+                            style="background: #0071e3; color: white; padding: 16px 36px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,113,227,0.3); display: inline-flex; align-items: center; gap: 10px;">
+                        <i data-lucide="mail" style="width: 20px; height: 20px;"></i>
+                        Enviar Solicitud por Email
+                    </button>
+                    <a href="tel:+5491112345678" 
+                       style="background: #28a745; color: white; padding: 16px 36px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(40,167,69,0.3); display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                        <i data-lucide="phone" style="width: 20px; height: 20px;"></i>
+                        Llamar: +54 911 1234-5678
+                    </a>
+                </div>
+                <p style="margin-top: 20px; color: #5a6c7d; font-size: 14px;">
+                    <i data-lucide="clock" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"></i>
+                    Horario de atención: Lunes a Viernes, 8:00 - 18:00 hs
+                </p>
+            </div>
+                        <span>Mínimo 8 caracteres</span>
+                    </div>
+                    <div class="requirement" id="req-uppercase">
+                        <i data-lucide="circle"></i>
+                        <span>Al menos una mayúscula (A-Z)</span>
+                    </div>
+                    <div class="requirement" id="req-lowercase">
+                        <i data-lucide="circle"></i>
+                        <span>Al menos una minúscula (a-z)</span>
+                    </div>
+                    <div class="requirement" id="req-number">
+                        <i data-lucide="circle"></i>
+                        <span>Al menos un número (0-9)</span>
+                    </div>
+                    <div class="requirement" id="req-special">
+                        <i data-lucide="circle"></i>
+                        <span>Al menos un carácter especial (!@#$%^&*)</span>
+                    </div>
+                </div>
+
+            </form>
+            </div>
+        </div>
+
+        <div class="security-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);">
+            <h2>
+                <i data-lucide="lightbulb"></i>
+                Consejos para una Contraseña Segura
+            </h2>
+            <div class="security-grid" style="margin-top: 30px;">
+                <div style="display: flex; gap: 15px;">
+                    <i data-lucide="check-circle" style="width: 24px; height: 24px; color: #28a745; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="display: block; margin-bottom: 8px;">Usa frases memorables</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Ej: "MiGato2024$Juega!" es más segura y fácil de recordar</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <i data-lucide="check-circle" style="width: 24px; height: 24px; color: #28a745; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="display: block; margin-bottom: 8px;">No reutilices contraseñas</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Usa una diferente para cada cuenta importante</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <i data-lucide="check-circle" style="width: 24px; height: 24px; color: #28a745; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="display: block; margin-bottom: 8px;">Considera un gestor de contraseñas</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Herramientas como 1Password o LastPass pueden ayudarte</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <i data-lucide="check-circle" style="width: 24px; height: 24px; color: #28a745; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="display: block; margin-bottom: 8px;">Cambia tu contraseña regularmente</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Recomendamos actualizarla cada 3-6 meses</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2>
+                <i data-lucide="arrow-right-circle"></i>
+                Próximos Pasos Recomendados
+            </h2>
+            <div class="security-button-grid" style="margin-top: 30px;">
+                <a href="verificacion-dos-pasos.html" class="security-action-btn">
+                    <i data-lucide="smartphone"></i>
+                    <strong>Activar verificación en dos pasos</strong>
+                    <span>Añade una capa extra de seguridad a tu cuenta</span>
+                </a>
+                <a href="codigos-recuperacion.html" class="security-action-btn">
+                    <i data-lucide="shield-alert"></i>
+                    <strong>Generar códigos de recuperación</strong>
+                    <span>Ten códigos de respaldo por si pierdes acceso</span>
+                </a>
+                <a href="ayuda/proteger-cuenta.html" class="security-action-btn">
+                    <i data-lucide="book-open"></i>
+                    <strong>Guía de seguridad completa</strong>
+                    <span>Aprende más sobre cómo proteger tu cuenta</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../../index.html">Inicio</a>
+            <a href="../../privacidad.html">Política de Privacidad</a>
+            <a href="../../terminos.html">Términos de Uso</a>
+            <a href="../../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi - Centro Educativo de Modalidad Interactiva. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+
+
+

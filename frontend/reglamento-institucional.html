@@ -1,0 +1,749 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A2540">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>Reglamento Institucional - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .internal-page-content {
+      padding-top: 120px;
+      min-height: 100vh;
+      background: #fff;
+    }
+    
+    .internal-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    
+    .internal-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #656f77;
+      margin-bottom: 32px;
+    }
+    
+    .internal-breadcrumb a {
+      color: #656f77;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .internal-breadcrumb a:hover {
+      color: #93a1ad;
+    }
+    
+    .internal-breadcrumb span {
+      color: #1e1e1e;
+    }
+    
+    .internal-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 400;
+      color: #1e1e1e;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    
+    .internal-subtitle {
+      font-size: 1.25rem;
+      color: #656f77;
+      margin-bottom: 48px;
+      line-height: 1.5;
+    }
+    
+    .toc-box {
+      background: #f8f9fa;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 24px 32px;
+      margin-bottom: 48px;
+    }
+    
+    .toc-box h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin-bottom: 16px;
+    }
+    
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      columns: 2;
+      column-gap: 32px;
+    }
+    
+    @media (max-width: 600px) {
+      .toc-list {
+        columns: 1;
+      }
+    }
+    
+    .toc-list li {
+      margin-bottom: 8px;
+      break-inside: avoid;
+    }
+    
+    .toc-list a {
+      color: #0A2540;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    
+    .toc-list a:hover {
+      color: #93a1ad;
+      text-decoration: underline;
+    }
+    
+    .chapter {
+      margin-bottom: 48px;
+      scroll-margin-top: 100px;
+    }
+    
+    .chapter-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.75rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(147, 161, 173, 0.9);
+    }
+    
+    .article {
+      margin-bottom: 24px;
+    }
+    
+    .article-title {
+      padding: 20px;
+      padding-top: 20px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin-bottom: 12px;
+    }
+    
+    .article p {
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    
+    .article ul {
+      margin: 12px 0;
+      padding-left: 24px;
+    }
+    
+    .article li {
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .back-to-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #656f77;
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-top: 16px;
+      transition: color 0.2s;
+    }
+    
+    .back-to-top:hover {
+      color: #0A2540;
+    }
+    
+    .back-to-top i {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .update-note {
+      text-align: left;
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolongblack.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div class="harvard-search-quicklink">
+            <span>QUICK LINKS</span>
+            <a href="a-to-z.html">Ir a Índice A-Z</a>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva. Tareas, calificaciones, anuncios y más.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-funciones" data-image="images/STOCK2.jpg">Funciones Principales <span class="chevron">›</span></a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa de alumnos, profesores, cursos, pagos y estadísticas.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-paneles" data-image="images/STOCK3.webp">Paneles por Rol <span class="chevron">›</span></a>
+            <a href="index.html#modulos" class="mega-sub-link">Ver Módulos</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-nosotros" data-image="images/menu/nosotros.jpg">
+          <a href="index.html#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Conoce nuestra historia, misión y el equipo detrás de Cemi.</p>
+          <div class="mega-sub-links">
+            <a href="index.html#historia" class="mega-sub-link">Nuestra Historia</a>
+            <a href="index.html#filosofia" class="mega-sub-link">Misión y Visión</a>
+            <a href="index.html#valores" class="mega-sub-link">Nuestros Valores</a>
+            <a href="index.html#equipo" class="mega-sub-link">El Equipo</a>
+            <a href="index.html#tecnologias" class="mega-sub-link">Tecnologías</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-soporte" data-image="images/menu/soporte.jpg">
+          <a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a>
+          <p class="mega-sub-description">¿Necesitas ayuda? Estamos aquí para asistirte.</p>
+          <div class="mega-sub-links">
+            <a href="index.html#faq" class="mega-sub-link">Preguntas Frecuentes</a>
+            <a href="mailto:soporte@Cemiedu" class="mega-sub-link">Contactar Soporte</a>
+            <a href="status.html" class="mega-sub-link">Estado del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-seguridad" data-image="images/menu/seguridad.jpg">
+          <a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Reporta vulnerabilidades o infracciones de forma segura.</p>
+          <div class="mega-sub-links">
+            <a href="cemi-seguridad.html" class="mega-sub-link">Centro de Ayuda de Seguridad</a>
+            <a href="reportar-copyright.html" class="mega-sub-link">Reportar Infracción de Copyright</a>
+            <a href="privacidad.html" class="mega-sub-link">Política de Privacidad</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-recursos" data-image="images/menu/recursos.webp">
+          <a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Documentación, descargas y más recursos útiles.</p>
+          <div class="mega-sub-links">
+            <a href="https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk" class="mega-sub-link">Descargar App Android</a>
+            <a href="index.html#caracteristicas" class="mega-sub-link">Características del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-accesibilidad" data-image="images/menu/accesibilidad.jpg">
+          <a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Herramientas de acceso y administración institucional.</p>
+          <div class="mega-sub-links">
+            <a href="login-selector.html" class="mega-sub-link">Acceso Público</a>
+            <a href="login-admin.html" class="mega-sub-link">Acceso Administrativo</a>
+            <a href="reglamento-institucional.html" class="mega-sub-link">Reglamento Institucional</a>
+            <a href="register.html" class="mega-sub-link">Registro</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mega-nav-tertiary-container">
+        <div class="mega-nav-tertiary" id="tertiary-funciones">
+          <div class="mega-tertiary-header">
+            <h4>Funciones del Classroom</h4>
+            <p>Explora todas las herramientas disponibles para el aprendizaje.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item">
+              <button class="mega-tertiary-link">Tareas y Entregas</button>
+              <div class="mega-tertiary-info">
+                <p>Gestiona tus tareas pendientes y revisa el historial de trabajos.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item">
+              <button class="mega-tertiary-link">Calificaciones</button>
+              <div class="mega-tertiary-info">
+                <p>Consulta tus notas y promedios.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mega-nav-tertiary" id="tertiary-paneles">
+          <div class="mega-tertiary-header">
+            <h4>Paneles por Rol</h4>
+            <p>Accede al panel correspondiente a tu perfil.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item">
+              <button class="mega-tertiary-link">Panel del Alumno</button>
+              <div class="mega-tertiary-info">
+                <p>Tu espacio personal académico.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item">
+              <button class="mega-tertiary-link">Panel del Profesor</button>
+              <div class="mega-tertiary-info">
+                <p>Administra tus cursos.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mega-menu-footer">
+      <div class="mega-footer-inner">
+        <span class="mega-footer-label">
+          Enlaces rápidos <span class="chevron">›</span>
+        </span>
+        <div class="mega-footer-links">
+          <a href="terminos.html" class="mega-footer-link">Términos de Servicio</a>
+          <a href="privacidad.html" class="mega-footer-link">Privacidad</a>
+          <a href="ayuda.html" class="mega-footer-link">Ayuda</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="internal-page-content" id="top">
+    <div class="internal-container">
+      
+      <nav class="internal-breadcrumb">
+        <a href="index.html">Inicio</a>
+        <span>/</span>
+        <span>Reglamento Institucional</span>
+      </nav>
+      
+      <h1 class="internal-title">Reglamento Institucional</h1>
+      <p class="internal-subtitle">Normativas y disposiciones que rigen el funcionamiento del Centro de Enseñanza Multilingüe Integral.</p>
+      
+      <div class="update-note">
+        <strong>Última actualización:</strong> Diciembre 2025. Este reglamento puede ser modificado por la dirección del Cemi según las necesidades institucionales.
+      </div>
+      
+      <div class="toc-box">
+        <h3>Contenido</h3>
+        <ol class="toc-list">
+          <li><a href="#cap1">Capítulo I: Disposiciones Generales</a></li>
+          <li><a href="#cap2">Capítulo II: De la Inscripción</a></li>
+          <li><a href="#cap3">Capítulo III: De la Asistencia</a></li>
+          <li><a href="#cap4">Capítulo IV: Del Régimen de Evaluación</a></li>
+          <li><a href="#cap5">Capítulo V: De las Cuotas</a></li>
+          <li><a href="#cap6">Capítulo VI: Derechos de los Alumnos</a></li>
+          <li><a href="#cap7">Capítulo VII: Deberes de los Alumnos</a></li>
+          <li><a href="#cap8">Capítulo VIII: Del Personal Docente</a></li>
+          <li><a href="#cap9">Capítulo IX: Uso de Instalaciones</a></li>
+          <li><a href="#cap10">Capítulo X: Sanciones Disciplinarias</a></li>
+          <li><a href="#cap11">Capítulo XI: Disposiciones Finales</a></li>
+        </ol>
+      </div>
+      
+      <section class="chapter" id="cap1">
+        <h2 class="chapter-title">Capítulo I: Disposiciones Generales</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 1 - Objeto</h3>
+          <p>El presente reglamento tiene por objeto establecer las normas que regulan el funcionamiento del Centro de Enseñanza Multilingüe Integral (Cemi) de Bella Vista, provincia de Tucumán.</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 2 - Misión</h3>
+          <p>Cemi tiene como misión brindar educación en idiomas extranjeros de calidad, accesible para toda la comunidad, promoviendo el desarrollo personal y profesional de sus estudiantes.</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 3 - Idiomas Ofrecidos</h3>
+          <p>Cemi ofrece cursos en los siguientes idiomas:</p>
+          <ul>
+            <li>Inglés (niveles inicial, intermedio y avanzado)</li>
+            <li>Portugués (niveles inicial e intermedio)</li>
+            <li>Italiano (nivel inicial)</li>
+            <li>Francés (nivel inicial)</li>
+            <li>Muchos mas...</li>
+          </ul>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap2">
+        <h2 class="chapter-title">Capítulo II: De la Inscripción</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 4 - Requisitos de Inscripción</h3>
+          <p>Para inscribirse en el Cemi, los interesados deberán:</p>
+          <ul>
+            <li>Completar el formulario de inscripción en línea o presencial</li>
+            <li>Presentar DNI o documento de identidad válido</li>
+            <li>Abonar la matrícula correspondiente</li>
+            <li>Ser mayor de 12 años (menores requieren autorización de padre/tutor)</li>
+          </ul>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 5 - Períodos de Inscripción</h3>
+          <p>Las inscripciones se realizan durante los meses de febrero-marzo para el primer cuatrimestre y julio-agosto para el segundo cuatrimestre. La dirección podrá habilitar inscripciones extraordinarias según disponibilidad.</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 6 - Cupos</h3>
+          <p>Los cursos tienen un cupo máximo de 25 alumnos. Una vez completado el cupo, los interesados serán incluidos en lista de espera.</p>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap3">
+        <h2 class="chapter-title">Capítulo III: De la Asistencia</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 7 - Porcentaje Mínimo</h3>
+          <p>Para mantener la condición de alumno regular y acceder a los exámenes finales, se requiere un mínimo del 75% de asistencia a las clases del cuatrimestre.</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 8 - Justificación de Inasistencias</h3>
+          <p>Las inasistencias podrán justificarse mediante:</p>
+          <ul>
+            <li>Certificado médico (dentro de las 48 horas)</li>
+            <li>Nota de empleador por razones laborales</li>
+            <li>Situaciones de fuerza mayor evaluadas por la dirección</li>
+          </ul>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 9 - Puntualidad</h3>
+          <p>Se considera llegada tarde el ingreso posterior a los 10 minutos de iniciada la clase. Tres llegadas tarde equivalen a una inasistencia.</p>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap4">
+        <h2 class="chapter-title">Capítulo IV: Del Régimen de Evaluación</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 10 - Sistema de Calificación</h3>
+          <p>El sistema de calificación es numérico, de 1 a 10. La nota mínima de aprobación es 6 (seis).</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 11 - Evaluaciones</h3>
+          <p>Cada cuatrimestre incluye:</p>
+          <ul>
+            <li>Dos exámenes parciales escritos</li>
+            <li>Un examen oral</li>
+            <li>Trabajos prácticos y participación en clase</li>
+            <li>Un examen final integrador</li>
+          </ul>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 12 - Recuperatorios</h3>
+          <p>Los alumnos que no aprueben los parciales tendrán derecho a un examen recuperatorio por cada parcial, que se tomará dentro de las dos semanas siguientes.</p>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap5">
+        <h2 class="chapter-title">Capítulo V: De las Cuotas</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 13 - Pago de Cuotas</h3>
+          <p>Las cuotas mensuales deberán abonarse entre el 1 y el 10 de cada mes. El atraso superior a 30 días podrá generar la suspensión temporal del alumno.</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 14 - Becas</h3>
+          <p>Cemi dispone de un sistema de becas parciales para alumnos con dificultades económicas comprobables. Las solicitudes se evalúan individualmente por la dirección.</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 15 - Descuentos</h3>
+          <p>Se aplican descuentos en los siguientes casos:</p>
+          <ul>
+            <li>Grupo familiar: 10% a partir del segundo miembro</li>
+            <li>Pago anual anticipado: 15%</li>
+            <li>Personal municipal: 20%</li>
+          </ul>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap6">
+        <h2 class="chapter-title">Capítulo VI: Derechos de los Alumnos</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 16 - Derechos</h3>
+          <p>Los alumnos del Cemi tienen derecho a:</p>
+          <ul>
+            <li>Recibir educación de calidad según los programas establecidos</li>
+            <li>Ser tratados con respeto y dignidad</li>
+            <li>Acceder a las instalaciones y recursos del centro</li>
+            <li>Recibir información sobre su progreso académico</li>
+            <li>Participar en actividades extracurriculares</li>
+            <li>Presentar reclamos y sugerencias por los canales correspondientes</li>
+            <li>Recibir certificados de estudios y constancias</li>
+          </ul>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap7">
+        <h2 class="chapter-title">Capítulo VII: Deberes de los Alumnos</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 17 - Deberes</h3>
+          <p>Los alumnos del Cemi tienen el deber de:</p>
+          <ul>
+            <li>Respetar a docentes, personal administrativo y compañeros</li>
+            <li>Asistir puntualmente a las clases</li>
+            <li>Cumplir con las tareas y trabajos asignados</li>
+            <li>Mantener el orden y la limpieza de las instalaciones</li>
+            <li>Cuidar el material didáctico y equipamiento</li>
+            <li>Abonar las cuotas en tiempo y forma</li>
+            <li>Cumplir con el presente reglamento</li>
+          </ul>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap8">
+        <h2 class="chapter-title">Capítulo VIII: Del Personal Docente</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 18 - Requisitos Docentes</h3>
+          <p>Los docentes del Cemi deberán contar con título habilitante en la especialidad y formación pedagógica acreditada.</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 19 - Obligaciones Docentes</h3>
+          <p>Los docentes están obligados a:</p>
+          <ul>
+            <li>Planificar y desarrollar las clases según el programa</li>
+            <li>Asistir puntualmente y cumplir con la carga horaria</li>
+            <li>Evaluar objetivamente a los alumnos</li>
+            <li>Mantener actualizado el registro de asistencia y calificaciones</li>
+            <li>Participar en las reuniones de personal convocadas</li>
+          </ul>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap9">
+        <h2 class="chapter-title">Capítulo IX: Uso de Instalaciones</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 20 - Normas de Uso</h3>
+          <p>Las instalaciones del Cemi deberán utilizarse exclusivamente para fines educativos. Queda prohibido:</p>
+          <ul>
+            <li>Fumar en todo el predio</li>
+            <li>Consumir alimentos en las aulas</li>
+            <li>Ingresar con mascotas (excepto perros guía)</li>
+            <li>Realizar actividades comerciales no autorizadas</li>
+            <li>Dañar el mobiliario o equipamiento</li>
+          </ul>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 21 - Biblioteca</h3>
+          <p>El uso de la biblioteca está regulado por normas específicas. Los préstamos de material tienen un plazo máximo de 15 días.</p>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap10">
+        <h2 class="chapter-title">Capítulo X: Sanciones Disciplinarias</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 22 - Tipos de Sanciones</h3>
+          <p>Las sanciones aplicables según la gravedad de la falta son:</p>
+          <ul>
+            <li><strong>Apercibimiento verbal:</strong> Para faltas leves</li>
+            <li><strong>Apercibimiento escrito:</strong> Para faltas reiteradas o moderadas</li>
+            <li><strong>Suspensión temporal:</strong> De 1 a 15 días según gravedad</li>
+            <li><strong>Expulsión:</strong> Para faltas graves o reiteración de conductas</li>
+          </ul>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 23 - Procedimiento</h3>
+          <p>Antes de aplicar cualquier sanción, se garantizará el derecho de defensa del alumno. Las sanciones serán comunicadas por escrito y podrán apelarse ante la dirección.</p>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+      <section class="chapter" id="cap11">
+        <h2 class="chapter-title">Capítulo XI: Disposiciones Finales</h2>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 24 - Interpretación</h3>
+          <p>La interpretación del presente reglamento corresponde a la dirección del Cemi, cuyas decisiones serán inapelables en última instancia.</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 25 - Modificaciones</h3>
+          <p>El presente reglamento podrá ser modificado por la dirección del Cemi. Las modificaciones entrarán en vigencia a partir de su publicación oficial.</p>
+        </div>
+        
+        <div class="article">
+          <h3 class="article-title">Artículo 26 - Vigencia</h3>
+          <p>El presente reglamento entra en vigencia a partir del ciclo lectivo 2025 y deroga toda normativa anterior que se le oponga.</p>
+        </div>
+        
+        <a href="#top" class="back-to-top"><i data-lucide="arrow-up"></i> Volver arriba</a>
+      </section>
+      
+    </div>
+  </main>
+
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long">
+        </div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <div class="footer-social">
+        </div>
+        <a href="register.html" class="footer-cta-link">
+          <i data-lucide="user-plus"></i> Registrarse
+        </a>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <p class="footer-tech">Desarrollado con Node.js, MySQL y tecnologías modernas</p>
+      <div class="footer-links-bottom">
+        <a href="terminos.html">Términos de Servicio</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/harvard-menu.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

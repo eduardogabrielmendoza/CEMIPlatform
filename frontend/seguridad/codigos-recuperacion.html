@@ -1,0 +1,427 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Códigos de Recuperación | Cemi Seguridad</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="seguridad">
+    <header class="security-header-blur bg-codes">
+        <div class="security-header-content" style="text-align: center; position: relative; z-index: 1;">
+            <div class="security-icon" style="background: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i data-lucide="key" style="width: 40px; height: 40px;"></i>
+            </div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Códigos de Recuperación</h1>
+            <p style="font-size: 1.1rem; opacity: 0.95;">Accede a tu cuenta si pierdes tu método de verificación en dos pasos.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-privsec-home.html" style="color: #0071e3; text-decoration: none;">Privacidad y Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Códigos de recuperación</span>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #fff3cd 0%, #fffbf0 100%); border-left: 6px solid #FFC107; padding: 25px; margin: 30px 0; border-radius: 12px; box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);">
+            <div style="display: flex; align-items: start; gap: 20px;">
+                <i data-lucide="shield-alert" style="width: 32px; height: 32px; color: #FFC107; flex-shrink: 0; margin-top: 4px;"></i>
+                <div>
+                    <strong style="display: block; font-size: 1.2rem; margin-bottom: 10px; color: #856404;">️ Requiere Aprobación de Administrador</strong>
+                    <p style="margin: 0; color: #856404; line-height: 1.6;">Los códigos de recuperación deben ser solicitados al administrador del sistema. No se pueden generar de forma independiente por seguridad.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%); padding: 30px; border-radius: 12px; margin: 25px 0; text-align: center; box-shadow: 0 4px 12px rgba(0,113,227,0.1);">
+            <h3 style="margin-bottom: 20px; color: #1a1f36;">
+                <i data-lucide="headset" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"></i>
+                Solicitar Códigos de Recuperación
+            </h3>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="abrirModal2FA()" 
+                        style="background: #0071e3; color: white; padding: 16px 36px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,113,227,0.3); display: inline-flex; align-items: center; gap: 10px;">
+                    <i data-lucide="mail" style="width: 20px; height: 20px;"></i>
+                    Enviar Solicitud por Email
+                </button>
+                <a href="tel:+5491112345678" 
+                   style="background: #28a745; color: white; padding: 16px 36px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(40,167,69,0.3); display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <i data-lucide="phone" style="width: 20px; height: 20px;"></i>
+                    Llamar: +54 911 1234-5678
+                </a>
+            </div>
+        </div>
+
+        <div id="modal2FA" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999999; backdrop-filter: blur(5px); align-items: center; justify-content: center;">
+            <div style="background: white; border-radius: 16px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25); animation: modalSlideIn 0.3s ease;">
+                <div style="background: linear-gradient(135deg, #0071e3 0%, #0077ed 100%); padding: 25px 30px; border-radius: 16px 16px 0 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="color: white; margin: 0; font-size: 20px; display: flex; align-items: center; gap: 10px;">
+                            <i data-lucide="key" style="width: 24px; height: 24px;"></i>
+                            Solicitar Códigos de Recuperación
+                        </h3>
+                        <button onclick="cerrarModal2FA()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <form id="form2FA" style="padding: 30px;">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a1f36;">
+                            <i data-lucide="mail" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"></i>
+                            Email *
+                        </label>
+                        <input type="email" id="email2FA" required 
+                               placeholder="tu.email@ejemplo.com"
+                               style="width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; transition: all 0.3s; box-sizing: border-box;">
+                        <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">El email con el que te registraste en CEMI</small>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a1f36;">
+                            <i data-lucide="user" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"></i>
+                            Usuario (opcional)
+                        </label>
+                        <input type="text" id="usuario2FA"
+                               placeholder="Tu nombre de usuario"
+                               style="width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; transition: all 0.3s; box-sizing: border-box;">
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a1f36;">
+                            <i data-lucide="id-card" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"></i>
+                            DNI (opcional)
+                        </label>
+                        <input type="text" id="dni2FA"
+                               placeholder="12345678"
+                               style="width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; transition: all 0.3s; box-sizing: border-box;">
+                    </div>
+                    
+                    <div style="margin-bottom: 25px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1a1f36;">
+                            <i data-lucide="message-square" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"></i>
+                            Motivo
+                        </label>
+                        <select id="motivo2FA" 
+                                style="width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; background: white; cursor: pointer; box-sizing: border-box;">
+                            <option value="Primera vez">Primera vez - Nunca tuve códigos</option>
+                            <option value="Perdí los códigos">Perdí los códigos</option>
+                            <option value="Usé todos mis códigos">Usé todos mis códigos</option>
+                            <option value="Cambié de dispositivo">Cambié de dispositivo</option>
+                            <option value="Otro">Otro motivo</option>
+                        </select>
+                    </div>
+                    
+                    <div style="background: #fff3cd; border-left: 4px solid #FFC107; padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 25px;">
+                        <p style="margin: 0; color: #856404; font-size: 14px;">
+                            <strong>️ Nota:</strong> Un administrador verificará tu identidad antes de generar los códigos.
+                        </p>
+                    </div>
+                    
+                    <div id="resultado2FA" style="display: none; margin-bottom: 20px;"></div>
+                    
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" onclick="cerrarModal2FA()" 
+                                style="flex: 1; padding: 14px; border: 2px solid #e0e0e0; background: white; border-radius: 10px; font-size: 15px; font-weight: 600; color: #666; cursor: pointer;">
+                            Cancelar
+                        </button>
+                        <button type="submit" id="btnEnviar2FA"
+                                style="flex: 2; padding: 14px; border: none; background: linear-gradient(135deg, #0071e3 0%, #0077ed 100%); color: white; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i data-lucide="send" style="width: 18px; height: 18px;"></i>
+                            Enviar Solicitud
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <style>
+            @keyframes modalSlideIn {
+                from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            #form2FA input:focus, #form2FA select:focus {
+                border-color: #0071e3;
+                outline: none;
+                box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+            }
+            #btnEnviar2FA:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+            }
+            #btnEnviar2FA:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+                transform: none;
+            }
+        </style>
+
+        <div class="security-alert" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border-left-color: #dc3545;">
+            <i data-lucide="alert-octagon" style="color: white;"></i>
+            <div>
+                <strong style="color: white;"> Crítico: Guarda estos códigos en un lugar seguro</strong>
+                <p style="color: rgba(255,255,255,0.9);">Estos códigos son tu ÚNICA forma de acceder si pierdes tu dispositivo 2FA. Cada código se puede usar solo una vez.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="info"></i> ¿Qué son los códigos de recuperación?</h2>
+            <p style="margin-bottom: 30px;">Son 10 códigos únicos de 8 dígitos que puedes usar en lugar de tu código 2FA temporal. Se generan cuando activas la verificación en dos pasos.</p>
+            
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%); padding: 30px; border-radius: 12px;">
+                <strong style="color: #0071e3; display: block; margin-bottom: 20px; font-size: 18px;">Cuándo usarlos:</strong>
+                <div class="security-grid">
+                    <div style="background: white; padding: 20px; border-radius: 8px;">
+                        <i data-lucide="smartphone-x" style="width: 28px; height: 28px; color: #dc3545; margin-bottom: 10px;"></i>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0;">Perdiste tu teléfono con la app autenticadora</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px;">
+                        <i data-lucide="battery-low" style="width: 28px; height: 28px; color: #FFC107; margin-bottom: 10px;"></i>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0;">Tu dispositivo 2FA está sin batería o dañado</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px;">
+                        <i data-lucide="wifi-off" style="width: 28px; height: 28px; color: #6c757d; margin-bottom: 10px;"></i>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0;">No tienes señal para recibir SMS</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px;">
+                        <i data-lucide="refresh-cw" style="width: 28px; height: 28px; color: #0071e3; margin-bottom: 10px;"></i>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0;">Cambiaste de teléfono y aún no configuraste 2FA</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card" style="background: linear-gradient(135deg, #0071e3 0%, #0077ed 100%); color: white;">
+            <h2 style="color: white;"><i data-lucide="eye"></i> Ver tus códigos de recuperación</h2>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 30px;">Para ver tus códigos actuales:</p>
+            
+            <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 12px; backdrop-filter: blur(10px);">
+                <ol style="margin-left: 20px; line-height: 2.5; opacity: 0.95;">
+                    <li>Ve a <strong>Perfil → Configuración → Seguridad</strong></li>
+                    <li>Haz clic en <strong>"Verificación en dos pasos"</strong></li>
+                    <li>Selecciona <strong>"Ver códigos de recuperación"</strong></li>
+                    <li>Introduce tu contraseña para confirmar</li>
+                    <li>Se mostrarán tus 10 códigos</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="download"></i> Cómo guardar tus códigos</h2>
+            <div class="security-grid" style="margin-top: 30px;">
+                <div style="background: #e8f5e9; padding: 25px; border-radius: 12px; border-left: 4px solid #28a745;">
+                    <i data-lucide="check-circle" style="width: 28px; height: 28px; color: #28a745; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #28a745;"> Formas seguras</strong>
+                    <ul style="margin-left: 20px; color: #5a6c7d; font-size: 14px; line-height: 1.8;">
+                        <li>Imprimir y guardar en caja fuerte</li>
+                        <li>Gestor de contraseñas cifrado</li>
+                        <li>Papel en un lugar físico seguro</li>
+                        <li>Archivo cifrado en USB</li>
+                    </ul>
+                </div>
+                <div style="background: #ffebee; padding: 25px; border-radius: 12px; border-left: 4px solid #dc3545;">
+                    <i data-lucide="x-circle" style="width: 28px; height: 28px; color: #dc3545; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #dc3545;"> NUNCA hagas esto</strong>
+                    <ul style="margin-left: 20px; color: #5a6c7d; font-size: 14px; line-height: 1.8;">
+                        <li>Captura de pantalla sin cifrar</li>
+                        <li>Email sin protección</li>
+                        <li>Nota en tu teléfono</li>
+                        <li>Compartir con otras personas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="rotate-cw"></i> Regenerar códigos</h2>
+            <p style="margin-bottom: 30px;">Puedes generar nuevos códigos en cualquier momento. Los códigos antiguos dejarán de funcionar.</p>
+            
+            <div style="background: #fff3cd; padding: 25px; border-radius: 12px; border-left: 4px solid #FFC107; margin-bottom: 30px;">
+                <strong style="color: #856404; display: block; margin-bottom: 15px;">️ Cuándo regenerar:</strong>
+                <ul style="margin-left: 20px; color: #856404; line-height: 2;">
+                    <li>Usaste la mayoría de tus códigos</li>
+                    <li>Crees que alguien los vio</li>
+                    <li>Perdiste donde los guardaste</li>
+                    <li>Como medida preventiva cada 6 meses</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%); padding: 30px; border-radius: 12px;">
+                <strong style="color: #0071e3; display: block; margin-bottom: 20px; font-size: 18px;">Cómo regenerar:</strong>
+                <ol style="margin-left: 20px; color: #5a6c7d; line-height: 2.5;">
+                    <li>Ve a <strong>Configuración → Seguridad → Verificación en dos pasos</strong></li>
+                    <li>Haz clic en <strong>"Regenerar códigos"</strong></li>
+                    <li>Confirma la acción (los antiguos se invalidarán)</li>
+                    <li>Descarga y guarda los nuevos 10 códigos</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="clipboard-list"></i> Ejemplo de códigos</h2>
+            <p style="margin-bottom: 20px;">Así se ven los códigos de recuperación (estos son solo ejemplos):</p>
+            
+            <div style="background: #2c3e50; padding: 30px; border-radius: 12px; font-family: 'Courier New', monospace;">
+                <div style="color: white; font-size: 18px; font-weight: 700; margin-bottom: 20px;"> Códigos de Recuperación de Cemi</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">1234-5678</div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">8765-4321</div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">2468-1357</div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">9753-2468</div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">1111-2222</div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">3333-4444</div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">5555-6666</div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">7777-8888</div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">9999-0000</div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px; color: white; font-size: 16px; text-align: center;">1357-2468</div>
+                </div>
+                <div style="color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 20px; text-align: center;">️ Cada código solo se puede usar UNA vez</div>
+            </div>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="verificacion-dos-pasos.html" class="security-action-btn">
+                    <i data-lucide="smartphone"></i>
+                    <strong>Configurar 2FA</strong>
+                    <span>Activar verificación en dos pasos</span>
+                </a>
+                <a href="cambiar-contraseña.html" class="security-action-btn">
+                    <i data-lucide="lock"></i>
+                    <strong>Cambiar contraseña</strong>
+                    <span>Actualizar tu contraseña</span>
+                </a>
+                <a href="../cemi-privsec-home.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Portal</strong>
+                    <span>Privacidad y Seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../privacidad.html">Privacidad</a>
+            <a href="../terminos.html">Términos</a>
+            <a href="../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi. Todos los derechos reservados.</p>
+    </footer>
+    <script src="../assets/js/config.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        // Funciones del modal 2FA
+        function abrirModal2FA() {
+            document.getElementById('modal2FA').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => lucide.createIcons(), 100);
+        }
+        
+        function cerrarModal2FA() {
+            document.getElementById('modal2FA').style.display = 'none';
+            document.body.style.overflow = '';
+            document.getElementById('form2FA').reset();
+            document.getElementById('resultado2FA').style.display = 'none';
+        }
+        
+        // Cerrar modal con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cerrarModal2FA();
+        });
+        
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modal2FA').addEventListener('click', (e) => {
+            if (e.target.id === 'modal2FA') cerrarModal2FA();
+        });
+        
+        // Manejar envío del formulario
+        document.getElementById('form2FA').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnEnviar2FA');
+            const resultado = document.getElementById('resultado2FA');
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" style="width: 18px; height: 18px; animation: spin 1s linear infinite;"></i> Enviando...';
+            lucide.createIcons();
+            
+            const datos = {
+                email: document.getElementById('email2FA').value.trim(),
+                usuario: document.getElementById('usuario2FA').value.trim(),
+                dni: document.getElementById('dni2FA').value.trim(),
+                motivo: document.getElementById('motivo2FA').value
+            };
+            
+            try {
+                const response = await fetch(`${BASE_URL}/api/codigos-recuperacion/solicitar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultado.innerHTML = `
+                        <div style="background: #e8f5e9; border-left: 4px solid #28a745; padding: 20px; border-radius: 0 8px 8px 0;">
+                            <strong style="color: #28a745; display: block; margin-bottom: 10px;"> ¡Solicitud enviada correctamente!</strong>
+                            <p style="color: #2e7d32; margin: 5px 0; font-size: 14px;"><strong>Referencia:</strong> #${data.data.referencia}</p>
+                            <p style="color: #2e7d32; margin: 5px 0; font-size: 14px;"><strong>Nombre:</strong> ${data.data.nombre}</p>
+                            <p style="color: #2e7d32; margin: 5px 0; font-size: 14px;"><strong>Tiempo estimado:</strong> ${data.data.estimado}</p>
+                            <p style="color: #666; margin: 10px 0 0 0; font-size: 13px;">Revisa tu email para la confirmación.</p>
+                        </div>
+                    `;
+                    btn.innerHTML = '<i data-lucide="check" style="width: 18px; height: 18px;"></i> Enviado';
+                    lucide.createIcons();
+                    
+                    setTimeout(() => {
+                        cerrarModal2FA();
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        lucide.createIcons();
+                    }, 5000);
+                } else {
+                    resultado.innerHTML = `
+                        <div style="background: #ffebee; border-left: 4px solid #dc3545; padding: 15px; border-radius: 0 8px 8px 0;">
+                            <strong style="color: #dc3545;"> ${data.message || 'Error al procesar la solicitud'}</strong>
+                        </div>
+                    `;
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultado.innerHTML = `
+                    <div style="background: #ffebee; border-left: 4px solid #dc3545; padding: 15px; border-radius: 0 8px 8px 0;">
+                        <strong style="color: #dc3545;"> Error de conexión. Intenta nuevamente.</strong>
+                    </div>
+                `;
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+            
+            resultado.style.display = 'block';
+        });
+    </script>
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>
+
+
+

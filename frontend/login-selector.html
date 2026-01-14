@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Seleccionar Plataforma - Cemi</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/login-selector.css" />
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="selector-body">
+
+  <div class="selector-background">
+    <div class="floating-icon icon-1">
+      <i data-lucide="book-open"></i>
+    </div>
+    <div class="floating-icon icon-2">
+      <i data-lucide="graduation-cap"></i>
+    </div>
+    <div class="floating-icon icon-3">
+      <i data-lucide="users"></i>
+    </div>
+    <div class="floating-icon icon-4">
+      <i data-lucide="award"></i>
+    </div>
+  </div>
+
+  <div class="selector-wrapper">
+    <button class="back-button" onclick="window.location.href='index.html'" title="Volver al inicio">
+      <i data-lucide="arrow-left"></i>
+    </button>
+
+    <div class="selector-header">
+      <img src="images/logo.png" alt="Logo Cemi" class="selector-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+      <h1>Cemi</h1>
+      <p>Sistema de Gestión Académica Integral</p>
+    </div>
+
+    <div class="selector-title">
+      <h2>Selecciona tu Plataforma</h2>
+      <p>Elige dónde deseas iniciar sesión</p>
+    </div>
+
+    <div class="selector-cards">
+      
+      <div class="selector-card" onclick="window.location.href='login.html'">
+        <div class="card-background"></div>
+        <div class="card-content">
+          <div class="card-icon dashboard-icon">
+            <i data-lucide="layout-dashboard"></i>
+          </div>
+          <h3>Dashboard</h3>
+          <p>Acceso al panel de administración y gestión del sistema</p>
+          
+          <ul class="card-features">
+            <li>
+              <i data-lucide="check"></i>
+              <span>Gestión de usuarios</span>
+            </li>
+            <li>
+              <i data-lucide="check"></i>
+              <span>Control académico</span>
+            </li>
+            <li>
+              <i data-lucide="check"></i>
+              <span>Reportes y estadísticas</span>
+            </li>
+          </ul>
+
+          <div class="card-action">
+            <span>Ingresar al Dashboard</span>
+            <i data-lucide="arrow-right"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="selector-card" onclick="window.location.href='classroom-login.html'">
+        <div class="card-background classroom-bg"></div>
+        <div class="card-content">
+          <div class="card-icon classroom-icon">
+            <i data-lucide="graduation-cap"></i>
+          </div>
+          <h3>Classroom</h3>
+          <p>Plataforma educativa para alumnos y profesores</p>
+          
+          <ul class="card-features">
+            <li>
+              <i data-lucide="check"></i>
+              <span>Clases virtuales</span>
+            </li>
+            <li>
+              <i data-lucide="check"></i>
+              <span>Tareas y calificaciones</span>
+            </li>
+            <li>
+              <i data-lucide="check"></i>
+              <span>Recursos educativos</span>
+            </li>
+          </ul>
+
+          <div class="card-action">
+            <span>Ingresar al Classroom</span>
+            <i data-lucide="arrow-right"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="selector-footer">
+      <a href="index.html" class="btn-back">
+        <i data-lucide="arrow-left"></i>
+        <span>Volver al inicio</span>
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    // Inicializar iconos de Lucide
+    lucide.createIcons();
+
+    // Animaciones adicionales al cargar
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.selector-card');
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 200 * (index + 1));
+      });
+    });
+  </script>
+
+</body>
+</html>
+
+
+

@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Perfil - Cemi Classroom</title>
+  <link rel="stylesheet" href="assets/css/perfil-classroom.css">
+  
+  <script src="assets/js/console-manager.js"></script>
+  <script src="assets/js/config.js"></script>
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <header class="perfil-header">
+    <div class="header-container">
+      <div class="header-left">
+        <button class="btn-back" onclick="volverAlClassroom()">
+          <i data-lucide="arrow-left"></i>
+          Volver al Classroom
+        </button>
+      </div>
+      <div class="header-center">
+        <h1>Perfil de Usuario</h1>
+      </div>
+      <div class="header-right">
+        <button class="btn-theme" onclick="toggleTheme()">
+          <i data-lucide="sun"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="perfil-container">
+    <aside class="perfil-sidebar">
+      <nav class="perfil-nav">
+        <button class="nav-item active" data-section="info-general" onclick="cambiarSeccion('info-general')">
+          <i data-lucide="user"></i>
+          <span>Información General</span>
+        </button>
+        <button class="nav-item" data-section="datos-personales" onclick="cambiarSeccion('datos-personales')">
+          <i data-lucide="id-card"></i>
+          <span>Datos Personales</span>
+        </button>
+      </nav>
+    </aside>
+
+    <main class="perfil-content">
+        <section class="perfil-section active" id="info-general">
+          <div class="profile-header-card">
+            <div class="profile-content">
+              <div class="profile-avatar-container">
+                <div class="profile-avatar" id="profileAvatar">
+                  <span id="avatarInitials">MG</span>
+                </div>
+              </div>
+              <div class="profile-info">
+                <h2 class="profile-name" id="profileName">Cargando...</h2>
+                <div class="profile-badges">
+                  <span class="badge badge-role" id="profileRole">Cargando...</span>
+                  <span class="badge badge-status" id="profileStatus">
+                    <i data-lucide="check-circle"></i>
+                    Activo
+                  </span>
+                </div>
+                <p class="profile-username" id="profileUsername">@username</p>
+                <p class="profile-member-since" id="profileMemberSince">Miembro desde 2025</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-cards-grid">
+            <div class="info-card">
+              <div class="info-card-icon">
+                <i data-lucide="mail"></i>
+              </div>
+              <div class="info-card-content">
+                <span class="info-card-label">Email</span>
+                <span class="info-card-value" id="infoEmail">-</span>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-card-icon">
+                <i data-lucide="phone"></i>
+              </div>
+              <div class="info-card-content">
+                <span class="info-card-label">Teléfono</span>
+                <span class="info-card-value" id="infoTelefono">-</span>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-card-icon">
+                <i data-lucide="calendar"></i>
+              </div>
+              <div class="info-card-content">
+                <span class="info-card-label">Fecha de Nacimiento</span>
+                <span class="info-card-value" id="infoFechaNacimiento">-</span>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <div class="info-card-icon">
+                <i data-lucide="map-pin"></i>
+              </div>
+              <div class="info-card-content">
+                <span class="info-card-label">Dirección</span>
+                <span class="info-card-value" id="infoDireccion">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="biografia-section">
+            <h3 class="section-subtitle">
+              <i data-lucide="file-text"></i>
+              Biografía
+            </h3>
+            <div class="biografia-content">
+              <p id="biografiaDisplay">Sin biografía</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="perfil-section" id="datos-personales">
+          <h2 class="section-title">Datos Personales</h2>
+          
+          <div class="data-display-grid">
+            <div class="data-display-item">
+              <label class="data-label">Nombre Completo</label>
+              <div class="data-value" id="dataNombreCompleto">-</div>
+            </div>
+
+            <div class="data-display-item">
+              <label class="data-label">Email</label>
+              <div class="data-value" id="dataEmail">-</div>
+            </div>
+
+            <div class="data-display-item">
+              <label class="data-label">Teléfono</label>
+              <div class="data-value" id="dataTelefono">-</div>
+            </div>
+
+            <div class="data-display-item">
+              <label class="data-label">Fecha de Nacimiento</label>
+              <div class="data-value" id="dataFechaNacimiento">-</div>
+            </div>
+
+            <div class="data-display-item full-width">
+              <label class="data-label">Dirección</label>
+              <div class="data-value" id="dataDireccion">-</div>
+            </div>
+
+            <div class="data-display-item full-width">
+              <label class="data-label">Biografía</label>
+              <div class="data-value" id="dataBiografia">-</div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="assets/js/perfil-espectador.js"></script>
+</body>
+</html>
+
+
+

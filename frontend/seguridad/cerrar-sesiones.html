@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Cerrar Sesiones | Cemi Seguridad</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="seguridad">
+    <header class="security-header-blur bg-logout">
+        <div class="security-header-content" style="text-align: center; position: relative; z-index: 1;">
+            <div class="security-icon" style="background: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i data-lucide="log-out" style="width: 40px; height: 40px;"></i>
+            </div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Cerrar Sesiones Remotas</h1>
+            <p style="font-size: 1.1rem; opacity: 0.95;">Expulsa dispositivos y cierra sesiones en las que no confías.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-privsec-home.html" style="color: #0071e3; text-decoration: none;">Privacidad y Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Cerrar sesiones</span>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border-left: 6px solid #dc3545; padding: 25px; margin: 30px 0; border-radius: 12px; box-shadow: 0 4px 12px rgba(220, 53, 69, 0.25);">
+            <div style="display: flex; align-items: start; gap: 20px;">
+                <i data-lucide="alert-octagon" style="width: 32px; height: 32px; color: white; flex-shrink: 0; margin-top: 4px;"></i>
+                <div>
+                    <strong style="display: block; font-size: 1.2rem; margin-bottom: 10px; color: white;"> Protocolo de Emergencia</strong>
+                    <p style="margin: 0; color: rgba(255,255,255,0.95); line-height: 1.6;">Si sospechas acceso no autorizado, contacta INMEDIATAMENTE al administrador para cerrar todas las sesiones activas. Disponible 24/7 para emergencias.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%); padding: 30px; border-radius: 12px; margin: 25px 0; text-align: center; border: 2px solid #dc3545;">
+            <h3 style="margin-bottom: 20px; color: #dc3545;">
+                <i data-lucide="shield-alert" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"></i>
+                Cerrar Todas las Sesiones
+            </h3>
+            <p style="color: #5a6c7d; margin-bottom: 25px;">Fuerza el cierre de todas las sesiones excepto la actual. Usa esto si detectas actividad sospechosa.</p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="window.location.href='mailto:soporte@Cemiedu.ar?subject=URGENTE: Cerrar Todas las Sesiones&body=URGENTE%0D%0A%0D%0ASolicito cerrar TODAS mis sesiones activas inmediatamente.%0D%0A%0D%0ADatos:%0D%0A- Usuario: [TU USUARIO]%0D%0A- DNI: [TU DNI]%0D%0A- Motivo: [Acceso sospechoso/Dispositivo perdido/Otros]%0D%0A%0D%0APor favor, actúe rápido.'" 
+                        style="background: #dc3545; color: white; padding: 16px 36px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(220,53,69,0.3); display: inline-flex; align-items: center; gap: 10px;">
+                    <i data-lucide="mail" style="width: 20px; height: 20px;"></i>
+                    Email de Emergencia
+                </button>
+                <a href="tel:+5491112345678" 
+                   style="background: #000; color: white; padding: 16px 36px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: inline-flex; align-items: center; gap: 10px; text-decoration: none; animation: pulse 2s infinite;">
+                    <i data-lucide="phone-call" style="width: 20px; height: 20px;"></i>
+                    Llamar AHORA: +54 911 1234-5678
+                </a>
+            </div>
+            <p style="margin-top: 20px; color: #dc3545; font-weight: 600; font-size: 14px;">
+                <i data-lucide="clock" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"></i>
+                Línea de emergencia disponible 24/7
+            </p>
+        </div>
+
+        <div class="security-alert">
+            <i data-lucide="info"></i>
+            <div>
+                <strong>Control total de acceso</strong>
+                <p>Puedes cerrar sesiones en cualquier dispositivo de forma remota. Útil si perdiste tu teléfono o sospechas de acceso no autorizado.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="book-open"></i> Cómo cerrar sesiones paso a paso</h2>
+            
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%); padding: 30px; border-radius: 12px; margin: 30px 0;">
+                <strong style="color: #0071e3; display: block; margin-bottom: 20px; font-size: 18px;">Método 1: Desde dispositivos activos</strong>
+                <ol style="margin-left: 20px; color: #5a6c7d; line-height: 2.5;">
+                    <li>Ve a <strong>Perfil → Configuración → Seguridad</strong></li>
+                    <li>Haz clic en <strong>"Dispositivos activos"</strong></li>
+                    <li>Encuentra el dispositivo que quieres cerrar</li>
+                    <li>Haz clic en el botón <strong>"Cerrar sesión"</strong> junto al dispositivo</li>
+                    <li>Confirma la acción</li>
+                </ol>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 30px; border-radius: 12px;">
+                <strong style="color: #0071e3; display: block; margin-bottom: 20px; font-size: 18px;">Método 2: Cerrar todas excepto esta</strong>
+                <ol style="margin-left: 20px; color: #5a6c7d; line-height: 2.5;">
+                    <li>Ve a <strong>Configuración → Seguridad</strong></li>
+                    <li>Busca la sección <strong>"Cerrar sesiones"</strong></li>
+                    <li>Haz clic en <strong>"Cerrar en otros dispositivos"</strong></li>
+                    <li>Introduce tu contraseña para confirmar</li>
+                    <li>Listo - solo tu dispositivo actual permanecerá conectado</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="security-alert" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border-left-color: #dc3545;">
+            <i data-lucide="alert-octagon" style="color: white;"></i>
+            <div>
+                <strong style="color: white;"> Perdiste tu teléfono o fue robado?</strong>
+                <p style="color: rgba(255,255,255,0.9);">Sigue estos pasos INMEDIATAMENTE:</p>
+            </div>
+        </div>
+
+        <div class="security-card" style="background: #ffebee; border-left: 4px solid #dc3545;">
+            <h2 style="color: #dc3545;"><i data-lucide="smartphone-off"></i> Protocolo de emergencia</h2>
+            <div style="margin-top: 30px;">
+                <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 15px; align-items: start;">
+                        <div style="background: #dc3545; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0;">1</div>
+                        <div>
+                            <strong style="color: #dc3545; display: block; margin-bottom: 10px; font-size: 16px;">Cierra todas las sesiones</strong>
+                            <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Desde otro dispositivo (computadora, tablet), cierra TODAS las sesiones inmediatamente</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 15px; align-items: start;">
+                        <div style="background: #dc3545; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0;">2</div>
+                        <div>
+                            <strong style="color: #dc3545; display: block; margin-bottom: 10px; font-size: 16px;">Cambia tu contraseña</strong>
+                            <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Crea una nueva contraseña fuerte que nadie más conozca</p>
+                            <a href="cambiar-contraseña.html" style="color: #dc3545; font-weight: 600; font-size: 13px; display: inline-block; margin-top: 8px;">Cambiar contraseña ahora →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 15px; align-items: start;">
+                        <div style="background: #dc3545; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0;">3</div>
+                        <div>
+                            <strong style="color: #dc3545; display: block; margin-bottom: 10px; font-size: 16px;">Activa 2FA (si no lo tenías)</strong>
+                            <p style="color: #5a6c7d; margin: 0; font-size: 14px;">La verificación en dos pasos evita accesos incluso si alguien tiene tu contraseña</p>
+                            <a href="verificacion-dos-pasos.html" style="color: #dc3545; font-weight: 600; font-size: 13px; display: inline-block; margin-top: 8px;">Configurar 2FA →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 15px; align-items: start;">
+                        <div style="background: #dc3545; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0;">4</div>
+                        <div>
+                            <strong style="color: #dc3545; display: block; margin-bottom: 10px; font-size: 16px;">Revisa tu actividad reciente</strong>
+                            <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Verifica si alguien accedió a tu cuenta o modificó algo</p>
+                            <a href="historial-acceso.html" style="color: #dc3545; font-weight: 600; font-size: 13px; display: inline-block; margin-top: 8px;">Ver historial →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 25px; border-radius: 12px;">
+                    <div style="display: flex; gap: 15px; align-items: start;">
+                        <div style="background: #dc3545; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0;">5</div>
+                        <div>
+                            <strong style="color: #dc3545; display: block; margin-bottom: 10px; font-size: 16px;">Contacta a soporte si es necesario</strong>
+                            <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Si detectas actividad sospechosa, repórtala a: <strong>seguridad@Cemiedu.ar</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="info"></i> ¿Qué sucede al cerrar sesiones?</h2>
+            <div style="margin-top: 30px;">
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #0071e3; display: block; margin-bottom: 10px;"> El dispositivo pierde acceso</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">La sesión se cierra inmediatamente. El dispositivo necesitará volver a iniciar sesión con usuario y contraseña (y 2FA si está activo).</p>
+                </div>
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #0071e3; display: block; margin-bottom: 10px;"> Notificación enviada</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Si el dispositivo tiene notificaciones activadas, recibirá una alerta de que la sesión fue cerrada remotamente.</p>
+                </div>
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 12px;">
+                    <strong style="color: #0071e3; display: block; margin-bottom: 10px;"> Registro de seguridad</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">La acción queda registrada en tu historial de actividad de seguridad.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="help-circle"></i> Preguntas Frecuentes</h2>
+            <div style="margin-top: 30px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Puedo cerrar sesiones desde la app móvil?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Sí, la función está disponible en Perfil → Configuración → Seguridad → Dispositivos activos en todas las plataformas.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Cierran mis sesiones en apps conectadas?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">No. Apps de terceros (Google Classroom, Teams, etc.) mantienen su propia autenticación. Revócalas desde "Apps conectadas".</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Se me notifica cuando cierran mi sesión?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Sí, recibes un email y notificación push (si está habilitada) informándote que una sesión fue cerrada remotamente.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="dispositivos-activos.html" class="security-action-btn">
+                    <i data-lucide="monitor-smartphone"></i>
+                    <strong>Ver dispositivos activos</strong>
+                    <span>Lista completa de sesiones abiertas</span>
+                </a>
+                <a href="historial-acceso.html" class="security-action-btn">
+                    <i data-lucide="clock"></i>
+                    <strong>Historial de acceso</strong>
+                    <span>Revisa todos los inicios de sesión</span>
+                </a>
+                <a href="../cemi-privsec-home.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Portal</strong>
+                    <span>Privacidad y Seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../privacidad.html">Privacidad</a>
+            <a href="../terminos.html">Términos</a>
+            <a href="../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi. Todos los derechos reservados.</p>
+    </footer>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
+
+

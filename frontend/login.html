@@ -1,0 +1,570 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1e1e1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="images/logo.png">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>Iniciar Sesión - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/login-harvard.css" />
+  <script src="assets/js/console-manager.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/check-maintenance.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .login-wrapper {
+      min-width: 1000px !important;
+      max-width: 1000px !important;
+      min-height: 880px !important;
+      max-height: 880px !important;
+      height: 837px !important;
+    }
+    .login-side-panel {
+      min-height: 837px !important;
+      max-height: 837px !important;
+      height: 837px !important;
+    }
+    .login-box {
+      min-height: 837px !important;
+      max-height: 837px !important;
+      height: 837px !important;
+      overflow-y: hidden !important;
+      padding: 24px 50px !important;
+    }
+    .login-header {
+      margin-bottom: 12px !important;
+    }
+    .login-header h1 {
+      margin: 8px 0 4px 0 !important;
+    }
+    .login-header p {
+      margin: 0 0 8px 0 !important;
+    }
+    .form-group {
+      margin-bottom: 12px !important;
+    }
+    .form-label {
+      margin-bottom: 6px !important;
+    }
+    .form-options {
+      margin-top: 4px !important;
+      margin-bottom: 12px !important;
+    }
+    .login-submit {
+      margin-top: 12px !important;
+      margin-bottom: 12px !important;
+    }
+    .login-message {
+      margin: 8px 0 !important;
+    }
+    .login-divider {
+      margin: 10px 0 !important;
+    }
+    .register-text {
+      margin: 8px 0 !important;
+      font-size: 14px !important;
+    }
+    .login-footer {
+      margin-top: 12px !important;
+    }
+    /* Loader Overlay Styles */
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .loader-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .loader-spinner {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .spinner-circle {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #1e1e1e;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .spinner-circle:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .spinner-circle:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+      }
+      40% {
+        transform: scale(1);
+      }
+    }
+
+    .loader-text {
+      font-size: 0.95rem;
+      color: #4a5568;
+      font-weight: 500;
+    }
+    @media (max-width: 768px) {
+      .login-wrapper {
+        min-width: auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        min-height: 100vh !important;
+        max-height: none !important;
+        height: auto !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        flex-direction: column !important;
+      }
+      .login-side-panel {
+        display: block !important;
+        min-height: auto !important;
+        max-height: none !important;
+        height: auto !important;
+        padding: 32px 24px 24px !important;
+        border-radius: 0 !important;
+      }
+      .login-side-panel::before {
+        border-radius: 0 !important;
+      }
+      .side-panel-icon {
+        width: 60px !important;
+        height: 60px !important;
+        margin-bottom: 12px !important;
+      }
+      .side-panel-icon i,
+      .side-panel-icon svg {
+        width: 32px !important;
+        height: 32px !important;
+      }
+      .side-panel-content h2 {
+        font-size: 1.5rem !important;
+        margin-bottom: 6px !important;
+      }
+      .side-panel-content > p {
+        font-size: 0.95rem !important;
+        margin-bottom: 0 !important;
+      }
+      .login-features {
+        display: none !important;
+      }
+      .login-box {
+        min-height: auto !important;
+        max-height: none !important;
+        height: auto !important;
+        overflow-y: auto !important;
+        padding: 40px 24px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 0 !important;
+      }
+      .login-header {
+        text-align: center !important;
+        margin-bottom: 28px !important;
+      }
+      .login-logo {
+        margin: 0 auto 16px !important;
+        width: 70px !important;
+        height: 70px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-side-panel {
+        padding: 28px 20px 20px !important;
+      }
+      .side-panel-icon {
+        width: 52px !important;
+        height: 52px !important;
+        margin-bottom: 10px !important;
+      }
+      .side-panel-icon i,
+      .side-panel-icon svg {
+        width: 28px !important;
+        height: 28px !important;
+      }
+      .side-panel-content h2 {
+        font-size: 1.35rem !important;
+      }
+      .side-panel-content > p {
+        font-size: 0.9rem !important;
+      }
+      .login-box {
+        padding: 32px 20px 40px !important;
+      }
+      .login-logo {
+        width: 65px !important;
+        height: 65px !important;
+      }
+      .login-header h1 {
+        font-size: 1.4rem !important;
+      }
+      .login-header p {
+        font-size: 0.85rem !important;
+      }
+    }
+  </style>
+</head>
+<body class="login-body">
+
+  <div class="login-background">
+    <div class="floating-icon icon-1">
+      <i data-lucide="book-open"></i>
+    </div>
+    <div class="floating-icon icon-2">
+      <i data-lucide="graduation-cap"></i>
+    </div>
+    <div class="floating-icon icon-3">
+      <i data-lucide="users"></i>
+    </div>
+    <div class="floating-icon icon-4">
+      <i data-lucide="award"></i>
+    </div>
+  </div>
+
+  <div class="login-wrapper">
+    <div class="login-side-panel">
+      <div class="side-panel-content">
+        <div class="side-panel-icon">
+          <i data-lucide="layout-grid"></i>
+        </div>
+        <h2>Bienvenido a Dashboard</h2>
+        <p>Sistema de Gestión Académica Integral</p>
+        
+        <div class="login-features">
+          <div class="login-feature-item">
+            <div class="feature-icon">
+              <i data-lucide="book-open"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Gestión Académica</h3>
+              <p>Cursos, calificaciones y asistencias</p>
+            </div>
+          </div>
+
+          <div class="login-feature-item">
+            <div class="feature-icon">
+              <i data-lucide="calendar"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Horarios y Calendario</h3>
+              <p>Consulta clases y planifica tu semana</p>
+            </div>
+          </div>
+
+          <div class="login-feature-item">
+            <div class="feature-icon">
+              <i data-lucide="credit-card"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Pagos y Finanzas</h3>
+              <p>Administra tus cuotas y comprobantes</p>
+            </div>
+          </div>
+
+          <div class="login-feature-item">
+            <div class="feature-icon">
+              <i data-lucide="message-square"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Comunicación</h3>
+              <p>Mensajería con profesores y compañeros</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-box">
+      <div class="login-header">
+        <img src="images/loginlogodashboard.png?v=3" alt="Logo Cemi Dashboard" class="login-logo" onclick="window.location.href='index.html'" style="cursor: pointer !important; width: 120px !important; height: 120px !important; margin-bottom: 4px !important; margin-left: auto !important; margin-right: auto !important; display: block !important;">
+        <p>Acceso al panel</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Usuario</label>
+          <div class="input-wrapper input-with-icon">
+            <span class="input-prefix"><i data-lucide="at-sign"></i></span>
+            <input type="text" id="username" placeholder="Ingrese su usuario" required autocomplete="username" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" placeholder="Ingrese su contraseña" required autocomplete="current-password" />
+            <button type="button" class="toggle-password" onclick="togglePassword()">
+              <i data-lucide="eye" id="toggleIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <a href="#" class="forgot-password" onclick="showForgotPassword(event)">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="submit" class="login-submit">
+          <span>Iniciar Sesión</span>
+          <i data-lucide="arrow-right"></i>
+        </button>
+      </form>
+
+      <p id="loginMessage" class="login-message"></p>
+
+      <div class="login-divider">
+        <span>o</span>
+      </div>
+
+      <a href="login-key.html" class="cemikey-link" style="display: flex; align-items: center; justify-content: center; gap: 8px; color: #4a5259; text-decoration: none; font-size: 0.95rem; font-weight: 500; margin-bottom: 16px; transition: color 0.2s;">
+        <i data-lucide="key" style="width: 16px; height: 16px;"></i>
+        Ingresar con mi clave de acceso
+      </a>
+
+      <p class="register-text">
+        ¿No tenés cuenta? <a href="register.html" class="register-link">Registrate aquí</a>
+      </p>
+
+      <div class="login-footer">
+        <a href="index.html" class="back-link">
+          <i data-lucide="arrow-left"></i>
+          Volver al inicio
+        </a>
+        
+        <div class="login-help">
+          <a href="#" onclick="showHelp(event)">
+            <i data-lucide="help-circle"></i>
+            Ayuda
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/script.js"></script>
+  
+  <script>
+    lucide.createIcons();
+
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('session') === 'expired' || urlParams.get('expired') === 'true') {
+        const loginMessage = document.getElementById('loginMessage');
+        if (loginMessage) {
+          loginMessage.style.color = '#dc2626';
+          loginMessage.textContent = 'Tu sesion ha expirado. Por favor, inicia sesion nuevamente.';
+        }
+      }
+    })();
+
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggleIcon');
+      const toggleButton = document.querySelector('.toggle-password');
+      
+      if (passwordInput.type === 'password') {
+        // Animación de cerrar ojo
+        toggleButton.classList.add('eye-closing');
+        
+        setTimeout(() => {
+          passwordInput.type = 'text';
+          
+          // Reemplazar el ícono manualmente sin reinicializar todos
+          const newIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          newIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          newIcon.setAttribute('width', '18');
+          newIcon.setAttribute('height', '18');
+          newIcon.setAttribute('viewBox', '0 0 24 24');
+          newIcon.setAttribute('fill', 'none');
+          newIcon.setAttribute('stroke', 'currentColor');
+          newIcon.setAttribute('stroke-width', '2');
+          newIcon.setAttribute('stroke-linecap', 'round');
+          newIcon.setAttribute('stroke-linejoin', 'round');
+          newIcon.setAttribute('id', 'toggleIcon');
+          newIcon.classList.add('lucide', 'lucide-eye-off');
+          
+          newIcon.innerHTML = '<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"></path><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"></path><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"></path><path d="m2 2 20 20"></path>';
+          
+          toggleIcon.replaceWith(newIcon);
+          toggleButton.classList.remove('eye-closing');
+        }, 200);
+      } else {
+        // Animación de abrir ojo
+        toggleButton.classList.add('eye-opening');
+        
+        setTimeout(() => {
+          passwordInput.type = 'password';
+          
+          // Reemplazar el ícono manualmente sin reinicializar todos
+          const newIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          newIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          newIcon.setAttribute('width', '18');
+          newIcon.setAttribute('height', '18');
+          newIcon.setAttribute('viewBox', '0 0 24 24');
+          newIcon.setAttribute('fill', 'none');
+          newIcon.setAttribute('stroke', 'currentColor');
+          newIcon.setAttribute('stroke-width', '2');
+          newIcon.setAttribute('stroke-linecap', 'round');
+          newIcon.setAttribute('stroke-linejoin', 'round');
+          newIcon.setAttribute('id', 'toggleIcon');
+          newIcon.classList.add('lucide', 'lucide-eye');
+          
+          newIcon.innerHTML = '<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle>';
+          
+          toggleIcon.replaceWith(newIcon);
+          toggleButton.classList.remove('eye-opening');
+        }, 200);
+      }
+    }
+
+    // Show forgot password dialog
+    function showForgotPassword(e) {
+      e.preventDefault();
+      Swal.fire({
+        title: 'Recuperar Contrasena',
+        html: `
+          <div style="text-align: left;">
+            <p style="margin-bottom: 20px; color: #555;">Ingresa el email asociado a tu cuenta. Te enviaremos instrucciones para recuperar tu contrasena.</p>
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px;">
+                Correo electronico
+              </label>
+              <input type="email" id="emailRecuperacion" placeholder="tu@email.com" 
+                     style="width: 100%; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box; transition: border-color 0.2s, box-shadow 0.2s;"
+                     onfocus="this.style.borderColor='#0070F3'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)';"
+                     onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none';">
+            </div>
+          </div>
+        `,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Enviar solicitud',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#0070F3',
+        showLoaderOnConfirm: true,
+        preConfirm: async () => {
+          const email = document.getElementById('emailRecuperacion').value.trim();
+          
+          if (!email) {
+            Swal.showValidationMessage('Por favor ingresa tu email');
+            return false;
+          }
+          
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            Swal.showValidationMessage('Por favor ingresa un email valido');
+            return false;
+          }
+          
+          try {
+            const response = await fetch(`${API_URL}/auth/forgot-password`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+              throw new Error(data.message || 'Error al procesar la solicitud');
+            }
+            
+            return data;
+          } catch (error) {
+            Swal.showValidationMessage(error.message);
+            return false;
+          }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'Solicitud Enviada!',
+            html: `
+              <div style="text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 15px;"></div>
+                <p style="color: #555; margin-bottom: 10px;">Hemos recibido tu solicitud de recuperacion de contrasena.</p>
+                <p style="color: #555;">Un administrador revisara tu solicitud y te enviara tus nuevas credenciales por correo electronico.</p>
+              </div>
+            `,
+            icon: 'success',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#22c55e'
+          });
+        }
+      });
+    }
+
+    // Show help dialog
+    function showHelp(e) {
+      e.preventDefault();
+      Swal.fire({
+        title: '¿Necesitas ayuda?',
+        html: `
+          <div style="text-align: left; padding: 10px;">
+            <p style="margin-bottom: 15px;"><strong>Para iniciar sesión:</strong></p>
+            <ul style="list-style: none; padding: 0;">
+              <li style="margin-bottom: 10px;"> Usa tu usuario registrado</li>
+              <li style="margin-bottom: 10px;"> Ingresa tu contraseña</li>
+              <li style="margin-bottom: 10px;"> Si no tienes cuenta, regístrate primero</li>
+            </ul>
+            <hr style="margin: 20px 0;">
+            <p style="margin-top: 15px;"><strong>Contacto:</strong> contacto@cemi.edu</p>
+          </div>
+        `,
+        icon: 'question',
+        confirmButtonText: 'Cerrar',
+        confirmButtonColor: '#000000'
+      });
+    }
+  </script>
+
+  <!-- Loader Overlay -->
+  <div class="loader-overlay" id="loader">
+    <div class="loader-spinner">
+      <div class="spinner-circle"></div>
+      <div class="spinner-circle"></div>
+      <div class="spinner-circle"></div>
+    </div>
+    <p class="loader-text">Verificando credenciales...</p>
+  </div>
+</body>
+</html>
+
+
+

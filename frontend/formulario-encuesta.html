@@ -1,0 +1,1590 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Formulario de Investigación | Cemi Classroom</title>
+  <link rel="icon" href="images/logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="assets/js/console-manager.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Harvard Palette */
+      --hw-charcoal: #1e1e1e;
+      --hw-graphite: #656f77;
+      --hw-off-white: #f8f9fa;
+      --hw-cream: #f5f5f7;
+      --hw-white: #ffffff;
+      
+      /* Semantic colors */
+      --text-primary: #1e1e1e;
+      --text-secondary: #656f77;
+      --border-color: rgba(101, 111, 119, 0.2);
+      --bg-light: #f8f9fa;
+      --success-color: #2e7d32;
+      
+      /* Animations */
+      --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-bounce: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--hw-white);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .form-header {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+      position: relative;
+    }
+
+    .btn-previous {
+      position: absolute;
+      left: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-smooth);
+      text-decoration: none;
+    }
+
+    .btn-previous:hover {
+      background: var(--hw-cream);
+      border-color: var(--hw-charcoal);
+    }
+
+    .btn-previous.hidden {
+      visibility: hidden;
+    }
+
+    .header-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .header-logo img {
+      height: 32px;
+    }
+
+    .header-logo span {
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      height: 4px;
+      background: #e5e7eb;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--hw-charcoal);
+      transition: width 0.4s var(--ease-smooth);
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Form Container */
+    .form-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 60px 24px 100px;
+      min-height: calc(100vh - 80px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Steps */
+    .step {
+      display: none;
+      animation: fadeIn 0.5s var(--ease-bounce);
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Question Title */
+    .question-number {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .question-number span {
+      font-size: 16px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    .question-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--hw-charcoal);
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .question-title .required {
+      color: #b91c1c;
+    }
+
+    .question-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      margin-bottom: 24px;
+    }
+
+    /* Form Elements */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .form-group label .required {
+      color: #b91c1c;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 16px;
+      color: var(--text-primary);
+      transition: all 0.25s var(--ease-smooth);
+      background: white;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: rgba(147, 161, 173, 0.6);
+      box-shadow: 0 0 0 3px rgba(147, 161, 173, 0.15);
+    }
+
+    .form-input::placeholder {
+      color: #9ca3af;
+    }
+
+    /* Phone Input */
+    .phone-input-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    .country-code {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: white;
+      min-width: 100px;
+      cursor: pointer;
+    }
+
+    .country-code img {
+      width: 24px;
+      height: 16px;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+
+    .phone-input {
+      flex: 1;
+    }
+
+    /* Radio & Checkbox */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .option-item input[type="radio"],
+    .option-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--hw-charcoal);
+      cursor: pointer;
+    }
+
+    .option-item label {
+      font-size: 16px;
+      color: var(--text-primary);
+      cursor: pointer;
+      flex: 1;
+    }
+
+    /* Select */
+    .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 16px;
+      color: var(--text-primary);
+      background: white;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23656f77' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 48px;
+      transition: all 0.25s var(--ease-smooth);
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: rgba(147, 161, 173, 0.6);
+      box-shadow: 0 0 0 3px rgba(147, 161, 173, 0.15);
+    }
+
+    /* Date Input */
+    .date-input {
+      position: relative;
+    }
+
+    .date-input input {
+      padding-right: 48px;
+    }
+
+    .date-input svg {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--hw-graphite);
+      pointer-events: none;
+    }
+
+    /* Consent Section */
+    .consent-box {
+      background: white;
+      padding: 0;
+    }
+
+    .consent-box p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .consent-box ul {
+      margin-left: 20px;
+      margin-bottom: 24px;
+    }
+
+    .consent-box li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .consent-box li ul {
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+
+    .consent-box a {
+      color: var(--hw-charcoal);
+      text-decoration: underline;
+    }
+
+    /* Checkbox list for products */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Navigation Buttons */
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 24px;
+      background: white;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-smooth);
+    }
+
+    .btn-back:hover {
+      background: var(--hw-cream);
+      border-color: var(--hw-charcoal);
+    }
+
+    .btn-back svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Continue Button */
+    .btn-continue {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 32px;
+      background: var(--hw-charcoal);
+      color: white;
+      border: 2px solid var(--hw-charcoal);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-smooth);
+    }
+
+    .btn-continue.solo {
+      margin-top: 32px;
+    }
+
+    .btn-continue:hover {
+      background: transparent;
+      color: var(--hw-charcoal);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(147, 161, 173, 0.25);
+    }
+
+    .btn-continue:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      background: var(--success-color);
+      border-color: var(--success-color);
+    }
+
+    .btn-submit:hover {
+      background: transparent;
+      color: var(--success-color);
+      box-shadow: 0 8px 20px rgba(46, 125, 50, 0.2);
+    }
+
+    /* Success Screen */
+    .success-screen {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .success-logo {
+      margin-bottom: 24px;
+    }
+
+    .success-logo img {
+      height: 80px;
+    }
+
+    .success-logo span {
+      display: block;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .success-title {
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--hw-charcoal);
+      margin-bottom: 12px;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .success-text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    .success-text strong {
+      color: var(--hw-charcoal);
+    }
+
+    .success-email {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .success-close {
+      font-size: 14px;
+      color: var(--hw-graphite);
+      margin-top: 24px;
+    }
+
+    .success-mascot {
+      margin: 32px auto;
+    }
+
+    .success-mascot img {
+      width: 220px;
+      height: auto;
+    }
+
+    .success-close a {
+      color: var(--hw-charcoal);
+    }
+
+    /* Satisfaction Scale */
+    .satisfaction-scale {
+      margin: 24px 0;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .scale-options {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+    }
+
+    .scale-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .scale-option input {
+      display: none;
+    }
+
+    .scale-option span {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.25s var(--ease-smooth);
+      background: white;
+    }
+
+    .scale-option:hover span {
+      border-color: var(--hw-charcoal);
+      color: var(--hw-charcoal);
+      transform: translateY(-2px);
+    }
+
+    .scale-option input:checked + span {
+      background: var(--hw-charcoal);
+      border-color: var(--hw-charcoal);
+      color: white;
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(147, 161, 173, 0.3);
+    }
+
+    .nps-scale .scale-options {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .nps-scale .scale-option span {
+      width: 40px;
+      height: 40px;
+      font-size: 14px;
+    }
+
+    /* Textarea */
+    .form-textarea {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text-primary);
+      resize: vertical;
+      min-height: 120px;
+      transition: all 0.25s var(--ease-smooth);
+      background: white;
+    }
+
+    .form-textarea:focus {
+      outline: none;
+      border-color: rgba(147, 161, 173, 0.6);
+      box-shadow: 0 0 0 3px rgba(147, 161, 173, 0.15);
+    }
+
+    .form-textarea::placeholder {
+      color: #9ca3af;
+    }
+
+    /* Legal text */
+    .legal-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 24px;
+      line-height: 1.6;
+    }
+
+    .legal-text a {
+      color: var(--hw-charcoal);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-content {
+        padding: 12px 16px;
+      }
+
+      .btn-previous {
+        position: static;
+        margin-bottom: 12px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .form-container {
+        padding: 40px 16px 80px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .question-title {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="form-header">
+    <div class="header-content">
+      <a href="#" class="btn-previous hidden" id="btnPrevious" onclick="previousStep(); return false;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Anterior
+      </a>
+      <div class="header-logo">
+        <img src="images/logo.png" alt="CEMI">
+        <span>Investigación de Experiencia de Usuario</span>
+      </div>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+  </header>
+
+  <main class="form-container">
+    
+    <div class="step active" data-step="1">
+      <h2 class="question-title">Ingresa tu información para continuar</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre <span class="required">*</span></label>
+          <input type="text" class="form-input" id="firstName" placeholder="" required>
+        </div>
+        <div class="form-group">
+          <label>Apellido <span class="required">*</span></label>
+          <input type="text" class="form-input" id="lastName" placeholder="" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email <span class="required">*</span></label>
+        <input type="email" class="form-input" id="email" placeholder="" required>
+      </div>
+
+      <div class="form-group">
+        <label>Número de teléfono (para notificaciones)</label>
+        <div class="phone-input-container">
+          <div class="country-code">
+            <img src="https://flagcdn.com/w40/ar.png" alt="Argentina">
+            <span>+54</span>
+          </div>
+          <input type="tel" class="form-input phone-input" id="phone" placeholder="">
+        </div>
+        <p class="legal-text">
+          Al ingresar tu número de teléfono, aceptas recibir mensajes para este evento vía SMS. 
+          Pueden aplicar tarifas de mensajes y datos. Puedes recibir hasta 6 mensajes por evento. 
+          Responde STOP para cancelar, HELP para ayuda. 
+          Aplican la <a href="privacidad.html">Política de Privacidad</a> y los <a href="terminos.html">Términos de Servicio</a> de Cemi
+        </p>
+      </div>
+
+      <button type="button" class="btn-continue solo" onclick="nextStep()">Enviar</button>
+
+      <p class="legal-text">
+        Este sitio está protegido por reCAPTCHA y aplican la <a href="privacidad.html">Política de Privacidad</a> 
+        y los <a href="terminos.html">Términos de Servicio</a> de Cemi
+      </p>
+    </div>
+
+    <div class="step" data-step="2">
+      <div class="question-number">
+        <span>1.</span>
+        <h2 class="question-title">Consentimiento <span class="required">*</span></h2>
+      </div>
+
+      <div class="consent-box">
+        <p>Al marcar "Acepto" abajo, consientes que:</p>
+        <ul>
+          <li>Tu participación en esta encuesta es voluntaria y puedes elegir no enviar tus respuestas a Cemi ("CEMI").</li>
+          <li>Cemi puede recopilar y usar tus respuestas para determinar tu elegibilidad para estudios de investigación de usuario de acuerdo con las <a href="privacidad.html">políticas de privacidad de Cemi</a>.</li>
+          <li>Cemi puede compartir tus respuestas con sus afiliados y contratistas aprobados o agentes para ayudar a realizar estudios de investigación de usuario, basándose en nuestras instrucciones y de acuerdo con las medidas de confidencialidad y seguridad apropiadas.</li>
+          <li>Tu información personal será utilizada para los propósitos descritos a continuación:
+            <ul>
+              <li>Cemi puede usar tu información personal como tu nombre, edad y género, en combinación con tus respuestas, para determinar tu elegibilidad para un estudio de investigación de usuario particular y para enviarte encuestas de seguimiento e invitaciones a estudios de manera continua.</li>
+              <li>Cemi puede usar tu información personal sensible como tu uso de tecnología asistiva para asegurar un grupo de participantes inclusivo. Por favor indica que consientes explícitamente la recopilación y uso de tu información personal sensible para estos propósitos.</li>
+            </ul>
+          </li>
+          <li>Proporcionar esta información o un cuestionario de seguimiento no garantiza que recibirás una invitación a ningún estudio, y recibir una invitación no garantiza que serás elegido para participar.</li>
+          <li>Puedes optar por no ser contactado para estos estudios en cualquier momento usando el enlace al final de nuestros correos.</li>
+          <li>Tienes al menos 18 años (o la mayoría de edad en tu país de residencia).</li>
+        </ul>
+
+        <div class="option-item">
+          <input type="radio" name="consent" id="consent" value="agree" required>
+          <label for="consent">Acepto</label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="3">
+      <div class="question-number">
+        <span>2.</span>
+        <h2 class="question-title">¿Cuál es tu fecha de nacimiento? <span class="required">*</span></h2>
+      </div>
+      <p class="question-subtitle">Para calificar para nuestros estudios, debes tener 18 años o más.</p>
+
+      <div class="form-group">
+        <div class="date-input">
+          <input type="date" class="form-input" id="birthdate" required>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="4">
+      <div class="question-number">
+        <span>3.</span>
+        <h2 class="question-title">¿Cuál es tu género? <span class="required">*</span></h2>
+      </div>
+
+      <div class="options-list">
+        <div class="option-item">
+          <input type="radio" name="gender" id="male" value="male" required>
+          <label for="male">Masculino</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="gender" id="female" value="female">
+          <label for="female">Femenino</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="gender" id="notanswer" value="notanswer">
+          <label for="notanswer">Prefiero no especificar</label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="5">
+      <div class="question-number">
+        <span>4.</span>
+        <h2 class="question-title">¿Dónde vives? <span class="required">*</span></h2>
+      </div>
+
+      <div class="form-group">
+        <select class="form-select" id="country" required>
+          <option value="">Selecciona una opción...</option>
+          <option value="AR">Argentina</option>
+          <option value="BO">Bolivia</option>
+          <option value="BR">Brasil</option>
+          <option value="CL">Chile</option>
+          <option value="CO">Colombia</option>
+          <option value="CR">Costa Rica</option>
+          <option value="CU">Cuba</option>
+          <option value="EC">Ecuador</option>
+          <option value="SV">El Salvador</option>
+          <option value="GT">Guatemala</option>
+          <option value="HN">Honduras</option>
+          <option value="MX">México</option>
+          <option value="NI">Nicaragua</option>
+          <option value="PA">Panamá</option>
+          <option value="PY">Paraguay</option>
+          <option value="PE">Perú</option>
+          <option value="PR">Puerto Rico</option>
+          <option value="DO">República Dominicana</option>
+          <option value="UY">Uruguay</option>
+          <option value="VE">Venezuela</option>
+          <option value="ES">España</option>
+          <option value="US">Estados Unidos</option>
+          <option value="OTHER">Otro</option>
+        </select>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="6">
+      <div class="question-number">
+        <span>5.</span>
+        <h2 class="question-title">¿En qué ciudad vives? <span class="required">*</span></h2>
+      </div>
+
+      <div class="form-group">
+        <input type="text" class="form-input" id="city" placeholder="Ingresa una respuesta" required>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="7">
+      <div class="question-number">
+        <span>6.</span>
+        <h2 class="question-title">¿Cuál es tu Código Postal? <span class="required">*</span></h2>
+      </div>
+
+      <div class="form-group">
+        <input type="text" class="form-input" id="postalCode" placeholder="Ingresa una respuesta" required>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="8">
+      <div class="question-number">
+        <span>7.</span>
+        <h2 class="question-title">¿Con qué frecuencia te gustaría ser contactado para oportunidades de investigación? <span class="required">*</span></h2>
+      </div>
+
+      <div class="options-list">
+        <div class="option-item">
+          <input type="radio" name="frequency" id="monthly" value="monthly" required>
+          <label for="monthly">Mensualmente</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="frequency" id="weekly" value="weekly">
+          <label for="weekly">Semanalmente</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="frequency" id="daily" value="daily">
+          <label for="daily">Diariamente</label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="9">
+      <div class="question-number">
+        <span>8.</span>
+        <h2 class="question-title">¿Trabajas en educación? <span class="required">*</span></h2>
+      </div>
+
+      <div class="options-list">
+        <div class="option-item">
+          <input type="radio" name="education" id="k12" value="k12" required>
+          <label for="k12">Sí, principalmente en educación primaria y secundaria</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="education" id="higher" value="higher">
+          <label for="higher">Sí, principalmente en educación superior</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="education" id="noedu" value="no">
+          <label for="noedu">No</label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="10">
+      <div class="question-number">
+        <span>9.</span>
+        <h2 class="question-title">¿Cuáles de los siguientes productos y servicios de Cemi usas regularmente? Marca todos los que apliquen. <span class="required">*</span></h2>
+      </div>
+      <p class="question-subtitle">Queremos escuchar a todos, usuarios y no usuarios por igual. Por favor responde honestamente.</p>
+
+      <div class="checkbox-grid">
+        <div class="option-item">
+          <input type="checkbox" name="products" id="classroom" value="classroom">
+          <label for="classroom">Cemi Classroom</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="calendar" value="calendar">
+          <label for="calendar">Calendario</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="chat" value="chat">
+          <label for="chat">Chat</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="biblioteca" value="biblioteca">
+          <label for="biblioteca">Biblioteca de Recursos</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="evaluaciones" value="evaluaciones">
+          <label for="evaluaciones">Evaluaciones</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="tareas" value="tareas">
+          <label for="tareas">Tareas</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="anuncios" value="anuncios">
+          <label for="anuncios">Anuncios</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="dashboard" value="dashboard">
+          <label for="dashboard">Dashboard</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="perfil" value="perfil">
+          <label for="perfil">Perfil de Usuario</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="pagos" value="pagos">
+          <label for="pagos">Sistema de Pagos</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="asistencia" value="asistencia">
+          <label for="asistencia">Control de Asistencia</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="reportes" value="reportes">
+          <label for="reportes">Reportes y Estadísticas</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="notificaciones" value="notificaciones">
+          <label for="notificaciones">Notificaciones</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="products" id="ninguno" value="ninguno">
+          <label for="ninguno">Ninguno de los anteriores</label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="11">
+      <div class="question-number">
+        <span>10.</span>
+        <h2 class="question-title">¿Qué tan satisfecho/a estás con tu experiencia general en Cemi? <span class="required">*</span></h2>
+      </div>
+
+      <div class="satisfaction-scale">
+        <div class="scale-labels">
+          <span>Muy insatisfecho</span>
+          <span>Muy satisfecho</span>
+        </div>
+        <div class="scale-options">
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="1" required>
+            <span>1</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="2">
+            <span>2</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="3">
+            <span>3</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="4">
+            <span>4</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="5">
+            <span>5</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="6">
+            <span>6</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="7">
+            <span>7</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="8">
+            <span>8</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="9">
+            <span>9</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="satisfaction" value="10">
+            <span>10</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="12">
+      <div class="question-number">
+        <span>11.</span>
+        <h2 class="question-title">¿Qué áreas crees que necesitan mejoras? Selecciona todas las que apliquen. <span class="required">*</span></h2>
+      </div>
+      <p class="question-subtitle">Tu opinión nos ayuda a priorizar las mejoras del sistema.</p>
+
+      <div class="checkbox-grid">
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_ui" value="interfaz">
+          <label for="imp_ui">Diseño e Interfaz Visual</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_speed" value="velocidad">
+          <label for="imp_speed">Velocidad y Rendimiento</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_nav" value="navegacion">
+          <label for="imp_nav">Navegación y Usabilidad</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_mobile" value="movil">
+          <label for="imp_mobile">Experiencia en Móvil</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_content" value="contenido">
+          <label for="imp_content">Calidad del Contenido</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_comm" value="comunicacion">
+          <label for="imp_comm">Comunicación (notificaciones, mensajes)</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_support" value="soporte">
+          <label for="imp_support">Soporte y Ayuda</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_payment" value="pagos">
+          <label for="imp_payment">Sistema de Pagos</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_calendar" value="calendario">
+          <label for="imp_calendar">Calendario y Horarios</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_resources" value="recursos">
+          <label for="imp_resources">Recursos y Materiales</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_grades" value="calificaciones">
+          <label for="imp_grades">Sistema de Calificaciones</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="improvements" id="imp_none" value="ninguna">
+          <label for="imp_none">Todo funciona bien</label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="13">
+      <div class="question-number">
+        <span>12.</span>
+        <h2 class="question-title">¿Qué funciones te gustaría ver en el futuro? Selecciona las que más te interesen. <span class="required">*</span></h2>
+      </div>
+      <p class="question-subtitle">Estamos planificando nuevas funcionalidades. ¡Ayúdanos a decidir!</p>
+
+      <div class="checkbox-grid">
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_video" value="videoconferencia">
+          <label for="feat_video">Videoconferencias integradas</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_ai" value="ia_tutor">
+          <label for="feat_ai">Tutor con Inteligencia Artificial</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_games" value="gamificacion">
+          <label for="feat_games">Gamificación (puntos, logros, rankings)</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_forum" value="foro">
+          <label for="feat_forum">Foro de Discusión</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_practice" value="practica_oral">
+          <label for="feat_practice">Práctica de Pronunciación</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_cert" value="certificados">
+          <label for="feat_cert">Certificados Digitales</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_progress" value="progreso_detallado">
+          <label for="feat_progress">Seguimiento de Progreso Detallado</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_offline" value="modo_offline">
+          <label for="feat_offline">Modo Sin Conexión</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_social" value="red_social">
+          <label for="feat_social">Red Social entre Estudiantes</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_podcast" value="podcasts">
+          <label for="feat_podcast">Podcasts Educativos</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_flashcards" value="flashcards">
+          <label for="feat_flashcards">Flashcards y Vocabulario</label>
+        </div>
+        <div class="option-item">
+          <input type="checkbox" name="features" id="feat_parent" value="portal_padres">
+          <label for="feat_parent">Portal para Padres/Tutores</label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="14">
+      <div class="question-number">
+        <span>13.</span>
+        <h2 class="question-title">¿Tienes algún comentario adicional o sugerencia para mejorar Cemi?</h2>
+      </div>
+      <p class="question-subtitle">Este campo es opcional pero muy valioso para nosotros.</p>
+
+      <div class="form-group">
+        <textarea class="form-textarea" id="comments" rows="5" placeholder="Escribe aquí tus comentarios, sugerencias o experiencias..."></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue" onclick="nextStep()">Continuar</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="15">
+      <div class="question-number">
+        <span>14.</span>
+        <h2 class="question-title">¿Qué tan probable es que recomiendes Cemi a un amigo o familiar? <span class="required">*</span></h2>
+      </div>
+      <p class="question-subtitle">0 = Nada probable, 10 = Muy probable</p>
+
+      <div class="satisfaction-scale nps-scale">
+        <div class="scale-labels">
+          <span>Nada probable</span>
+          <span>Muy probable</span>
+        </div>
+        <div class="scale-options">
+          <label class="scale-option">
+            <input type="radio" name="nps" value="0" required>
+            <span>0</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="1">
+            <span>1</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="2">
+            <span>2</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="3">
+            <span>3</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="4">
+            <span>4</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="5">
+            <span>5</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="6">
+            <span>6</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="7">
+            <span>7</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="8">
+            <span>8</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="9">
+            <span>9</span>
+          </label>
+          <label class="scale-option">
+            <input type="radio" name="nps" value="10">
+            <span>10</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-back" onclick="previousStep()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Anterior
+        </button>
+        <button type="button" class="btn-continue btn-submit" onclick="submitForm()">Enviar Encuesta</button>
+      </div>
+    </div>
+
+    <div class="step" data-step="16">
+      <div class="success-screen">
+        <div class="success-logo">
+          <img src="images/logo.png" alt="CEMI">
+          <span>Investigación de Experiencia de Usuario</span>
+        </div>
+
+        <h2 class="success-title">¡Ya estás inscrito! Bienvenido a la Investigación de Usuario de Cemi</h2>
+        <p class="success-text">Muchas gracias por tomarte el tiempo de contarnos sobre ti.</p>
+
+        <p class="success-text">
+          <strong>¿Qué sigue?</strong><br>
+          Ahora que sabemos un poco sobre ti, tu perfil está oficialmente activo en nuestro sistema. 
+          Lo estaremos comparando con todos nuestros próximos estudios para encontrar la combinación perfecta.
+        </p>
+
+        <p class="success-text">
+          Mantén un ojo en tu bandeja de entrada. Cuando llegue el estudio adecuado, recibirás una invitación de 
+          <span class="success-email">investigacion@Cemiedu.ar</span>.
+        </p>
+
+        <p class="success-text">¡Estamos emocionados de escuchar tus ideas pronto!</p>
+
+        <div class="success-mascot">
+          <img src="images/32.gif" alt="Celebración">
+        </div>
+
+        <p class="success-close">
+          <a href="classroom.html">(Puedes cerrar esta ventana ahora)</a>
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let currentStep = 1;
+    const totalSteps = 16;
+    
+    // Detectar API URL
+    const API_URL = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3000/api'
+      : '/api';
+
+    function updateProgress() {
+      const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+      
+      // Show/hide previous button
+      const btnPrevious = document.getElementById('btnPrevious');
+      if (currentStep > 1 && currentStep < totalSteps) {
+        btnPrevious.classList.remove('hidden');
+      } else {
+        btnPrevious.classList.add('hidden');
+      }
+    }
+
+    function showStep(step) {
+      // Hide all steps
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      
+      // Show current step
+      const currentStepEl = document.querySelector(`.step[data-step="${step}"]`);
+      if (currentStepEl) {
+        currentStepEl.classList.add('active');
+      }
+      
+      updateProgress();
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validateStep(step) {
+      const stepEl = document.querySelector(`.step[data-step="${step}"]`);
+      const requiredInputs = stepEl.querySelectorAll('[required]');
+      
+      for (let input of requiredInputs) {
+        if (input.type === 'radio') {
+          const name = input.name;
+          const checked = stepEl.querySelector(`input[name="${name}"]:checked`);
+          if (!checked) {
+            alert('Por favor completa todos los campos requeridos');
+            return false;
+          }
+        } else if (!input.value.trim()) {
+          alert('Por favor completa todos los campos requeridos');
+          input.focus();
+          return false;
+        }
+      }
+      
+      // Special validation for email
+      if (step === 1) {
+        const email = document.getElementById('email').value;
+        if (!email.includes('@')) {
+          alert('Por favor ingresa un email válido');
+          return false;
+        }
+      }
+      
+      // Validate age (must be 18+)
+      if (step === 3) {
+        const birthdate = new Date(document.getElementById('birthdate').value);
+        const today = new Date();
+        let age = today.getFullYear() - birthdate.getFullYear();
+        const monthDiff = today.getMonth() - birthdate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+          age--;
+        }
+        if (age < 18) {
+          alert('Debes tener al menos 18 años para participar');
+          return false;
+        }
+      }
+      
+      // Validate checkboxes for improvements (step 12)
+      if (step === 12) {
+        const improvementsChecked = document.querySelectorAll('input[name="improvements"]:checked');
+        if (improvementsChecked.length === 0) {
+          alert('Por favor selecciona al menos una opción');
+          return false;
+        }
+      }
+      
+      // Validate checkboxes for features (step 13)
+      if (step === 13) {
+        const featuresChecked = document.querySelectorAll('input[name="features"]:checked');
+        if (featuresChecked.length === 0) {
+          alert('Por favor selecciona al menos una opción');
+          return false;
+        }
+      }
+      
+      return true;
+    }
+
+    function nextStep() {
+      if (validateStep(currentStep)) {
+        if (currentStep < totalSteps) {
+          currentStep++;
+          showStep(currentStep);
+        }
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    }
+
+    function collectFormData() {
+      // Obtener productos seleccionados
+      const productsChecked = document.querySelectorAll('input[name="products"]:checked');
+      const products = Array.from(productsChecked).map(cb => cb.value);
+      
+      // Obtener áreas a mejorar
+      const improvementsChecked = document.querySelectorAll('input[name="improvements"]:checked');
+      const improvements = Array.from(improvementsChecked).map(cb => cb.value);
+      
+      // Obtener funciones futuras
+      const featuresChecked = document.querySelectorAll('input[name="features"]:checked');
+      const features = Array.from(featuresChecked).map(cb => cb.value);
+      
+      return {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim() || null,
+        birthdate: document.getElementById('birthdate').value,
+        gender: document.querySelector('input[name="gender"]:checked')?.value,
+        country: document.getElementById('country').value,
+        city: document.getElementById('city').value.trim(),
+        postalCode: document.getElementById('postalCode').value.trim(),
+        frequency: document.querySelector('input[name="frequency"]:checked')?.value,
+        education: document.querySelector('input[name="education"]:checked')?.value,
+        products: products,
+        satisfaction: document.querySelector('input[name="satisfaction"]:checked')?.value,
+        improvements: improvements,
+        features: features,
+        comments: document.getElementById('comments').value.trim() || null,
+        nps: document.querySelector('input[name="nps"]:checked')?.value,
+        // Datos del usuario logueado (si existe)
+        userId: localStorage.getItem('id_usuario') || localStorage.getItem('id_alumno') || localStorage.getItem('id_profesor') || null,
+        userRole: localStorage.getItem('rol') || null,
+        userName: localStorage.getItem('nombre') || null
+      };
+    }
+
+    async function submitForm() {
+      if (!validateStep(currentStep)) return;
+
+      // Mostrar loading
+      const submitBtn = document.querySelector('.btn-submit');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Enviando...';
+      submitBtn.disabled = true;
+
+      try {
+        const formData = collectFormData();
+        
+        // Obtener token de autenticación
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Debes iniciar sesión para enviar la encuesta');
+        }
+        
+        const response = await fetch(`${API_URL}/investigacion/encuesta`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          // Éxito - mostrar pantalla final
+          currentStep = 16;
+          showStep(currentStep);
+          console.log(' Encuesta enviada:', result.encuesta);
+        } else {
+          throw new Error(result.error || 'Error al enviar la encuesta');
+        }
+      } catch (error) {
+        console.error(' Error:', error);
+        alert('Hubo un error al enviar la encuesta. Por favor intenta nuevamente.');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    }
+
+    // Pre-llenar datos si el usuario está logueado
+    function prefillUserData() {
+      const nombre = localStorage.getItem('nombre');
+      const email = localStorage.getItem('email');
+      
+      if (nombre) {
+        const parts = nombre.split(' ');
+        if (parts.length >= 2) {
+          document.getElementById('firstName').value = parts[0];
+          document.getElementById('lastName').value = parts.slice(1).join(' ');
+        } else {
+          document.getElementById('firstName').value = nombre;
+        }
+      }
+      
+      if (email) {
+        document.getElementById('email').value = email;
+      }
+    }
+
+    // Initialize
+    updateProgress();
+    prefillUserData();
+  </script>
+</body>
+</html>
+
+
+

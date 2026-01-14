@@ -1,0 +1,726 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e1e1e">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>¿Qué es Dashboard? - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <link rel="stylesheet" href="assets/css/info-pages.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="info-page">
+
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolong.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar"><i data-lucide="search"></i></button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda"><i data-lucide="x"></i></button>
+          </div>
+          <div class="harvard-search-quicklink">
+            <span>QUICK LINKS</span>
+            <a href="a-to-z.html">Ir a Índice A-Z</a>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z"><span>A-Z</span></button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger"><span></span><span></span><span></span></div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    <div class="mega-menu-bg-image" id="megaMenuBgImage"><img src="images/STOCK1.jpg" alt=""></div>
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo"><img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long"></a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+    </div>
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva. Tareas, calificaciones, anuncios y más.</p>
+          <div class="mega-sub-links">
+            <a href="info-classroom.html" class="mega-sub-link">¿Qué es Classroom?</a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa de alumnos, profesores, cursos, pagos y estadísticas.</p>
+          <div class="mega-sub-links">
+            <a href="info-dashboard.html" class="mega-sub-link">¿Qué es Dashboard?</a>
+            <a href="index.html#modulos" class="mega-sub-link">Ver Módulos</a>
+          </div>
+        </div>
+        <div class="mega-nav-secondary" id="panel-nosotros"><a href="index.html#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a><p class="mega-sub-description">Conoce nuestra historia y el equipo detrás de Cemi.</p><div class="mega-sub-links"><a href="index.html#historia" class="mega-sub-link">Nuestra Historia</a><a href="index.html#filosofia" class="mega-sub-link">Misión y Visión</a></div></div>
+        <div class="mega-nav-secondary" id="panel-soporte"><a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a><p class="mega-sub-description">¿Necesitas ayuda? Estamos aquí para asistirte.</p><div class="mega-sub-links"><a href="index.html#faq" class="mega-sub-link">Preguntas Frecuentes</a><a href="status.html" class="mega-sub-link">Estado del Sistema</a></div></div>
+        <div class="mega-nav-secondary" id="panel-seguridad"><a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a><p class="mega-sub-description">Reporta vulnerabilidades de forma segura.</p><div class="mega-sub-links"><a href="cemi-seguridad.html" class="mega-sub-link">Centro de Seguridad</a><a href="privacidad.html" class="mega-sub-link">Privacidad</a></div></div>
+        <div class="mega-nav-secondary" id="panel-recursos"><a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a><p class="mega-sub-description">Documentación y descargas.</p><div class="mega-sub-links"><a href="documentacion.html" class="mega-sub-link">Documentación</a></div></div>
+        <div class="mega-nav-secondary" id="panel-accesibilidad"><a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a><p class="mega-sub-description">Herramientas de acceso.</p><div class="mega-sub-links"><a href="login-selector.html" class="mega-sub-link">Acceso Público</a><a href="login-admin.html" class="mega-sub-link">Acceso Administrativo</a></div></div>
+      </div>
+    </div>
+    <div class="mega-menu-footer"><div class="mega-footer-inner"><span class="mega-footer-label">Enlaces rápidos <span class="chevron">›</span></span><div class="mega-footer-links"><a href="terminos.html" class="mega-footer-link">Términos</a><a href="privacidad.html" class="mega-footer-link">Privacidad</a><a href="ayuda.html" class="mega-footer-link">Ayuda</a></div></div></div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="info-hero">
+    <div class="floating-icons">
+      <div class="floating-icon"><i data-lucide="users"></i></div>
+      <div class="floating-icon"><i data-lucide="bar-chart-2"></i></div>
+      <div class="floating-icon"><i data-lucide="credit-card"></i></div>
+      <div class="floating-icon"><i data-lucide="settings"></i></div>
+      <div class="floating-icon"><i data-lucide="calendar"></i></div>
+      <div class="floating-icon"><i data-lucide="shield-check"></i></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge"><i data-lucide="layout-dashboard"></i><span>Sistema de Gestión</span></div>
+      <h1 class="hero-title" style="color: white; text-align: center;">¿Qué es Dashboard?</h1>
+      <p class="hero-subtitle" style="text-align: center;">El centro de control integral para la gestión académica, administrativa y financiera de tu institución educativa. Todo lo que necesitas en un solo lugar.</p>
+      <a href="login.html" class="hero-cta"><span>Acceder al Dashboard</span><i data-lucide="arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="info-main">
+    
+    <!-- ¿Qué es? Section -->
+    <section class="info-section" id="que-es">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="info"></i>Introducción</div>
+        <h2 class="section-title">Sistema de Gestión Integral</h2>
+        <p class="section-subtitle">Dashboard es la herramienta central de CEMI para administrar todos los aspectos de la institución educativa de manera eficiente y organizada.</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="users"></i></div>
+          <h3 class="feature-title">Gestión de Usuarios</h3>
+          <p class="feature-description">Administra alumnos, profesores y personal administrativo. Control completo de perfiles, permisos y datos personales.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Registro y edición de usuarios</li>
+            <li><i data-lucide="check"></i>Asignación de roles y permisos</li>
+            <li><i data-lucide="check"></i>Historial de actividad</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="book-open"></i></div>
+          <h3 class="feature-title">Gestión Académica</h3>
+          <p class="feature-description">Organiza cursos, materias, horarios y asignaciones. Mantén el control total del programa educativo.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Creación de cursos y materias</li>
+            <li><i data-lucide="check"></i>Asignación de profesores</li>
+            <li><i data-lucide="check"></i>Gestión de horarios</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="credit-card"></i></div>
+          <h3 class="feature-title">Control Financiero</h3>
+          <p class="feature-description">Gestiona pagos, cuotas, facturación y reportes financieros. Mantén las finanzas organizadas.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Registro de pagos</li>
+            <li><i data-lucide="check"></i>Generación de recibos</li>
+            <li><i data-lucide="check"></i>Reportes de ingresos</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="file-text"></i></div>
+          <h3 class="feature-title">Inscripciones</h3>
+          <p class="feature-description">Proceso de inscripción simplificado. Desde la solicitud hasta la confirmación, todo en un flujo optimizado.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Formularios digitales</li>
+            <li><i data-lucide="check"></i>Seguimiento de solicitudes</li>
+            <li><i data-lucide="check"></i>Confirmación automática</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="bar-chart-2"></i></div>
+          <h3 class="feature-title">Estadísticas y Reportes</h3>
+          <p class="feature-description">Visualiza datos en tiempo real. Gráficos, métricas y análisis para tomar mejores decisiones.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Dashboard analítico</li>
+            <li><i data-lucide="check"></i>Exportación de datos</li>
+            <li><i data-lucide="check"></i>Reportes personalizados</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="bell"></i></div>
+          <h3 class="feature-title">Notificaciones</h3>
+          <p class="feature-description">Sistema de alertas y comunicación. Mantén a todos informados sobre eventos importantes.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Alertas en tiempo real</li>
+            <li><i data-lucide="check"></i>Notificaciones por email</li>
+            <li><i data-lucide="check"></i>Centro de mensajes</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section info-section">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Alumnos Activos</div>
+          <div class="stat-desc">Gestionados en la plataforma</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Profesores</div>
+          <div class="stat-desc">Utilizando el sistema</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">30+</div>
+          <div class="stat-label">Cursos</div>
+          <div class="stat-desc">Disponibles actualmente</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">99.9%</div>
+          <div class="stat-label">Uptime</div>
+          <div class="stat-desc">Disponibilidad garantizada</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roles Section -->
+    <section class="info-section" id="roles">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="users"></i>Usuarios</div>
+        <h2 class="section-title">¿Quién puede usar Dashboard?</h2>
+        <p class="section-subtitle">Dashboard ofrece paneles especializados según el rol de cada usuario, con funcionalidades adaptadas a sus necesidades específicas.</p>
+      </div>
+      
+      <div class="roles-accordion">
+        <!-- Administradores -->
+        <div class="role-accordion-item">
+          <button class="role-accordion-header">
+            <div class="role-header-content">
+              <div class="role-avatar"><i data-lucide="shield"></i></div>
+              <div class="role-header-text" style="text-align: center;">
+                <h3 class="role-title">Administradores</h3>
+                <p class="role-description">Control total del sistema y la institución</p>
+              </div>
+            </div>
+            <div class="role-toggle"><i data-lucide="chevron-down"></i></div>
+          </button>
+          <div class="role-accordion-content">
+            <div class="role-content-inner">
+              <div class="role-intro">
+                <p>Como administrador, tienes acceso completo a todas las funcionalidades del sistema. Puedes gestionar usuarios, configurar parámetros, supervisar finanzas y generar reportes globales de la institución.</p>
+              </div>
+              <div class="role-capabilities">
+                <h4><i data-lucide="zap"></i>Capacidades Completas</h4>
+                <div class="capabilities-grid">
+                  <div class="capability-item">
+                    <i data-lucide="users"></i>
+                    <div>
+                      <strong>Gestión de usuarios</strong>
+                      <span>Crea, edita y elimina cuentas de alumnos, profesores y personal</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="settings"></i>
+                    <div>
+                      <strong>Configuración del sistema</strong>
+                      <span>Ajusta parámetros globales, idiomas y preferencias</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="bar-chart-2"></i>
+                    <div>
+                      <strong>Reportes y estadísticas</strong>
+                      <span>Visualiza métricas de toda la institución en tiempo real</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="credit-card"></i>
+                    <div>
+                      <strong>Control financiero</strong>
+                      <span>Gestiona pagos, cuotas, recibos y reportes de ingresos</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="book-open"></i>
+                    <div>
+                      <strong>Gestión académica</strong>
+                      <span>Administra cursos, materias, horarios y asignaciones</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="file-search"></i>
+                    <div>
+                      <strong>Auditoría y logs</strong>
+                      <span>Revisa el historial de actividades del sistema</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="role-tip">
+                <i data-lucide="lightbulb"></i>
+                <p><strong>Tip:</strong> Usa el panel de estadísticas para obtener una visión general del rendimiento institucional y tomar decisiones basadas en datos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Profesores -->
+        <div class="role-accordion-item">
+          <button class="role-accordion-header">
+            <div class="role-header-content">
+              <div class="role-avatar"><i data-lucide="user-check"></i></div>
+              <div class="role-header-text" style="text-align: center;">
+                <h3 class="role-title">Profesores</h3>
+                <p class="role-description">Herramientas para gestionar sus clases</p>
+              </div>
+            </div>
+            <div class="role-toggle"><i data-lucide="chevron-down"></i></div>
+          </button>
+          <div class="role-accordion-content">
+            <div class="role-content-inner">
+              <div class="role-intro">
+                <p>Como profesor, tienes acceso a herramientas diseñadas para facilitar la gestión de tus cursos. Desde el Dashboard puedes ver tus asignaciones, gestionar calificaciones y mantener comunicación con tus alumnos.</p>
+              </div>
+              <div class="role-capabilities">
+                <h4><i data-lucide="zap"></i>Herramientas Disponibles</h4>
+                <div class="capabilities-grid">
+                  <div class="capability-item">
+                    <i data-lucide="book"></i>
+                    <div>
+                      <strong>Cursos asignados</strong>
+                      <span>Visualiza todos los cursos donde impartes clases</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="star"></i>
+                    <div>
+                      <strong>Gestión de calificaciones</strong>
+                      <span>Registra y edita notas de tus alumnos fácilmente</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="clipboard-check"></i>
+                    <div>
+                      <strong>Control de asistencia</strong>
+                      <span>Toma lista y genera reportes de asistencia</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="graduation-cap"></i>
+                    <div>
+                      <strong>Acceso a Classroom</strong>
+                      <span>Enlace directo al aula virtual de cada curso</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="message-square"></i>
+                    <div>
+                      <strong>Comunicación</strong>
+                      <span>Envía mensajes y notificaciones a tus alumnos</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="calendar"></i>
+                    <div>
+                      <strong>Horarios y calendario</strong>
+                      <span>Consulta tu agenda de clases y eventos</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="role-tip">
+                <i data-lucide="lightbulb"></i>
+                <p><strong>Tip:</strong> Desde Dashboard puedes acceder rápidamente a Classroom para gestionar tareas, recursos y comunicarte con tus alumnos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Alumnos -->
+        <div class="role-accordion-item">
+          <button class="role-accordion-header">
+            <div class="role-header-content">
+              <div class="role-avatar"><i data-lucide="graduation-cap"></i></div>
+              <div class="role-header-text" style="text-align: center;">
+                <h3 class="role-title">Alumnos</h3>
+                <p class="role-description">Acceso a su información académica</p>
+              </div>
+            </div>
+            <div class="role-toggle"><i data-lucide="chevron-down"></i></div>
+          </button>
+          <div class="role-accordion-content">
+            <div class="role-content-inner">
+              <div class="role-intro">
+                <p>Como alumno, Dashboard es tu centro de información académica. Aquí puedes consultar tus calificaciones, revisar tu asistencia, ver el estado de tus pagos y acceder directamente al Classroom.</p>
+              </div>
+              <div class="role-capabilities">
+                <h4><i data-lucide="zap"></i>Todo lo que puedes hacer</h4>
+                <div class="capabilities-grid">
+                  <div class="capability-item">
+                    <i data-lucide="award"></i>
+                    <div>
+                      <strong>Consultar calificaciones</strong>
+                      <span>Revisa tus notas actualizadas de todos los cursos</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="calendar-check"></i>
+                    <div>
+                      <strong>Historial de asistencia</strong>
+                      <span>Verifica tu registro de asistencia por materia</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="receipt"></i>
+                    <div>
+                      <strong>Estado de pagos</strong>
+                      <span>Consulta cuotas pendientes y pagos realizados</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="graduation-cap"></i>
+                    <div>
+                      <strong>Acceso a Classroom</strong>
+                      <span>Entra al aula virtual de tus cursos</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="calendar"></i>
+                    <div>
+                      <strong>Calendario de eventos</strong>
+                      <span>Mantente informado de fechas importantes</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="bell"></i>
+                    <div>
+                      <strong>Notificaciones</strong>
+                      <span>Recibe alertas sobre tareas, pagos y anuncios</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="role-tip">
+                <i data-lucide="lightbulb"></i>
+                <p><strong>Tip:</strong> Activa las notificaciones para recibir alertas cuando se publiquen calificaciones o tengas pagos próximos a vencer.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Steps Section -->
+    <section class="info-section" id="como-empezar">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="rocket"></i>Primeros Pasos</div>
+        <h2 class="section-title">¿Cómo empezar?</h2>
+        <p class="section-subtitle">Sigue estos simples pasos para comenzar a usar Dashboard y aprovechar todas sus funcionalidades.</p>
+      </div>
+      
+      <div class="steps-container">
+        <div class="steps-line"></div>
+        
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Recibe tus credenciales</h4>
+            <p>El administrador de tu institución te proporcionará un usuario y contraseña. Revisa tu correo electrónico para obtener los datos de acceso iniciales.</p>
+          </div>
+        </div>
+        
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Inicia sesión</h4>
+            <p>Accede a la página de login y utiliza tus credenciales. El sistema detectará automáticamente tu rol y te dirigirá al panel correspondiente.</p>
+          </div>
+        </div>
+        
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Configura tu perfil</h4>
+            <p>Completa tu información personal, agrega una foto de perfil y configura tus preferencias de notificaciones para una experiencia personalizada.</p>
+          </div>
+        </div>
+        
+        <div class="step-item">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h4>Explora el panel</h4>
+            <p>Familiarízate con las diferentes secciones del dashboard. Cada módulo está diseñado para ser intuitivo y fácil de usar.</p>
+          </div>
+        </div>
+        
+        <div class="step-item">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h4>Comienza a trabajar</h4>
+            <p>¡Ya estás listo! Utiliza las herramientas disponibles según tu rol. Si tienes dudas, consulta la sección de ayuda o contacta a soporte.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="info-section" id="faq">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="help-circle"></i>FAQ</div>
+        <h2 class="section-title">Preguntas Frecuentes</h2>
+        <p class="section-subtitle">Resuelve tus dudas más comunes sobre Dashboard.</p>
+      </div>
+      
+      <div class="faq-container">
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Cómo recupero mi contraseña si la olvidé?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">En la página de inicio de sesión, haz clic en "¿Olvidaste tu contraseña?". Ingresa tu correo electrónico y recibirás un enlace para restablecer tu contraseña. El enlace es válido por 24 horas.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Puedo acceder desde mi celular?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">¡Sí! Dashboard es completamente responsivo y funciona perfectamente en smartphones y tablets. Además, contamos con una aplicación móvil para Android que puedes descargar desde nuestra página.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Cuál es la diferencia entre Dashboard y Classroom?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">Dashboard es el sistema de gestión administrativa (usuarios, pagos, inscripciones, estadísticas), mientras que Classroom es el aula virtual donde ocurre la interacción académica (tareas, materiales, comunicación profesor-alumno). Ambos sistemas están integrados.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Cómo actualizo mi información personal?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">Accede a tu perfil haciendo clic en tu nombre o avatar en la esquina superior derecha. Desde ahí podrás editar tu información personal, cambiar tu foto de perfil y actualizar tus preferencias.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿El sistema guarda mis datos de forma segura?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">Absolutamente. Utilizamos encriptación de datos, conexiones seguras HTTPS, y cumplimos con las normativas de protección de datos. Tus datos personales están protegidos y solo accesibles por personal autorizado.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Puedo exportar mis calificaciones o reportes?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">Sí, el sistema permite exportar datos en formato PDF y Excel. Los profesores y administradores pueden generar reportes detallados, y los alumnos pueden descargar sus boletas de calificaciones.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Help Section -->
+    <section class="info-section" id="ayuda">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="life-buoy"></i>Soporte</div>
+        <h2 class="section-title">¿Necesitas ayuda?</h2>
+        <p class="section-subtitle">Encuentra la asistencia que necesitas para resolver cualquier duda o problema.</p>
+      </div>
+      
+      <div class="help-grid">
+        <a href="ayuda.html" class="help-card">
+          <div class="help-content"><h4>Centro de Ayuda</h4><p>Guías completas y tutoriales paso a paso</p></div>
+        </a>
+        <a href="comunidad-cemi.html" class="help-card">
+          <div class="help-content"><h4>Comunidad CEMI</h4><p>Pregunta y comparte con otros usuarios</p></div>
+        </a>
+        <a href="mailto:soporte@cemi.edu" class="help-card">
+          <div class="help-content"><h4>Contacto Directo</h4><p>soporte@cemi.edu</p></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="cta-content">
+        <h2 class="cta-title">¿Listo para comenzar?</h2>
+        <p class="cta-subtitle">Accede al Dashboard y descubre todas las herramientas que tenemos para ti.</p>
+        <div class="cta-buttons">
+          <a href="login.html" class="cta-btn cta-btn-primary"><i data-lucide="log-in"></i><span>Ir al Dashboard</span></a>
+          <a href="info-classroom.html" class="cta-btn cta-btn-secondary"><i data-lucide="graduation-cap"></i><span>Conocer Classroom</span></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo"><img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long"></div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <a href="register.html" class="footer-cta-link"><i data-lucide="user-plus"></i> Registrarse</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <div class="footer-links-bottom">
+        <a href="terminos.html">Términos</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop"><i data-lucide="chevron-up"></i></button>
+
+  <script src="assets/js/harvard-menu.js"></script>
+  <script>
+    lucide.createIcons();
+    
+    // Scroll reveal with staggered animations
+    const sections = document.querySelectorAll('.info-section');
+    const featureCards = document.querySelectorAll('.feature-card');
+    const statItems = document.querySelectorAll('.stat-item');
+    const stepItems = document.querySelectorAll('.step-item');
+    
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+    
+    sections.forEach(s => sectionObserver.observe(s));
+    
+    // Feature cards staggered animation
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('animate-in');
+          }, index * 100);
+        }
+      });
+    }, observerOptions);
+    
+    featureCards.forEach(card => cardObserver.observe(card));
+    
+    // Stats counter animation
+    const animateValue = (element, start, end, duration) => {
+      const startTime = performance.now();
+      const isNumber = !isNaN(end);
+      
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        
+        if (isNumber) {
+          const current = Math.floor(start + (end - start) * easeOut);
+          element.textContent = current + (element.dataset.suffix || '');
+        }
+        
+        if (progress < 1) requestAnimationFrame(animate);
+      };
+      
+      requestAnimationFrame(animate);
+    };
+    
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+          entry.target.classList.add('counted');
+          const numberEl = entry.target.querySelector('.stat-number');
+          const text = numberEl.textContent;
+          const match = text.match(/(\d+)/);
+          if (match) {
+            const num = parseInt(match[1]);
+            numberEl.dataset.suffix = text.replace(match[1], '');
+            animateValue(numberEl, 0, num, 2000);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    statItems.forEach(item => statsObserver.observe(item));
+    
+    // FAQ Accordion
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.querySelector('.faq-question').addEventListener('click', () => {
+        const wasActive = item.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+        if (!wasActive) item.classList.add('active');
+      });
+    });
+    
+    // Role Accordion
+    document.querySelectorAll('.role-accordion-item').forEach(item => {
+      item.querySelector('.role-accordion-header').addEventListener('click', () => {
+        const wasActive = item.classList.contains('active');
+        document.querySelectorAll('.role-accordion-item').forEach(i => i.classList.remove('active'));
+        if (!wasActive) {
+          item.classList.add('active');
+          // Re-render icons after animation
+          setTimeout(() => lucide.createIcons(), 100);
+        }
+      });
+    });
+    
+    // Back to top
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 500);
+    });
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

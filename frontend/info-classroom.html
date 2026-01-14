@@ -1,0 +1,654 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e1e1e">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>¿Qué es Classroom? - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <link rel="stylesheet" href="assets/css/info-pages.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="info-page">
+
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolong.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar"><i data-lucide="search"></i></button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda"><i data-lucide="x"></i></button>
+          </div>
+          <div class="harvard-search-quicklink">
+            <span>QUICK LINKS</span>
+            <a href="a-to-z.html">Ir a Índice A-Z</a>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z"><span>A-Z</span></button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger"><span></span><span></span><span></span></div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    <div class="mega-menu-bg-image" id="megaMenuBgImage"><img src="images/STOCK1.jpg" alt=""></div>
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo"><img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long"></a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </span>
+      </button>
+    </div>
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva. Tareas, calificaciones, anuncios y más.</p>
+          <div class="mega-sub-links">
+            <a href="info-classroom.html" class="mega-sub-link">¿Qué es Classroom?</a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa de alumnos, profesores, cursos, pagos y estadísticas.</p>
+          <div class="mega-sub-links">
+            <a href="info-dashboard.html" class="mega-sub-link">¿Qué es Dashboard?</a>
+            <a href="index.html#modulos" class="mega-sub-link">Ver Módulos</a>
+          </div>
+        </div>
+        <div class="mega-nav-secondary" id="panel-nosotros"><a href="index.html#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a><p class="mega-sub-description">Conoce nuestra historia y el equipo detrás de Cemi.</p><div class="mega-sub-links"><a href="index.html#historia" class="mega-sub-link">Nuestra Historia</a><a href="index.html#filosofia" class="mega-sub-link">Misión y Visión</a></div></div>
+        <div class="mega-nav-secondary" id="panel-soporte"><a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a><p class="mega-sub-description">¿Necesitas ayuda? Estamos aquí para asistirte.</p><div class="mega-sub-links"><a href="index.html#faq" class="mega-sub-link">Preguntas Frecuentes</a><a href="status.html" class="mega-sub-link">Estado del Sistema</a></div></div>
+        <div class="mega-nav-secondary" id="panel-seguridad"><a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a><p class="mega-sub-description">Reporta vulnerabilidades de forma segura.</p><div class="mega-sub-links"><a href="cemi-seguridad.html" class="mega-sub-link">Centro de Seguridad</a><a href="privacidad.html" class="mega-sub-link">Privacidad</a></div></div>
+        <div class="mega-nav-secondary" id="panel-recursos"><a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a><p class="mega-sub-description">Documentación y descargas.</p><div class="mega-sub-links"><a href="documentacion.html" class="mega-sub-link">Documentación</a></div></div>
+        <div class="mega-nav-secondary" id="panel-accesibilidad"><a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a><p class="mega-sub-description">Herramientas de acceso.</p><div class="mega-sub-links"><a href="login-selector.html" class="mega-sub-link">Acceso Público</a><a href="login-admin.html" class="mega-sub-link">Acceso Administrativo</a></div></div>
+      </div>
+    </div>
+    <div class="mega-menu-footer"><div class="mega-footer-inner"><span class="mega-footer-label">Enlaces rápidos <span class="chevron">›</span></span><div class="mega-footer-links"><a href="terminos.html" class="mega-footer-link">Términos</a><a href="privacidad.html" class="mega-footer-link">Privacidad</a><a href="ayuda.html" class="mega-footer-link">Ayuda</a></div></div></div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="info-hero">
+    <div class="floating-icons">
+      <div class="floating-icon"><i data-lucide="file-text"></i></div>
+      <div class="floating-icon"><i data-lucide="book-open"></i></div>
+      <div class="floating-icon"><i data-lucide="message-circle"></i></div>
+      <div class="floating-icon"><i data-lucide="award"></i></div>
+      <div class="floating-icon"><i data-lucide="folder"></i></div>
+      <div class="floating-icon"><i data-lucide="video"></i></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge"><i data-lucide="graduation-cap"></i><span>Aula Virtual</span></div>
+      <h1 class="hero-title" style="color: white; text-align: center;">¿Qué es Classroom?</h1>
+      <p class="hero-subtitle" style="text-align: center;">El aula virtual más completa para la interacción entre profesores y alumnos. Tareas, recursos, comunicación y calificaciones en un solo lugar diseñado para el aprendizaje moderno.</p>
+      <a href="classroom-login.html" class="hero-cta"><span>Acceder al Classroom</span><i data-lucide="arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="info-main">
+    
+    <!-- ¿Qué es? Section -->
+    <section class="info-section" id="que-es">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="info"></i>Introducción</div>
+        <h2 class="section-title">Tu Espacio de Aprendizaje Digital</h2>
+        <p class="section-subtitle">Classroom es la plataforma de aprendizaje virtual de CEMI que conecta a profesores y alumnos en un espacio digital interactivo y colaborativo.</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="clipboard-list"></i></div>
+          <h3 class="feature-title">Tareas y Entregas</h3>
+          <p class="feature-description">Sistema completo de asignación y entrega de trabajos. Los profesores crean tareas con instrucciones claras y fechas límite.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Subida de archivos múltiples</li>
+            <li><i data-lucide="check"></i>Fechas límite automáticas</li>
+            <li><i data-lucide="check"></i>Retroalimentación detallada</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="megaphone"></i></div>
+          <h3 class="feature-title">Anuncios y Comunicados</h3>
+          <p class="feature-description">Mantente informado con las últimas novedades del curso. Los profesores publican información importante en tiempo real.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Notificaciones instantáneas</li>
+            <li><i data-lucide="check"></i>Comentarios y preguntas</li>
+            <li><i data-lucide="check"></i>Historial de comunicados</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="folder-open"></i></div>
+          <h3 class="feature-title">Recursos y Materiales</h3>
+          <p class="feature-description">Biblioteca digital con todo el material del curso. Documentos, videos, presentaciones y enlaces organizados por tema.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>PDF, Word, PowerPoint</li>
+            <li><i data-lucide="check"></i>Videos y multimedia</li>
+            <li><i data-lucide="check"></i>Enlaces externos útiles</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="star"></i></div>
+          <h3 class="feature-title">Calificaciones</h3>
+          <p class="feature-description">Consulta tus notas en tiempo real. Sistema transparente de evaluación con promedios automáticos y retroalimentación.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Notas por tarea</li>
+            <li><i data-lucide="check"></i>Promedio actualizado</li>
+            <li><i data-lucide="check"></i>Comentarios del profesor</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="message-square"></i></div>
+          <h3 class="feature-title">Chat en Tiempo Real</h3>
+          <p class="feature-description">Comunicación directa con profesores y compañeros. Resuelve dudas al instante y colabora en proyectos grupales.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Mensajes instantáneos</li>
+            <li><i data-lucide="check"></i>Envío de archivos</li>
+            <li><i data-lucide="check"></i>Historial de conversaciones</li>
+          </ul>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon"><i data-lucide="bar-chart"></i></div>
+          <h3 class="feature-title">Encuestas Interactivas</h3>
+          <p class="feature-description">Participa en votaciones y encuestas del curso. Los profesores recogen opiniones y evalúan conocimientos de forma dinámica.</p>
+          <ul class="feature-list">
+            <li><i data-lucide="check"></i>Múltiples tipos de pregunta</li>
+            <li><i data-lucide="check"></i>Resultados en vivo</li>
+            <li><i data-lucide="check"></i>Anónimas o identificadas</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section info-section">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">1000+</div>
+          <div class="stat-label">Tareas Entregadas</div>
+          <div class="stat-desc">Este semestre</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Recursos</div>
+          <div class="stat-desc">Materiales disponibles</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">30+</div>
+          <div class="stat-label">Cursos Activos</div>
+          <div class="stat-desc">En la plataforma</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Disponible</div>
+          <div class="stat-desc">Acceso desde cualquier lugar</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roles Section -->
+    <section class="info-section" id="roles">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="users"></i>Usuarios</div>
+        <h2 class="section-title">¿Quién puede usar Classroom?</h2>
+        <p class="section-subtitle">Classroom está diseñado para facilitar la interacción educativa entre profesores y alumnos, cada uno con herramientas específicas.</p>
+      </div>
+      
+      <div class="roles-accordion">
+        <!-- Profesores -->
+        <div class="role-accordion-item">
+          <button class="role-accordion-header">
+            <div class="role-header-content">
+              <div class="role-avatar"><i data-lucide="user-check"></i></div>
+              <div class="role-header-text" style="text-align: center;">
+                <h3 class="role-title">Profesores</h3>
+                <p class="role-description">Crea y gestiona el contenido de tus cursos</p>
+              </div>
+            </div>
+            <div class="role-toggle"><i data-lucide="chevron-down"></i></div>
+          </button>
+          <div class="role-accordion-content">
+            <div class="role-content-inner">
+              <div class="role-intro">
+                <p>Como profesor en Classroom, tienes el control total sobre tus cursos. Puedes crear contenido educativo, interactuar con tus estudiantes y hacer seguimiento de su progreso académico.</p>
+              </div>
+              <div class="role-capabilities">
+                <h4><i data-lucide="zap"></i>Capacidades Principales</h4>
+                <div class="capabilities-grid">
+                  <div class="capability-item">
+                    <i data-lucide="megaphone"></i>
+                    <div>
+                      <strong>Publicar anuncios</strong>
+                      <span>Comunica novedades importantes a todos tus alumnos al instante</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="clipboard-list"></i>
+                    <div>
+                      <strong>Crear tareas</strong>
+                      <span>Asigna trabajos con instrucciones, fechas límite y archivos adjuntos</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="star"></i>
+                    <div>
+                      <strong>Calificar entregas</strong>
+                      <span>Evalúa el trabajo de tus alumnos y proporciona retroalimentación</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="folder-open"></i>
+                    <div>
+                      <strong>Subir recursos</strong>
+                      <span>Comparte materiales, documentos, videos y enlaces útiles</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="bar-chart"></i>
+                    <div>
+                      <strong>Crear encuestas</strong>
+                      <span>Recoge opiniones y evalúa conocimientos de forma interactiva</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="message-square"></i>
+                    <div>
+                      <strong>Chat en tiempo real</strong>
+                      <span>Resuelve dudas y mantén comunicación directa con alumnos</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="role-tip">
+                <i data-lucide="lightbulb"></i>
+                <p><strong>Tip:</strong> Usa el panel de estadísticas para ver qué estudiantes han revisado tus materiales y quiénes tienen tareas pendientes.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Alumnos -->
+        <div class="role-accordion-item">
+          <button class="role-accordion-header">
+            <div class="role-header-content">
+              <div class="role-avatar"><i data-lucide="book-open"></i></div>
+              <div class="role-header-text" style="text-align: center;">
+                <h3 class="role-title">Alumnos</h3>
+                <p class="role-description">Aprende y participa activamente en tus cursos</p>
+              </div>
+            </div>
+            <div class="role-toggle"><i data-lucide="chevron-down"></i></div>
+          </button>
+          <div class="role-accordion-content">
+            <div class="role-content-inner">
+              <div class="role-intro">
+                <p>Como alumno en Classroom, tienes acceso a todo el material de tus cursos, puedes entregar tareas, ver tus calificaciones y comunicarte con profesores y compañeros.</p>
+              </div>
+              <div class="role-capabilities">
+                <h4><i data-lucide="zap"></i>Todo lo que puedes hacer</h4>
+                <div class="capabilities-grid">
+                  <div class="capability-item">
+                    <i data-lucide="bell"></i>
+                    <div>
+                      <strong>Ver anuncios</strong>
+                      <span>Mantente al día con las novedades de cada curso</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="upload"></i>
+                    <div>
+                      <strong>Entregar tareas</strong>
+                      <span>Sube tus trabajos antes de la fecha límite</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="award"></i>
+                    <div>
+                      <strong>Consultar calificaciones</strong>
+                      <span>Revisa tus notas y retroalimentación del profesor</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="download"></i>
+                    <div>
+                      <strong>Descargar recursos</strong>
+                      <span>Accede a todo el material del curso cuando quieras</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="check-square"></i>
+                    <div>
+                      <strong>Participar en encuestas</strong>
+                      <span>Responde votaciones y cuestionarios interactivos</span>
+                    </div>
+                  </div>
+                  <div class="capability-item">
+                    <i data-lucide="users"></i>
+                    <div>
+                      <strong>Chatear</strong>
+                      <span>Comunícate con compañeros y profesores en tiempo real</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="role-tip">
+                <i data-lucide="lightbulb"></i>
+                <p><strong>Tip:</strong> Activa las notificaciones para no perderte ninguna tarea o anuncio importante de tus cursos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Steps Section -->
+    <section class="info-section" id="como-empezar">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="rocket"></i>Primeros Pasos</div>
+        <h2 class="section-title">¿Cómo empezar en Classroom?</h2>
+        <p class="section-subtitle">Sigue estos pasos para comenzar a usar el aula virtual y sacar el máximo provecho de tu experiencia educativa.</p>
+      </div>
+      
+      <div class="steps-container">
+        <div class="steps-line"></div>
+        
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Inicia sesión</h4>
+            <p>Accede con el mismo usuario y contraseña que usas para Dashboard. El sistema está integrado para tu comodidad.</p>
+          </div>
+        </div>
+        
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Selecciona tu curso</h4>
+            <p>Verás la lista de todos los cursos en los que estás inscrito. Haz clic en cualquiera para acceder a su contenido.</p>
+          </div>
+        </div>
+        
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Explora el feed</h4>
+            <p>En el feed encontrarás los anuncios, tareas y recursos más recientes organizados cronológicamente. Es tu centro de información.</p>
+          </div>
+        </div>
+        
+        <div class="step-item">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h4>Revisa las tareas pendientes</h4>
+            <p>Accede a la sección de tareas para ver qué trabajos tienes por entregar, con sus fechas límite y requisitos.</p>
+          </div>
+        </div>
+        
+        <div class="step-item">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h4>Participa activamente</h4>
+            <p>Comenta en anuncios, entrega tus trabajos, descarga materiales y utiliza el chat para resolver dudas. ¡El aprendizaje es colaborativo!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="info-section" id="faq">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="help-circle"></i>FAQ</div>
+        <h2 class="section-title">Preguntas Frecuentes</h2>
+        <p class="section-subtitle">Resuelve tus dudas más comunes sobre Classroom.</p>
+      </div>
+      
+      <div class="faq-container">
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Puedo entregar una tarea después de la fecha límite?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">Depende de la configuración del profesor. Algunas tareas permiten entregas tardías (posiblemente con penalización), mientras que otras se cierran automáticamente. Te recomendamos entregar siempre a tiempo o contactar a tu profesor si tienes dificultades.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Qué formatos de archivo puedo subir?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">Classroom acepta la mayoría de formatos comunes: PDF, documentos de Word (.doc, .docx), presentaciones (.ppt, .pptx), hojas de cálculo (.xls, .xlsx), imágenes (.jpg, .png, .gif), y archivos comprimidos (.zip, .rar). El tamaño máximo por archivo es de 10MB.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Cómo recibo notificaciones de nuevas tareas?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">Recibirás notificaciones de varias formas: en el panel de notificaciones dentro de Classroom, en tu Dashboard, y si el profesor activa las notificaciones por email, también recibirás un correo electrónico cuando se publique algo nuevo.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Puedo acceder a Classroom desde mi celular?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">¡Sí! Classroom es completamente responsivo y funciona perfectamente en smartphones y tablets. Solo necesitas un navegador moderno y conexión a internet. La experiencia está optimizada para dispositivos móviles.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Cuál es la diferencia entre Classroom y Dashboard?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">Classroom es el aula virtual donde ocurre la interacción académica (tareas, materiales, comunicación profesor-alumno), mientras que Dashboard es el sistema de gestión administrativa donde puedes ver tu información personal, calificaciones oficiales, pagos y datos de inscripción. Ambos están integrados.</div></div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question"><span>¿Puedo editar una tarea ya entregada?</span><i data-lucide="chevron-down"></i></button>
+          <div class="faq-answer"><div class="faq-answer-content">Sí, mientras la tarea no haya sido calificada y la fecha límite no haya pasado, puedes cancelar tu entrega anterior, hacer los cambios necesarios y volver a entregar. Una vez calificada, ya no podrás modificarla.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Help Section -->
+    <section class="info-section" id="ayuda">
+      <div class="section-header">
+        <div class="section-label"><i data-lucide="life-buoy"></i>Soporte</div>
+        <h2 class="section-title">¿Necesitas ayuda?</h2>
+        <p class="section-subtitle">Encuentra la asistencia que necesitas para resolver cualquier duda sobre Classroom.</p>
+      </div>
+      
+      <div class="help-grid">
+        <a href="ayuda-classroom.html" class="help-card">
+          <div class="help-content"><h4>Guía de Classroom</h4><p>Tutoriales específicos para usar el aula virtual</p></div>
+        </a>
+        <a href="comunidad-cemi.html" class="help-card">
+          <div class="help-content"><h4>Comunidad CEMI</h4><p>Pregunta y comparte con otros usuarios</p></div>
+        </a>
+        <a href="mailto:soporte@cemi.edu" class="help-card">
+          <div class="help-content"><h4>Contacto Directo</h4><p>soporte@cemi.edu</p></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="cta-content">
+        <h2 class="cta-title">¿Listo para aprender?</h2>
+        <p class="cta-subtitle">Accede a Classroom y descubre una nueva forma de educación digital interactiva.</p>
+        <div class="cta-buttons">
+          <a href="classroom-login.html" class="cta-btn cta-btn-primary"><i data-lucide="log-in"></i><span>Ir al Classroom</span></a>
+          <a href="info-dashboard.html" class="cta-btn cta-btn-secondary"><i data-lucide="layout-dashboard"></i><span>Conocer Dashboard</span></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo"><img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long"></div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <a href="register.html" class="footer-cta-link"><i data-lucide="user-plus"></i> Registrarse</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <div class="footer-links-bottom">
+        <a href="terminos.html">Términos</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop"><i data-lucide="chevron-up"></i></button>
+
+  <script src="assets/js/harvard-menu.js"></script>
+  <script>
+    lucide.createIcons();
+    
+    // Scroll reveal with staggered animations
+    const sections = document.querySelectorAll('.info-section');
+    const featureCards = document.querySelectorAll('.feature-card');
+    const statItems = document.querySelectorAll('.stat-item');
+    const stepItems = document.querySelectorAll('.step-item');
+    
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+    
+    sections.forEach(s => sectionObserver.observe(s));
+    
+    // Feature cards staggered animation
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('animate-in');
+          }, index * 100);
+        }
+      });
+    }, observerOptions);
+    
+    featureCards.forEach(card => cardObserver.observe(card));
+    
+    // Stats counter animation
+    const animateValue = (element, start, end, duration) => {
+      const startTime = performance.now();
+      const isNumber = !isNaN(end);
+      
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        
+        if (isNumber) {
+          const current = Math.floor(start + (end - start) * easeOut);
+          element.textContent = current + (element.dataset.suffix || '');
+        }
+        
+        if (progress < 1) requestAnimationFrame(animate);
+      };
+      
+      requestAnimationFrame(animate);
+    };
+    
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+          entry.target.classList.add('counted');
+          const numberEl = entry.target.querySelector('.stat-number');
+          const text = numberEl.textContent;
+          const match = text.match(/(\d+)/);
+          if (match) {
+            const num = parseInt(match[1]);
+            numberEl.dataset.suffix = text.replace(match[1], '');
+            animateValue(numberEl, 0, num, 2000);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    statItems.forEach(item => statsObserver.observe(item));
+    
+    // FAQ Accordion
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.querySelector('.faq-question').addEventListener('click', () => {
+        const wasActive = item.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+        if (!wasActive) item.classList.add('active');
+      });
+    });
+    
+    // Role Accordion
+    document.querySelectorAll('.role-accordion-item').forEach(item => {
+      item.querySelector('.role-accordion-header').addEventListener('click', () => {
+        const wasActive = item.classList.contains('active');
+        document.querySelectorAll('.role-accordion-item').forEach(i => i.classList.remove('active'));
+        if (!wasActive) {
+          item.classList.add('active');
+          // Re-render icons after animation
+          setTimeout(() => lucide.createIcons(), 100);
+        }
+      });
+    });
+    
+    // Back to top
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 500);
+    });
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

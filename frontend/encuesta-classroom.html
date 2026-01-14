@@ -1,0 +1,1164 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Investigación Cemi Classroom - Ayúdanos a mejorar</title>
+  <link rel="icon" href="images/logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="assets/js/console-manager.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Harvard Palette */
+      --hw-charcoal: #1e1e1e;
+      --hw-graphite: #656f77;
+      --hw-off-white: #f8f9fa;
+      --hw-cream: #f5f5f7;
+      --hw-white: #ffffff;
+      
+      /* Semantic colors */
+      --text-primary: #1e1e1e;
+      --text-secondary: #656f77;
+      --text-light: #8a9199;
+      --border-color: rgba(101, 111, 119, 0.15);
+      
+      /* Animations */
+      --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-bounce: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--hw-white);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Header/Navbar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-container {
+      background: white;
+      border-radius: 50%;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(30, 30, 30, 0.08);
+    }
+
+    .logo-container img {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+
+    .navbar-brand span {
+      font-size: 18px;
+      color: var(--hw-charcoal);
+      font-weight: 600;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .navbar-signup {
+      padding: 10px 24px;
+      background: var(--hw-charcoal);
+      color: white;
+      border: 2px solid var(--hw-charcoal);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s var(--ease-smooth);
+    }
+
+    .navbar-signup:hover {
+      background: transparent;
+      color: var(--hw-charcoal);
+      transform: translateY(-2px);
+    }
+
+    /* Animaciones de scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s var(--ease-smooth);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: all 0.8s var(--ease-smooth);
+    }
+
+    .reveal-left.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: all 0.8s var(--ease-smooth);
+    }
+
+    .reveal-right.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.6s var(--ease-smooth);
+    }
+
+    .reveal-scale.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Delay classes */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      align-items: center;
+      min-height: 520px;
+      padding: 60px 80px;
+      background: var(--hw-cream);
+      gap: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Elementos minimalistas decorativos */
+    .floating-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .floating-shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.06;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .shape-1 {
+      width: 120px;
+      height: 120px;
+      background: var(--hw-charcoal);
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+
+    .shape-2 {
+      width: 80px;
+      height: 80px;
+      background: var(--hw-graphite);
+      top: 60%;
+      left: 12%;
+      animation-delay: 2s;
+    }
+
+    .shape-3 {
+      width: 40px;
+      height: 40px;
+      background: var(--hw-charcoal);
+      top: 20%;
+      right: 15%;
+      animation-delay: 1s;
+    }
+
+    .shape-4 {
+      width: 100px;
+      height: 100px;
+      background: var(--hw-graphite);
+      bottom: 10%;
+      right: 8%;
+      animation-delay: 3s;
+    }
+
+    .shape-5 {
+      width: 60px;
+      height: 60px;
+      background: var(--hw-charcoal);
+      top: 75%;
+      right: 25%;
+      animation-delay: 1.5s;
+    }
+
+    /* Líneas decorativas minimalistas */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 0;
+      width: 1px;
+      height: 200px;
+      background: var(--hw-charcoal);
+      opacity: 0.1;
+      transform: translateY(-50%);
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-15px) rotate(5deg);
+      }
+    }
+
+    .hero-content {
+      flex: 1;
+      max-width: 550px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content h1 {
+      font-size: 42px;
+      font-weight: 400;
+      color: var(--hw-charcoal);
+      line-height: 1.25;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .hero-subtitle {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--hw-graphite);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .hero-content p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: var(--hw-charcoal);
+      color: white;
+      border: 2px solid var(--hw-charcoal);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.35s var(--ease-smooth);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: left 0.4s var(--ease-smooth);
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--hw-charcoal);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(147, 161, 173, 0.25);
+    }
+
+    /* Pulse animation for button */
+    .btn-pulse {
+      position: relative;
+    }
+
+    .btn-pulse::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 8px;
+      border: 2px solid var(--hw-charcoal);
+      animation: pulse-ring 2.5s ease-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(1);
+        opacity: 0.3;
+      }
+      100% {
+        transform: scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .hero-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cartoon-container {
+      position: relative;
+      animation: heroFloat 4s ease-in-out infinite;
+    }
+
+    .cartoon-container img {
+      width: 380px;
+      height: auto;
+      filter: drop-shadow(0 20px 40px rgba(30, 30, 30, 0.15));
+      transition: transform 0.3s var(--ease-smooth);
+    }
+
+    .cartoon-container:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Burbujas flotantes alrededor del cartoon */
+    .bubble {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(30, 30, 30, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: bubbleFloat 3s ease-in-out infinite;
+      border: 1px solid var(--border-color);
+    }
+
+    .bubble-1 {
+      width: 60px;
+      height: 60px;
+      top: -10px;
+      right: 20px;
+      animation-delay: 0s;
+    }
+
+    .bubble-2 {
+      width: 50px;
+      height: 50px;
+      bottom: 40px;
+      left: -20px;
+      animation-delay: 0.5s;
+    }
+
+    .bubble-3 {
+      width: 45px;
+      height: 45px;
+      top: 40%;
+      right: -25px;
+      animation-delay: 1s;
+    }
+
+    .bubble svg {
+      width: 24px;
+      height: 24px;
+      color: var(--hw-charcoal);
+    }
+
+    @keyframes heroFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    @keyframes bubbleFloat {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-8px) scale(1.05);
+      }
+    }
+
+    /* How it works Section */
+    .section {
+      padding: 80px 80px;
+      background: white;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 400;
+      color: var(--hw-charcoal);
+      text-align: center;
+      margin-bottom: 60px;
+      letter-spacing: -0.5px;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .step-card {
+      text-align: center;
+      padding: 24px;
+      border-radius: 12px;
+      transition: all 0.35s var(--ease-smooth);
+      border: 1px solid transparent;
+    }
+
+    .step-card:hover {
+      background: var(--hw-cream);
+      border-color: var(--border-color);
+      transform: translateY(-4px);
+    }
+
+    .step-icon {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-icon-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.35s var(--ease-smooth);
+      border: 1px solid var(--border-color);
+    }
+
+    .step-icon-circle.blue { 
+      background: var(--hw-off-white);
+    }
+    .step-icon-circle.green { 
+      background: var(--hw-cream);
+    }
+    .step-icon-circle.yellow { 
+      background: var(--hw-off-white);
+    }
+
+    .step-card:hover .step-icon-circle {
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px rgba(147, 161, 173, 0.2);
+      border-color: rgba(147, 161, 173, 0.4);
+    }
+
+    .step-icon-circle svg {
+      width: 56px;
+      height: 56px;
+      color: var(--hw-charcoal);
+    }
+
+    .step-card h3 {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--hw-charcoal);
+      margin-bottom: 12px;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .step-card p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      background: var(--hw-off-white);
+      padding: 80px;
+    }
+
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-section .section-title {
+      text-align: left;
+      margin-bottom: 40px;
+    }
+
+    .faq-category {
+      margin-bottom: 40px;
+    }
+
+    .faq-category-title {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--hw-charcoal);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .faq-item {
+      background: white;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(30, 30, 30, 0.04);
+      overflow: hidden;
+      transition: all 0.35s var(--ease-smooth);
+      border: 1px solid var(--border-color);
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 16px rgba(147, 161, 173, 0.15);
+      border-color: rgba(147, 161, 173, 0.4);
+    }
+
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      transition: color 0.25s var(--ease-smooth);
+    }
+
+    .faq-question:hover {
+      color: rgba(147, 161, 173, 0.9);
+    }
+
+    .faq-question svg {
+      width: 20px;
+      height: 20px;
+      color: var(--hw-graphite);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+
+    .faq-item.active .faq-question svg {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 500px;
+      padding: 0 24px 20px;
+    }
+
+    .faq-answer p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      padding: 80px;
+      background: #fcfcff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative lines for CTA */
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      left: 5%;
+      top: 50%;
+      width: 1px;
+      height: 120px;
+      background: var(--hw-charcoal);
+      opacity: 0.08;
+      transform: translateY(-50%);
+    }
+
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      width: 1px;
+      height: 120px;
+      background: var(--hw-charcoal);
+      opacity: 0.08;
+      transform: translateY(-50%);
+    }
+
+    .cta-content {
+      text-align: center;
+      flex: 1;
+      max-width: 600px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-section h2 {
+      font-size: 34px;
+      font-weight: 400;
+      color: var(--hw-charcoal);
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .cta-section p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .cta-mascot {
+      flex-shrink: 0;
+      animation: ctaFloat 4s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-mascot img {
+      width: 280px;
+      height: auto;
+      transition: transform 0.35s var(--ease-smooth);
+    }
+
+    .cta-mascot:hover img {
+      transform: scale(1.08) rotate(3deg);
+    }
+
+    @keyframes ctaFloat {
+      0%, 100% {
+        transform: translateY(0) rotate(-2deg);
+      }
+      50% {
+        transform: translateY(-12px) rotate(2deg);
+      }
+    }
+
+    /* Responsive CTA */
+    @media (max-width: 900px) {
+      .cta-section {
+        flex-direction: column;
+        gap: 40px;
+        padding: 60px 24px;
+      }
+
+      .cta-mascot img {
+        width: 160px;
+      }
+    }
+
+    /* Footer */
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 40px;
+      background: white;
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-brand .logo-container {
+      background: white;
+      border-radius: 50%;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(30, 30, 30, 0.08);
+    }
+
+    .footer-brand .logo-container img {
+      height: 24px;
+      width: auto;
+    }
+
+    .footer-brand span {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.25s var(--ease-smooth);
+    }
+
+    .footer-links a:hover {
+      color: rgba(147, 161, 173, 0.9);
+    }
+
+    .footer-language {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .footer-language svg {
+      color: var(--hw-graphite);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero {
+        flex-direction: column;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .hero-content {
+        max-width: 100%;
+      }
+
+      .hero-content h1 {
+        font-size: 32px;
+      }
+
+      .cartoon-container img {
+        width: 280px;
+      }
+
+      .bubble {
+        display: none;
+      }
+
+      .floating-shapes {
+        opacity: 0.5;
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .section, .faq-section, .cta-section {
+        padding: 60px 24px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 12px 16px;
+      }
+
+      .navbar-brand span {
+        font-size: 16px;
+      }
+
+      .hero-content h1 {
+        font-size: 28px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .footer {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .step-icon-circle {
+        width: 100px;
+        height: 100px;
+      }
+
+      .step-icon-circle svg {
+        width: 44px;
+        height: 44px;
+      }
+
+      .cartoon-container img {
+        width: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="classroom.html" class="navbar-brand">
+      <div class="logo-container">
+        <img src="images/logo.png" alt="CEMI">
+      </div>
+      <span>Cemi Classroom</span>
+    </a>
+    <a href="#formulario" class="navbar-signup">Llenar formulario</a>
+  </nav>
+
+  <section class="hero">
+    <div class="floating-shapes">
+      <div class="floating-shape shape-1"></div>
+      <div class="floating-shape shape-2"></div>
+      <div class="floating-shape shape-3"></div>
+      <div class="floating-shape shape-4"></div>
+      <div class="floating-shape shape-5"></div>
+    </div>
+
+    <div class="hero-content reveal-left">
+      <h1>Ayúdanos a mejorar las herramientas de Cemi Classroom para tu institución, tus estudiantes y para ti</h1>
+      <p class="hero-subtitle">Tu opinión es importante para nosotros</p>
+      <p>
+        Ya sea que uses Cemi Classroom frecuentemente o recién estés comenzando, nos encantaría escuchar tu feedback. 
+        Inscríbete para participar en nuestra investigación e influir en cómo mejoramos los productos que utilizan 
+        miles de personas todos los días.
+      </p>
+      <a href="#formulario" class="btn-primary btn-pulse">Llenar formulario</a>
+    </div>
+    <div class="hero-image reveal-right">
+      <div class="cartoon-container">
+        <img src="images/cartoonman.png" alt="Investigación CEMI">
+        <div class="bubble bubble-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12l2 2 4-4"/>
+            <circle cx="12" cy="12" r="10"/>
+          </svg>
+        </div>
+        <div class="bubble bubble-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="bubble bubble-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title reveal">¿Cómo funciona?</h2>
+    <div class="steps-grid">
+      <div class="step-card reveal delay-1">
+        <div class="step-icon">
+          <div class="step-icon-circle blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1A3A5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+        </div>
+        <h3>Inscríbete</h3>
+        <p>Cuéntanos un poco sobre ti completando un cuestionario para determinar si un próximo estudio sería adecuado para ti.</p>
+      </div>
+      <div class="step-card reveal delay-2">
+        <div class="step-icon">
+          <div class="step-icon-circle green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+          </div>
+        </div>
+        <h3>Participa</h3>
+        <p>Si tu perfil encaja, te enviaremos un cuestionario de seguimiento y detalles sobre los próximos pasos.</p>
+      </div>
+      <div class="step-card reveal delay-3">
+        <div class="step-icon">
+          <div class="step-icon-circle yellow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ea8600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
+            </svg>
+          </div>
+        </div>
+        <h3>Recibe recompensas</h3>
+        <p>Disfruta de beneficios exclusivos como reconocimiento en nuestra comunidad y mejoras prioritarias basadas en tu feedback.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <div class="faq-container">
+      <h2 class="section-title reveal">Más información</h2>
+      
+      <div class="faq-category reveal delay-1">
+        <h3 class="faq-category-title">Inscripción</h3>
+        
+        <div class="faq-item">
+          <button class="faq-question">
+            ¿Qué tipo de participantes están buscando?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>Buscamos estudiantes, profesores y personal administrativo de todas las edades y niveles de experiencia con tecnología educativa. No importa si eres experto o principiante, tu perspectiva es valiosa.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            ¿Qué tan pronto me contactarán?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>Revisamos las respuestas regularmente y te contactaremos dentro de 1-2 semanas si tu perfil coincide con algún estudio en curso o próximo.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            ¿Mi información será compartida con terceros?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>No. Tu información es confidencial y solo se utilizará para mejorar Cemi Classroom. Nunca compartiremos ni venderemos tus datos a terceros.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-category reveal delay-2">
+        <h3 class="faq-category-title">Participación en estudios</h3>
+        
+        <div class="faq-item">
+          <button class="faq-question">
+            ¿Qué tipo de actividades realizaré en los estudios?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>Las actividades pueden incluir encuestas en línea, entrevistas virtuales, pruebas de nuevas funcionalidades, o sesiones de feedback grupal. Siempre te informaremos con anticipación qué tipo de actividad es.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            ¿Cuánto tiempo tomarán las actividades?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>La mayoría de las actividades toman entre 15 y 45 minutos. Siempre te indicaremos la duración estimada antes de comenzar.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-category reveal delay-3">
+        <h3 class="faq-category-title">Beneficios</h3>
+        
+        <div class="faq-item">
+          <button class="faq-question">
+            ¿Qué beneficios recibo por participar?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <p>Los participantes activos reciben acceso anticipado a nuevas funcionalidades, reconocimiento en nuestra comunidad, y la satisfacción de saber que están ayudando a mejorar la experiencia educativa para todos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section reveal-scale" id="formulario">
+    <div class="cta-mascot">
+      <img src="images/31.gif" alt="CEMI Mascota">
+    </div>
+    <div class="cta-content">
+      <h2>Ayuda a dar forma al futuro de Cemi Classroom</h2>
+      <p>Tu feedback hará posible que continuemos nuestra misión de construir mejores herramientas educativas para todos.</p>
+      <a href="formulario-encuesta.html" class="btn-primary btn-pulse">Llenar formulario</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-brand">
+      <div class="logo-container">
+        <img src="images/logo.png" alt="CEMI">
+      </div>
+      <span>Cemi Sistema Educativo</span>
+    </div>
+    <div class="footer-links">
+      <a href="privacidad.html">Privacidad</a>
+      <a href="terminos.html">Términos</a>
+      <a href="ayuda.html">Ayuda</a>
+    </div>
+    <div class="footer-language">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+      Español
+    </div>
+  </footer>
+
+  <script>
+    // Scroll Reveal Animation
+    function revealOnScroll() {
+      const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+      
+      reveals.forEach(element => {
+        const windowHeight = window.innerHeight;
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 120;
+        
+        if (elementTop < windowHeight - elementVisible) {
+          element.classList.add('active');
+        }
+      });
+    }
+
+    // Initial check for elements in view
+    window.addEventListener('load', revealOnScroll);
+    window.addEventListener('scroll', revealOnScroll);
+
+    // Parallax effect for floating shapes
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const shapes = document.querySelectorAll('.floating-shape');
+      
+      shapes.forEach((shape, index) => {
+        const speed = 0.1 + (index * 0.05);
+        shape.style.transform = `translateY(${scrolled * speed}px)`;
+      });
+    });
+
+    // FAQ Accordion
+    document.querySelectorAll('.faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const faqItem = button.parentElement;
+        const isActive = faqItem.classList.contains('active');
+        
+        // Close all items
+        document.querySelectorAll('.faq-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        
+        // Open clicked item if it wasn't active
+        if (!isActive) {
+          faqItem.classList.add('active');
+        }
+      });
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Mouse parallax for cartoon
+    const cartoon = document.querySelector('.cartoon-container');
+    if (cartoon) {
+      document.addEventListener('mousemove', (e) => {
+        const x = (window.innerWidth / 2 - e.pageX) / 50;
+        const y = (window.innerHeight / 2 - e.pageY) / 50;
+        cartoon.style.transform = `translateY(${-15 + y}px) translateX(${x}px)`;
+      });
+    }
+  </script>
+</body>
+</html>
+
+
+

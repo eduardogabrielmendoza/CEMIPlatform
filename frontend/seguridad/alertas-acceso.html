@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Alertas de Acceso | Cemi Seguridad</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="seguridad">
+    <header class="security-header-blur bg-privacy">
+        <div class="security-header-content" style="text-align: center; position: relative; z-index: 1;">
+            <div class="security-icon" style="background: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i data-lucide="bell" style="width: 40px; height: 40px;"></i>
+            </div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Alertas de Acceso</h1>
+            <p style="font-size: 1.1rem; opacity: 0.95;">Recibe notificaciones cuando alguien accede a tu cuenta.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-privsec-home.html" style="color: #0071e3; text-decoration: none;">Privacidad y Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Alertas de acceso</span>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #fff3cd 0%, #fffbf0 100%); border-left: 6px solid #FFC107; padding: 25px; margin: 30px 0; border-radius: 12px; box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);">
+            <div style="display: flex; align-items: start; gap: 20px;">
+                <i data-lucide="shield-alert" style="width: 32px; height: 32px; color: #FFC107; flex-shrink: 0; margin-top: 4px;"></i>
+                <div>
+                    <strong style="display: block; font-size: 1.2rem; margin-bottom: 10px; color: #856404;">️ Configuración Gestionada por Administrador</strong>
+                    <p style="margin: 0; color: #856404; line-height: 1.6;">Las alertas de acceso deben ser configuradas por un administrador del sistema. Contacta al soporte para personalizar tus notificaciones.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%); padding: 30px; border-radius: 12px; margin: 25px 0; text-align: center; box-shadow: 0 4px 12px rgba(0,113,227,0.1);">
+            <h3 style="margin-bottom: 20px; color: #1a1f36;">
+                <i data-lucide="headset" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"></i>
+                Configurar Alertas
+            </h3>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="window.location.href='mailto:soporte@Cemiedu.ar?subject=Solicitud: Configurar Alertas de Acceso&body=Estimado equipo,%0D%0A%0D%0AQuisiera configurar las alertas de acceso para mi cuenta.%0D%0A%0D%0ADatos:%0D%0A- Usuario: [TU USUARIO]%0D%0A- DNI: [TU DNI]%0D%0A- Alertas deseadas: [Nuevo dispositivo/Ubicación sospechosa/etc]%0D%0A%0D%0AGracias.'" 
+                        style="background: #0071e3; color: white; padding: 16px 36px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,113,227,0.3); display: inline-flex; align-items: center; gap: 10px;">
+                    <i data-lucide="mail" style="width: 20px; height: 20px;"></i>
+                    Solicitar Configuración
+                </button>
+                <a href="tel:+5491112345678" 
+                   style="background: #28a745; color: white; padding: 16px 36px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(40,167,69,0.3); display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <i data-lucide="phone" style="width: 20px; height: 20px;"></i>
+                    Llamar: +54 911 1234-5678
+                </a>
+            </div>
+        </div>
+
+        <div class="security-alert">
+            <i data-lucide="info"></i>
+            <div>
+                <strong>Mantente informado</strong>
+                <p>Configura notificaciones automáticas para saber cuándo y desde dónde se accede a tu cuenta. Útil para detectar accesos sospechosos rápidamente.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="settings"></i> Configuración de alertas</h2>
+            <p style="margin-bottom: 30px;">Personaliza qué tipos de acceso quieres que te notifiquen:</p>
+            
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Nuevo dispositivo</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Alerta cuando inicias sesión desde un dispositivo desconocido</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #28a745; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block; transform: translateX(30px);"></span></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Nueva ubicación</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Alerta cuando accedes desde una ciudad o país nuevo</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #28a745; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block; transform: translateX(30px);"></span></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Intentos fallidos</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Alerta después de 3 intentos fallidos de contraseña</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #28a745; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block; transform: translateX(30px);"></span></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Cambio de contraseña</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Notificar cuando se cambia la contraseña</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #28a745; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block; transform: translateX(30px);"></span></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Cambios de email</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Notificar cuando se modifica el email de la cuenta</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #28a745; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block; transform: translateX(30px);"></span></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Apps conectadas</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Alerta cuando una nueva app solicita acceso a tu cuenta</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #6c757d; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block;"></span></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="send"></i> Canales de notificación</h2>
+            <p style="margin-bottom: 30px;">Elige cómo quieres recibir las alertas:</p>
+            
+            <div class="security-grid">
+                <div style="background: #e3f2fd; padding: 25px; border-radius: 12px;">
+                    <i data-lucide="mail" style="width: 28px; height: 28px; color: #0071e3; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #0071e3;">Email</strong>
+                    <p style="color: #5a6c7d; font-size: 14px; margin-bottom: 15px;">Enviar a: usuario@email.com</p>
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" checked style="width: 18px; height: 18px;">
+                        <span style="color: #5a6c7d; font-size: 14px;">Activado</span>
+                    </label>
+                </div>
+
+                <div style="background: #e8f5e9; padding: 25px; border-radius: 12px;">
+                    <i data-lucide="smartphone" style="width: 28px; height: 28px; color: #28a745; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #28a745;">Push (App)</strong>
+                    <p style="color: #5a6c7d; font-size: 14px; margin-bottom: 15px;">Notificaciones en tu teléfono</p>
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" checked style="width: 18px; height: 18px;">
+                        <span style="color: #5a6c7d; font-size: 14px;">Activado</span>
+                    </label>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 25px; border-radius: 12px;">
+                    <i data-lucide="message-circle" style="width: 28px; height: 28px; color: #6c757d; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #6c757d;">SMS</strong>
+                    <p style="color: #5a6c7d; font-size: 14px; margin-bottom: 15px;">Mensaje de texto (solo críticas)</p>
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" style="width: 18px; height: 18px;">
+                        <span style="color: #5a6c7d; font-size: 14px;">Desactivado</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="history"></i> Historial de alertas</h2>
+            <p style="margin-bottom: 30px;">Tus notificaciones recientes:</p>
+            
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid #28a745;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex: 1;">
+                        <strong style="color: #28a745; display: block; margin-bottom: 8px;"> Nuevo inicio de sesión</strong>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0;">Windows 11 - Chrome 120 desde Buenos Aires, Argentina</p>
+                        <span style="color: #6c757d; font-size: 12px;">Hoy a las 14:30</span>
+                    </div>
+                    <button onclick="alert('Marcada como vista')" style="background: none; border: none; color: #28a745; cursor: pointer; font-size: 12px; text-decoration: underline;">Marcar como leída</button>
+                </div>
+            </div>
+
+            <div style="background: #fff3cd; padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid #FFC107;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex: 1;">
+                        <strong style="color: #856404; display: block; margin-bottom: 8px;">️ Nueva ubicación detectada</strong>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0;">Windows 10 - Firefox desde Córdoba, Argentina (primera vez)</p>
+                        <span style="color: #6c757d; font-size: 12px;">Hace 2 días</span>
+                    </div>
+                    <button onclick="alert('Ya leído')" style="background: none; border: none; color: #856404; cursor: pointer; font-size: 12px; text-decoration: underline;"> Leída</button>
+                </div>
+            </div>
+
+            <div style="background: #ffebee; padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid #dc3545;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex: 1;">
+                        <strong style="color: #dc3545; display: block; margin-bottom: 8px;"> Intentos fallidos de acceso</strong>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0;">3 intentos con contraseña incorrecta desde IP desconocida</p>
+                        <span style="color: #6c757d; font-size: 12px;">Hace 3 días</span>
+                    </div>
+                    <button onclick="alert('Ya leído')" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 12px; text-decoration: underline;"> Leída</button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="alert('Mostrando más alertas...')" style="background: #0071e3; color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                    Ver todas las alertas
+                </button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <button onclick="alert('Configuración guardada exitosamente')" style="background: #28a745; color: white; border: none; padding: 15px 50px; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);">
+                <i data-lucide="check" style="width: 20px; height: 20px; display: inline; vertical-align: middle;"></i> Guardar configuración
+            </button>
+        </div>
+
+        <div class="security-card" style="margin-top: 40px;">
+            <h2><i data-lucide="help-circle"></i> Preguntas Frecuentes</h2>
+            <div style="margin-top: 30px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Cuántas notificaciones recibiré?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Solo recibirás alertas cuando ocurran eventos de seguridad según tu configuración. Típicamente 2-5 por mes si eres usuario regular.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Puedo desactivar todas las alertas?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Puedes, pero NO es recomendado. Las alertas son tu primera línea de defensa contra accesos no autorizados.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Las alertas son en tiempo real?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Push y SMS son instantáneas. Emails pueden tardar 1-5 minutos en llegar.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="historial-acceso.html" class="security-action-btn">
+                    <i data-lucide="clock"></i>
+                    <strong>Historial de acceso</strong>
+                    <span>Ver todos los inicios de sesión</span>
+                </a>
+                <a href="ubicaciones-sospechosas.html" class="security-action-btn">
+                    <i data-lucide="map-pin"></i>
+                    <strong>Ubicaciones sospechosas</strong>
+                    <span>Revisar accesos anómalos</span>
+                </a>
+                <a href="../cemi-privsec-home.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Portal</strong>
+                    <span>Privacidad y Seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../privacidad.html">Privacidad</a>
+            <a href="../terminos.html">Términos</a>
+            <a href="../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi. Todos los derechos reservados.</p>
+    </footer>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
+
+

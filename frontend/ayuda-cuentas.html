@@ -1,0 +1,1407 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A2540">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>Cuentas y Autenticación - Centro de Ayuda Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <link rel="stylesheet" href="assets/css/terminos.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ===== Hero Section ===== */
+    .cuentas-hero {
+      background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+      padding: 80px 24px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cuentas-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.03)"/></svg>') repeat;
+      background-size: 30px 30px;
+    }
+
+    .cuentas-hero-content {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cuentas-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(164, 16, 52, 0.2);
+      border: 1px solid rgba(164, 16, 52, 0.4);
+      color: #f8b4c4;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .cuentas-hero-badge i {
+      width: 16px;
+      height: 16px;
+    }
+
+    .cuentas-hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .cuentas-hero-subtitle {
+      opacity: 0.8;
+      max-width: 600px;
+      margin: 0 auto 32px;
+      font-size: 1.15rem;
+      line-height: 1.6;
+    }
+
+    .cuentas-hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .cuentas-hero-stat {
+      text-align: center;
+    }
+
+    .cuentas-hero-stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #93a1ad;
+      display: block;
+    }
+
+    .cuentas-hero-stat-label {
+      font-size: 0.85rem;
+      opacity: 0.6;
+    }
+
+    /* ===== Main Layout ===== */
+    .cuentas-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 24px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 48px;
+    }
+
+    .cuentas-main {
+      min-width: 0;
+    }
+
+    .cuentas-sidebar {
+      position: sticky;
+      top: 24px;
+      height: fit-content;
+    }
+
+    /* ===== Breadcrumb ===== */
+    .cuentas-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #656f77;
+      margin-bottom: 32px;
+    }
+
+    .cuentas-breadcrumb a {
+      color: #4a5259;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .cuentas-breadcrumb a:hover {
+      color: #a41034;
+      text-decoration: underline;
+    }
+
+    .cuentas-breadcrumb i {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* ===== Section Titles ===== */
+    .cuentas-section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .cuentas-section-header i {
+      width: 24px;
+      height: 24px;
+      color: #a41034;
+    }
+
+    .cuentas-section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin: 0;
+    }
+
+    /* ===== Method Cards ===== */
+    .cuentas-methods-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .cuentas-method-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px;
+      text-decoration: none;
+      display: block;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cuentas-method-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: transparent;
+      transition: background 0.3s;
+    }
+
+    .cuentas-method-card:hover {
+      border-color: transparent;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+      transform: translateY(-4px);
+    }
+
+    .cuentas-method-card:hover::before {
+      background: linear-gradient(90deg, #a41034, #d91a50);
+    }
+
+    .cuentas-method-card.featured {
+      grid-column: span 2;
+      background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .cuentas-method-card.featured:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+    }
+
+    .cuentas-method-card.featured::before {
+      background: linear-gradient(90deg, #a41034, #d91a50);
+    }
+
+    .cuentas-method-card.featured .cuentas-method-desc {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .cuentas-method-card.featured .cuentas-method-link {
+      color: #93a1ad;
+    }
+
+    .cuentas-method-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .cuentas-method-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .cuentas-method-icon i {
+      width: 28px;
+      height: 28px;
+    }
+
+    .cuentas-method-icon.cemikey {
+      background: linear-gradient(135deg, #a41034 0%, #7d0c28 100%);
+      color: #fff;
+    }
+
+    .cuentas-method-icon.login {
+      background: linear-gradient(135deg, #4a5259 0%, #656f77 100%);
+      color: #fff;
+    }
+
+    .cuentas-method-icon.recovery {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #fff;
+    }
+
+    .cuentas-method-icon.register {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #fff;
+    }
+
+    .cuentas-method-info h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: inherit;
+      margin: 0 0 4px 0;
+    }
+
+    .cuentas-method-badge {
+      display: inline-block;
+      background: rgba(164, 16, 52, 0.1);
+      color: #a41034;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cuentas-method-card.featured .cuentas-method-badge {
+      background: rgba(164, 16, 52, 0.3);
+      color: #f8b4c4;
+    }
+
+    .cuentas-method-desc {
+      color: #6b7280;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .cuentas-method-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .cuentas-method-feature {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(147, 161, 173, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: #656f77;
+    }
+
+    .cuentas-method-card.featured .cuentas-method-feature {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .cuentas-method-feature i {
+      width: 12px;
+      height: 12px;
+    }
+
+    .cuentas-method-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #a41034;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .cuentas-method-link i {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.2s;
+    }
+
+    .cuentas-method-card:hover .cuentas-method-link i {
+      transform: translateX(4px);
+    }
+
+    /* ===== Guide Section ===== */
+    .cuentas-guide {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 48px;
+    }
+
+    .cuentas-guide-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .cuentas-guide-header i {
+      width: 24px;
+      height: 24px;
+      color: #656f77;
+    }
+
+    .cuentas-guide-header h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin: 0;
+    }
+
+    .cuentas-guide-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .cuentas-guide-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .cuentas-guide-step-number {
+      width: 32px;
+      height: 32px;
+      background: #1e1e1e;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .cuentas-guide-step-content h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin: 0 0 4px 0;
+    }
+
+    .cuentas-guide-step-content p {
+      color: #6b7280;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ===== FAQ Section ===== */
+    .cuentas-faq {
+      margin-bottom: 48px;
+    }
+
+    .cuentas-faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cuentas-faq-item {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .cuentas-faq-question {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #1e1e1e;
+      transition: background 0.2s;
+    }
+
+    .cuentas-faq-question:hover {
+      background: #f8fafc;
+    }
+
+    .cuentas-faq-question i {
+      width: 20px;
+      height: 20px;
+      color: #656f77;
+      transition: transform 0.3s;
+    }
+
+    .cuentas-faq-item.active .cuentas-faq-question i {
+      transform: rotate(180deg);
+    }
+
+    .cuentas-faq-answer {
+      padding: 0 24px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s, padding 0.3s;
+    }
+
+    .cuentas-faq-item.active .cuentas-faq-answer {
+      padding: 0 24px 20px;
+      max-height: 500px;
+    }
+
+    .cuentas-faq-answer p {
+      color: #6b7280;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .cuentas-faq-answer ul {
+      color: #6b7280;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 12px 0 0 0;
+      padding-left: 20px;
+    }
+
+    .cuentas-faq-answer li {
+      margin-bottom: 6px;
+    }
+
+    /* ===== Sidebar ===== */
+    .cuentas-sidebar-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .cuentas-sidebar-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cuentas-sidebar-title i {
+      width: 18px;
+      height: 18px;
+      color: #656f77;
+    }
+
+    .cuentas-sidebar-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cuentas-sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: #4a5259;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .cuentas-sidebar-link:hover {
+      background: #fff;
+      border-color: #e5e7eb;
+      color: #1e1e1e;
+    }
+
+    .cuentas-sidebar-link i {
+      width: 18px;
+      height: 18px;
+      color: #93a1ad;
+    }
+
+    .cuentas-sidebar-help {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 1px solid #7dd3fc;
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .cuentas-sidebar-help-icon {
+      width: 44px;
+      height: 44px;
+      background: #0284c7;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .cuentas-sidebar-help-icon i {
+      width: 22px;
+      height: 22px;
+      color: #fff;
+    }
+
+    .cuentas-sidebar-help h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0369a1;
+      margin: 0 0 8px 0;
+    }
+
+    .cuentas-sidebar-help p {
+      color: #0c4a6e;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0 0 16px 0;
+    }
+
+    .cuentas-sidebar-help-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0284c7;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .cuentas-sidebar-help-btn:hover {
+      background: #0369a1;
+    }
+
+    .cuentas-sidebar-help-btn i {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ===== Security Tips ===== */
+    .cuentas-security-tips {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 1px solid #fbbf24;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 48px;
+    }
+
+    .cuentas-security-tips-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .cuentas-security-tips-header i {
+      width: 24px;
+      height: 24px;
+      color: #d97706;
+    }
+
+    .cuentas-security-tips-header h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #92400e;
+      margin: 0;
+    }
+
+    .cuentas-security-tips-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .cuentas-security-tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: rgba(255,255,255,0.5);
+      padding: 12px 14px;
+      border-radius: 8px;
+    }
+
+    .cuentas-security-tip i {
+      width: 16px;
+      height: 16px;
+      color: #d97706;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .cuentas-security-tip span {
+      font-size: 0.9rem;
+      color: #78350f;
+      line-height: 1.4;
+    }
+
+    /* ===== Footer ===== */
+    .cuentas-footer {
+      background: #1e1e1e;
+      color: #fff;
+      padding: 64px 24px 32px;
+    }
+
+    .cuentas-footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .cuentas-footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .cuentas-footer-brand img {
+      height: 48px;
+      margin-bottom: 16px;
+    }
+
+    .cuentas-footer-brand p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 280px;
+    }
+
+    .cuentas-footer-column h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      margin: 0 0 16px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cuentas-footer-column ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .cuentas-footer-column li {
+      margin-bottom: 10px;
+    }
+
+    .cuentas-footer-column a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .cuentas-footer-column a:hover {
+      color: #fff;
+    }
+
+    .cuentas-footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .cuentas-footer-bottom p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      margin: 0;
+    }
+
+    .cuentas-footer-bottom-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .cuentas-footer-bottom-links a {
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .cuentas-footer-bottom-links a:hover {
+      color: #fff;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .cuentas-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .cuentas-sidebar {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .cuentas-sidebar-help {
+        grid-column: span 2;
+      }
+
+      .cuentas-footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .cuentas-hero {
+        padding: 60px 20px;
+      }
+
+      .cuentas-hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .cuentas-hero-stats {
+        gap: 32px;
+      }
+
+      .cuentas-methods-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cuentas-method-card.featured {
+        grid-column: span 1;
+      }
+
+      .cuentas-security-tips-list {
+        grid-template-columns: 1fr;
+      }
+
+      .cuentas-sidebar {
+        grid-template-columns: 1fr;
+      }
+
+      .cuentas-sidebar-help {
+        grid-column: span 1;
+      }
+
+      .cuentas-footer-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .cuentas-footer-bottom {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolong.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div class="harvard-search-quicklink">
+            <span>QUICK LINKS</span>
+            <a href="a-to-z.html">Ir a Índice A-Z</a>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      
+      <div class="mega-panels" id="megaPanels">
+        <div class="mega-panel" id="panel-classroom">
+          <h3>Classroom</h3>
+          <div class="panel-links">
+            <a href="classroom-login.html">Acceder a Classroom</a>
+            <a href="ayuda-classroom.html">Centro de Ayuda</a>
+            <a href="info-classroom.html">Acerca de Classroom</a>
+            <a href="comunidad-cemi.html">Comunidad Cemi</a>
+          </div>
+        </div>
+        <div class="mega-panel" id="panel-dashboard">
+          <h3>Dashboard</h3>
+          <div class="panel-links">
+            <a href="login-selector.html">Iniciar Sesión</a>
+            <a href="register.html">Registrarme</a>
+            <a href="info-dashboard.html">Acerca de Dashboard</a>
+            <a href="guia.html">Guía para Usuarios</a>
+          </div>
+        </div>
+        <div class="mega-panel" id="panel-nosotros">
+          <h3>Nosotros</h3>
+          <div class="panel-links">
+            <a href="porque-cemi.html">Por qué Cemi</a>
+            <a href="reglamento-institucional.html">Reglamento Institucional</a>
+          </div>
+        </div>
+        <div class="mega-panel" id="panel-soporte">
+          <h3>Soporte</h3>
+          <div class="panel-links">
+            <a href="ayuda.html">Centro de Ayuda</a>
+            <a href="status.html">Estado del Sistema</a>
+            <a href="novedades-cemi.html">Novedades</a>
+          </div>
+        </div>
+        <div class="mega-panel" id="panel-seguridad">
+          <h3>Seguridad</h3>
+          <div class="panel-links">
+            <a href="cemi-seguridad.html">Seguridad en Cemi</a>
+            <a href="privacidad.html">Política de Privacidad</a>
+            <a href="terminos.html">Términos de Servicio</a>
+            <a href="reportar-seguridad.html">Reportar Vulnerabilidad</a>
+          </div>
+        </div>
+        <div class="mega-panel" id="panel-recursos">
+          <h3>Recursos</h3>
+          <div class="panel-links">
+            <a href="documentacion.html">Documentación</a>
+            <a href="a-to-z.html">Índice A-Z</a>
+          </div>
+        </div>
+        <div class="mega-panel" id="panel-accesibilidad">
+          <h3>Accesibilidad</h3>
+          <div class="panel-links">
+            <a href="accesibilidad.html">Compromiso de Accesibilidad</a>
+            <a href="cookies-config.html">Configurar Cookies</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="cuentas-hero">
+    <div class="cuentas-hero-content">
+      <span class="cuentas-hero-badge">
+        <i data-lucide="shield-check"></i>
+        Centro de Ayuda
+      </span>
+      <h1>Cuentas y Autenticación</h1>
+      <p class="cuentas-hero-subtitle">
+        Todo lo que necesitas saber sobre cómo acceder a Cemi. Desde el login tradicional hasta CemiKey, 
+        nuestra solución de acceso sin contraseña. Configura tu cuenta de forma segura y eficiente.
+      </p>
+      <div class="cuentas-hero-stats">
+        <div class="cuentas-hero-stat">
+          <span class="cuentas-hero-stat-value">3</span>
+          <span class="cuentas-hero-stat-label">Métodos de acceso</span>
+        </div>
+        <div class="cuentas-hero-stat">
+          <span class="cuentas-hero-stat-value">24/7</span>
+          <span class="cuentas-hero-stat-label">Soporte disponible</span>
+        </div>
+        <div class="cuentas-hero-stat">
+          <span class="cuentas-hero-stat-value">100%</span>
+          <span class="cuentas-hero-stat-label">Seguro y encriptado</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="cuentas-wrapper">
+    <main class="cuentas-main">
+      
+      <!-- Breadcrumb -->
+      <nav class="cuentas-breadcrumb">
+        <a href="index.html">Inicio</a>
+        <i data-lucide="chevron-right"></i>
+        <a href="ayuda.html">Ayuda</a>
+        <i data-lucide="chevron-right"></i>
+        <span>Cuentas y Autenticación</span>
+      </nav>
+
+      <!-- Methods Section -->
+      <div class="cuentas-section-header">
+        <i data-lucide="log-in"></i>
+        <h2 class="cuentas-section-title">Métodos de acceso al sistema</h2>
+      </div>
+
+      <div class="cuentas-methods-grid">
+        
+        <!-- CemiKey - Featured -->
+        <a href="ayuda-cemikey.html" class="cuentas-method-card featured">
+          <div class="cuentas-method-header">
+            <div class="cuentas-method-icon cemikey">
+              <i data-lucide="key"></i>
+            </div>
+            <div class="cuentas-method-info">
+              <h3>CemiKey</h3>
+              <span class="cuentas-method-badge">Recomendado</span>
+            </div>
+          </div>
+          <p class="cuentas-method-desc">
+            Acceso instantáneo con una clave única de hasta 64 caracteres. Sin necesidad de recordar correo y contraseña. 
+            Tu clave es personal, intransferible y está protegida con encriptación de nivel bancario.
+          </p>
+          <div class="cuentas-method-features">
+            <span class="cuentas-method-feature"><i data-lucide="zap"></i> Acceso rápido</span>
+            <span class="cuentas-method-feature"><i data-lucide="shield"></i> Encriptado SHA-256</span>
+            <span class="cuentas-method-feature"><i data-lucide="users"></i> Todos los roles</span>
+            <span class="cuentas-method-feature"><i data-lucide="smartphone"></i> Multiplataforma</span>
+          </div>
+          <span class="cuentas-method-link">
+            Conocer más sobre CemiKey <i data-lucide="arrow-right"></i>
+          </span>
+        </a>
+
+        <!-- Login Tradicional -->
+        <a href="login-selector.html" class="cuentas-method-card">
+          <div class="cuentas-method-header">
+            <div class="cuentas-method-icon login">
+              <i data-lucide="user"></i>
+            </div>
+            <div class="cuentas-method-info">
+              <h3>Login tradicional</h3>
+            </div>
+          </div>
+          <p class="cuentas-method-desc">
+            El método clásico: ingresa con tu correo electrónico y contraseña. Disponible para alumnos, 
+            profesores y administradores.
+          </p>
+          <div class="cuentas-method-features">
+            <span class="cuentas-method-feature"><i data-lucide="mail"></i> Email + Contraseña</span>
+            <span class="cuentas-method-feature"><i data-lucide="lock"></i> Seguro</span>
+          </div>
+          <span class="cuentas-method-link">
+            Iniciar sesión <i data-lucide="arrow-right"></i>
+          </span>
+        </a>
+
+        <!-- Recuperar Contraseña -->
+        <a href="login.html" class="cuentas-method-card">
+          <div class="cuentas-method-header">
+            <div class="cuentas-method-icon recovery">
+              <i data-lucide="key-round"></i>
+            </div>
+            <div class="cuentas-method-info">
+              <h3>Recuperar acceso</h3>
+            </div>
+          </div>
+          <p class="cuentas-method-desc">
+            ¿Olvidaste tu contraseña? Recibe un código de verificación en tu email y restablece 
+            tu acceso en minutos.
+          </p>
+          <div class="cuentas-method-features">
+            <span class="cuentas-method-feature"><i data-lucide="mail-check"></i> Código por email</span>
+            <span class="cuentas-method-feature"><i data-lucide="timer"></i> Proceso rápido</span>
+          </div>
+          <span class="cuentas-method-link">
+            Recuperar contraseña <i data-lucide="arrow-right"></i>
+          </span>
+        </a>
+
+        <!-- Registro -->
+        <a href="register.html" class="cuentas-method-card">
+          <div class="cuentas-method-header">
+            <div class="cuentas-method-icon register">
+              <i data-lucide="user-plus"></i>
+            </div>
+            <div class="cuentas-method-info">
+              <h3>Crear cuenta nueva</h3>
+            </div>
+          </div>
+          <p class="cuentas-method-desc">
+            ¿Nuevo en Cemi? Regístrate como alumno y comienza tu experiencia educativa. 
+            Completa tus datos y confirma tu email.
+          </p>
+          <div class="cuentas-method-features">
+            <span class="cuentas-method-feature"><i data-lucide="graduation-cap"></i> Para alumnos</span>
+            <span class="cuentas-method-feature"><i data-lucide="check-circle"></i> Gratis</span>
+          </div>
+          <span class="cuentas-method-link">
+            Registrarme ahora <i data-lucide="arrow-right"></i>
+          </span>
+        </a>
+
+      </div>
+
+      <!-- Quick Guide -->
+      <div class="cuentas-guide">
+        <div class="cuentas-guide-header">
+          <i data-lucide="map"></i>
+          <h3>Guía rápida: Primer ingreso al sistema</h3>
+        </div>
+        <div class="cuentas-guide-steps">
+          <div class="cuentas-guide-step">
+            <span class="cuentas-guide-step-number">1</span>
+            <div class="cuentas-guide-step-content">
+              <h4>Elige tu método de acceso</h4>
+              <p>Si tienes CemiKey configurado, úsalo para acceder instantáneamente. Si no, usa tu email y contraseña en el login tradicional.</p>
+            </div>
+          </div>
+          <div class="cuentas-guide-step">
+            <span class="cuentas-guide-step-number">2</span>
+            <div class="cuentas-guide-step-content">
+              <h4>Selecciona tu rol</h4>
+              <p>Si usas login tradicional, indica si eres alumno, profesor o administrador. Con CemiKey, el sistema detecta tu rol automáticamente.</p>
+            </div>
+          </div>
+          <div class="cuentas-guide-step">
+            <span class="cuentas-guide-step-number">3</span>
+            <div class="cuentas-guide-step-content">
+              <h4>Accede a tu dashboard</h4>
+              <p>Serás redirigido a tu panel correspondiente donde podrás gestionar cursos, calificaciones, inscripciones y más.</p>
+            </div>
+          </div>
+          <div class="cuentas-guide-step">
+            <span class="cuentas-guide-step-number">4</span>
+            <div class="cuentas-guide-step-content">
+              <h4>Configura CemiKey (opcional)</h4>
+              <p>Desde tu perfil en el dashboard, puedes activar CemiKey para acceder más rápido en el futuro. Solo toma 30 segundos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Tips -->
+      <div class="cuentas-security-tips">
+        <div class="cuentas-security-tips-header">
+          <i data-lucide="shield-alert"></i>
+          <h3>Consejos de seguridad para tu cuenta</h3>
+        </div>
+        <div class="cuentas-security-tips-list">
+          <div class="cuentas-security-tip">
+            <i data-lucide="check"></i>
+            <span>Nunca compartas tu contraseña ni tu CemiKey con nadie, ni siquiera con el personal de Cemi.</span>
+          </div>
+          <div class="cuentas-security-tip">
+            <i data-lucide="check"></i>
+            <span>Usa contraseñas de al menos 8 caracteres con letras, números y símbolos.</span>
+          </div>
+          <div class="cuentas-security-tip">
+            <i data-lucide="check"></i>
+            <span>Cierra sesión cuando uses computadoras públicas o compartidas.</span>
+          </div>
+          <div class="cuentas-security-tip">
+            <i data-lucide="check"></i>
+            <span>Revisa periódicamente la actividad de tu cuenta desde tu perfil.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="cuentas-faq">
+        <div class="cuentas-section-header">
+          <i data-lucide="help-circle"></i>
+          <h2 class="cuentas-section-title">Preguntas frecuentes</h2>
+        </div>
+
+        <div class="cuentas-faq-list">
+          <div class="cuentas-faq-item">
+            <button class="cuentas-faq-question">
+              ¿Qué hago si olvidé mi contraseña?
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="cuentas-faq-answer">
+              <p>Haz clic en "¿Olvidaste tu contraseña?" en la página de login. Ingresa tu email registrado y recibirás un código de verificación. Con ese código podrás crear una nueva contraseña.</p>
+            </div>
+          </div>
+
+          <div class="cuentas-faq-item">
+            <button class="cuentas-faq-question">
+              ¿CemiKey funciona para todos los usuarios?
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="cuentas-faq-answer">
+              <p>Sí, CemiKey está disponible para administradores, profesores y alumnos. Cada usuario puede configurar su propia clave de acceso única desde el dashboard.</p>
+            </div>
+          </div>
+
+          <div class="cuentas-faq-item">
+            <button class="cuentas-faq-question">
+              ¿Cómo configuro mi CemiKey?
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="cuentas-faq-answer">
+              <p>Para configurar tu CemiKey:</p>
+              <ul>
+                <li>Inicia sesión en tu dashboard con tu método actual</li>
+                <li>Haz clic en tu avatar o nombre de usuario</li>
+                <li>Selecciona "Mis Credenciales"</li>
+                <li>En la sección CemiKey, ingresa tu nueva clave (mínimo 4 caracteres)</li>
+                <li>Guarda los cambios y listo</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="cuentas-faq-item">
+            <button class="cuentas-faq-question">
+              ¿Puedo tener CemiKey y usar también el login tradicional?
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="cuentas-faq-answer">
+              <p>Sí, ambos métodos funcionan en paralelo. Puedes usar el que prefieras en cada ocasión. Tu email y contraseña seguirán funcionando aunque tengas CemiKey configurado.</p>
+            </div>
+          </div>
+
+          <div class="cuentas-faq-item">
+            <button class="cuentas-faq-question">
+              ¿Qué pasa si pierdo mi CemiKey?
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="cuentas-faq-answer">
+              <p>No te preocupes. Simplemente usa el login tradicional con tu email y contraseña para acceder al sistema. Una vez dentro, puedes generar una nueva CemiKey desde tu perfil.</p>
+            </div>
+          </div>
+
+          <div class="cuentas-faq-item">
+            <button class="cuentas-faq-question">
+              ¿Por qué no puedo registrarme como profesor?
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="cuentas-faq-answer">
+              <p>Las cuentas de profesores son creadas exclusivamente por los administradores del sistema. Si eres profesor y necesitas acceso, contacta al departamento administrativo de tu institución.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="cuentas-sidebar">
+      
+      <!-- Quick Links -->
+      <div class="cuentas-sidebar-card">
+        <h4 class="cuentas-sidebar-title">
+          <i data-lucide="bookmark"></i>
+          Artículos relacionados
+        </h4>
+        <div class="cuentas-sidebar-links">
+          <a href="cemikey-que-es.html" class="cuentas-sidebar-link">
+            <i data-lucide="file-text"></i>
+            ¿Qué es CemiKey?
+          </a>
+          <a href="cemikey-configurar.html" class="cuentas-sidebar-link">
+            <i data-lucide="settings"></i>
+            Configurar CemiKey
+          </a>
+          <a href="cemikey-seguridad.html" class="cuentas-sidebar-link">
+            <i data-lucide="shield-check"></i>
+            Seguridad en CemiKey
+          </a>
+          <a href="guia.html" class="cuentas-sidebar-link">
+            <i data-lucide="book-open"></i>
+            Guía para usuarios
+          </a>
+          <a href="privacidad.html" class="cuentas-sidebar-link">
+            <i data-lucide="eye-off"></i>
+            Política de privacidad
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="cuentas-sidebar-card">
+        <h4 class="cuentas-sidebar-title">
+          <i data-lucide="zap"></i>
+          Accesos rápidos
+        </h4>
+        <div class="cuentas-sidebar-links">
+          <a href="login-key.html" class="cuentas-sidebar-link">
+            <i data-lucide="key"></i>
+            Ingresar con CemiKey
+          </a>
+          <a href="login-selector.html" class="cuentas-sidebar-link">
+            <i data-lucide="log-in"></i>
+            Login tradicional
+          </a>
+          <a href="register.html" class="cuentas-sidebar-link">
+            <i data-lucide="user-plus"></i>
+            Crear cuenta
+          </a>
+        </div>
+      </div>
+
+      <!-- Help Box -->
+      <div class="cuentas-sidebar-help">
+        <div class="cuentas-sidebar-help-icon">
+          <i data-lucide="headphones"></i>
+        </div>
+        <h4>¿Necesitas ayuda?</h4>
+        <p>Si tienes problemas para acceder a tu cuenta, nuestro equipo de soporte está disponible para asistirte.</p>
+        <a href="mailto:soporte@cemiedu.ar" class="cuentas-sidebar-help-btn">
+          <i data-lucide="mail"></i>
+          Contactar soporte
+        </a>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- Footer -->
+  <footer class="cuentas-footer">
+    <div class="cuentas-footer-inner">
+      <div class="cuentas-footer-grid">
+        <div class="cuentas-footer-brand">
+          <img src="images/logolong.png" alt="Logo Cemi">
+          <p>Sistema de Gestión Académica Integral. Formando el futuro, un idioma a la vez.</p>
+        </div>
+        <div class="cuentas-footer-column">
+          <h4>Plataforma</h4>
+          <ul>
+            <li><a href="classroom-login.html">Classroom</a></li>
+            <li><a href="login-selector.html">Dashboard</a></li>
+            <li><a href="register.html">Registrarme</a></li>
+            <li><a href="status.html">Estado del sistema</a></li>
+          </ul>
+        </div>
+        <div class="cuentas-footer-column">
+          <h4>Recursos</h4>
+          <ul>
+            <li><a href="ayuda.html">Centro de Ayuda</a></li>
+            <li><a href="guia.html">Guía de Usuario</a></li>
+            <li><a href="ayuda-cemikey.html">Ayuda CemiKey</a></li>
+            <li><a href="a-to-z.html">Índice A-Z</a></li>
+          </ul>
+        </div>
+        <div class="cuentas-footer-column">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="terminos.html">Términos de Servicio</a></li>
+            <li><a href="privacidad.html">Privacidad</a></li>
+            <li><a href="accesibilidad.html">Accesibilidad</a></li>
+            <li><a href="cookies-config.html">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="cuentas-footer-bottom">
+        <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+        <div class="cuentas-footer-bottom-links">
+          <a href="terminos.html">Términos</a>
+          <a href="privacidad.html">Privacidad</a>
+          <a href="ayuda.html">Ayuda</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/harvard-menu.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+
+      // FAQ Accordion
+      const faqItems = document.querySelectorAll('.cuentas-faq-item');
+      faqItems.forEach(item => {
+        const question = item.querySelector('.cuentas-faq-question');
+        question.addEventListener('click', () => {
+          const isActive = item.classList.contains('active');
+          
+          // Close all
+          faqItems.forEach(i => i.classList.remove('active'));
+          
+          // Open clicked if wasn't active
+          if (!isActive) {
+            item.classList.add('active');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

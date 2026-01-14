@@ -1,0 +1,290 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Verificador de Seguridad | CEMI</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="security-header">
+        <div class="security-header-content">
+            <div class="security-icon"><i data-lucide="shield-check"></i></div>
+            <h1>Verificador de Seguridad</h1>
+            <p>Revisa el estado de seguridad de tu cuenta y recibe recomendaciones personalizadas.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-privsec-home.html" style="color: #0071e3; text-decoration: none;">Privacidad y Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Verificador de seguridad</span>
+        </div>
+
+        <div class="security-alert">
+            <i data-lucide="info"></i>
+            <div>
+                <strong>Checkup de seguridad</strong>
+                <p>Esta herramienta analiza 5 aspectos críticos de tu cuenta y te da un puntaje general. Toma menos de 2 minutos revisar y corregir problemas.</p>
+            </div>
+        </div>
+
+        <div class="security-card" style="background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%); color: white; text-align: center; padding: 50px 30px;">
+            <div style="display: inline-block; position: relative; width: 180px; height: 180px; margin-bottom: 30px;">
+                <svg style="width: 180px; height: 180px; transform: rotate(-90deg);">
+                    <circle cx="90" cy="90" r="70" stroke="rgba(255,255,255,0.3)" stroke-width="15" fill="none"></circle>
+                    <circle cx="90" cy="90" r="70" stroke="white" stroke-width="15" fill="none" stroke-dasharray="440" stroke-dashoffset="132" stroke-linecap="round" style="transition: stroke-dashoffset 1s;"></circle>
+                </svg>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <span style="font-size: 48px; font-weight: 700; display: block; line-height: 1;">70</span>
+                    <span style="font-size: 14px; opacity: 0.9;">/100</span>
+                </div>
+            </div>
+            <h2 style="color: white; margin-bottom: 15px; font-size: 28px;">Seguridad Media</h2>
+            <p style="color: rgba(255,255,255,0.95); font-size: 16px; max-width: 600px; margin: 0 auto 30px;">Tu cuenta tiene protección básica, pero hay áreas importantes que deberías mejorar para alcanzar el nivel óptimo de seguridad.</p>
+            <button onclick="location.reload()" style="background: white; color: #FF9800; border: none; padding: 15px 40px; font-size: 16px; font-weight: 700; border-radius: 8px; cursor: pointer;">
+                <i data-lucide="refresh-cw" style="width: 20px; height: 20px; display: inline; vertical-align: middle;"></i> Volver a analizar
+            </button>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="list-checks"></i> Análisis detallado</h2>
+            <p style="margin-bottom: 30px;">Revisa cada categoría y sigue las recomendaciones:</p>
+            
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #FFC107;">
+                <div style="display: flex; gap: 20px; align-items: start;">
+                    <div style="background: #FFC107; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i data-lucide="key" style="width: 24px; height: 24px; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="margin: 0; color: #2c3e50;">Fortaleza de contraseña</h3>
+                            <span style="background: #FFC107; color: white; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 700;">️ MEDIA</span>
+                        </div>
+                        <p style="color: #5a6c7d; margin-bottom: 15px; font-size: 14px;">Tu contraseña tiene más de 8 caracteres, pero le faltan números y símbolos especiales. Última actualización: hace 4 meses.</p>
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #FFC107;">
+                            <strong style="color: #856404; display: block; margin-bottom: 8px;"> Recomendación:</strong>
+                            <p style="color: #856404; margin: 0; font-size: 13px;">Crea una contraseña de al menos 12 caracteres con letras mayúsculas, minúsculas, números y símbolos. Evita palabras del diccionario.</p>
+                        </div>
+                        <a href="cambiar-contraseña.html" style="display: inline-block; background: #FFC107; color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Cambiar contraseña
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #dc3545;">
+                <div style="display: flex; gap: 20px; align-items: start;">
+                    <div style="background: #dc3545; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i data-lucide="smartphone" style="width: 24px; height: 24px; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="margin: 0; color: #2c3e50;">Verificación en dos pasos (2FA)</h3>
+                            <span style="background: #dc3545; color: white; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 700;"> DESACTIVADO</span>
+                        </div>
+                        <p style="color: #5a6c7d; margin-bottom: 15px; font-size: 14px;">No has activado la verificación en dos pasos. Esto hace tu cuenta 99% más vulnerable ante robos de contraseña.</p>
+                        <div style="background: #f8d7da; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #dc3545;">
+                            <strong style="color: #721c24; display: block; margin-bottom: 8px;"> Acción crítica:</strong>
+                            <p style="color: #721c24; margin: 0; font-size: 13px;">Activa 2FA AHORA. Es la protección más importante después de la contraseña. Con 2FA, nadie puede acceder aunque conozca tu contraseña.</p>
+                        </div>
+                        <a href="verificacion-dos-pasos.html" style="display: inline-block; background: #dc3545; color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Activar 2FA
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #6c757d;">
+                <div style="display: flex; gap: 20px; align-items: start;">
+                    <div style="background: #6c757d; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i data-lucide="shield" style="width: 24px; height: 24px; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="margin: 0; color: #2c3e50;">Códigos de recuperación</h3>
+                            <span style="background: #6c757d; color: white; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 700;">⊘ NO APLICA</span>
+                        </div>
+                        <p style="color: #5a6c7d; margin-bottom: 15px; font-size: 14px;">Debes activar 2FA primero para poder generar códigos de recuperación.</p>
+                        <div style="background: #e2e3e5; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #6c757d;">
+                            <strong style="color: #383d41; display: block; margin-bottom: 8px;">ℹ️ Información:</strong>
+                            <p style="color: #383d41; margin: 0; font-size: 13px;">Los códigos de recuperación te permiten acceder si pierdes tu teléfono o dispositivo 2FA. Se generan automáticamente al activar 2FA.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #28a745;">
+                <div style="display: flex; gap: 20px; align-items: start;">
+                    <div style="background: #28a745; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i data-lucide="activity" style="width: 24px; height: 24px; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="margin: 0; color: #2c3e50;">Actividad reciente</h3>
+                            <span style="background: #28a745; color: white; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 700;"> NORMAL</span>
+                        </div>
+                        <p style="color: #5a6c7d; margin-bottom: 15px; font-size: 14px;">No detectamos actividad sospechosa en los últimos 30 días. Todos los accesos son desde tus ubicaciones habituales.</p>
+                        <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #28a745;">
+                            <strong style="color: #155724; display: block; margin-bottom: 8px;"> Todo bien:</strong>
+                            <p style="color: #155724; margin: 0; font-size: 13px;">
+                                • 12 inicios de sesión exitosos<br>
+                                • 0 intentos fallidos<br>
+                                • 3 dispositivos reconocidos<br>
+                                • Última sesión: Hoy a las 09:15
+                            </p>
+                        </div>
+                        <a href="historial-acceso.html" style="display: inline-block; background: #28a745; color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Ver historial completo
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; border-left: 4px solid #FFC107;">
+                <div style="display: flex; gap: 20px; align-items: start;">
+                    <div style="background: #FFC107; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i data-lucide="puzzle" style="width: 24px; height: 24px; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="margin: 0; color: #2c3e50;">Aplicaciones conectadas</h3>
+                            <span style="background: #FFC107; color: white; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 700;">️ REVISAR</span>
+                        </div>
+                        <p style="color: #5a6c7d; margin-bottom: 15px; font-size: 14px;">Tienes 3 aplicaciones con acceso a tu cuenta. Una de ellas no se usa desde hace 6 meses.</p>
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #FFC107;">
+                            <strong style="color: #856404; display: block; margin-bottom: 8px;"> Recomendación:</strong>
+                            <p style="color: #856404; margin: 0; font-size: 13px;">
+                                • <strong>Google Classroom:</strong> Última conexión hace 2 días <br>
+                                • <strong>Microsoft Teams:</strong> Última conexión hace 1 semana <br>
+                                • <strong>Notion:</strong> Última conexión hace 6 meses ️ (considera revocar acceso)
+                            </p>
+                        </div>
+                        <a href="compartir-datos.html" style="display: inline-block; background: #FFC107; color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Gestionar aplicaciones
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
+            <h2><i data-lucide="trending-up"></i> Cómo mejorar tu puntuación</h2>
+            <p style="margin-bottom: 30px;">Sigue estos pasos en orden de prioridad:</p>
+            <div style="display: grid; gap: 15px;">
+                <div style="background: white; padding: 20px; border-radius: 8px; display: flex; gap: 15px; align-items: center;">
+                    <span style="background: #dc3545; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</span>
+                    <div style="flex: 1;">
+                        <strong style="color: #2c3e50; display: block; margin-bottom: 5px;">Activar verificación en dos pasos</strong>
+                        <span style="color: #dc3545; font-size: 13px; font-weight: 600;">+25 puntos - CRÍTICO</span>
+                    </div>
+                    <a href="verificacion-dos-pasos.html" style="background: #0071e3; color: white; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; white-space: nowrap;">Activar</a>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; display: flex; gap: 15px; align-items: center;">
+                    <span style="background: #FFC107; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</span>
+                    <div style="flex: 1;">
+                        <strong style="color: #2c3e50; display: block; margin-bottom: 5px;">Mejorar contraseña</strong>
+                        <span style="color: #FFC107; font-size: 13px; font-weight: 600;">+10 puntos - IMPORTANTE</span>
+                    </div>
+                    <a href="cambiar-contraseña.html" style="background: #0071e3; color: white; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; white-space: nowrap;">Cambiar</a>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; display: flex; gap: 15px; align-items: center;">
+                    <span style="background: #28a745; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</span>
+                    <div style="flex: 1;">
+                        <strong style="color: #2c3e50; display: block; margin-bottom: 5px;">Revisar aplicaciones conectadas</strong>
+                        <span style="color: #28a745; font-size: 13px; font-weight: 600;">+5 puntos - RECOMENDADO</span>
+                    </div>
+                    <a href="compartir-datos.html" style="background: #0071e3; color: white; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; white-space: nowrap;">Revisar</a>
+                </div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px;">
+                <strong style="color: #2c3e50; font-size: 18px; display: block; margin-bottom: 10px;">Puntuación potencial: 70 → <span style="color: #28a745;">100</span> </strong>
+                <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Completa las 3 acciones para alcanzar seguridad máxima</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="trophy"></i> Niveles de seguridad</h2>
+            <div style="margin-top: 30px; display: grid; gap: 15px;">
+                <div style="display: flex; gap: 15px; align-items: center; padding: 15px; background: #f8d7da; border-radius: 8px; border-left: 4px solid #dc3545;">
+                    <span style="font-size: 28px;"></span>
+                    <div>
+                        <strong style="color: #721c24; display: block; margin-bottom: 5px;">Baja (0-40 puntos)</strong>
+                        <span style="color: #721c24; font-size: 13px;">Cuenta vulnerable. Alto riesgo de hackeo.</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; align-items: center; padding: 15px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #FFC107;">
+                    <span style="font-size: 28px;"></span>
+                    <div>
+                        <strong style="color: #856404; display: block; margin-bottom: 5px;">Media (41-75 puntos) ← TÚ ESTÁS AQUÍ</strong>
+                        <span style="color: #856404; font-size: 13px;">Protección básica. Mejoras recomendadas.</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; align-items: center; padding: 15px; background: #d1ecf1; border-radius: 8px; border-left: 4px solid #0071e3;">
+                    <span style="font-size: 28px;"></span>
+                    <div>
+                        <strong style="color: #0c5460; display: block; margin-bottom: 5px;">Alta (76-95 puntos)</strong>
+                        <span style="color: #0c5460; font-size: 13px;">Buena seguridad. Pocas mejoras pendientes.</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; align-items: center; padding: 15px; background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
+                    <span style="font-size: 28px;"></span>
+                    <div>
+                        <strong style="color: #155724; display: block; margin-bottom: 5px;">Máxima (96-100 puntos)</strong>
+                        <span style="color: #155724; font-size: 13px;">Protección óptima. ¡Felicitaciones!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <div style="background: linear-gradient(135deg, #0071e3 0%, #0056b3 100%); padding: 40px; border-radius: 12px; color: white;">
+                <i data-lucide="zap" style="width: 48px; height: 48px; margin-bottom: 20px;"></i>
+                <h3 style="color: white; margin-bottom: 15px; font-size: 22px;">Programa el verificador automático</h3>
+                <p style="color: rgba(255,255,255,0.9); margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">Recibe un análisis automático cada mes por email con recomendaciones personalizadas.</p>
+                <button onclick="alert('Verificador automático activado. Recibirás análisis el día 1 de cada mes.')" style="background: white; color: #0071e3; border: none; padding: 15px 40px; font-size: 16px; font-weight: 700; border-radius: 8px; cursor: pointer;">
+                    <i data-lucide="calendar-check" style="width: 20px; height: 20px; display: inline; vertical-align: middle;"></i> Activar análisis mensual
+                </button>
+            </div>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="ayuda/proteger-cuenta.html" class="security-action-btn">
+                    <i data-lucide="book-open"></i>
+                    <strong>Guía de protección</strong>
+                    <span>Aprende mejores prácticas</span>
+                </a>
+                <a href="configuracion-privacidad.html" class="security-action-btn">
+                    <i data-lucide="settings"></i>
+                    <strong>Configuración</strong>
+                    <span>Ajustes de privacidad</span>
+                </a>
+                <a href="../cemi-privsec-home.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Portal</strong>
+                    <span>Privacidad y Seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../privacidad.html">Privacidad</a>
+            <a href="../terminos.html">Términos</a>
+            <a href="../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi. Todos los derechos reservados.</p>
+    </footer>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
+
+

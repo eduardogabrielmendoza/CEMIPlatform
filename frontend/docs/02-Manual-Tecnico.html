@@ -1,0 +1,520 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Manual Técnico - CEMI Sistema Gestor</title>
+    <link rel="stylesheet" href="harvard-doc-styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../documentacion.html" class="back-link">← Volver a Documentación</a>
+        
+        <div class="cover">
+            <h1>MANUAL TÉCNICO</h1>
+            <p class="subtitle">CEMI Sistema de Gestión Académica</p>
+            <p>Documentación para Desarrolladores</p>
+            <div class="version">Versión 1.0 - Noviembre 2025</div>
+        </div>
+
+        <div class="toc">
+            <h2>Índice de Contenidos</h2>
+            <ul>
+                <li><a href="#intro">1. Introducción</a></li>
+                <li><a href="#stack">2. Stack Tecnológico</a></li>
+                <li><a href="#arquitectura">3. Arquitectura del Sistema</a></li>
+                <li><a href="#estructura">4. Estructura del Proyecto</a></li>
+                <li><a href="#bd">5. Base de Datos</a></li>
+                <li><a href="#api">6. API REST - Endpoints</a></li>
+                <li><a href="#seguridad">7. Seguridad</a></li>
+                <li><a href="#instalacion">8. Instalación y Configuración</a></li>
+                <li><a href="#despliegue">9. Despliegue en Producción</a></li>
+                <li><a href="#mantenimiento">10. Mantenimiento</a></li>
+            </ul>
+        </div>
+
+        <h1 id="intro">1. Introducción</h1>
+        <p>
+            Este manual técnico proporciona la documentación completa del sistema CEMI, incluyendo su arquitectura, tecnologías utilizadas, estructura del código, configuración de la base de datos, endpoints de la API y procedimientos de despliegue.
+        </p>
+
+        <div class="info-box">
+            <strong>Propósito:</strong> Servir como referencia técnica para el equipo de desarrollo, mantenimiento y futuros desarrolladores que trabajen con el sistema.
+        </div>
+
+        <h1 id="stack">2. Stack Tecnológico</h1>
+
+        <div class="tech-stack">
+            <div class="tech-item">
+                <h4>Backend</h4>
+                <ul>
+                    <li>Node.js v18+</li>
+                    <li>Express.js 4.x</li>
+                    <li>Socket.IO (Chat)</li>
+                </ul>
+            </div>
+            <div class="tech-item">
+                <h4>Base de Datos</h4>
+                <ul>
+                    <li>MySQL 8.0</li>
+                    <li>mysql2 (Driver)</li>
+                </ul>
+            </div>
+            <div class="tech-item">
+                <h4>Frontend</h4>
+                <ul>
+                    <li>HTML5 / CSS3</li>
+                    <li>JavaScript (ES6+)</li>
+                    <li>Responsive Design</li>
+                </ul>
+            </div>
+            <div class="tech-item">
+                <h4>Seguridad</h4>
+                <ul>
+                    <li>bcrypt (Hashing)</li>
+                    <li>Helmet.js</li>
+                    <li>express-rate-limit</li>
+                </ul>
+            </div>
+            <div class="tech-item">
+                <h4>Despliegue</h4>
+                <ul>
+                    <li>Railway (Hosting)</li>
+                    <li>Cloudinary (Assets)</li>
+                    <li>GitHub (Repositorio)</li>
+                </ul>
+            </div>
+            <div class="tech-item">
+                <h4>Herramientas</h4>
+                <ul>
+                    <li>Git / GitHub</li>
+                    <li>VS Code</li>
+                    <li>Postman (API Testing)</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Dependencias Principales (package.json)</h3>
+        <pre>
+{
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^6.10.0",
+    "socket.io": "^4.7.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1"
+  }
+}
+        </pre>
+
+        <h1 id="arquitectura">3. Arquitectura del Sistema</h1>
+
+        <h3>3.1 Patrón de Arquitectura</h3>
+        <p>El sistema implementa una arquitectura <strong>MVC (Model-View-Controller)</strong> adaptada para aplicaciones web modernas:</p>
+
+        <ul>
+            <li><strong>Model:</strong> Consultas SQL y lógica de datos en archivos de rutas</li>
+            <li><strong>View:</strong> Archivos HTML estáticos servidos desde /frontend</li>
+            <li><strong>Controller:</strong> Rutas de Express que procesan las solicitudes</li>
+        </ul>
+
+        <h3>3.2 Arquitectura de Capas</h3>
+        <pre>
+┌─────────────────────────────────────────────────────────┐
+│                    CLIENTE (Browser)                     │
+│         HTML5 + CSS3 + JavaScript (Vanilla)             │
+└─────────────────────────┬───────────────────────────────┘
+                          │ HTTP/HTTPS + WebSocket
+┌─────────────────────────▼───────────────────────────────┐
+│                   SERVIDOR (Node.js)                     │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │              Express.js (Router)                 │    │
+│  │   /api/auth  /api/alumnos  /api/cursos  ...    │    │
+│  └─────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │           Middleware (Security Layer)            │    │
+│  │    Helmet | CORS | Rate Limit | Morgan          │    │
+│  └─────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────┐    │
+│  │             Socket.IO (Real-time Chat)           │    │
+│  └─────────────────────────────────────────────────┘    │
+└─────────────────────────┬───────────────────────────────┘
+                          │ mysql2 (Connection Pool)
+┌─────────────────────────▼───────────────────────────────┐
+│                  BASE DE DATOS (MySQL)                   │
+│      Tablas: usuarios, alumnos, cursos, pagos, etc.     │
+└─────────────────────────────────────────────────────────┘
+        </pre>
+
+        <h1 id="estructura">4. Estructura del Proyecto</h1>
+
+        <div class="file-structure">
+<span class="folder">CEMI-Sistema-Educativo/</span>
+├── <span class="file">server.js</span>              # Punto de entrada principal
+├── <span class="file">package.json</span>          # Dependencias y scripts
+├── <span class="file">.env</span>                  # Variables de entorno
+├── <span class="file">railway.toml</span>          # Configuración Railway
+│
+├── <span class="folder">backend/</span>
+│   ├── <span class="folder">config/</span>
+│   │   └── <span class="file">email.js</span>      # Configuración de correo
+│   │
+│   ├── <span class="folder">routes/</span>
+│   │   ├── <span class="file">auth.js</span>       # Autenticación
+│   │   ├── <span class="file">alumnos.js</span>    # CRUD Alumnos
+│   │   ├── <span class="file">profesores.js</span> # CRUD Profesores
+│   │   ├── <span class="file">cursos.js</span>     # CRUD Cursos
+│   │   ├── <span class="file">pagos.js</span>      # Gestión de pagos
+│   │   ├── <span class="file">classroom.js</span>  # Aula virtual
+│   │   ├── <span class="file">chat.js</span>       # Chat tiempo real
+│   │   └── <span class="file">...</span>           # Otras rutas
+│   │
+│   ├── <span class="folder">utils/</span>
+│   │   ├── <span class="file">db.js</span>         # Pool de conexiones MySQL
+│   │   └── <span class="file">chat-server.js</span># Servidor Socket.IO
+│   │
+│   └── <span class="folder">sql/</span>
+│       └── <span class="file">schema.sql</span>    # Estructura de BD
+│
+├── <span class="folder">frontend/</span>
+│   ├── <span class="file">index.html</span>        # Página principal
+│   ├── <span class="file">login.html</span>        # Login usuarios
+│   ├── <span class="file">dashboard_admin.html</span>  # Panel admin
+│   ├── <span class="file">dashboard_alumno.html</span> # Panel alumno
+│   ├── <span class="file">classroom.html</span>    # Aula virtual
+│   │
+│   ├── <span class="folder">assets/</span>
+│   │   ├── <span class="folder">css/</span>       # Estilos
+│   │   └── <span class="folder">js/</span>        # Scripts
+│   │
+│   └── <span class="folder">images/</span>       # Recursos gráficos
+│
+└── <span class="folder">uploads/</span>          # Archivos subidos
+    ├── <span class="folder">avatars/</span>      # Fotos de perfil
+    ├── <span class="folder">recursos/</span>     # Materiales
+    └── <span class="folder">tareas/</span>       # Entregas
+        </div>
+
+        <h1 id="bd">5. Base de Datos</h1>
+
+        <h3>5.1 Sistema de Gestión</h3>
+        <p><strong>Motor:</strong> MySQL 8.0</p>
+        <p><strong>Charset:</strong> utf8mb4</p>
+        <p><strong>Collation:</strong> utf8mb4_unicode_ci</p>
+
+        <h3>5.2 Tablas Principales</h3>
+        <table>
+            <tr>
+                <th>Tabla</th>
+                <th>Descripción</th>
+                <th>Relaciones</th>
+            </tr>
+            <tr>
+                <td><code>usuarios</code></td>
+                <td>Credenciales de acceso</td>
+                <td>1:1 con alumnos/profesores</td>
+            </tr>
+            <tr>
+                <td><code>perfiles</code></td>
+                <td>Tipos de usuario</td>
+                <td>1:N con usuarios</td>
+            </tr>
+            <tr>
+                <td><code>alumnos</code></td>
+                <td>Datos de estudiantes</td>
+                <td>N:M con cursos</td>
+            </tr>
+            <tr>
+                <td><code>profesores</code></td>
+                <td>Datos de docentes</td>
+                <td>1:N con cursos</td>
+            </tr>
+            <tr>
+                <td><code>cursos</code></td>
+                <td>Información de cursos</td>
+                <td>N:1 con aulas, idiomas, niveles</td>
+            </tr>
+            <tr>
+                <td><code>inscripciones</code></td>
+                <td>Alumnos en cursos</td>
+                <td>N:1 con alumnos y cursos</td>
+            </tr>
+            <tr>
+                <td><code>pagos</code></td>
+                <td>Transacciones financieras</td>
+                <td>N:1 con alumnos</td>
+            </tr>
+            <tr>
+                <td><code>aulas</code></td>
+                <td>Espacios físicos</td>
+                <td>1:N con cursos</td>
+            </tr>
+            <tr>
+                <td><code>tareas</code></td>
+                <td>Actividades del classroom</td>
+                <td>N:1 con cursos</td>
+            </tr>
+            <tr>
+                <td><code>mensajes_chat</code></td>
+                <td>Historial de chat</td>
+                <td>N:1 con usuarios y cursos</td>
+            </tr>
+        </table>
+
+        <h3>5.3 Conexión a la Base de Datos</h3>
+        <pre>
+<span class="comment">// backend/utils/db.js</span>
+<span class="keyword">import</span> mysql <span class="keyword">from</span> <span class="string">'mysql2/promise'</span>;
+
+<span class="keyword">const</span> pool = mysql.<span class="function">createPool</span>({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  waitForConnections: <span class="keyword">true</span>,
+  connectionLimit: <span class="number">10</span>,
+  queueLimit: <span class="number">0</span>
+});
+
+<span class="keyword">export default</span> pool;
+        </pre>
+
+        <h1 id="api">6. API REST - Endpoints</h1>
+
+        <h3>6.1 Autenticación</h3>
+        <div class="api-endpoint">
+            <span class="method post">POST</span> /api/auth/login
+        </div>
+        <p><strong>Body:</strong> <code>{ "username": "string", "password": "string" }</code></p>
+        <p><strong>Response:</strong> <code>{ "success": true, "user": {...}, "token": "..." }</code></p>
+
+        <div class="api-endpoint">
+            <span class="method post">POST</span> /api/auth/register
+        </div>
+
+        <h3>6.2 Alumnos</h3>
+        <div class="api-endpoint">
+            <span class="method get">GET</span> /api/alumnos
+        </div>
+        <p>Obtiene lista de todos los alumnos.</p>
+
+        <div class="api-endpoint">
+            <span class="method get">GET</span> /api/alumnos/:id
+        </div>
+        <p>Obtiene alumno por ID.</p>
+
+        <div class="api-endpoint">
+            <span class="method post">POST</span> /api/alumnos
+        </div>
+        <p>Crea nuevo alumno.</p>
+
+        <div class="api-endpoint">
+            <span class="method put">PUT</span> /api/alumnos/:id
+        </div>
+        <p>Actualiza alumno existente.</p>
+
+        <div class="api-endpoint">
+            <span class="method delete">DELETE</span> /api/alumnos/:id
+        </div>
+        <p>Elimina alumno.</p>
+
+        <h3>6.3 Cursos</h3>
+        <div class="api-endpoint">
+            <span class="method get">GET</span> /api/cursos
+        </div>
+        <div class="api-endpoint">
+            <span class="method post">POST</span> /api/cursos
+        </div>
+        <div class="api-endpoint">
+            <span class="method put">PUT</span> /api/cursos/:id
+        </div>
+        <div class="api-endpoint">
+            <span class="method delete">DELETE</span> /api/cursos/:id
+        </div>
+
+        <h3>6.4 Pagos</h3>
+        <div class="api-endpoint">
+            <span class="method get">GET</span> /api/pagos
+        </div>
+        <div class="api-endpoint">
+            <span class="method get">GET</span> /api/pagos/alumno/:alumno_id
+        </div>
+        <div class="api-endpoint">
+            <span class="method post">POST</span> /api/pagos
+        </div>
+
+        <h3>6.5 Classroom</h3>
+        <div class="api-endpoint">
+            <span class="method get">GET</span> /api/classroom/cursos/:curso_id
+        </div>
+        <div class="api-endpoint">
+            <span class="method post">POST</span> /api/classroom/tareas
+        </div>
+        <div class="api-endpoint">
+            <span class="method post">POST</span> /api/classroom/anuncios
+        </div>
+
+        <h1 id="seguridad">7. Seguridad</h1>
+
+        <h3>7.1 Autenticación</h3>
+        <ul>
+            <li>Contraseñas hasheadas con <strong>bcrypt</strong> (salt rounds: 10)</li>
+            <li>Sesiones manejadas del lado del cliente (localStorage)</li>
+            <li>Validación de roles en cada endpoint protegido</li>
+        </ul>
+
+        <h3>7.2 Middleware de Seguridad</h3>
+        <pre>
+<span class="comment">// Helmet - Cabeceras HTTP seguras</span>
+app.<span class="function">use</span>(<span class="function">helmet</span>({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: [<span class="string">"'self'"</span>],
+      scriptSrc: [<span class="string">"'self'"</span>, <span class="string">"'unsafe-inline'"</span>],
+      styleSrc: [<span class="string">"'self'"</span>, <span class="string">"'unsafe-inline'"</span>]
+    }
+  }
+}));
+
+<span class="comment">// Rate Limiting - Prevención de ataques</span>
+<span class="keyword">const</span> limiter = <span class="function">rateLimit</span>({
+  windowMs: <span class="number">15</span> * <span class="number">60</span> * <span class="number">1000</span>, <span class="comment">// 15 minutos</span>
+  max: <span class="number">1000</span> <span class="comment">// máximo de requests</span>
+});
+app.<span class="function">use</span>(<span class="string">'/api/'</span>, limiter);
+
+<span class="comment">// CORS - Orígenes permitidos</span>
+<span class="keyword">const</span> corsOptions = {
+  origin: [<span class="string">'https://cemi.up.railway.app'</span>],
+  credentials: <span class="keyword">true</span>
+};
+        </pre>
+
+        <h3>7.3 Validación de Datos</h3>
+        <ul>
+            <li>Sanitización de inputs para prevenir SQL Injection</li>
+            <li>Uso de consultas parametrizadas</li>
+            <li>Validación de tipos de datos en el servidor</li>
+        </ul>
+
+        <h1 id="instalacion">8. Instalación y Configuración</h1>
+
+        <h3>8.1 Prerrequisitos</h3>
+        <ul>
+            <li>Node.js v18 o superior</li>
+            <li>MySQL 8.0</li>
+            <li>Git</li>
+        </ul>
+
+        <h3>8.2 Instalación Local</h3>
+        <pre>
+<span class="comment"># Clonar repositorio</span>
+git clone https://github.com/eduardogabrielmendozaprogram/cemi-sistema-educativo.git
+
+<span class="comment"># Ingresar al directorio</span>
+cd cemi-sistema-educativo
+
+<span class="comment"># Instalar dependencias</span>
+npm install
+
+<span class="comment"># Configurar variables de entorno</span>
+cp .env.example .env
+<span class="comment"># Editar .env con credenciales</span>
+
+<span class="comment"># Iniciar servidor de desarrollo</span>
+npm run dev
+        </pre>
+
+        <h3>8.3 Variables de Entorno (.env)</h3>
+        <pre>
+<span class="comment"># Base de Datos</span>
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=cemi_db
+DB_PORT=3306
+
+<span class="comment"># Servidor</span>
+PORT=3000
+NODE_ENV=development
+
+<span class="comment"># URLs</span>
+FRONTEND_URL=http://localhost:3000
+        </pre>
+
+        <h1 id="despliegue">9. Despliegue en Producción</h1>
+
+        <h3>9.1 Railway</h3>
+        <p>El sistema está desplegado en <strong>Railway</strong> con las siguientes configuraciones:</p>
+
+        <pre>
+<span class="comment"># railway.toml</span>
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+        </pre>
+
+        <h3>9.2 Proceso de Despliegue</h3>
+        <ol>
+            <li>Push a la rama <code>main</code> de GitHub</li>
+            <li>Railway detecta cambios automáticamente</li>
+            <li>Se ejecuta el build con Nixpacks</li>
+            <li>Se despliega la nueva versión</li>
+            <li>Health check verifica el estado</li>
+        </ol>
+
+        <h3>9.3 URL de Producción</h3>
+        <p><strong>https://cemi.up.railway.app</strong></p>
+
+        <h1 id="mantenimiento">10. Mantenimiento</h1>
+
+        <h3>10.1 Logs y Monitoreo</h3>
+        <ul>
+            <li><strong>Morgan:</strong> Logging de requests HTTP</li>
+            <li><strong>Railway Dashboard:</strong> Métricas y logs en tiempo real</li>
+            <li><strong>Health Check:</strong> <code>/api/health</code></li>
+        </ul>
+
+        <h3>10.2 Backup de Base de Datos</h3>
+        <pre>
+<span class="comment"># Exportar base de datos</span>
+mysqldump -u root -p cemi_db > backup_cemi.sql
+
+<span class="comment"># Importar backup</span>
+mysql -u root -p cemi_db < backup_cemi.sql
+        </pre>
+
+        <h3>10.3 Actualización del Sistema</h3>
+        <ol>
+            <li>Realizar backup de la BD</li>
+            <li>Crear rama de desarrollo</li>
+            <li>Implementar cambios</li>
+            <li>Probar en entorno local</li>
+            <li>Merge a main</li>
+            <li>Verificar despliegue automático</li>
+        </ol>
+
+        <div class="warning-box">
+            <strong>Importante:</strong> Siempre realice un backup antes de cualquier actualización de producción.
+        </div>
+
+        <div class="footer">
+            <p><strong>CEMI Sistema de Gestión Académica</strong></p>
+            <p>Manual Técnico - Versión 1.0</p>
+            <p>© 2025 - UTN Tecnicatura Universitaria en Programación</p>
+        </div>
+    </div>
+</body>
+</html>

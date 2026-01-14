@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Historial de Acceso | Cemi Seguridad</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="security-header">
+        <div class="security-header-content">
+            <div class="security-icon"><i data-lucide="clock"></i></div>
+            <h1>Historial de Acceso a tu Cuenta</h1>
+            <p>Revisa cuándo y desde dónde se ha accedido a tu cuenta Cemi.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-privsec-home.html" style="color: #0071e3; text-decoration: none;">Privacidad y Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Historial de acceso</span>
+        </div>
+
+        <div class="security-alert">
+            <i data-lucide="info"></i>
+            <div>
+                <strong>¿Qué puedes ver aquí?</strong>
+                <p>Un registro completo de todos los inicios de sesión en tu cuenta: exitosos, fallidos, dispositivos usados, ubicaciones y marcas de tiempo.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="calendar"></i> Accesos Recientes</h2>
+            <p style="margin-bottom: 30px;">Los accesos más recientes a tu cuenta:</p>
+            
+            <div style="background: #e8f5e9; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #28a745;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                    <div style="display: flex; gap: 15px;">
+                        <i data-lucide="check-circle" style="width: 32px; height: 32px; color: #28a745; flex-shrink: 0;"></i>
+                        <div>
+                            <strong style="color: #28a745; display: block; font-size: 16px; margin-bottom: 8px;"> Inicio de sesión exitoso</strong>
+                            <div style="color: #5a6c7d; font-size: 14px; line-height: 1.8;">
+                                <div><i data-lucide="clock" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Hoy a las 14:30 hs</div>
+                                <div><i data-lucide="monitor" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Windows 11 - Chrome 120</div>
+                                <div><i data-lucide="map-pin" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Buenos Aires, Argentina (IP: 181.45.xxx.xxx)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <span style="background: #28a745; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 600;">SESIÓN ACTIVA</span>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #0071e3;">
+                <div style="display: flex; gap: 15px;">
+                    <i data-lucide="check-circle" style="width: 28px; height: 28px; color: #0071e3; flex-shrink: 0;"></i>
+                    <div style="flex: 1;">
+                        <strong style="color: #0071e3; display: block; font-size: 16px; margin-bottom: 8px;"> Inicio de sesión exitoso</strong>
+                        <div style="color: #5a6c7d; font-size: 14px; line-height: 1.8;">
+                            <div><i data-lucide="clock" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Ayer a las 09:15 hs</div>
+                            <div><i data-lucide="smartphone" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Android 13 - Cemi App v1.2</div>
+                            <div><i data-lucide="map-pin" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Buenos Aires, Argentina</div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <span style="background: #6c757d; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px;">Cerrada hace 8 horas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #ffebee; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #dc3545;">
+                <div style="display: flex; gap: 15px;">
+                    <i data-lucide="x-circle" style="width: 28px; height: 28px; color: #dc3545; flex-shrink: 0;"></i>
+                    <div style="flex: 1;">
+                        <strong style="color: #dc3545; display: block; font-size: 16px; margin-bottom: 8px;"> Intento fallido</strong>
+                        <div style="color: #5a6c7d; font-size: 14px; line-height: 1.8;">
+                            <div><i data-lucide="clock" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Hace 3 días a las 22:45 hs</div>
+                            <div><i data-lucide="monitor" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Windows 10 - Firefox 118</div>
+                            <div><i data-lucide="map-pin" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Desconocida (IP: 186.123.xxx.xxx)</div>
+                            <div style="margin-top: 10px;"><span style="color: #dc3545; font-weight: 600;">Motivo: Contraseña incorrecta (3 intentos)</span></div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button onclick="alert('Reportando actividad sospechosa...')" style="background: #dc3545; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                <i data-lucide="flag" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> ¿No fuiste tú? Reportar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #fff3cd; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #FFC107;">
+                <div style="display: flex; gap: 15px;">
+                    <i data-lucide="alert-triangle" style="width: 28px; height: 28px; color: #856404; flex-shrink: 0;"></i>
+                    <div style="flex: 1;">
+                        <strong style="color: #856404; display: block; font-size: 16px; margin-bottom: 8px;">️ Acceso desde nueva ubicación</strong>
+                        <div style="color: #5a6c7d; font-size: 14px; line-height: 1.8;">
+                            <div><i data-lucide="clock" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Hace 1 semana a las 16:20 hs</div>
+                            <div><i data-lucide="smartphone" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> iPhone 14 - Safari 17</div>
+                            <div><i data-lucide="map-pin" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Córdoba, Argentina (IP: 190.xxx.xxx.xxx)</div>
+                            <div style="margin-top: 10px;"><span style="color: #856404; font-weight: 600;">Primera vez desde esta ciudad</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px;">
+                <div style="display: flex; gap: 15px;">
+                    <i data-lucide="check-circle" style="width: 28px; height: 28px; color: #0071e3; flex-shrink: 0;"></i>
+                    <div style="flex: 1;">
+                        <strong style="color: #0071e3; display: block; font-size: 16px; margin-bottom: 8px;"> Inicio de sesión exitoso</strong>
+                        <div style="color: #5a6c7d; font-size: 14px; line-height: 1.8;">
+                            <div><i data-lucide="clock" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Hace 2 semanas a las 11:00 hs</div>
+                            <div><i data-lucide="monitor" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> MacOS Sonoma - Chrome 120</div>
+                            <div><i data-lucide="map-pin" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Buenos Aires, Argentina</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white;">
+            <h2 style="color: white;"><i data-lucide="alert-octagon"></i> ¿Ves algo sospechoso?</h2>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 30px;">Si notas accesos que no reconoces, actúa inmediatamente:</p>
+            
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="cambiar-contraseña.html" style="background: white; color: #dc3545; text-decoration: none; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
+                    <i data-lucide="lock" style="width: 28px; height: 28px;"></i>
+                    <strong>Cambia tu contraseña</strong>
+                    <span style="font-size: 14px;">Inmediatamente</span>
+                </a>
+                <a href="cerrar-sesiones.html" style="background: white; color: #dc3545; text-decoration: none; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
+                    <i data-lucide="log-out" style="width: 28px; height: 28px;"></i>
+                    <strong>Cierra todas las sesiones</strong>
+                    <span style="font-size: 14px;">Expulsa a intrusos</span>
+                </a>
+                <a href="verificacion-dos-pasos.html" style="background: white; color: #dc3545; text-decoration: none; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
+                    <i data-lucide="smartphone" style="width: 28px; height: 28px;"></i>
+                    <strong>Activa 2FA</strong>
+                    <span style="font-size: 14px;">Protección adicional</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="help-circle"></i> Entender la información</h2>
+            <div style="margin-top: 30px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> Fecha y hora</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Siempre en tu zona horaria local. Basada en la hora del servidor.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> Dispositivo y navegador</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Detectado automáticamente desde el User-Agent. Puede no ser 100% preciso.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> Ubicación</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Estimada según tu dirección IP. Puede mostrar la ubicación de tu proveedor de internet, no tu ubicación exacta.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="../cemi-privsec-home.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Portal</strong>
+                    <span>Privacidad y Seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../privacidad.html">Privacidad</a>
+            <a href="../terminos.html">Términos</a>
+            <a href="../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi. Todos los derechos reservados.</p>
+    </footer>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
+
+

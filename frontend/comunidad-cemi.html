@@ -1,0 +1,791 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e1e1e">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="apple-touch-icon" href="images/logo.png">
+  <title>Nuestra Comunidad - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Hero Section */
+    .community-hero {
+      position: relative;
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1e1e1e;
+      overflow: hidden;
+    }
+
+    .community-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('images/comunidadCemiavif') center/cover no-repeat;
+      opacity: 0.3;
+    }
+
+    .community-hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 900px;
+      padding: 0 40px;
+    }
+
+    .community-hero-badge {
+      display: inline-block;
+      background: rgba(101, 111, 119, 0.2);
+      border: 1px solid rgba(101, 111, 119, 0.4);
+      padding: 8px 24px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #a0a8b0;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.2s;
+    }
+
+    .community-hero h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 4rem;
+      font-weight: 400;
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.4s;
+    }
+
+    .community-hero p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.7;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.6s;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Quote Section */
+    .community-quote {
+      background: #f8f9fa;
+      padding: 80px 40px;
+    }
+
+    .community-quote-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .community-quote blockquote {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      line-height: 1.5;
+      font-style: italic;
+      position: relative;
+    }
+
+    .community-quote blockquote::before {
+      content: '"';
+      font-size: 5rem;
+      color: rgba(30,30,30,0.1);
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: Georgia, serif;
+    }
+
+    /* Values Section */
+    .community-values {
+      background: #ffffff;
+      padding: 100px 40px;
+    }
+
+    .community-values-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .community-values-header h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      letter-spacing: -0.02em;
+    }
+
+    .community-values-header p {
+      font-size: 1.15rem;
+      color: #656f77;
+      max-width: 600px;
+      margin: 16px auto 0;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .value-card {
+      text-align: center;
+      padding: 48px 32px;
+      background: #f8f9fa;
+      border-radius: 16px;
+      transition: all 0.4s ease;
+    }
+
+    .value-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.08);
+    }
+
+    .value-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #656f77 0%, #4a5259 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+    }
+
+    .value-icon i {
+      width: 36px;
+      height: 36px;
+      color: #ffffff;
+    }
+
+    .value-card h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin-bottom: 12px;
+    }
+
+    .value-card p {
+      font-size: 1rem;
+      color: #656f77;
+      line-height: 1.6;
+    }
+
+    /* Gallery Section */
+    .community-gallery {
+      background: #1e1e1e;
+      padding: 100px 40px;
+    }
+
+    .gallery-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .gallery-header h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.08);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 32px;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    }
+
+    .gallery-overlay h3 {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .gallery-overlay p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* Activities Section */
+    .community-activities {
+      background: #f8f9fa;
+      padding: 100px 40px;
+    }
+
+    .activities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: center;
+    }
+
+    .activities-content h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      margin-bottom: 24px;
+    }
+
+    .activities-content p {
+      font-size: 1.1rem;
+      color: #656f77;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+
+    .activity-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .activity-list li {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      font-size: 1.05rem;
+      color: #1e1e1e;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .activity-list li:last-child {
+      border-bottom: none;
+    }
+
+    .activity-list i {
+      width: 24px;
+      height: 24px;
+      color: #656f77;
+    }
+
+    .activities-image {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.12);
+    }
+
+    .activities-image img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+    }
+
+    /* Testimonials */
+    .community-testimonials {
+      background: #ffffff;
+      padding: 100px 40px;
+    }
+
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .testimonials-header h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #1e1e1e;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .testimonial-card {
+      background: #f8f9fa;
+      padding: 40px 32px;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+    }
+
+    .testimonial-text {
+      font-size: 1.05rem;
+      color: #1e1e1e;
+      line-height: 1.7;
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #656f77, #4a5259);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #ffffff;
+      font-size: 1.1rem;
+    }
+
+    .author-info h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e1e1e;
+    }
+
+    .author-info p {
+      font-size: 0.9rem;
+      color: #656f77;
+    }
+
+    /* CTA Section */
+    .community-cta {
+      background: linear-gradient(135deg, #656f77 0%, #4a5259 100%);
+      padding: 100px 40px;
+      text-align: center;
+    }
+
+    .community-cta h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .community-cta p {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .community-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 48px;
+      background: #ffffff;
+      color: #4a5259;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .community-cta-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(147, 161, 173, 0.45);
+    }
+
+    /* Scroll Animations */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .community-hero h1 { font-size: 2.8rem; }
+      .values-grid, .testimonials-grid { grid-template-columns: 1fr; }
+      .activities-grid, .gallery-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 576px) {
+      .community-hero h1 { font-size: 2.2rem; }
+      .community-hero p { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <a href="index.html" class="harvard-branding">
+        <img src="images/logolong.png" alt="Logo CEMI" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+      </a>
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en CEMI" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo CEMI" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+      </nav>
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva.</p>
+          <div class="mega-sub-links">
+            <a href="classroom-login.html" class="mega-sub-link">Ir al Classroom</a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa del sistema.</p>
+          <div class="mega-sub-links">
+            <a href="login.html" class="mega-sub-link">Iniciar Sesión</a>
+            <a href="login-admin.html" class="mega-sub-link">Acceso Admin</a>
+          </div>
+        </div>
+        <div class="mega-nav-secondary" id="panel-nosotros">
+          <a href="index.html#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Conoce nuestra historia y misión.</p>
+          <div class="mega-sub-links">
+            <a href="porque-cemi.html" class="mega-sub-link">¿Por qué CEMI?</a>
+            <a href="comunidad-cemi.html" class="mega-sub-link">Nuestra Comunidad</a>
+            <a href="cemi-ninos.html" class="mega-sub-link">CEMI Niños</a>
+            <a href="cemi-jovenes.html" class="mega-sub-link">CEMI Jóvenes</a>
+          </div>
+        </div>
+        <div class="mega-nav-secondary" id="panel-soporte">
+          <a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a>
+          <p class="mega-sub-description">¿Necesitas ayuda?</p>
+          <div class="mega-sub-links">
+            <a href="ayuda.html" class="mega-sub-link">Centro de Ayuda</a>
+            <a href="status.html" class="mega-sub-link">Estado del Sistema</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mega-menu-footer">
+      <div class="mega-footer-inner">
+        <span class="mega-footer-label">Enlaces rápidos <span class="chevron">›</span></span>
+        <div class="mega-footer-links">
+          <a href="terminos.html" class="mega-footer-link">Términos</a>
+          <a href="privacidad.html" class="mega-footer-link">Privacidad</a>
+          <a href="a-to-z.html" class="mega-footer-link">Índice A-Z</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="community-hero">
+    <div class="community-hero-content">
+      <span class="community-hero-badge">Familia CEMI</span>
+      <h1>Nuestra Comunidad</h1>
+      <p>Más que un centro de idiomas, somos una familia unida por la pasión de aprender y crecer juntos. Conoce a las personas que hacen de CEMI un lugar especial.</p>
+    </div>
+  </section>
+
+  <section class="community-quote">
+    <div class="community-quote-inner scroll-reveal">
+      <blockquote>
+        "En CEMI no solo aprendí un idioma, encontré una segunda familia que me apoyó en cada paso del camino."
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="community-values">
+    <div class="community-values-header scroll-reveal">
+      <h2>Nuestros valores</h2>
+      <p>Los pilares que definen quiénes somos y cómo construimos comunidad</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card scroll-reveal">
+        <div class="value-icon">
+          <i data-lucide="heart-handshake"></i>
+        </div>
+        <h3>Compañerismo</h3>
+        <p>Fomentamos un ambiente de apoyo mutuo donde cada estudiante ayuda y es ayudado.</p>
+      </div>
+      <div class="value-card scroll-reveal">
+        <div class="value-icon">
+          <i data-lucide="sparkles"></i>
+        </div>
+        <h3>Excelencia</h3>
+        <p>Buscamos la mejora continua en la enseñanza y el aprendizaje de idiomas.</p>
+      </div>
+      <div class="value-card scroll-reveal">
+        <div class="value-icon">
+          <i data-lucide="globe-2"></i>
+        </div>
+        <h3>Diversidad</h3>
+        <p>Celebramos las diferentes culturas y perspectivas que enriquecen nuestra comunidad.</p>
+      </div>
+      <div class="value-card scroll-reveal">
+        <div class="value-icon">
+          <i data-lucide="lightbulb"></i>
+        </div>
+        <h3>Innovación</h3>
+        <p>Adoptamos nuevas metodologías y tecnologías para mejorar la experiencia educativa.</p>
+      </div>
+      <div class="value-card scroll-reveal">
+        <div class="value-icon">
+          <i data-lucide="users"></i>
+        </div>
+        <h3>Inclusión</h3>
+        <p>Todos son bienvenidos, sin importar edad, nivel o experiencia previa.</p>
+      </div>
+      <div class="value-card scroll-reveal">
+        <div class="value-icon">
+          <i data-lucide="trophy"></i>
+        </div>
+        <h3>Compromiso</h3>
+        <p>Nos comprometemos con el éxito de cada estudiante que confía en nosotros.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="community-activities">
+    <div class="activities-grid">
+      <div class="activities-content scroll-reveal">
+        <h2>Actividades que nos conectan</h2>
+        <p>Más allá de las clases regulares, organizamos eventos y actividades que fortalecen los lazos entre estudiantes, docentes y familias.</p>
+        <ul class="activity-list">
+          <li>
+            <i data-lucide="calendar-days"></i>
+            Actos de fin de curso y muestras anuales
+          </li>
+          <li>
+            <i data-lucide="users"></i>
+            Reuniones de padres y encuentros familiares
+          </li>
+          <li>
+            <i data-lucide="coffee"></i>
+            Mateadas y charlas entre alumnos
+          </li>
+          <li>
+            <i data-lucide="book-open"></i>
+            Clases de apoyo y consultas personalizadas
+          </li>
+          <li>
+            <i data-lucide="mic"></i>
+            Talleres de conversación y práctica oral
+          </li>
+          <li>
+            <i data-lucide="award"></i>
+            Entrega de certificados y reconocimientos
+          </li>
+        </ul>
+      </div>
+      <div class="activities-image scroll-reveal">
+        <img src="images/comunidadcemi2.jpg" alt="Actividades CEMI">
+      </div>
+    </div>
+  </section>
+
+  <section class="community-testimonials">
+    <div class="testimonials-header scroll-reveal">
+      <h2>Lo que dicen nuestros estudiantes</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card scroll-reveal">
+        <p class="testimonial-text">"Los profesores son increíbles. Siempre están dispuestos a ayudar y hacen que aprender sea divertido."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">ML</div>
+          <div class="author-info">
+            <h4>María L.</h4>
+            <p>Estudiante de Inglés</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card scroll-reveal">
+        <p class="testimonial-text">"Gracias a Cemi pude obtener mi certificación y ahora trabajo en una empresa internacional."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">JR</div>
+          <div class="author-info">
+            <h4>Juan R.</h4>
+            <p>Egresado de Portugués</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card scroll-reveal">
+        <p class="testimonial-text">"Mi hija comenzó a los 6 años y ahora con 10 ya habla inglés con fluidez. ¡Increíble!"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">CP</div>
+          <div class="author-info">
+            <h4>Carolina P.</h4>
+            <p>Madre de estudiante</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="community-cta">
+    <h2 class="scroll-reveal">¡Únete a nuestra comunidad!</h2>
+    <p class="scroll-reveal">Forma parte de la familia Cemi y descubre lo que significa aprender idiomas en un ambiente cálido y profesional.</p>
+    <a href="register.html" class="community-cta-btn scroll-reveal">
+      <i data-lucide="user-plus" style="width: 22px; height: 22px;"></i>
+      Ser parte de CEMI
+    </a>
+  </section>
+
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <img src="images/logolong.png" alt="Logo CEMI" class="footer-logo-long">
+        </div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <div class="footer-social">
+        </div>
+        <a href="register.html" class="footer-cta-link">
+          <i data-lucide="user-plus"></i> Registrarse
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <div class="footer-links-bottom">
+        <a href="porque-cemi.html">¿Por qué CEMI?</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    lucide.createIcons();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 80);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+  </script>
+  <script src="assets/js/harvard-menu.js?v=1.0"></script>
+</body>
+</html>

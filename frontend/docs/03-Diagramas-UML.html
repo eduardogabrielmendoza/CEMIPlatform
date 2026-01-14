@@ -1,0 +1,598 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Diagramas UML - CEMI Sistema Gestor</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="harvard-doc-styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../documentacion.html" class="back-link">← Volver a Documentación</a>
+        
+        <div class="cover">
+            <h1>DIAGRAMAS UML</h1>
+            <p class="subtitle">CEMI Sistema de Gestión Académica</p>
+            <p class="cover-tags">Casos de Uso • Actividad • Clases • Secuencia</p>
+        </div>
+
+        <div class="toc">
+            <h2 style="margin-top: 0;">Contenido</h2>
+            <ul>
+                <li><a href="#cu">1. Diagramas de Casos de Uso</a></li>
+                <li><a href="#actividad">2. Diagramas de Actividad</a></li>
+                <li><a href="#clases">3. Diagrama de Clases</a></li>
+                <li><a href="#secuencia">4. Diagramas de Secuencia</a></li>
+            </ul>
+        </div>
+
+        <h1 id="cu">1. Diagramas de Casos de Uso</h1>
+        
+        <p>Los diagramas de casos de uso representan las interacciones entre los actores del sistema (Alumno, Profesor, Administrativo, Gestor) y las funcionalidades que pueden utilizar.</p>
+
+        <div class="legend">
+            <h4>Actores del Sistema</h4>
+            <ul>
+                <li><span class="actor-badge actor-alumno">Alumno</span> - Estudiante inscrito en cursos</li>
+                <li><span class="actor-badge actor-profesor">Profesor</span> - Docente a cargo de cursos</li>
+                <li><span class="actor-badge actor-admin">Administrativo</span> - Personal de gestión</li>
+                <li><span class="actor-badge actor-gestor">Gestor</span> - Administrador del sistema</li>
+            </ul>
+        </div>
+
+        <div class="diagram-title">CU-01: Casos de Uso del Alumno</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+flowchart LR
+    subgraph Sistema["CEMI Sistema Educativo"]
+        CU1["Iniciar Sesión"]
+        CU2["Ver Dashboard"]
+        CU3["Consultar Cursos Inscriptos"]
+        CU4["Ver Calificaciones"]
+        CU5["Acceder al Classroom"]
+        CU6["Ver Materiales"]
+        CU7["Entregar Tareas"]
+        CU8["Participar en Chat"]
+        CU9["Consultar Estado de Pagos"]
+        CU10["Editar Perfil"]
+    end
+    
+    Alumno((Alumno))
+    
+    Alumno --> CU1
+    Alumno --> CU2
+    Alumno --> CU3
+    Alumno --> CU4
+    Alumno --> CU5
+    CU5 --> CU6
+    CU5 --> CU7
+    CU5 --> CU8
+    Alumno --> CU9
+    Alumno --> CU10
+            </div>
+        </div>
+
+        <div class="diagram-title">CU-02: Casos de Uso del Profesor</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+flowchart LR
+    subgraph Sistema["CEMI Sistema Educativo"]
+        CU1["Iniciar Sesión"]
+        CU2["Ver Dashboard"]
+        CU3["Gestionar Cursos Asignados"]
+        CU4["Registrar Asistencia"]
+        CU5["Cargar Calificaciones"]
+        CU6["Gestionar Classroom"]
+        CU7["Publicar Materiales"]
+        CU8["Crear Tareas"]
+        CU9["Calificar Entregas"]
+        CU10["Chat con Alumnos"]
+        CU11["Ver Lista de Alumnos"]
+    end
+    
+    Profesor((Profesor))
+    
+    Profesor --> CU1
+    Profesor --> CU2
+    Profesor --> CU3
+    Profesor --> CU4
+    Profesor --> CU5
+    Profesor --> CU6
+    CU6 --> CU7
+    CU6 --> CU8
+    CU6 --> CU9
+    CU6 --> CU10
+    Profesor --> CU11
+            </div>
+        </div>
+
+        <div class="diagram-title">CU-03: Casos de Uso del Administrativo</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+flowchart LR
+    subgraph Sistema["CEMI Sistema Educativo"]
+        CU1["Iniciar Sesión"]
+        CU2["Ver Dashboard Admin"]
+        CU3["Gestionar Alumnos"]
+        CU4["Gestionar Profesores"]
+        CU5["Gestionar Cursos"]
+        CU6["Gestionar Inscripciones"]
+        CU7["Registrar Pagos"]
+        CU8["Consultar Deudores"]
+        CU9["Ver Estadísticas"]
+        CU10["Gestionar Aulas"]
+    end
+    
+    Admin((Administrativo))
+    
+    Admin --> CU1
+    Admin --> CU2
+    Admin --> CU3
+    Admin --> CU4
+    Admin --> CU5
+    Admin --> CU6
+    Admin --> CU7
+    Admin --> CU8
+    Admin --> CU9
+    Admin --> CU10
+            </div>
+        </div>
+
+        <div class="diagram-title">CU-04: Casos de Uso del Gestor</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+flowchart LR
+    subgraph Sistema["CEMI Sistema Educativo"]
+        CU1["Iniciar Sesión Admin"]
+        CU2["Configurar Sistema"]
+        CU3["Gestionar Administradores"]
+        CU4["Ver Logs del Sistema"]
+        CU5["Gestionar Idiomas"]
+        CU6["Gestionar Niveles"]
+        CU7["Backup de Datos"]
+        CU8["Monitorear Sistema"]
+    end
+    
+    Gestor((Gestor))
+    
+    Gestor --> CU1
+    Gestor --> CU2
+    Gestor --> CU3
+    Gestor --> CU4
+    Gestor --> CU5
+    Gestor --> CU6
+    Gestor --> CU7
+    Gestor --> CU8
+            </div>
+        </div>
+
+        <h1 id="actividad">2. Diagramas de Actividad</h1>
+        
+        <p>Los diagramas de actividad muestran el flujo de trabajo de los procesos principales del sistema.</p>
+
+        <div class="diagram-title">ACT-01: Proceso de Inscripción a Curso</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+flowchart TD
+    A([Inicio]) --> B[Alumno solicita inscripción]
+    B --> C{¿Alumno registrado?}
+    C -->|No| D[Registrar nuevo alumno]
+    D --> E[Validar datos personales]
+    C -->|Sí| F[Verificar cupos disponibles]
+    E --> F
+    F --> G{¿Hay cupos?}
+    G -->|No| H[Notificar sin cupos]
+    H --> I([Fin])
+    G -->|Sí| J{¿Horario compatible?}
+    J -->|No| K[Mostrar conflicto de horarios]
+    K --> L[Seleccionar otro curso]
+    L --> F
+    J -->|Sí| M[Registrar inscripción]
+    M --> N[Generar cuotas pendientes]
+    N --> O[Enviar confirmación]
+    O --> P([Fin])
+    
+    style A fill:#2ecc71
+    style P fill:#2ecc71
+    style I fill:#e74c3c
+            </div>
+        </div>
+
+        <div class="diagram-title">ACT-02: Proceso de Registro de Pago</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+flowchart TD
+    A([Inicio]) --> B[Administrativo accede a Pagos]
+    B --> C[Buscar alumno]
+    C --> D[Mostrar deudas pendientes]
+    D --> E{¿Alumno tiene deuda?}
+    E -->|No| F[Informar sin pagos pendientes]
+    F --> G([Fin])
+    E -->|Sí| H[Seleccionar cuota a pagar]
+    H --> I[Ingresar monto recibido]
+    I --> J{¿Monto correcto?}
+    J -->|No| K[Mostrar error de monto]
+    K --> I
+    J -->|Sí| L[Seleccionar método de pago]
+    L --> M[Registrar transacción]
+    M --> N[Actualizar estado de cuota]
+    N --> O[Generar comprobante]
+    O --> P([ Fin])
+    
+    style A fill:#2ecc71
+    style P fill:#2ecc71
+    style G fill:#3498db
+            </div>
+        </div>
+
+        <div class="diagram-title">ACT-03: Proceso de Autenticación</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+flowchart TD
+    A([Inicio]) --> B[Usuario ingresa credenciales]
+    B --> C[Sistema valida usuario]
+    C --> D{¿Usuario existe?}
+    D -->|No| E[Mostrar error: Usuario no encontrado]
+    E --> F[Incrementar intentos fallidos]
+    F --> G{¿Máximo intentos?}
+    G -->|Sí| H[Bloquear por 15 minutos]
+    H --> I([Fin - Bloqueado])
+    G -->|No| B
+    D -->|Sí| J[Verificar contraseña con bcrypt]
+    J --> K{¿Contraseña correcta?}
+    K -->|No| E
+    K -->|Sí| L[Obtener perfil de usuario]
+    L --> M{¿Tipo de usuario?}
+    M -->|Alumno| N[Redirigir a Dashboard Alumno]
+    M -->|Profesor| O[Redirigir a Dashboard Profesor]
+    M -->|Admin| P[Redirigir a Dashboard Admin]
+    N --> Q([Fin - Sesión iniciada])
+    O --> Q
+    P --> Q
+    
+    style A fill:#2ecc71
+    style Q fill:#2ecc71
+    style I fill:#e74c3c
+            </div>
+        </div>
+
+        <div class="diagram-title">ACT-04: Proceso de Entrega de Tarea</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+flowchart TD
+    A([Inicio]) --> B[Alumno accede al Classroom]
+    B --> C[Selecciona curso]
+    C --> D[Ve lista de tareas]
+    D --> E[Selecciona tarea pendiente]
+    E --> F{¿Fecha límite vigente?}
+    F -->|No| G[Mostrar: Tarea vencida]
+    G --> H([Fin - No entregado])
+    F -->|Sí| I[Subir archivo de entrega]
+    I --> J{¿Formato válido?}
+    J -->|No| K[Mostrar error de formato]
+    K --> I
+    J -->|Sí| L{¿Tamaño permitido?}
+    L -->|No| M[Mostrar error de tamaño]
+    M --> I
+    L -->|Sí| N[Guardar archivo en servidor]
+    N --> O[Registrar entrega en BD]
+    O --> P[Notificar al profesor]
+    P --> Q[Mostrar confirmación]
+    Q --> R([Fin - Entregado])
+    
+    style A fill:#2ecc71
+    style R fill:#2ecc71
+    style H fill:#e74c3c
+            </div>
+        </div>
+
+        <h1 id="clases">3. Diagrama de Clases</h1>
+
+        <p>El diagrama de clases representa la estructura estática del sistema, mostrando las entidades principales, sus atributos y las relaciones entre ellas.</p>
+
+        <div class="diagram-title">Diagrama de Clases Principal</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+classDiagram
+    class Usuario {
+        +int id
+        +String username
+        +String password_hash
+        +int perfil_id
+        +DateTime created_at
+        +validarCredenciales()
+        +cambiarPassword()
+    }
+    
+    class Perfil {
+        +int id
+        +String nombre
+        +String descripcion
+    }
+    
+    class Alumno {
+        +int id
+        +String dni
+        +String nombre
+        +String apellido
+        +String email
+        +String telefono
+        +Date fecha_nacimiento
+        +boolean activo
+        +int usuario_id
+        +inscribirse()
+        +consultarCursos()
+        +consultarPagos()
+    }
+    
+    class Profesor {
+        +int id
+        +String dni
+        +String nombre
+        +String apellido
+        +String email
+        +String especialidad
+        +boolean activo
+        +int usuario_id
+        +verCursosAsignados()
+        +registrarAsistencia()
+        +cargarCalificaciones()
+    }
+    
+    class Curso {
+        +int id
+        +String nombre
+        +int idioma_id
+        +int nivel_id
+        +int profesor_id
+        +int aula_id
+        +String horario
+        +int cupo_maximo
+        +boolean activo
+        +obtenerAlumnos()
+        +verificarDisponibilidad()
+    }
+    
+    class Inscripcion {
+        +int id
+        +int alumno_id
+        +int curso_id
+        +Date fecha_inscripcion
+        +String estado
+        +confirmar()
+        +cancelar()
+    }
+    
+    class Pago {
+        +int id
+        +int alumno_id
+        +int inscripcion_id
+        +Decimal monto
+        +String concepto
+        +Date fecha_vencimiento
+        +Date fecha_pago
+        +String estado
+        +String metodo_pago
+        +registrar()
+        +anular()
+    }
+    
+    class Aula {
+        +int id
+        +String nombre
+        +int capacidad
+        +String ubicacion
+        +boolean activo
+        +verificarDisponibilidad()
+    }
+    
+    class Idioma {
+        +int id
+        +String nombre
+        +String codigo
+        +boolean activo
+    }
+    
+    class Nivel {
+        +int id
+        +String nombre
+        +String descripcion
+        +int orden
+    }
+    
+    class Tarea {
+        +int id
+        +int curso_id
+        +String titulo
+        +String descripcion
+        +Date fecha_limite
+        +crear()
+        +calificar()
+    }
+    
+    class Entrega {
+        +int id
+        +int tarea_id
+        +int alumno_id
+        +String archivo_url
+        +DateTime fecha_entrega
+        +Decimal calificacion
+        +String comentario
+    }
+    
+    Usuario "1" --> "1" Perfil : tiene
+    Alumno "1" --> "1" Usuario : tiene
+    Profesor "1" --> "1" Usuario : tiene
+    Alumno "1" --> "*" Inscripcion : realiza
+    Curso "1" --> "*" Inscripcion : tiene
+    Profesor "1" --> "*" Curso : dicta
+    Curso "*" --> "1" Aula : se dicta en
+    Curso "*" --> "1" Idioma : pertenece a
+    Curso "*" --> "1" Nivel : tiene
+    Alumno "1" --> "*" Pago : realiza
+    Curso "1" --> "*" Tarea : tiene
+    Alumno "1" --> "*" Entrega : realiza
+    Tarea "1" --> "*" Entrega : recibe
+            </div>
+        </div>
+
+        <h1 id="secuencia">4. Diagramas de Secuencia</h1>
+
+        <p>Los diagramas de secuencia muestran la interacción entre objetos a lo largo del tiempo para procesos específicos.</p>
+
+        <div class="diagram-title">SEQ-01: Inicio de Sesión</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+sequenceDiagram
+    actor Usuario
+    participant Frontend
+    participant API as API Auth
+    participant DB as Database
+    
+    Usuario->>Frontend: Ingresa credenciales
+    Frontend->>Frontend: Validar campos
+    Frontend->>API: POST /api/auth/login
+    API->>DB: SELECT usuario by username
+    DB-->>API: Usuario encontrado
+    API->>API: bcrypt.compare(password)
+    alt Contraseña correcta
+        API->>DB: SELECT perfil, datos
+        DB-->>API: Datos completos
+        API-->>Frontend: success: true, user
+        Frontend->>Frontend: Guardar en localStorage
+        Frontend-->>Usuario: Mostrar Dashboard
+    else Contraseña incorrecta
+        API-->>Frontend: error: Credenciales invalidas
+        Frontend-->>Usuario: Mostrar error
+    end
+            </div>
+        </div>
+
+        <div class="diagram-title">SEQ-02: Inscripción a Curso</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+sequenceDiagram
+    actor Admin
+    participant Frontend
+    participant API as API Server
+    participant DB as Database
+    
+    Admin->>Frontend: Selecciona Inscripciones
+    Frontend->>API: GET /api/alumnos
+    API->>DB: SELECT alumnos activos
+    DB-->>API: Lista de alumnos
+    API-->>Frontend: Alumnos disponibles
+    
+    Admin->>Frontend: Selecciona alumno y curso
+    Frontend->>API: GET /api/cursos/:id
+    API->>DB: SELECT curso con cupos
+    DB-->>API: Datos del curso
+    
+    API->>API: Verificar cupos
+    API->>DB: SELECT inscripciones
+    DB-->>API: Cantidad inscriptos
+    
+    alt Hay cupos
+        API->>DB: INSERT inscripcion
+        DB-->>API: Inscripcion creada
+        API->>DB: INSERT pagos cuotas
+        DB-->>API: Cuotas generadas
+        API-->>Frontend: success: true
+        Frontend-->>Admin: Confirmacion
+    else Sin cupos
+        API-->>Frontend: error: Sin cupos
+        Frontend-->>Admin: Mostrar error
+    end
+            </div>
+        </div>
+
+        <div class="diagram-title">SEQ-03: Entrega de Tarea en Classroom</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+sequenceDiagram
+    actor Alumno
+    participant Frontend
+    participant API as API Server
+    participant Storage
+    participant DB as Database
+    
+    Alumno->>Frontend: Accede al Classroom
+    Frontend->>API: GET /api/classroom/cursos/:id
+    API->>DB: SELECT tareas del curso
+    DB-->>API: Lista de tareas
+    API-->>Frontend: Tareas con fechas limite
+    
+    Alumno->>Frontend: Sube archivo de tarea
+    Frontend->>Frontend: Validar formato y tamaño
+    Frontend->>API: POST /api/classroom/entregas
+    API->>Storage: Guardar archivo
+    Storage-->>API: URL del archivo
+    API->>DB: INSERT entrega
+    DB-->>API: Entrega registrada
+    API-->>Frontend: success, entrega_id
+    Frontend-->>Alumno: Confirmacion de entrega
+            </div>
+        </div>
+
+        <div class="diagram-title">SEQ-04: Registro de Pago</div>
+        <div class="diagram-content">
+            <div class="mermaid">
+sequenceDiagram
+    actor Admin
+    participant Frontend
+    participant API as API Server
+    participant DB as Database
+    
+    Admin->>Frontend: Accede a modulo Pagos
+    Frontend->>API: GET /api/pagos/pendientes
+    API->>DB: SELECT pagos pendientes
+    DB-->>API: Lista de deudas
+    API-->>Frontend: Pagos pendientes
+    
+    Admin->>Frontend: Selecciona pago y monto
+    Frontend->>API: POST /api/pagos/registrar
+    API->>API: Validar monto
+    API->>DB: UPDATE pago estado pagado
+    DB-->>API: Pago actualizado
+    API->>DB: INSERT log transaccion
+    DB-->>API: Log registrado
+    API-->>Frontend: success, comprobante
+    Frontend-->>Admin: Mostrar comprobante
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>CEMI Sistema de Gestión Académica</strong></p>
+            <p>Diagramas UML - Versión 1.0</p>
+            <p>© 2025 - UTN Tecnicatura Universitaria en Programación</p>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            },
+            sequence: {
+                useMaxWidth: true,
+                actorMargin: 80,
+                mirrorActors: false,
+                messageMargin: 40,
+                boxMargin: 10,
+                boxTextMargin: 5,
+                noteMargin: 10,
+                messageAlign: 'center',
+                width: 150,
+                height: 65
+            }
+        });
+    </script>
+</body>
+</html>

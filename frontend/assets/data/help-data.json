@@ -1,0 +1,243 @@
+{
+  "categorias": [
+    {
+      "id": "primeros-pasos",
+      "nombre": "Primeros Pasos",
+      "descripcion": "Aprende lo básico para comenzar a usar CEMI Classroom",
+      "icono": "rocket",
+      "articulos": [
+        {
+          "id": "pp-1",
+          "titulo": "¿Cómo accedo a CEMI Classroom?",
+          "contenido": "Para acceder a CEMI Classroom, visita la página principal e inicia sesión con tu correo electrónico y contraseña proporcionados por la institución. Si es tu primera vez, usa las credenciales que te envió el administrador.",
+          "popular": true
+        },
+        {
+          "id": "pp-2",
+          "titulo": "¿Cómo me uno a una clase?",
+          "contenido": "Para unirte a una clase, ve a la sección 'Mis Clases' y haz clic en 'Unirse con código'. Ingresa el código de 6 caracteres que te proporcionó tu profesor. Una vez validado, la clase aparecerá en tu lista.",
+          "popular": true
+        },
+        {
+          "id": "pp-3",
+          "titulo": "Navegando por el Dashboard",
+          "contenido": "El Dashboard es tu página principal. Desde aquí puedes ver tus clases activas, tareas pendientes, anuncios recientes y acceder rápidamente a todas las funciones de CEMI Classroom.",
+          "popular": false
+        },
+        {
+          "id": "pp-4",
+          "titulo": "Configurar mi perfil",
+          "contenido": "Haz clic en tu avatar en la esquina superior derecha y selecciona 'Mi Perfil'. Desde allí puedes cambiar tu foto de perfil, actualizar tu información personal y configurar tus preferencias de notificaciones.",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "id": "tareas",
+      "nombre": "Tareas y Entregas",
+      "descripcion": "Todo sobre cómo entregar y gestionar tus tareas",
+      "icono": "clipboard-list",
+      "articulos": [
+        {
+          "id": "t-1",
+          "titulo": "¿Cómo entrego una tarea?",
+          "contenido": "Abre la tarea desde tu clase, haz clic en 'Agregar o crear' para adjuntar archivos. Puedes subir documentos, imágenes o enlaces. Cuando esté listo, haz clic en 'Entregar'. Recibirás una confirmación de entrega.",
+          "popular": true
+        },
+        {
+          "id": "t-2",
+          "titulo": "¿Puedo entregar una tarea tarde?",
+          "contenido": "Sí, puedes entregar tareas después de la fecha límite, pero aparecerán marcadas como 'Entregada tarde'. Tu profesor decidirá si acepta entregas tardías y cómo afectan tu calificación.",
+          "popular": true
+        },
+        {
+          "id": "t-3",
+          "titulo": "¿Cómo edito una tarea ya entregada?",
+          "contenido": "Ve a la tarea entregada y haz clic en 'Anular entrega'. Esto te permitirá hacer cambios. Recuerda volver a entregar cuando termines de editar.",
+          "popular": false
+        },
+        {
+          "id": "t-4",
+          "titulo": "Tipos de archivos permitidos",
+          "contenido": "CEMI Classroom acepta documentos (PDF, DOC, DOCX), imágenes (JPG, PNG, GIF), presentaciones (PPT, PPTX), hojas de cálculo (XLS, XLSX) y archivos de audio/video hasta 50MB.",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "id": "comunicacion",
+      "nombre": "Comunicación",
+      "descripcion": "Mantente conectado con profesores y compañeros",
+      "icono": "message-circle",
+      "articulos": [
+        {
+          "id": "c-1",
+          "titulo": "¿Cómo recibo notificaciones?",
+          "contenido": "Las notificaciones aparecen en el icono de campana en la barra superior. Puedes configurar qué notificaciones recibir desde tu perfil: anuncios, tareas nuevas, calificaciones, comentarios, etc.",
+          "popular": true
+        },
+        {
+          "id": "c-2",
+          "titulo": "Comentar en publicaciones",
+          "contenido": "Haz clic en cualquier publicación o tarea para ver los detalles. En la parte inferior encontrarás el campo de comentarios. Escribe tu mensaje y presiona Enter o el botón de enviar.",
+          "popular": false
+        },
+        {
+          "id": "c-3",
+          "titulo": "Mensajes privados al profesor",
+          "contenido": "Para enviar un mensaje privado, ve al perfil del profesor o usa la opción 'Comentario privado' en una tarea. Solo tú y el profesor podrán ver estos mensajes.",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "id": "recursos",
+      "nombre": "Recursos y Materiales",
+      "descripcion": "Accede a materiales de clase y recursos compartidos",
+      "icono": "folder-open",
+      "articulos": [
+        {
+          "id": "r-1",
+          "titulo": "¿Dónde encuentro los materiales de clase?",
+          "contenido": "Los materiales están en la pestaña 'Recursos' dentro de cada clase. Tu profesor organiza los archivos en carpetas por tema o unidad. Puedes descargarlos o verlos directamente.",
+          "popular": true
+        },
+        {
+          "id": "r-2",
+          "titulo": "Descargar archivos",
+          "contenido": "Haz clic en cualquier archivo para previsualizarlo. Usa el botón de descarga (icono de flecha hacia abajo) para guardarlo en tu dispositivo.",
+          "popular": false
+        },
+        {
+          "id": "r-3",
+          "titulo": "Biblioteca de recursos compartidos",
+          "contenido": "La biblioteca contiene recursos educativos compartidos por toda la institución: partituras, grabaciones, ejercicios y más. Accede desde el menú principal.",
+          "popular": false,
+          "nuevo": true
+        }
+      ]
+    },
+    {
+      "id": "profesores",
+      "nombre": "Para Profesores",
+      "descripcion": "Guías específicas para docentes",
+      "icono": "users",
+      "articulos": [
+        {
+          "id": "p-1",
+          "titulo": "Crear una nueva clase",
+          "contenido": "Ve a 'Mis Clases' y haz clic en el botón '+'. Completa el nombre de la clase, sección, materia y descripción. Se generará automáticamente un código para que tus alumnos se unan.",
+          "popular": true
+        },
+        {
+          "id": "p-2",
+          "titulo": "Publicar una tarea",
+          "contenido": "Dentro de tu clase, ve a la pestaña 'Trabajo de clase' y haz clic en 'Crear'. Selecciona 'Tarea', agrega título, instrucciones, fecha de entrega y puntos. Puedes adjuntar archivos de referencia.",
+          "popular": true
+        },
+        {
+          "id": "p-3",
+          "titulo": "Calificar entregas",
+          "contenido": "Abre una tarea y ve a 'Entregas de alumnos'. Haz clic en cada entrega para revisarla. Ingresa la calificación y comentarios de retroalimentación. Las calificaciones se envían automáticamente.",
+          "popular": false
+        },
+        {
+          "id": "p-4",
+          "titulo": "Crear encuestas",
+          "contenido": "Usa el sistema de encuestas para recopilar feedback. Ve a 'Crear' > 'Encuesta', define las preguntas y opciones. Los resultados se pueden exportar a PDF con gráficos estadísticos.",
+          "popular": false,
+          "nuevo": true
+        }
+      ]
+    },
+    {
+      "id": "cuenta",
+      "nombre": "Mi Cuenta",
+      "descripcion": "Configuración y seguridad de tu cuenta",
+      "icono": "user",
+      "articulos": [
+        {
+          "id": "cu-1",
+          "titulo": "Cambiar mi contraseña",
+          "contenido": "Ve a tu perfil, selecciona 'Seguridad' y haz clic en 'Cambiar contraseña'. Ingresa tu contraseña actual y luego la nueva contraseña dos veces para confirmar.",
+          "popular": true
+        },
+        {
+          "id": "cu-2",
+          "titulo": "Actualizar mi foto de perfil",
+          "contenido": "En tu perfil, haz clic en tu avatar actual. Puedes subir una imagen desde tu dispositivo. La imagen debe ser cuadrada y menor a 5MB para mejores resultados.",
+          "popular": false
+        },
+        {
+          "id": "cu-3",
+          "titulo": "Cerrar sesión en todos los dispositivos",
+          "contenido": "Si crees que tu cuenta fue comprometida, ve a 'Seguridad' en tu perfil y selecciona 'Cerrar todas las sesiones'. Esto te desconectará de todos los dispositivos.",
+          "popular": false
+        }
+      ]
+    }
+  ],
+  "novedades": [
+    {
+      "id": "n-1",
+      "fecha": "2025-11-25",
+      "titulo": "Sistema de Encuestas con PDF",
+      "descripcion": "Nuevo sistema para crear encuestas y generar reportes en PDF con gráficos estadísticos.",
+      "tipo": "nueva-funcion"
+    },
+    {
+      "id": "n-2",
+      "fecha": "2025-11-20",
+      "titulo": "Nuevo diseño del Dashboard",
+      "descripcion": "Interfaz renovada con mejor navegación y accesos rápidos.",
+      "tipo": "mejora"
+    },
+    {
+      "id": "n-3",
+      "fecha": "2025-11-15",
+      "titulo": "Sistema de Archivo de Pagos",
+      "descripcion": "Los administradores pueden archivar pagos antiguos para mantener historial limpio.",
+      "tipo": "nueva-funcion"
+    },
+    {
+      "id": "n-4",
+      "fecha": "2025-11-10",
+      "titulo": "Correcciones de estabilidad",
+      "descripcion": "Solucionados problemas de carga de archivos y notificaciones.",
+      "tipo": "correccion"
+    },
+    {
+      "id": "n-5",
+      "fecha": "2025-11-05",
+      "titulo": "Biblioteca de Recursos Compartidos",
+      "descripcion": "Nueva sección para compartir recursos educativos entre profesores.",
+      "tipo": "nueva-funcion"
+    },
+    {
+      "id": "n-6",
+      "fecha": "2025-11-01",
+      "titulo": "Aplicación Móvil Actualizada",
+      "descripcion": "Nueva versión con modo offline y notificaciones push mejoradas.",
+      "tipo": "mejora"
+    }
+  ],
+  "comunidad": {
+    "preguntasFrecuentes": [
+      {
+        "pregunta": "¿Cómo me uno a una clase con código?",
+        "respuesta": "Ve a 'Mis Clases', haz clic en 'Unirse con código' e ingresa el código de 6 caracteres.",
+        "votos": 42
+      },
+      {
+        "pregunta": "¿Por qué no puedo ver mis clases archivadas?",
+        "respuesta": "Las clases archivadas están en el menú lateral, sección 'Clases archivadas'.",
+        "votos": 28
+      },
+      {
+        "pregunta": "¿Cómo entrego una tarea tarde?",
+        "respuesta": "Puedes entregar normalmente, pero aparecerá marcada como 'Tarde'. Tu profesor decide si la acepta.",
+        "votos": 67
+      }
+    ]
+  }
+}

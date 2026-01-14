@@ -1,0 +1,17 @@
+# Ignorar archivos innecesarios en Railway
+node_modules/
+.env
+.env.local
+*.log
+.DS_Store
+backups/
+*.bat
+test-*.js
+check-*.js
+listar-*.js
+migrar-*.js
+sincronizar-*.js
+update-*.js
+*.md
+!README.md
+desktop.ini

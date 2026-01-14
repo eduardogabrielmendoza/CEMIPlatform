@@ -1,0 +1,240 @@
+
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  transform: translateY(100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.4s ease;
+}
+
+.cookie-banner.active {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.cookie-banner.hiding {
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 1, 1),
+              opacity 0.3s ease;
+}
+
+.cookie-banner-content {
+  background: rgba(30, 30, 30, 0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(147, 161, 173, 0.55);
+  padding: 24px 0;
+}
+
+.cookie-banner-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.cookie-banner-text {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cookie-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: rgba(147, 161, 173, 0.85);
+  animation: cookieWiggle 2.5s ease-in-out infinite;
+}
+
+.cookie-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+@keyframes cookieWiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-8deg) scale(1.05); }
+  50% { transform: rotate(0deg) scale(1); }
+  75% { transform: rotate(8deg) scale(1.05); }
+}
+
+.cookie-message {
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Inter';
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.cookie-message strong {
+  display: block;
+  color: #ffffff;
+  font-family: 'Inter';
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.cookie-message span {
+  color: rgba(255, 255, 255, 0.65);
+  font-family: 'Inter';
+  font-weight: 400;
+}
+
+.cookie-message a {
+  color: #888;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.cookie-message a:hover {
+  color: #93a1ad;
+}
+
+.cookie-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.cookie-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-body), 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.cookie-btn-config {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border: none;
+  padding: 10px 14px;
+}
+
+.cookie-btn-config:hover {
+  color: #ffffff;
+}
+
+.cookie-btn-reject {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.cookie-btn-reject:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.cookie-btn-accept {
+  background: #656f77;
+  color: #ffffff;
+  border: 1px solid rgba(147, 161, 173, 0.45);
+}
+
+.cookie-btn-accept:hover {
+  background: #4a5259;
+  box-shadow: 0 4px 12px rgba(147, 161, 173, 0.2);
+}
+
+.cookie-btn:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+  .cookie-banner-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+    padding: 0 20px;
+  }
+  
+  .cookie-banner-text {
+    min-width: auto;
+  }
+  
+  .cookie-message strong {
+    font-size: 15px;
+  }
+  
+  .cookie-banner-actions {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .cookie-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cookie-banner-content {
+    padding: 16px 0;
+  }
+  
+  .cookie-banner-inner {
+    padding: 0 16px;
+    gap: 14px;
+  }
+  
+  .cookie-message {
+    font-size: 13px;
+  }
+  
+  .cookie-message strong {
+    font-size: 14px;
+  }
+  
+  .cookie-banner-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .cookie-btn {
+    width: 100%;
+    padding: 12px 20px;
+  }
+  
+  .cookie-btn-config {
+    order: 3;
+    background: transparent;
+    border: none;
+  }
+}
+
+.cookie-overlay {
+  display: none !important;
+}

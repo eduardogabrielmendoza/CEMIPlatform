@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A2540">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>Accesibilidad - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Estilos específicos para páginas internas */
+    .internal-page-content {
+      padding-top: 120px;
+      min-height: 100vh;
+      background: #fff;
+    }
+    
+    .internal-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    
+    .internal-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #656f77;
+      margin-bottom: 32px;
+    }
+    
+    .internal-breadcrumb a {
+      color: #656f77;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .internal-breadcrumb a:hover {
+      color: #1e1e1e;
+    }
+    
+    .internal-breadcrumb span {
+      color: #1e1e1e;
+    }
+    
+    .internal-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 400;
+      color: #1e1e1e;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    
+    .internal-subtitle {
+      font-size: 1.25rem;
+      color: #656f77;
+      margin-bottom: 48px;
+      line-height: 1.5;
+    }
+    
+    .internal-section {
+      margin-bottom: 48px;
+    }
+    
+    .internal-section h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.75rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    
+    .internal-section h3 {
+      text-align: left;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin: 24px 0 12px;
+    }
+    
+    .internal-section p {
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #333;
+      margin-bottom: 16px;
+    }
+    
+    .internal-section ul {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+    
+    .internal-section li {
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .quick-access-box {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-left: 4px solid #0A2540;
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 48px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    
+    .quick-access-box i {
+      width: 24px;
+      height: 24px;
+      color: #0A2540;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    .quick-access-box h4 {
+      text-align: center;
+      padding-left: 101px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1e1e1e;
+    }
+    
+    .quick-access-box p {
+      padding-left: 101px;
+      margin-bottom: 12px;
+      color: #656f77;
+    }
+    
+    .quick-access-box a {
+      padding-left: 101px;
+      color: #0A2540;
+      text-decoration: none;
+      font-weight: 500;
+      margin-right: 20px;
+      transition: color 0.2s;
+    }
+    
+    .quick-access-box a:hover {
+      color: #0070F3;
+      text-decoration: underline;
+    }
+    
+    .shortcuts-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+    }
+    
+    .shortcuts-table th,
+    .shortcuts-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    
+    .shortcuts-table th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #1e1e1e;
+    }
+    
+    .shortcuts-table td {
+      color: #333;
+    }
+    
+    .shortcuts-table kbd {
+      display: inline-block;
+      padding: 4px 8px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 13px;
+      background: #f1f3f5;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    
+    .contact-section {
+      background: #1e1e1e;
+      color: white;
+      padding: 32px;
+      border-radius: 12px;
+      margin-top: 48px;
+    }
+    
+    .contact-section h3 {
+      color: white;
+      margin-bottom: 16px;
+    }
+    
+    .contact-section p {
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 20px;
+    }
+    
+    .contact-section a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    
+    .contact-section a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolongblack.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div class="harvard-search-quicklink">
+            <span>QUICK LINKS</span>
+            <a href="a-to-z.html">Ir a Índice A-Z</a>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva. Tareas, calificaciones, anuncios y más.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-funciones" data-image="images/STOCK2.jpg">Funciones Principales <span class="chevron">›</span></a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa de alumnos, profesores, cursos, pagos y estadísticas.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-paneles" data-image="images/STOCK3.webp">Paneles por Rol <span class="chevron">›</span></a>
+            <a href="index.html#modulos" class="mega-sub-link">Ver Módulos</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-nosotros" data-image="images/menu/nosotros.jpg">
+          <a href="index.html#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Conoce nuestra historia, misión y el equipo detrás de Cemi.</p>
+          <div class="mega-sub-links">
+            <a href="index.html#historia" class="mega-sub-link">Nuestra Historia</a>
+            <a href="index.html#filosofia" class="mega-sub-link">Misión y Visión</a>
+            <a href="index.html#valores" class="mega-sub-link">Nuestros Valores</a>
+            <a href="index.html#equipo" class="mega-sub-link">El Equipo</a>
+            <a href="index.html#tecnologias" class="mega-sub-link">Tecnologías</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-soporte" data-image="images/menu/soporte.jpg">
+          <a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a>
+          <p class="mega-sub-description">¿Necesitas ayuda? Estamos aquí para asistirte.</p>
+          <div class="mega-sub-links">
+            <a href="index.html#faq" class="mega-sub-link">Preguntas Frecuentes</a>
+            <a href="mailto:soporte@Cemiedu" class="mega-sub-link">Contactar Soporte</a>
+            <a href="status.html" class="mega-sub-link">Estado del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-seguridad" data-image="images/menu/seguridad.jpg">
+          <a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Reporta vulnerabilidades o infracciones de forma segura.</p>
+          <div class="mega-sub-links">
+            <a href="cemi-seguridad.html" class="mega-sub-link">Centro de Ayuda de Seguridad</a>
+            <a href="reportar-copyright.html" class="mega-sub-link">Reportar Infracción de Copyright</a>
+            <a href="privacidad.html" class="mega-sub-link">Política de Privacidad</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-recursos" data-image="images/menu/recursos.webp">
+          <a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Documentación, descargas y más recursos útiles.</p>
+          <div class="mega-sub-links">
+            <a href="https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk" class="mega-sub-link">Descargar App Android</a>
+            <a href="index.html#caracteristicas" class="mega-sub-link">Características del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-accesibilidad" data-image="images/menu/accesibilidad.jpg">
+          <a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Herramientas de acceso y administración institucional.</p>
+          <div class="mega-sub-links">
+            <a href="login-selector.html" class="mega-sub-link">Acceso Público</a>
+            <a href="login-admin.html" class="mega-sub-link">Acceso Administrativo</a>
+            <a href="reglamento-institucional.html" class="mega-sub-link">Reglamento Institucional</a>
+            <a href="register.html" class="mega-sub-link">Registro</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mega-nav-tertiary-container">
+        <div class="mega-nav-tertiary" id="tertiary-funciones">
+          <div class="mega-tertiary-header">
+            <h4>Funciones del Classroom</h4>
+            <p>Explora todas las herramientas disponibles para el aprendizaje.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/tareas.webp">
+              <button class="mega-tertiary-link">Tareas y Entregas</button>
+              <div class="mega-tertiary-info">
+                <p>Gestiona tus tareas pendientes, sube entregas y revisa el historial de trabajos completados.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/calificaciones.jpg">
+              <button class="mega-tertiary-link">Calificaciones</button>
+              <div class="mega-tertiary-info">
+                <p>Consulta tus notas por materia, promedios parciales y finales.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/anuncios.jpg">
+              <button class="mega-tertiary-link">Anuncios</button>
+              <div class="mega-tertiary-info">
+                <p>Mantente informado con las últimas novedades de tus cursos.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mega-nav-tertiary" id="tertiary-paneles">
+          <div class="mega-tertiary-header">
+            <h4>Paneles por Rol</h4>
+            <p>Accede al panel correspondiente a tu perfil.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/panel-alumno.jpg">
+              <button class="mega-tertiary-link">Panel del Alumno</button>
+              <div class="mega-tertiary-info">
+                <p>Tu espacio personal para gestionar inscripciones y ver tu historial académico.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-profesor.jpg">
+              <button class="mega-tertiary-link">Panel del Profesor</button>
+              <div class="mega-tertiary-info">
+                <p>Administra tus cursos, carga calificaciones y gestiona asistencia.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-administrador.jpg">
+              <button class="mega-tertiary-link">Panel Administrativo</button>
+              <div class="mega-tertiary-info">
+                <p>Control total del sistema: gestión de usuarios y reportes institucionales.</p>
+                <a href="login-admin.html" class="mega-tertiary-action">Acceso Admin →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mega-menu-footer">
+      <div class="mega-footer-inner">
+        <span class="mega-footer-label">
+          Enlaces rápidos <span class="chevron">›</span>
+        </span>
+        <div class="mega-footer-links">
+          <a href="terminos.html" class="mega-footer-link">Términos de Servicio</a>
+          <a href="privacidad.html" class="mega-footer-link">Privacidad</a>
+          <a href="ayuda.html" class="mega-footer-link">Ayuda</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="internal-page-content">
+    <div class="internal-container">
+      
+      <nav class="internal-breadcrumb">
+        <a href="index.html">Inicio</a>
+        <span>/</span>
+        <span>Accesibilidad</span>
+      </nav>
+      
+      <h1 class="internal-title">Accesibilidad</h1>
+      <p class="internal-subtitle">Nuestro compromiso con la inclusión digital y la accesibilidad web para todos los usuarios.</p>
+      
+      <div class="quick-access-box">
+        <i data-lucide="key"></i>
+        <div>
+          <h4>Acceso Rápido</h4>
+          <p>¿Necesitas ingresar a la plataforma?</p>
+          <a href="login-admin.html">Acceso Administrativo →</a>
+          <a href="reglamento-institucional.html">Reglamento Institucional →</a>
+        </div>
+      </div>
+      
+      <section class="internal-section">
+        <h2>Nuestro compromiso</h2>
+        <p>En Cemi estamos comprometidos con garantizar que nuestra plataforma digital sea accesible para todas las personas, incluyendo aquellas con discapacidades visuales, auditivas, motoras o cognitivas.</p>
+        <p>Trabajamos continuamente para mejorar la experiencia de usuario y cumplir con los estándares internacionales de accesibilidad web, siguiendo las pautas WCAG 2.1 (Web Content Accessibility Guidelines).</p>
+      </section>
+      
+      <section class="internal-section">
+        <h2>Características de accesibilidad</h2>
+        
+        <h3>Navegación por teclado</h3>
+        <ul>
+          <li>Todos los elementos interactivos son accesibles mediante teclado</li>
+          <li>Uso de la tecla Tab para navegar entre elementos</li>
+          <li>Indicadores visuales claros de foco</li>
+          <li>Atajos de teclado para acciones frecuentes</li>
+        </ul>
+        
+        <h3>Contenido visual</h3>
+        <ul>
+          <li>Alto contraste entre texto y fondo</li>
+          <li>Texto redimensionable hasta 200% sin pérdida de funcionalidad</li>
+          <li>Alternativas textuales para imágenes (atributos alt)</li>
+          <li>No dependencia exclusiva del color para transmitir información</li>
+        </ul>
+        
+        <h3>Contenido multimedia</h3>
+        <ul>
+          <li>Subtítulos en contenido de video</li>
+          <li>Transcripciones de audio disponibles</li>
+          <li>Controles de reproducción accesibles</li>
+          <li>Opción para pausar animaciones automáticas</li>
+        </ul>
+      </section>
+      
+      <section class="internal-section">
+        <h2>Atajos de teclado</h2>
+        <table class="shortcuts-table">
+          <thead>
+            <tr>
+              <th>Combinación</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><kbd>Tab</kbd></td>
+              <td>Navegar al siguiente elemento</td>
+            </tr>
+            <tr>
+              <td><kbd>Shift</kbd> + <kbd>Tab</kbd></td>
+              <td>Navegar al elemento anterior</td>
+            </tr>
+            <tr>
+              <td><kbd>Enter</kbd></td>
+              <td>Activar elemento seleccionado</td>
+            </tr>
+            <tr>
+              <td><kbd>Escape</kbd></td>
+              <td>Cerrar menús o modales</td>
+            </tr>
+            <tr>
+              <td><kbd>Ctrl</kbd> + <kbd>+</kbd></td>
+              <td>Aumentar tamaño del texto</td>
+            </tr>
+            <tr>
+              <td><kbd>Ctrl</kbd> + <kbd>-</kbd></td>
+              <td>Reducir tamaño del texto</td>
+            </tr>
+            <tr>
+              <td><kbd>Ctrl</kbd> + <kbd>0</kbd></td>
+              <td>Restablecer tamaño del texto</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      
+      <section class="internal-section">
+        <h2>Tecnologías asistivas compatibles</h2>
+        <ul>
+          <li><strong>Lectores de pantalla:</strong> NVDA, JAWS, VoiceOver</li>
+          <li><strong>Navegación por voz:</strong> Dragon NaturallySpeaking</li>
+          <li><strong>Magnificadores:</strong> ZoomText, Windows Magnifier</li>
+          <li><strong>Teclados alternativos:</strong> Teclados en pantalla, dispositivos de un solo switch</li>
+        </ul>
+      </section>
+      
+      <section class="internal-section">
+        <h2>Compatibilidad con navegadores</h2>
+        <p>Nuestra plataforma ha sido probada y es compatible con las versiones más recientes de:</p>
+        <ul>
+          <li>Google Chrome</li>
+          <li>Mozilla Firefox</li>
+          <li>Microsoft Edge</li>
+          <li>Safari (macOS e iOS)</li>
+          <li>Samsung Internet (Android)</li>
+        </ul>
+      </section>
+      
+      <div class="contact-section">
+        <h3>¿Encontraste algún problema de accesibilidad?</h3>
+        <p>Si encuentras alguna barrera de accesibilidad en nuestra plataforma o tienes sugerencias para mejorar, por favor contáctanos:</p>
+        <p>
+          <strong>Email:</strong> <a href="mailto:accesibilidad@Cemiedu.ar">accesibilidad@Cemiedu.ar</a><br>
+          <strong>Teléfono:</strong> +54 381 4463243
+        </p>
+        <p>Nos comprometemos a responder dentro de 5 días hábiles y trabajar para resolver cualquier problema identificado.</p>
+      </div>
+      
+    </div>
+  </main>
+
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long">
+        </div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <div class="footer-social">
+        </div>
+        <a href="register.html" class="footer-cta-link">
+          <i data-lucide="user-plus"></i> Registrarse
+        </a>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <p class="footer-tech">Desarrollado con Node.js, MySQL y tecnologías modernas</p>
+      <div class="footer-links-bottom">
+        <a href="terminos.html">Términos de Servicio</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/harvard-menu.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

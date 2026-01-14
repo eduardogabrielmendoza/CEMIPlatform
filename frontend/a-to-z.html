@@ -1,0 +1,677 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A2540">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>Índice A-Z - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .internal-page-content {
+      padding-top: 120px;
+      min-height: 100vh;
+      background: #fff;
+    }
+    
+    .internal-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    
+    .internal-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #656f77;
+      margin-bottom: 32px;
+    }
+    
+    .internal-breadcrumb a {
+      color: #656f77;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .internal-breadcrumb a:hover {
+      color: #1e1e1e;
+    }
+    
+    .internal-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 400;
+      color: #1e1e1e;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    
+    .internal-subtitle {
+      font-size: 1.25rem;
+      color: #656f77;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    
+    /* Buscador */
+    .az-search-box {
+      position: relative;
+      max-width: 500px;
+      margin-bottom: 40px;
+    }
+    
+    .az-search-box input {
+      width: 100%;
+      padding: 16px 20px 16px 50px;
+      font-size: 16px;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+    
+    .az-search-box input:focus {
+      border-color: #93a1ad;
+      box-shadow: 0 0 0 3px rgba(147, 161, 173, 0.15);
+    }
+    
+    .az-search-box i {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #656f77;
+      width: 20px;
+      height: 20px;
+    }
+    
+    /* Navegación alfabética */
+    .alphabet-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    
+    .alphabet-nav a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      font-family: Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #0A2540;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+    
+    .alphabet-nav a:hover {
+      background: #93a1ad;
+      color: white;
+    }
+    
+    .alphabet-nav a.disabled {
+      color: #ccc;
+      pointer-events: none;
+    }
+    
+    /* Secciones por letra */
+    .letter-section {
+      margin-bottom: 48px;
+      scroll-margin-top: 100px;
+    }
+    
+    .letter-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #93a1ad;
+    }
+    
+    .letter-header h2 {
+      font-family: Georgia, serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #0A2540;
+      margin: 0;
+      line-height: 1;
+    }
+    
+    .letter-count {
+      font-size: 0.875rem;
+      color: #656f77;
+    }
+    
+    .az-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    
+    .az-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: #1e1e1e;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+    
+    .az-link:hover {
+      background: rgba(147, 161, 173, 0.08);
+      border-color: rgba(147, 161, 173, 0.3);
+    }
+    
+    .az-link i {
+      width: 18px;
+      height: 18px;
+      color: #656f77;
+      flex-shrink: 0;
+      transition: color 0.15s ease;
+    }
+    
+    .az-link:hover i {
+      color: #93a1ad;
+    }
+    
+    .az-link span {
+      flex: 1;
+    }
+    
+    .az-link .link-arrow {
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: all 0.15s ease;
+    }
+    
+    .az-link:hover .link-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    /* Estado sin resultados */
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: #656f77;
+    }
+    
+    .no-results i {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      color: #ccc;
+    }
+    
+    .no-results h3 {
+      font-size: 1.25rem;
+      color: #1e1e1e;
+      margin-bottom: 8px;
+    }
+    
+    /* Destacar resultados de búsqueda */
+    .highlight {
+      background: rgba(147, 161, 173, 0.15);
+      padding: 2px 4px;
+      border-radius: 2px;
+      color: #93a1ad;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolongblack.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div class="harvard-search-quicklink">
+            <span>QUICK LINKS</span>
+            <a href="a-to-z.html">Ir a Índice A-Z</a>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva. Tareas, calificaciones, anuncios y más.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-funciones" data-image="images/STOCK2.jpg">Funciones Principales <span class="chevron">›</span></a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa de alumnos, profesores, cursos, pagos y estadísticas.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-paneles" data-image="images/STOCK3.webp">Paneles por Rol <span class="chevron">›</span></a>
+            <a href="index.html#modulos" class="mega-sub-link">Ver Módulos</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-nosotros" data-image="images/menu/nosotros.jpg">
+          <a href="index.html#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Conoce nuestra historia, misión y el equipo detrás de Cemi.</p>
+          <div class="mega-sub-links">
+            <a href="index.html#historia" class="mega-sub-link">Nuestra Historia</a>
+            <a href="index.html#filosofia" class="mega-sub-link">Misión y Visión</a>
+            <a href="index.html#valores" class="mega-sub-link">Nuestros Valores</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-soporte" data-image="images/menu/soporte.jpg">
+          <a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a>
+          <p class="mega-sub-description">¿Necesitas ayuda? Estamos aquí para asistirte.</p>
+          <div class="mega-sub-links">
+            <a href="index.html#faq" class="mega-sub-link">Preguntas Frecuentes</a>
+            <a href="mailto:soporte@Cemiedu" class="mega-sub-link">Contactar Soporte</a>
+            <a href="status.html" class="mega-sub-link">Estado del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-seguridad" data-image="images/menu/seguridad.jpg">
+          <a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Reporta vulnerabilidades o infracciones de forma segura.</p>
+          <div class="mega-sub-links">
+            <a href="cemi-seguridad.html" class="mega-sub-link">Centro de Ayuda de Seguridad</a>
+            <a href="reportar-copyright.html" class="mega-sub-link">Reportar Infracción de Copyright</a>
+            <a href="privacidad.html" class="mega-sub-link">Política de Privacidad</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-recursos" data-image="images/menu/recursos.webp">
+          <a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Documentación, descargas y más recursos útiles.</p>
+          <div class="mega-sub-links">
+            <a href="https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk" class="mega-sub-link">Descargar App Android</a>
+            <a href="index.html#caracteristicas" class="mega-sub-link">Características del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-accesibilidad" data-image="images/menu/accesibilidad.jpg">
+          <a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Herramientas de acceso y administración institucional.</p>
+          <div class="mega-sub-links">
+            <a href="login-selector.html" class="mega-sub-link">Acceso Público</a>
+            <a href="login-admin.html" class="mega-sub-link">Acceso Administrativo</a>
+            <a href="reglamento-institucional.html" class="mega-sub-link">Reglamento Institucional</a>
+            <a href="register.html" class="mega-sub-link">Registro</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mega-nav-tertiary-container">
+        <div class="mega-nav-tertiary" id="tertiary-funciones">
+          <div class="mega-tertiary-header">
+            <h4>Funciones del Classroom</h4>
+            <p>Explora todas las herramientas disponibles.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item">
+              <button class="mega-tertiary-link">Tareas y Entregas</button>
+              <div class="mega-tertiary-info">
+                <p>Gestiona tus tareas pendientes.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mega-nav-tertiary" id="tertiary-paneles">
+          <div class="mega-tertiary-header">
+            <h4>Paneles por Rol</h4>
+            <p>Accede según tu perfil.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item">
+              <button class="mega-tertiary-link">Panel del Alumno</button>
+              <div class="mega-tertiary-info">
+                <p>Tu espacio personal.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mega-menu-footer">
+      <div class="mega-footer-inner">
+        <span class="mega-footer-label">
+          Enlaces rápidos <span class="chevron">›</span>
+        </span>
+        <div class="mega-footer-links">
+          <a href="terminos.html" class="mega-footer-link">Términos de Servicio</a>
+          <a href="privacidad.html" class="mega-footer-link">Privacidad</a>
+          <a href="ayuda.html" class="mega-footer-link">Ayuda</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="internal-page-content">
+    <div class="internal-container">
+      
+      <nav class="internal-breadcrumb">
+        <a href="index.html">Inicio</a>
+        <span>/</span>
+        <span>Índice A-Z</span>
+      </nav>
+      
+      <h1 class="internal-title">Índice A-Z</h1>
+      <p class="internal-subtitle">Encuentra rápidamente cualquier página, recurso o información del sistema Cemi</p>
+      
+      <div class="az-search-box">
+        <i data-lucide="search"></i>
+        <input type="text" id="azSearchInput" placeholder="Buscar en el índice..." autocomplete="off">
+      </div>
+      
+      <nav class="alphabet-nav" id="alphabetNav">
+      </nav>
+      
+      <div id="azContent">
+      </div>
+      
+      <div class="no-results" id="noResults" style="display: none;">
+        <i data-lucide="search-x"></i>
+        <h3>No se encontraron resultados</h3>
+        <p>Intenta con otros términos de búsqueda</p>
+      </div>
+      
+    </div>
+  </main>
+
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long">
+        </div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <div class="footer-social">
+        </div>
+        <a href="register.html" class="footer-cta-link">
+          <i data-lucide="user-plus"></i> Registrarse
+        </a>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <p class="footer-tech">Desarrollado con Node.js, MySQL y tecnologías modernas</p>
+      <div class="footer-links-bottom">
+        <a href="terminos.html">Términos de Servicio</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/harvard-menu.js"></script>
+  <script>
+    // Datos del índice A-Z
+    const azData = [
+      { letter: 'A', items: [
+        { name: 'Accesibilidad', url: 'accesibilidad.html', icon: 'accessibility' },
+        { name: 'Acceso Administrativo', url: 'login-admin.html', icon: 'shield' },
+        { name: 'Anuncios del Classroom', url: 'classroom-login.html', icon: 'megaphone' },
+        { name: 'App Android (Descargar)', url: 'https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk', icon: 'smartphone' },
+        { name: 'Asistencia', url: 'login.html', icon: 'clipboard-check' },
+        { name: 'Ayuda', url: 'ayuda.html', icon: 'help-circle' }
+      ]},
+      { letter: 'C', items: [
+        { name: 'Calificaciones', url: 'classroom-login.html', icon: 'award' },
+        { name: 'Cemi Jóvenes', url: 'cemi-jovenes.html', icon: 'users' },
+        { name: 'Cemi Niños', url: 'cemi-ninos.html', icon: 'baby' },
+        { name: 'Classroom', url: 'classroom-login.html', icon: 'book-open' },
+        { name: 'Comunidad Cemi', url: 'comunidad-cemi.html', icon: 'heart' },
+        { name: 'Configuración de Cookies', url: 'cookies-config.html', icon: 'cookie' },
+        { name: 'Contacto', url: 'index.html#contacto', icon: 'mail' },
+        { name: 'Cursos Disponibles', url: 'index.html#cursos', icon: 'graduation-cap' }
+      ]},
+      { letter: 'D', items: [
+        { name: 'Dashboard Alumno', url: 'login.html', icon: 'layout-dashboard' },
+        { name: 'Dashboard Profesor', url: 'login.html', icon: 'layout-dashboard' },
+        { name: 'Dashboard Administrador', url: 'login-admin.html', icon: 'layout-dashboard' },
+        { name: 'Descargas', url: 'https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk', icon: 'download' }
+      ]},
+      { letter: 'E', items: [
+        { name: 'Estado del Sistema', url: 'status.html', icon: 'activity' },
+        { name: 'Estadísticas', url: 'login-admin.html', icon: 'bar-chart-2' }
+      ]},
+      { letter: 'F', items: [
+        { name: 'FAQ - Preguntas Frecuentes', url: 'index.html#faq', icon: 'help-circle' },
+        { name: 'Foros de Discusión', url: 'classroom-login.html', icon: 'message-square' }
+      ]},
+      { letter: 'G', items: [
+        { name: 'Gestión de Alumnos', url: 'login-admin.html', icon: 'users' },
+        { name: 'Gestión de Cursos', url: 'login-admin.html', icon: 'book' },
+        { name: 'Gestión de Pagos', url: 'login-admin.html', icon: 'credit-card' },
+        { name: 'Guía de Uso', url: 'guia.html', icon: 'book-open' }
+      ]},
+      { letter: 'H', items: [
+        { name: 'Historial Académico', url: 'login.html', icon: 'file-text' },
+        { name: 'Horarios', url: 'login.html', icon: 'clock' }
+      ]},
+      { letter: 'I', items: [
+        { name: 'Inicio', url: 'index.html', icon: 'home' },
+        { name: 'Iniciar Sesión', url: 'login.html', icon: 'log-in' },
+        { name: 'Inscripción', url: 'register.html', icon: 'user-plus' }
+      ]},
+      { letter: 'M', items: [
+        { name: 'Matrícula', url: 'login-admin.html', icon: 'file-text' },
+        { name: 'Mis Cursos', url: 'login.html', icon: 'book-marked' }
+      ]},
+      { letter: 'N', items: [
+        { name: 'Notas', url: 'classroom-login.html', icon: 'clipboard-list' },
+        { name: 'Nosotros', url: 'index.html#nosotros', icon: 'info' }
+      ]},
+      { letter: 'P', items: [
+        { name: 'Pagos y Cuotas', url: 'login.html', icon: 'credit-card' },
+        { name: 'Panel de Alumno', url: 'login.html', icon: 'user' },
+        { name: 'Panel de Profesor', url: 'login.html', icon: 'user-check' },
+        { name: 'Panel Administrativo', url: 'login-admin.html', icon: 'settings' },
+        { name: 'Perfil de Usuario', url: 'login.html', icon: 'user-circle' },
+        { name: '¿Por qué elegir CEMI?', url: 'porque-cemi.html', icon: 'star' },
+        { name: 'Privacidad', url: 'privacidad.html', icon: 'shield' },
+        { name: 'Profesores', url: 'login-admin.html', icon: 'users' }
+      ]},
+      { letter: 'R', items: [
+        { name: 'Recuperar Contraseña', url: 'recuperar-password.html', icon: 'key' },
+        { name: 'Recursos de Clase', url: 'classroom-login.html', icon: 'folder' },
+        { name: 'Registro', url: 'register.html', icon: 'user-plus' },
+        { name: 'Reglamento Institucional', url: 'reglamento-institucional.html', icon: 'book' },
+        { name: 'Reportar Copyright', url: 'reportar-copyright.html', icon: 'alert-triangle' },
+        { name: 'Reportar Seguridad', url: 'reportar-seguridad.html', icon: 'shield-alert' }
+      ]},
+      { letter: 'S', items: [
+        { name: 'Seguridad', url: 'reportar-seguridad.html', icon: 'lock' },
+        { name: 'Soporte', url: 'ayuda.html', icon: 'headphones' },
+        { name: 'Status del Sistema', url: 'status.html', icon: 'activity' }
+      ]},
+      { letter: 'T', items: [
+        { name: 'Tareas', url: 'classroom-login.html', icon: 'check-square' },
+        { name: 'Términos de Servicio', url: 'terminos.html', icon: 'file-text' }
+      ]}
+    ];
+
+    // Generar navegación alfabética
+    function generateAlphabetNav() {
+      const nav = document.getElementById('alphabetNav');
+      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+      const availableLetters = azData.map(d => d.letter);
+      
+      nav.innerHTML = alphabet.map(letter => {
+        const isAvailable = availableLetters.includes(letter);
+        return `<a href="#letter-${letter}" class="${isAvailable ? '' : 'disabled'}">${letter}</a>`;
+      }).join('');
+    }
+
+    // Generar contenido del índice
+    function generateContent(filter = '') {
+      const container = document.getElementById('azContent');
+      const noResults = document.getElementById('noResults');
+      let html = '';
+      let hasResults = false;
+
+      azData.forEach(section => {
+        let items = section.items;
+        
+        if (filter) {
+          items = items.filter(item => 
+            item.name.toLowerCase().includes(filter.toLowerCase())
+          );
+        }
+        
+        if (items.length > 0) {
+          hasResults = true;
+          html += `
+            <section class="letter-section" id="letter-${section.letter}">
+              <div class="letter-header">
+                <h2>${section.letter}</h2>
+                <span class="letter-count">${items.length} ${items.length === 1 ? 'enlace' : 'enlaces'}</span>
+              </div>
+              <div class="az-links">
+                ${items.map(item => `
+                  <a href="${item.url}" class="az-link">
+                    <i data-lucide="${item.icon}"></i>
+                    <span>${filter ? highlightText(item.name, filter) : item.name}</span>
+                    <i data-lucide="arrow-right" class="link-arrow"></i>
+                  </a>
+                `).join('')}
+              </div>
+            </section>
+          `;
+        }
+      });
+
+      container.innerHTML = html;
+      noResults.style.display = hasResults ? 'none' : 'block';
+      lucide.createIcons();
+    }
+
+    // Destacar texto buscado
+    function highlightText(text, query) {
+      const regex = new RegExp(`(${query})`, 'gi');
+      return text.replace(regex, '<span class="highlight">$1</span>');
+    }
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', function() {
+      generateAlphabetNav();
+      generateContent();
+      lucide.createIcons();
+
+      // Búsqueda
+      const searchInput = document.getElementById('azSearchInput');
+      searchInput.addEventListener('input', function() {
+        generateContent(this.value);
+      });
+
+      // Verificar parámetro de búsqueda en URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchQuery = urlParams.get('search');
+      if (searchQuery) {
+        searchInput.value = searchQuery;
+        generateContent(searchQuery);
+      }
+    });
+  </script>
+</body>
+</html>

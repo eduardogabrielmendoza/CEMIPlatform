@@ -1,0 +1,1694 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A2540">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="apple-touch-icon" href="images/logo.png">
+  <title>Cemi - Sistema de Gestión Académica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <link rel="stylesheet" href="assets/css/chat-widget.css">
+  <link rel="stylesheet" href="assets/css/cookie-modal.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    /* Status Banner Styles - DISEÑO MODERNO - POSICIÓN INFERIOR */
+    .system-status-banner {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: bannerSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 16px;
+      max-width: calc(100% - 48px);
+      width: auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+
+    @keyframes bannerSlideUp {
+      from { 
+        transform: translateX(-50%) translateY(120%); 
+        opacity: 0; 
+      }
+      to { 
+        transform: translateX(-50%) translateY(0); 
+        opacity: 1; 
+      }
+    }
+
+    .system-status-banner.degraded {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fef3c7 100%);
+      background-size: 200% 200%;
+      animation: bannerSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1), gradientShift 3s ease infinite;
+    }
+
+    .system-status-banner.outage {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 50%, #fee2e2 100%);
+      background-size: 200% 200%;
+      animation: bannerSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1), gradientShift 3s ease infinite;
+    }
+
+    .system-status-banner.maintenance {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #dbeafe 100%);
+      background-size: 200% 200%;
+      animation: bannerSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1), gradientShift 3s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .status-banner-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1400px;
+      padding: 14px 24px;
+      gap: 20px;
+    }
+
+    .status-banner-content {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .status-banner-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      animation: iconPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .system-status-banner.degraded .status-banner-icon {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    }
+
+    .system-status-banner.outage .status-banner-icon {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+      animation: iconPulse 1s ease-in-out infinite;
+    }
+
+    .system-status-banner.maintenance .status-banner-icon {
+      background: linear-gradient(135deg, #0070F3, #0A2540);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+
+    .status-banner-icon i {
+      width: 20px;
+      height: 20px;
+      color: white;
+    }
+
+    .status-banner-text-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .status-banner-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.8;
+    }
+
+    .system-status-banner.degraded .status-banner-label { color: #b45309; }
+    .system-status-banner.outage .status-banner-label { color: #b91c1c; }
+    .system-status-banner.maintenance .status-banner-label { color: #1d4ed8; }
+
+    #statusBannerText {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1e293b;
+      line-height: 1.3;
+    }
+
+    .status-banner-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      border: 2px solid transparent;
+    }
+
+    .system-status-banner.degraded .status-banner-link {
+      color: #92400e;
+      background: rgba(245, 158, 11, 0.25);
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .system-status-banner.degraded .status-banner-link:hover {
+      background: rgba(245, 158, 11, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .system-status-banner.outage .status-banner-link {
+      color: #991b1b;
+      background: rgba(239, 68, 68, 0.25);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .system-status-banner.outage .status-banner-link:hover {
+      background: rgba(239, 68, 68, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .system-status-banner.maintenance .status-banner-link {
+      color: #1e40af;
+      background: rgba(59, 130, 246, 0.25);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .system-status-banner.maintenance .status-banner-link:hover {
+      background: rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .status-banner-link i {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s ease;
+    }
+
+    .status-banner-link:hover i {
+      transform: translateX(3px);
+    }
+
+    .status-banner-close {
+      background: rgba(0, 0, 0, 0.1);
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-banner-close i {
+      width: 18px;
+      height: 18px;
+      color: #475569;
+    }
+
+    .status-banner-close:hover {
+      background: rgba(0, 0, 0, 0.2);
+      transform: rotate(90deg);
+    }
+
+    @media (max-width: 768px) {
+      .system-status-banner {
+        bottom: 16px;
+        max-width: calc(100% - 32px);
+        border-radius: 14px;
+      }
+
+      .status-banner-inner {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .status-banner-content {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .status-banner-icon {
+        width: 32px;
+        height: 32px;
+      }
+
+      .status-banner-icon i {
+        width: 18px;
+        height: 18px;
+      }
+
+      #statusBannerText {
+        font-size: 0.85rem;
+      }
+
+      .status-banner-link {
+        font-size: 0.8rem;
+        padding: 8px 14px;
+        flex: 1;
+        justify-content: center;
+      }
+
+      .status-banner-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-banner-content">
+      <div class="cookie-banner-inner">
+        <div class="cookie-banner-text">
+          <div class="cookie-icon">
+            <i data-lucide="cookie"></i>
+          </div>
+          <div class="cookie-message">
+            <strong>Usamos cookies</strong>
+            <span>para mejorar tu experiencia. Al continuar navegando, aceptas nuestra <a href="privacidad.html">política de privacidad</a>.</span>
+          </div>
+        </div>
+        <div class="cookie-banner-actions">
+          <button class="cookie-btn cookie-btn-config" onclick="goToCookieConfig()">
+            <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
+            Configurar
+          </button>
+          <button class="cookie-btn cookie-btn-reject" onclick="rejectCookies()">
+            Rechazar
+          </button>
+          <button class="cookie-btn cookie-btn-accept" onclick="acceptCookies()">
+            <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolongblack.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+        <span class="harvard-dot"></span>
+        <a href="porque-cemi.html" class="harvard-brand-text">Aprende porque elegir Cemi</a>
+      </div>
+      
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div class="harvard-search-quicklink">
+            <span>QUICK LINKS</span>
+            <a href="a-to-z.html">Ir a Índice A-Z</a>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva. Tareas, calificaciones, anuncios y más.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-funciones" data-image="images/STOCK2.jpg">Funciones Principales <span class="chevron">›</span></a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa de alumnos, profesores, cursos, pagos y estadísticas.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-paneles" data-image="images/STOCK3.webp">Paneles por Rol <span class="chevron">›</span></a>
+            <a href="#modulos" class="mega-sub-link">Ver Módulos</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-nosotros" data-image="images/menu/nosotros.jpg">
+          <a href="#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Conoce nuestra historia, misión y el equipo detrás de Cemi.</p>
+          <div class="mega-sub-links">
+            <a href="#historia" class="mega-sub-link">Nuestra Historia</a>
+            <a href="#filosofia" class="mega-sub-link">Misión y Visión</a>
+            <a href="#valores" class="mega-sub-link">Nuestros Valores</a>
+            <a href="#equipo" class="mega-sub-link">El Equipo</a>
+            <a href="#tecnologias" class="mega-sub-link">Tecnologías</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-soporte" data-image="images/menu/soporte.jpg">
+          <a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a>
+          <p class="mega-sub-description">¿Necesitas ayuda? Estamos aquí para asistirte.</p>
+          <div class="mega-sub-links">
+            <a href="#faq" class="mega-sub-link">Preguntas Frecuentes</a>
+            <a href="mailto:soporte@Cemiedu" class="mega-sub-link">Contactar Soporte</a>
+            <a href="status.html" class="mega-sub-link">Estado del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-seguridad" data-image="images/menu/seguridad.jpg">
+          <a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Reporta vulnerabilidades o infracciones de forma segura.</p>
+          <div class="mega-sub-links">
+            <a href="cemi-seguridad.html" class="mega-sub-link">Centro de Ayuda de Seguridad</a>
+            <a href="reportar-copyright.html" class="mega-sub-link">Reportar Infracción de Copyright</a>
+            <a href="privacidad.html" class="mega-sub-link">Política de Privacidad</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-recursos" data-image="images/menu/recursos.webp">
+          <a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Documentación, descargas y más recursos útiles.</p>
+          <div class="mega-sub-links">
+            <a href="https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk" class="mega-sub-link">Descargar App Android</a>
+            <a href="#caracteristicas" class="mega-sub-link">Características del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-accesibilidad" data-image="images/menu/accesibilidad.jpg">
+          <a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Herramientas de acceso y administración institucional.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-acceso-publico">Acceso Público <span class="chevron">›</span></a>
+            <a href="login-admin.html" class="mega-sub-link">Acceso Administrativo</a>
+            <a href="reglamento-institucional.html" class="mega-sub-link">Reglamento Institucional</a>
+            <a href="register.html" class="mega-sub-link">Registro</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mega-nav-tertiary-container">
+        <div class="mega-nav-tertiary" id="tertiary-funciones">
+          <div class="mega-tertiary-header">
+            <h4>Funciones del Classroom</h4>
+            <p>Explora todas las herramientas disponibles para el aprendizaje.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/tareas.webp">
+              <button class="mega-tertiary-link">Tareas y Entregas</button>
+              <div class="mega-tertiary-info">
+                <p>Gestiona tus tareas pendientes, sube entregas y revisa el historial de trabajos completados. Sistema de fechas límite con recordatorios automáticos.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/calificaciones.jpg">
+              <button class="mega-tertiary-link">Calificaciones</button>
+              <div class="mega-tertiary-info">
+                <p>Consulta tus notas por materia, promedios parciales y finales. Visualiza tu progreso académico con gráficos detallados.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/anuncios.jpg">
+              <button class="mega-tertiary-link">Anuncios</button>
+              <div class="mega-tertiary-info">
+                <p>Mantente informado con las últimas novedades de tus cursos. Notificaciones de profesores, cambios de horario y eventos importantes.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/recursos.jpg">
+              <button class="mega-tertiary-link">Recursos de Clase</button>
+              <div class="mega-tertiary-info">
+                <p>Accede a materiales de estudio, presentaciones, documentos PDF y recursos multimedia compartidos por tus profesores.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/foros.webp">
+              <button class="mega-tertiary-link">Foros de Discusión</button>
+              <div class="mega-tertiary-info">
+                <p>Participa en debates académicos, resuelve dudas con compañeros y colabora en proyectos grupales de forma organizada.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mega-nav-tertiary" id="tertiary-paneles">
+          <div class="mega-tertiary-header">
+            <h4>Paneles por Rol</h4>
+            <p>Accede al panel correspondiente a tu perfil.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/panel-alumno.jpg">
+              <button class="mega-tertiary-link">Panel del Alumno</button>
+              <div class="mega-tertiary-info">
+                <p>Tu espacio personal para gestionar inscripciones, ver horarios, estado de cuotas y acceder a tu historial académico completo.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-profesor.jpg">
+              <button class="mega-tertiary-link">Panel del Profesor</button>
+              <div class="mega-tertiary-info">
+                <p>Administra tus cursos, carga calificaciones, publica anuncios y gestiona la asistencia de tus alumnos de forma eficiente.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-administrador.jpg">
+              <button class="mega-tertiary-link">Panel Administrativo</button>
+              <div class="mega-tertiary-info">
+                <p>Control total del sistema: gestión de usuarios, reportes institucionales, configuración de cursos y monitoreo del sistema.</p>
+                <a href="login-admin.html" class="mega-tertiary-action">Acceso Admin →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mega-nav-tertiary" id="tertiary-acceso-publico">
+          <div class="mega-tertiary-header">
+            <h4>Acceso Público</h4>
+            <p>Elige la plataforma a la que deseas acceder.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/dashboardmegamenu.png">
+              <button class="mega-tertiary-link">Dashboard</button>
+              <div class="mega-tertiary-info">
+                <p>Panel de gestión para alumnos y profesores. Administra inscripciones, calificaciones, asistencia y más desde un solo lugar.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/classroommegamenu.png">
+              <button class="mega-tertiary-link">Classroom</button>
+              <div class="mega-tertiary-info">
+                <p>Aula virtual interactiva. Accede a tus cursos, tareas, calificaciones y recursos de clase en un entorno moderno y fácil de usar.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mega-menu-footer">
+      <div class="mega-footer-inner">
+        <span class="mega-footer-label">
+          Enlaces rápidos <span class="chevron">›</span>
+        </span>
+        <div class="mega-footer-links">
+          <a href="terminos.html" class="mega-footer-link">Términos de Servicio</a>
+          <a href="privacidad.html" class="mega-footer-link">Privacidad</a>
+          <a href="ayuda.html" class="mega-footer-link">Ayuda</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="systemStatusBanner" class="system-status-banner" style="display: none;">
+    <div class="status-banner-inner">
+      <div class="status-banner-content">
+        <div class="status-banner-icon">
+          <i id="statusBannerIcon" data-lucide="alert-triangle"></i>
+        </div>
+        <div class="status-banner-text-container">
+          <span class="status-banner-label" id="statusBannerLabel">Aviso del Sistema</span>
+          <span id="statusBannerText">Mensaje del sistema...</span>
+        </div>
+      </div>
+      <a href="status.html" class="status-banner-link">
+        Ver estado completo
+        <i data-lucide="arrow-right"></i>
+      </a>
+      <button class="status-banner-close" onclick="hideStatusBanner()">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+  </div>
+
+  <section class="hero-main">
+    <div class="hero-logo-side">
+      <img src="images/logo.png" alt="Cemi Logo" class="hero-logo-animate">
+    </div>
+    <div class="hero-content">
+      <h1>Cemi Sistema Gestor</h1>
+      <p>Una nueva forma de enseñar y aprender.</p>
+      <div class="hero-buttons">
+        <button class="cta-btn" onclick="window.location.href='guia.html'">Empezar ahora</button>
+        <a href="#classroom" class="link-arrow">Más información</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-banner split-banner-img-left" id="classroom">
+    <div class="split-banner-image scroll-reveal-image">
+      <video src="images/classroombanner.mp4" autoplay loop muted playsinline></video>
+    </div>
+    <div class="split-banner-content">
+      <h2 class="split-banner-title scroll-reveal">Classroom</h2>
+      <p class="split-banner-subtitle scroll-reveal" data-delay="1">El aula virtual más intuitiva.</p>
+      <p class="split-banner-description scroll-reveal" data-delay="2">Tareas, calificaciones, anuncios y más. Todo en un solo lugar diseñado para la educación moderna.</p>
+      <div class="split-banner-btn-container scroll-reveal" data-delay="3">
+        <button class="split-banner-btn split-banner-btn-outline" onclick="window.location.href='classroom-login.html'">Ir al Classroom</button>
+        <button class="split-banner-info-btn" onclick="window.location.href='info-classroom.html'" title="Más información sobre Classroom">
+          <i data-lucide="info"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-banner split-banner-img-right" id="dashboard">
+    <div class="split-banner-content">
+      <h2 class="split-banner-title scroll-reveal">Dashboard</h2>
+      <p class="split-banner-subtitle scroll-reveal" data-delay="1">Gestión completa.</p>
+      <p class="split-banner-description scroll-reveal" data-delay="2">Administra alumnos, profesores, cursos, pagos y estadísticas desde un panel de control intuitivo.</p>
+      <div class="split-banner-btn-container scroll-reveal" data-delay="3">
+        <button class="split-banner-btn split-banner-btn-outline" onclick="window.location.href='login.html'">Ir al Dashboard</button>
+        <button class="split-banner-info-btn" onclick="window.location.href='info-dashboard.html'" title="Más información sobre Dashboard">
+          <i data-lucide="info"></i>
+        </button>
+      </div>
+    </div>
+    <div class="split-banner-image scroll-reveal-image">
+      <video src="images/dashboardbanner.mp4" autoplay loop muted playsinline></video>
+    </div>
+  </section>
+
+  <section class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i data-lucide="users" style="width: 48px; height: 48px;"></i>
+      </div>
+      <h3>Gestión de Alumnos</h3>
+      <p>Registros, inscripciones y seguimiento académico centralizado.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i data-lucide="book-open" style="width: 48px; height: 48px;"></i>
+      </div>
+      <h3>Cursos y Clases</h3>
+      <p>Organiza horarios, niveles y asignaciones de manera eficiente.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i data-lucide="credit-card" style="width: 48px; height: 48px;"></i>
+      </div>
+      <h3>Control de Pagos</h3>
+      <p>Seguimiento de cuotas, recibos y reportes financieros automatizados.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i data-lucide="clipboard-check" style="width: 48px; height: 48px;"></i>
+      </div>
+      <h3>Tareas y Evaluaciones</h3>
+      <p>Asigna, recibe y califica trabajos digitalmente.</p>
+    </div>
+  </section>
+
+  <section class="product-section" id="soporte">
+    <div class="section-content">
+      <h2>¿Necesitas ayuda?</h2>
+      <p class="section-description">Nuestro equipo de soporte está listo para asistirte.</p>
+      <div class="section-links">
+        <a href="mailto:soporte@Cemiedu" class="link-arrow">Contactar soporte</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-banner split-banner-img-right split-banner-android" id="android-app">
+    <div class="split-banner-content">
+      <h2 class="split-banner-title scroll-reveal">App Móvil</h2>
+      <p class="split-banner-subtitle scroll-reveal" data-delay="1">Cemi en tu bolsillo.</p>
+      <p class="split-banner-description scroll-reveal" data-delay="2">Accede a tus cursos, tareas y calificaciones desde cualquier lugar con nuestra aplicación Android.</p>
+    </div>
+    <div class="split-banner-image split-banner-image-android scroll-reveal-image">
+      <img src="images/bannerandroid.png" alt="Cemi App Android">
+      <a href="https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk" class="android-download-btn">
+        Descargar App
+      </a>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    lucide.createIcons();
+    
+    // ===== MENÚ MÓVIL HAMBURGUESA =====
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const navLinks = document.getElementById('navLinks');
+    
+    if (mobileMenuToggle && navLinks) {
+      mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('active');
+        navLinks.classList.toggle('mobile-active');
+      });
+
+      // Cerrar menú al hacer clic en un enlace
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenuToggle.classList.remove('active');
+          navLinks.classList.remove('mobile-active');
+        });
+      });
+
+      // Cerrar menú al hacer clic fuera
+      document.addEventListener('click', (e) => {
+        if (!navLinks.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+          mobileMenuToggle.classList.remove('active');
+          navLinks.classList.remove('mobile-active');
+        }
+      });
+    }
+    
+    // Dropdown de "Más Información" - Específico para ese botón solamente
+    const moreInfoBtn = document.getElementById('moreInfoBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const dropdownBackdrop = document.getElementById('dropdownBackdrop');
+    const navItemDropdown = document.querySelector('.nav-item-dropdown:not(.nav-security)'); // Excluir nav-security
+    const dropdownContent = document.querySelector('.dropdown-content');
+    
+    let closeTimeout;
+    
+    // Abrir con hover en el botón de Más Información (NO en seguridad)
+    if (navItemDropdown) {
+      navItemDropdown.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimeout);
+        dropdownMenu.classList.add('active');
+      });
+      
+      // Cerrar cuando el mouse sale del botón
+      navItemDropdown.addEventListener('mouseleave', () => {
+        closeTimeout = setTimeout(() => {
+          dropdownMenu.classList.remove('active');
+        }, 100);
+      });
+    }
+    
+    // Mantener abierto cuando el mouse está en el dropdown content
+    if (dropdownContent) {
+      dropdownContent.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimeout);
+      });
+      
+      // Cerrar cuando el mouse sale del dropdown content
+      dropdownContent.addEventListener('mouseleave', () => {
+        closeTimeout = setTimeout(() => {
+          dropdownMenu.classList.remove('active');
+        }, 100);
+      });
+    }
+    
+    // Cerrar al hacer clic en backdrop
+    if (dropdownBackdrop) {
+      dropdownBackdrop.addEventListener('click', () => {
+        dropdownMenu.classList.remove('active');
+      });
+    }
+
+    // Dropdown de Seguridad - SEPARADO del de Más Información
+    const securityBtn = document.getElementById('securityBtn');
+    const dropdownSecurityMenu = document.getElementById('dropdownSecurityMenu');
+    const dropdownSecurityBackdrop = document.getElementById('dropdownSecurityBackdrop');
+    const navSecurity = document.querySelector('.nav-security');
+    const dropdownContentSecurity = document.querySelector('.dropdown-content-security');
+    
+    let closeSecurityTimeout;
+    
+    // Solo abrir dropdown de seguridad cuando el mouse entra específicamente en el elemento de seguridad
+    navSecurity.addEventListener('mouseenter', (e) => {
+      clearTimeout(closeSecurityTimeout);
+      clearTimeout(closeTimeout); // Cerrar dropdown de Más Información si está abierto
+      dropdownMenu.classList.remove('active'); // Cerrar dropdown de Más Información
+      dropdownSecurityMenu.classList.add('active');
+    });
+    
+    dropdownContentSecurity.addEventListener('mouseenter', () => {
+      clearTimeout(closeSecurityTimeout);
+    });
+    
+    navSecurity.addEventListener('mouseleave', (e) => {
+      closeSecurityTimeout = setTimeout(() => {
+        dropdownSecurityMenu.classList.remove('active');
+      }, 100);
+    });
+    
+    dropdownContentSecurity.addEventListener('mouseleave', () => {
+      closeSecurityTimeout = setTimeout(() => {
+        dropdownSecurityMenu.classList.remove('active');
+      }, 100);
+    });
+    
+    dropdownSecurityBackdrop.addEventListener('click', () => {
+      dropdownSecurityMenu.classList.remove('active');
+    });
+    
+    // Cerrar dropdown al hacer clic en un item
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', () => {
+        dropdownMenu.classList.remove('active');
+      });
+    });
+    
+    // Cerrar dropdowns con tecla ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (dropdownMenu.classList.contains('active')) {
+          dropdownMenu.classList.remove('active');
+        }
+        if (dropdownSecurityMenu.classList.contains('active')) {
+          dropdownSecurityMenu.classList.remove('active');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+
+  <section id="roles" class="roles">
+    <h2 data-aos="fade-up">Roles del Sistema</h2>
+    <div class="role-grid">
+      <div class="role-card" data-aos="zoom-in" data-aos-delay="100">
+        <i data-lucide="user-cog"></i>
+        <h3>Administrador</h3>
+        <p>Gestiona usuarios, cursos, pagos y reportes globales del sistema.</p>
+      </div>
+      <div class="role-card" data-aos="zoom-in" data-aos-delay="200">
+        <i data-lucide="user"></i>
+        <h3>Alumno</h3>
+        <p>Accede a sus cursos, calificaciones, horarios y pagos en línea.</p>
+      </div>
+      <div class="role-card" data-aos="zoom-in" data-aos-delay="300">
+        <i data-lucide="user-check"></i>
+        <h3>Profesor</h3>
+        <p>Administra asistencia, carga de notas y comunicación con alumnos.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="stats-container">
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+        <i data-lucide="users"></i>
+        <h3 class="counter" data-target="500">0</h3>
+        <p>Alumnos Activos</p>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+        <i data-lucide="book-open"></i>
+        <h3 class="counter" data-target="50">0</h3>
+        <p>Cursos Disponibles</p>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+        <i data-lucide="award"></i>
+        <h3 class="counter" data-target="95">0</h3>
+        <p>% Satisfacción</p>
+      </div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="400">
+        <i data-lucide="trending-up"></i>
+        <h3 class="counter" data-target="99">0</h3>
+        <p>% Uptime</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="modulos" class="modules">
+    <h2 data-aos="fade-up">Módulos Principales</h2>
+    <div class="module-grid">
+      <div class="module-card" data-aos="flip-left" data-aos-delay="100">
+        <i data-lucide="book-open"></i>
+        <h3>Cursos</h3>
+        <p>Gestión completa de materias, niveles y aulas.</p>
+      </div>
+      <div class="module-card" data-aos="flip-left" data-aos-delay="200">
+        <i data-lucide="wallet"></i>
+        <h3>Pagos</h3>
+        <p>Registro y control de cuotas, matriculas y comprobantes.</p>
+      </div>
+      <div class="module-card" data-aos="flip-left" data-aos-delay="300">
+        <i data-lucide="calendar"></i>
+        <h3>Horarios</h3>
+        <p>Consulta y administración de horarios de clases.</p>
+      </div>
+      <div class="module-card" data-aos="flip-left" data-aos-delay="100">
+        <i data-lucide="bar-chart-3"></i>
+        <h3>Reportes</h3>
+        <p>Estadísticas e informes de rendimiento académico.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="caracteristicas" class="features-section">
+    <h2 data-aos="fade-up">Características del Sistema</h2>
+    <div class="features-grid">
+      <div class="feature-item" data-aos="fade-right" data-aos-delay="100">
+        <div class="feature-icon">
+          <i data-lucide="shield-check"></i>
+        </div>
+        <div class="feature-content">
+          <h3>Seguridad Avanzada</h3>
+          <p>Encriptación de datos, autenticación segura y control de acceso por roles.</p>
+        </div>
+      </div>
+      <div class="feature-item" data-aos="fade-right" data-aos-delay="200">
+        <div class="feature-icon">
+          <i data-lucide="database"></i>
+        </div>
+        <div class="feature-content">
+          <h3>Base de Datos Robusta</h3>
+          <p>Sistema de almacenamiento confiable con respaldos automáticos.</p>
+        </div>
+      </div>
+      <div class="feature-item" data-aos="fade-right" data-aos-delay="300">
+        <div class="feature-icon">
+          <i data-lucide="zap"></i>
+        </div>
+        <div class="feature-content">
+          <h3>Rendimiento Óptimo</h3>
+          <p>Respuesta rápida y eficiente para operaciones en tiempo real.</p>
+        </div>
+      </div>
+      <div class="feature-item" data-aos="fade-right" data-aos-delay="100">
+        <div class="feature-icon">
+          <i data-lucide="file-text"></i>
+        </div>
+        <div class="feature-content">
+          <h3>Reportes Detallados</h3>
+          <p>Generación de informes académicos y administrativos en múltiples formatos.</p>
+        </div>
+      </div>
+      <div class="feature-item" data-aos="fade-right" data-aos-delay="200">
+        <div class="feature-icon">
+          <i data-lucide="smartphone"></i>
+        </div>
+        <div class="feature-content">
+          <h3>Diseño Responsive</h3>
+          <p>Acceso desde cualquier dispositivo: PC, tablet o móvil.</p>
+        </div>
+      </div>
+      <div class="feature-item" data-aos="fade-right" data-aos-delay="300">
+        <div class="feature-icon">
+          <i data-lucide="clock"></i>
+        </div>
+        <div class="feature-content">
+          <h3>Disponibilidad 24/7</h3>
+          <p>Sistema accesible en todo momento con monitoreo constante.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="nosotros" class="about-section"></section>
+  <section id="historia" class="about-hero" data-aos="fade-up">
+    <div class="hero-text" data-aos="fade-right">
+      <h1 style="color: var(--color-primary); font-size: 2.5em;">Conoce nuestra historia</h1>
+      <p>Somos un equipo dedicado a modernizar la gestión académica, facilitando la vida de alumnos, profesores y administrativos a través de la tecnología.</p>
+    </div>
+    <div class="hero-image" data-aos="fade-left">
+      <img src="images/banner1.jpg" alt="Banner1" class="animate-on-scroll">
+    </div>
+  </section>
+
+  <section id="filosofia" class="roles">
+    <h2 data-aos="fade-up">Nuestra Filosofía</h2>
+    <div class="role-grid">
+      <div class="role-card" data-aos="zoom-in" data-aos-delay="100">
+        <i data-lucide="target"></i>
+        <h3>Misión</h3>
+        <p>Optimizar la gestión académica a través de una plataforma digital unificada, ágil y transparente para toda la comunidad educativa de Cemi.</p>
+      </div>
+      <div class="role-card" data-aos="zoom-in" data-aos-delay="200">
+        <i data-lucide="eye"></i>
+        <h3>Visión</h3>
+        <p>Ser el sistema de gestión de referencia en la región, impulsando la innovación y la calidad educativa mediante herramientas eficientes y fáciles de usar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="valores" class="modules">
+    <h2 data-aos="fade-up">Nuestros Valores</h2>
+    <div class="module-grid">
+      <div class="module-card" data-aos="fade-up" data-aos-delay="100">
+        <i data-lucide="lightbulb"></i>
+        <h3>Innovación</h3>
+        <p>Buscamos constantemente nuevas y mejores formas de solucionar los desafíos educativos.</p>
+      </div>
+      <div class="module-card" data-aos="fade-up" data-aos-delay="200">
+        <i data-lucide="shield-check"></i>
+        <h3>Calidad</h3>
+        <p>Nos comprometemos con la excelencia y la fiabilidad en nuestro software y nuestro soporte.</p>
+      </div>
+      <div class="module-card" data-aos="fade-up" data-aos-delay="300">
+        <i data-lucide="users"></i>
+        <h3>Comunidad</h3>
+        <p>Creamos herramientas que fomentan la colaboración y el éxito colectivo de la institución.</p>
+      </div>
+      <div class="module-card" data-aos="fade-up" data-aos-delay="400">
+        <i data-lucide="bar-chart-3"></i>
+        <h3>Transparencia</h3>
+        <p>Creemos en el acceso fácil y claro a la información académica y administrativa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tecnologias" class="tech-section">
+    <h2 data-aos="fade-up">Tecnologías Utilizadas</h2>
+    <p class="tech-subtitle" data-aos="fade-up" data-aos-delay="100">Stack tecnológico profesional y moderno</p>
+    <div class="tech-grid">
+      <div class="tech-item" data-aos="zoom-in" data-aos-delay="100">
+        <div class="tech-icon">
+          <i data-lucide="code-2"></i>
+        </div>
+        <a href="https://nodejs.org" target="_blank" rel="noopener noreferrer"><h4>Node.js</h4></a>
+        <p>Backend</p>
+      </div>
+      <div class="tech-item" data-aos="zoom-in" data-aos-delay="200">
+        <div class="tech-icon">
+          <i data-lucide="database"></i>
+        </div>
+        <a href="https://www.mysql.com" target="_blank" rel="noopener noreferrer"><h4>MySQL</h4></a>
+        <p>Base de Datos</p>
+      </div>
+      <div class="tech-item" data-aos="zoom-in" data-aos-delay="300">
+        <div class="tech-icon">
+          <i data-lucide="layout"></i>
+        </div>
+        <a href="https://developer.mozilla.org/es/docs/Web/HTML" target="_blank" rel="noopener noreferrer"><h4>HTML5/CSS3</h4></a>
+        <p>Frontend</p>
+      </div>
+      <div class="tech-item" data-aos="zoom-in" data-aos-delay="400">
+        <div class="tech-icon">
+          <i data-lucide="server"></i>
+        </div>
+        <a href="https://expressjs.com" target="_blank" rel="noopener noreferrer"><h4>Express.js</h4></a>
+        <p>Framework</p>
+      </div>
+      <div class="tech-item" data-aos="zoom-in" data-aos-delay="500">
+        <div class="tech-icon">
+          <i data-lucide="shield"></i>
+        </div>
+        <a href="https://www.npmjs.com/package/bcrypt" target="_blank" rel="noopener noreferrer"><h4>bcrypt</h4></a>
+        <p>Seguridad</p>
+      </div>
+      <div class="tech-item" data-aos="zoom-in" data-aos-delay="600">
+        <div class="tech-icon">
+          <i data-lucide="git-branch"></i>
+        </div>
+        <a href="https://git-scm.com" target="_blank" rel="noopener noreferrer"><h4>Git</h4></a>
+        <p>Control de Versiones</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="faq-section">
+    <h2 data-aos="fade-up">Preguntas Frecuentes</h2>
+    <div class="faq-container">
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
+        <div class="faq-question">
+          <i data-lucide="help-circle"></i>
+          <h3>¿Cómo accedo al sistema?</h3>
+          <i data-lucide="chevron-down" class="faq-toggle"></i>
+        </div>
+        <div class="faq-answer">
+          <p>Los usuarios registrados pueden acceder mediante el botón "Iniciar Sesión" usando sus credenciales asignadas por la administración.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+        <div class="faq-question">
+          <i data-lucide="help-circle"></i>
+          <h3>¿Es seguro el sistema?</h3>
+          <i data-lucide="chevron-down" class="faq-toggle"></i>
+        </div>
+        <div class="faq-answer">
+          <p>Sí, implementamos encriptación de contraseñas, validación de datos y control de acceso basado en roles para garantizar la seguridad.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
+        <div class="faq-question">
+          <i data-lucide="help-circle"></i>
+          <h3>¿Puedo acceder desde mi móvil?</h3>
+          <i data-lucide="chevron-down" class="faq-toggle"></i>
+        </div>
+        <div class="faq-answer">
+          <p>El sistema cuenta con diseño responsive, permitiendo acceso completo desde smartphones, tablets y computadoras.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
+        <div class="faq-question">
+          <i data-lucide="help-circle"></i>
+          <h3>¿Qué reportes puedo generar?</h3>
+          <i data-lucide="chevron-down" class="faq-toggle"></i>
+        </div>
+        <div class="faq-answer">
+          <p>El sistema permite generar reportes de calificaciones, asistencias, pagos y estadísticas generales en formato digital.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="equipo" class="about-section">
+    <h2 style="text-align: center; color: var(--color-primary); font-size: 2em; margin-bottom: 40px;" data-aos="fade-up">Nuestro Equipo</h2>
+    <p style="text-align: center; max-width: 600px; margin: -20px auto 40px auto;" data-aos="fade-up" data-aos-delay="100">Los desarrolladores detrás de este proyecto final.</p>
+    
+    <div class="team-grid">
+      <div class="team-card" data-aos="flip-up" data-aos-delay="100">
+        <i data-lucide="user-cog"></i>
+        <h4>(Mendoza Eduardo)</h4>
+        <p>Backend / Frontend</p>
+      </div>
+      <div class="team-card">
+        <i data-lucide="code-2"></i>
+        <h4>(Bareiro Bautista)</h4>
+        <p>Frontend</p>
+      </div>
+      <div class="team-card">
+        <i data-lucide="layout"></i>
+        <h4>(Lucena Carlos)</h4>
+        <p>Jefe De Proyecto</p>
+      </div>
+      <div class="team-card">
+        <i data-lucide="database"></i>
+        <h4>(Gomez Micaela)</h4>
+        <p>Jefe De Proyecto</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long">
+        </div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <div class="footer-social">
+        </div>
+        <a href="register.html" class="footer-cta-link">
+          <i data-lucide="user-plus"></i> Registrarse
+        </a>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <p class="footer-tech">Desarrollado con usando Node.js, MySQL y tecnologías modernas</p>
+      <div class="footer-links-bottom">
+        <a href="terminos.html">Términos de Servicio</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+      <a href="documentacion.html" class="doc-hidden-link" title="Documentación del Proyecto">documentación del proyecto</a>
+    </div>
+  </footer>
+
+
+  <div id="mapaModal" class="mapa-modal" onclick="cerrarMapa()">
+    <div class="mapa-modal-content" onclick="event.stopPropagation()">
+      <div class="mapa-modal-header">
+        <h3><i data-lucide="map-pin"></i> Ubicacion Cemi</h3>
+        <button onclick="cerrarMapa()" class="mapa-close-btn">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="mapa-container">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.8287364556586!2d-65.30864192377594!3d-27.032020576429577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94224f1587308ef1%3A0xccea20f86f0fd2b1!2sCentro%20Universitario%20Dr.%20Ra%C3%BAl%20Alfonsin!5e0!3m2!1ses!2sar!4v1730000000000!5m2!1ses!2sar"
+          width="100%" 
+          height="450" 
+          style="border:0; border-radius: 12px;" 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+      <div class="mapa-actions">
+        <a 
+          href="https://www.google.com/maps/dir/-27.0305812,-65.3213426/Centro+Universitario+Dr.+Ra%C3%BAl+Alfonsin,+Sarmiento,+Marconi+%26,+Bella+Vista,+Tucum%C3%A1n/@-27.030495,-65.3240088,15z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x94224f1587308ef1:0xccea20f86f0fd2b1!2m2!1d-65.3064623!2d-27.0320205?entry=ttu&g_ep=EgoyMDI1MTAyOS4yIKXMDSoASAFQAw%3D%3D"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mapa-directions-btn">
+          <i data-lucide="navigation"></i> Cómo llegar
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Funciones para el modal del mapa
+    function abrirMapa(event) {
+      event.preventDefault();
+      const modal = document.getElementById('mapaModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      // Reinicializar iconos de Lucide en el modal
+      setTimeout(() => lucide.createIcons(), 100);
+    }
+
+    function cerrarMapa() {
+      const modal = document.getElementById('mapaModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar modal con tecla ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        cerrarMapa();
+      }
+    });
+  </script>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script>
+    // Inicializar Lucide Icons
+    lucide.createIcons();
+    
+    // Inicializar AOS
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+      offset: 100
+    });
+
+    // ===== SCROLL REVEAL BIDIRECCIONAL - Split Banners =====
+    const scrollRevealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Entrando al viewport - mostrar con animación
+          entry.target.classList.add('visible');
+        } else {
+          // Saliendo del viewport - ocultar para reanimar al volver
+          entry.target.classList.remove('visible');
+        }
+      });
+    }, {
+      threshold: 0.3,
+      rootMargin: '0px 0px -100px 0px'
+    });
+
+    // Observar todos los elementos con animación
+    document.querySelectorAll('.scroll-reveal, .scroll-reveal-image').forEach(el => {
+      scrollRevealObserver.observe(el);
+    });
+
+    // Menú flotante removido - Asistente Cemi lo reemplaza
+
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', () => {
+        const faqItem = question.parentElement;
+        const isActive = faqItem.classList.contains('active');
+        
+        // Cerrar todos los demás items
+        document.querySelectorAll('.faq-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        
+        // Abrir el actual si no estaba activo
+        if (!isActive) {
+          faqItem.classList.add('active');
+        }
+      });
+    });
+
+    // ===== CONTADOR ANIMADO DE ESTADÍSTICAS =====
+    // Activar contadores cuando la sección sea visible
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+          entry.target.classList.add('counted');
+          
+          // Para .counter (sección stats-section existente)
+          const counters = entry.target.querySelectorAll('.counter');
+          counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            let start = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+              start += increment;
+              if (start >= target) {
+                counter.textContent = target;
+                clearInterval(timer);
+              } else {
+                counter.textContent = Math.ceil(start);
+              }
+            }, 20);
+          });
+
+          // Para .stat-number (nueva sección de estadísticas si existe)
+          const statNumbers = entry.target.querySelectorAll('.stat-number');
+          statNumbers.forEach(num => {
+            const target = parseInt(num.getAttribute('data-target'));
+            const suffix = num.getAttribute('data-suffix') || '';
+            
+            let start = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+              start += increment;
+              if (start >= target) {
+                num.textContent = target + suffix;
+                clearInterval(timer);
+              } else {
+                num.textContent = Math.ceil(start) + suffix;
+              }
+            }, 20);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+
+    // Observar todas las secciones de estadísticas
+    document.querySelectorAll('.stats-section, .stats-container').forEach(section => {
+      statsObserver.observe(section);
+    });
+
+    // Ejemplo de SweetAlert2 para el botón de contacto (opcional)
+    function mostrarContacto() {
+      Swal.fire({
+        title: '¿Necesitas ayuda?',
+        text: 'Contáctanos para más información sobre el Sistema Cemi',
+        icon: 'question',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#0A2540'
+      });
+    }
+
+    // El botón APK ahora es visible para todos los dispositivos
+    
+    // Inicializar todos los iconos de Lucide al cargar la página
+    lucide.createIcons();
+
+    // ===== BANNER DE STATUS DEL SISTEMA =====
+    async function checkSystemStatus() {
+      try {
+        const response = await fetch('/api/status/banner');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.show_banner && data.incident) {
+            showStatusBanner(data.incident);
+          }
+        }
+      } catch (error) {
+        console.log('Status check failed:', error);
+      }
+    }
+
+    function showStatusBanner(incident) {
+      const banner = document.getElementById('systemStatusBanner');
+      const icon = document.getElementById('statusBannerIcon');
+      const text = document.getElementById('statusBannerText');
+      const label = document.getElementById('statusBannerLabel');
+      
+      // Configurar severidad
+      banner.className = 'system-status-banner ' + incident.severity;
+      
+      // Configurar icono
+      const iconMap = {
+        degraded: 'alert-triangle',
+        outage: 'x-circle',
+        maintenance: 'wrench'
+      };
+      icon.setAttribute('data-lucide', iconMap[incident.severity] || 'alert-triangle');
+      
+      // Configurar label según severidad
+      const labelMap = {
+        degraded: 'Rendimiento Degradado',
+        outage: 'Interrupción del Servicio',
+        maintenance: 'Mantenimiento Programado'
+      };
+      label.textContent = labelMap[incident.severity] || 'Aviso del Sistema';
+      
+      // Configurar texto
+      text.textContent = incident.title;
+      
+      // Mostrar banner con animación
+      banner.style.display = 'flex';
+      
+      // Recrear iconos
+      lucide.createIcons();
+    }
+
+    function hideStatusBanner() {
+      const banner = document.getElementById('systemStatusBanner');
+      banner.style.opacity = '0';
+      banner.style.transform = 'translateY(100%)'; // Desliza hacia abajo (banner está en bottom)
+      
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 300);
+      
+      // Guardar en sessionStorage para no mostrar de nuevo en esta sesión
+      sessionStorage.setItem('statusBannerDismissed', 'true');
+    }
+
+    // Verificar si el usuario ya cerró el banner en esta sesión
+    if (!sessionStorage.getItem('statusBannerDismissed')) {
+      checkSystemStatus();
+    }
+  </script>
+  
+  <script src="assets/js/pwa-install.js?v=3.0"></script>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="assets/js/cookie-modal.js"></script>
+  
+  <script src="assets/js/harvard-menu.js?v=1.0"></script>
+
+  <div id="authRequiredModal" class="auth-modal-overlay">
+    <div class="auth-modal-container">
+      <div class="auth-modal-header">
+        <div class="auth-modal-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="auth-modal-body">
+        <h2>Acceso Restringido</h2>
+        <p>Esta seccion requiere autenticacion. Inicia sesion con tu cuenta para continuar.</p>
+      </div>
+      <div class="auth-modal-footer">
+        <button class="auth-modal-btn auth-modal-btn-secondary" onclick="closeAuthModal()">
+          Volver al inicio
+        </button>
+        <button class="auth-modal-btn auth-modal-btn-primary" onclick="window.location.href='login-selector.html'">
+          <span>Iniciar Sesion</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/>
+            <path d="m12 5 7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+      <div class="auth-modal-decoration"></div>
+    </div>
+  </div>
+
+  <style>
+    .auth-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 30, 30, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 99999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      animation: authOverlayFadeIn 0.3s ease-out;
+    }
+
+    @keyframes authOverlayFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .auth-modal-container {
+      background: #ffffff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      animation: authModalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    @keyframes authModalSlideIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0.9) translateY(20px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+      }
+    }
+
+    .auth-modal-header {
+      padding: 40px 32px 32px;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .auth-modal-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2393a1ad' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    .auth-modal-icon {
+      width: 72px;
+      height: 72px;
+      background: rgba(147, 161, 173, 0.1);
+      border: 2px solid rgba(147, 161, 173, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      color: #475569;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s ease;
+    }
+
+    .auth-modal-container:hover .auth-modal-icon {
+      background: rgba(147, 161, 173, 0.15);
+      border-color: rgba(147, 161, 173, 0.3);
+      transform: scale(1.05);
+    }
+
+    .auth-modal-body {
+      padding: 32px;
+      text-align: center;
+    }
+
+    .auth-modal-body h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 24px;
+      font-weight: 400;
+      color: #1e1e1e;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .auth-modal-body p {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 15px;
+      color: #64748b;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .auth-modal-footer {
+      padding: 0 32px 32px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .auth-modal-btn {
+      flex: 1;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .auth-modal-btn-secondary {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      transition: all 0.3s ease;
+    }
+
+    .auth-modal-btn-secondary:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+      color: #1e293b;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(148, 163, 184, 0.3);
+    }
+
+    .auth-modal-btn-primary {
+      background: #1e1e1e;
+      border: none;
+      color: #ffffff;
+      transition: all 0.3s ease;
+    }
+
+    .auth-modal-btn-primary:hover {
+      background: #93a1ad;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(147, 161, 173, 0.4);
+    }
+
+    .auth-modal-btn-primary svg {
+      transition: transform 0.2s ease;
+    }
+
+    .auth-modal-btn-primary:hover svg {
+      transform: translateX(3px);
+    }
+
+    .auth-modal-decoration {
+      height: 4px;
+      background: linear-gradient(90deg, #93a1ad);
+      background-size: 200% 100%;
+      animation: authGradientFlow 3s ease infinite;
+    }
+
+    @keyframes authGradientFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @media (max-width: 480px) {
+      .auth-modal-container {
+        max-width: 100%;
+      }
+      .auth-modal-header {
+        padding: 32px 24px 24px;
+      }
+      .auth-modal-body {
+        padding: 24px;
+      }
+      .auth-modal-footer {
+        padding: 0 24px 24px;
+        flex-direction: column;
+      }
+      .auth-modal-body h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
+
+  <script>
+    function closeAuthModal() {
+      const modal = document.getElementById('authRequiredModal');
+      modal.style.opacity = '0';
+      setTimeout(() => {
+        modal.style.display = 'none';
+        modal.style.opacity = '';
+        history.replaceState(null, '', window.location.pathname);
+      }, 200);
+    }
+
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('auth') === 'required') {
+        document.getElementById('authRequiredModal').style.display = 'flex';
+      }
+    })();
+  </script>
+</body>
+</html>
+
+
+

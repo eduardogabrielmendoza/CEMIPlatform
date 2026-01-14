@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Eliminar mi Cuenta | Cemi Seguridad</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="seguridad">
+    <header class="security-header-blur bg-delete">
+        <div class="security-header-content" style="text-align: center; position: relative; z-index: 1;">
+            <div class="security-icon" style="background: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i data-lucide="trash-2" style="width: 40px; height: 40px;"></i>
+            </div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Eliminar mi Cuenta</h1>
+            <p style="font-size: 1.1rem; opacity: 0.95;">Borra permanentemente tu cuenta y todos tus datos de Cemi.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-privsec-home.html" style="color: #0071e3; text-decoration: none;">Privacidad y Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Eliminar mi cuenta</span>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #fff3cd 0%, #fffbf0 100%); border-left: 6px solid #FFC107; padding: 25px; margin: 30px 0; border-radius: 12px; box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);">
+            <div style="display: flex; align-items: start; gap: 20px;">
+                <i data-lucide="shield-alert" style="width: 32px; height: 32px; color: #FFC107; flex-shrink: 0; margin-top: 4px;"></i>
+                <div>
+                    <strong style="display: block; font-size: 1.2rem; margin-bottom: 10px; color: #856404;">️ Acción Crítica - Requiere Aprobación</strong>
+                    <p style="margin: 0; color: #856404; line-height: 1.6;">La eliminación de cuenta es permanente y debe ser autorizada por un administrador. Este proceso incluye período de gracia de 30 días conforme GDPR.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%); padding: 30px; border-radius: 12px; margin: 25px 0; text-align: center; border: 2px solid #dc3545;">
+            <h3 style="margin-bottom: 20px; color: #dc3545;">
+                <i data-lucide="alert-triangle" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"></i>
+                Solicitar Eliminación de Cuenta
+            </h3>
+            <p style="color: #5a6c7d; margin-bottom: 25px;">Esta acción es irreversible. Todos tus datos serán eliminados permanentemente.</p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="window.location.href='mailto:soporte@Cemiedu.ar?subject=Solicitud GDPR: Eliminación de Cuenta&body=Estimado equipo,%0D%0A%0D%0ASolicito la eliminación permanente de mi cuenta (Derecho al Olvido GDPR).%0D%0A%0D%0ADatos:%0D%0A- Usuario: [TU USUARIO]%0D%0A- DNI: [TU DNI]%0D%0A- Motivo: [OPCIONAL]%0D%0A%0D%0AEntiendo que esta acción es irreversible.%0D%0A%0D%0AGracias.'" 
+                        style="background: #dc3545; color: white; padding: 16px 36px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(220,53,69,0.3); display: inline-flex; align-items: center; gap: 10px;">
+                    <i data-lucide="mail" style="width: 20px; height: 20px;"></i>
+                    Solicitar Eliminación
+                </button>
+                <a href="tel:+5491112345678" 
+                   style="background: #28a745; color: white; padding: 16px 36px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(40,167,69,0.3); display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <i data-lucide="phone" style="width: 20px; height: 20px;"></i>
+                    Llamar: +54 911 1234-5678
+                </a>
+            </div>
+        </div>
+
+        <div class="security-alert" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border-left-color: #dc3545;">
+            <i data-lucide="alert-octagon" style="color: white;"></i>
+            <div>
+                <strong style="color: white;">️ Esta acción es irreversible</strong>
+                <p style="color: rgba(255,255,255,0.9);">Una vez confirmada la eliminación (después de 30 días), NO podrás recuperar tu cuenta ni tus datos. Lee cuidadosamente toda la información antes de proceder.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="info"></i> ¿Qué sucede al eliminar tu cuenta?</h2>
+            <p style="margin-bottom: 30px;">Esto es lo que se eliminará permanentemente:</p>
+            
+            <div style="background: #ffebee; padding: 30px; border-radius: 12px; border-left: 4px solid #dc3545;">
+                <div style="display: flex; align-items: start; gap: 15px; margin-bottom: 20px;">
+                    <i data-lucide="x-circle" style="width: 24px; height: 24px; color: #dc3545; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="color: #dc3545; display: block; margin-bottom: 8px;">Tu perfil completo</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Nombre, foto, bio, toda tu información personal</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: start; gap: 15px; margin-bottom: 20px;">
+                    <i data-lucide="x-circle" style="width: 24px; height: 24px; color: #dc3545; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="color: #dc3545; display: block; margin-bottom: 8px;">Historial académico</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Clases, tareas, exámenes, calificaciones, certificados</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: start; gap: 15px; margin-bottom: 20px;">
+                    <i data-lucide="x-circle" style="width: 24px; height: 24px; color: #dc3545; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="color: #dc3545; display: block; margin-bottom: 8px;">Contenido creado</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Posts, comentarios, mensajes, archivos subidos</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: start; gap: 15px; margin-bottom: 20px;">
+                    <i data-lucide="x-circle" style="width: 24px; height: 24px; color: #dc3545; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="color: #dc3545; display: block; margin-bottom: 8px;">Conexiones sociales</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Grupos, chats, lista de compañeros</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: start; gap: 15px;">
+                    <i data-lucide="x-circle" style="width: 24px; height: 24px; color: #dc3545; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="color: #dc3545; display: block; margin-bottom: 8px;">Acceso a la plataforma</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">No podrás volver a iniciar sesión con este email</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="clock"></i> Período de gracia de 30 días</h2>
+            <p style="margin-bottom: 30px;">No eliminamos tu cuenta inmediatamente. Tienes 30 días para cambiar de opinión:</p>
+            
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%); padding: 30px; border-radius: 12px;">
+                <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                    <div style="background: #FFC107; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; flex-shrink: 0;">1</div>
+                    <div>
+                        <strong style="color: #856404; display: block; font-size: 16px; margin-bottom: 8px;">Solicitas la eliminación</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Tu cuenta se desactiva inmediatamente (no puedes iniciar sesión)</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                    <div style="background: #FFC107; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; flex-shrink: 0;">2</div>
+                    <div>
+                        <strong style="color: #856404; display: block; font-size: 16px; margin-bottom: 8px;">Período de espera (30 días)</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Tus datos se mantienen en espera. Puedes cancelar en cualquier momento</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <div style="background: #dc3545; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; flex-shrink: 0;">3</div>
+                    <div>
+                        <strong style="color: #dc3545; display: block; font-size: 16px; margin-bottom: 8px;">Eliminación permanente (día 31)</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Todos tus datos se borran permanentemente y no se pueden recuperar</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 12px; margin-top: 30px; border-left: 4px solid #28a745;">
+                <strong style="color: #28a745; display: block; margin-bottom: 10px;"> Puedes cancelar</strong>
+                <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Durante los 30 días, puedes cancelar la eliminación simplemente iniciando sesión de nuevo. Te enviaremos recordatorios por email en el día 7, 14, 21 y 28.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="alert-triangle"></i> Antes de eliminar tu cuenta</h2>
+            <p style="margin-bottom: 30px;">Considera estas alternativas:</p>
+            
+            <div class="security-grid">
+                <div style="background: #e3f2fd; padding: 25px; border-radius: 12px;">
+                    <i data-lucide="download" style="width: 28px; height: 28px; color: #0071e3; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #0071e3;">Descarga tus datos primero</strong>
+                    <p style="color: #5a6c7d; font-size: 14px; margin-bottom: 15px;">Guarda una copia de tu información antes de eliminarla</p>
+                    <a href="descargar-datos.html" style="color: #0071e3; font-weight: 600; font-size: 13px;">Descargar mis datos →</a>
+                </div>
+                <div style="background: #e8f5e9; padding: 25px; border-radius: 12px;">
+                    <i data-lucide="lock" style="width: 28px; height: 28px; color: #28a745; margin-bottom: 15px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #28a745;">Aumenta tu privacidad</strong>
+                    <p style="color: #5a6c7d; font-size: 14px; margin-bottom: 15px;">Configura quién puede ver tu información</p>
+                    <a href="configuracion-privacidad.html" style="color: #28a745; font-weight: 600; font-size: 13px;">Ver opciones de privacidad →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="help-circle"></i> Preguntas Frecuentes</h2>
+            <div style="margin-top: 30px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Puedo usar el mismo email más tarde?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Sí, después de 90 días de la eliminación permanente, puedes crear una nueva cuenta con el mismo email.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Qué pasa con mis mensajes a otros?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Los mensajes que enviaste permanecerán en las conversaciones de otros usuarios, pero aparecerán como "[Usuario eliminado]".</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Se elimina mi historial de pagos?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Por ley, debemos mantener registros financieros por 10 años. Tu información de pago se anonimiza pero se retiene con fines contables.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="descargar-datos.html" class="security-action-btn">
+                    <i data-lucide="download"></i>
+                    <strong>Descargar mis datos</strong>
+                    <span>Guarda una copia antes de eliminar</span>
+                </a>
+                <a href="../ayuda.html" class="security-action-btn">
+                    <i data-lucide="life-buoy"></i>
+                    <strong>Contactar soporte</strong>
+                    <span>¿Tienes dudas? Habla con nosotros</span>
+                </a>
+                <a href="../cemi-privsec-home.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Portal</strong>
+                    <span>Privacidad y Seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../privacidad.html">Privacidad</a>
+            <a href="../terminos.html">Términos</a>
+            <a href="../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi. Todos los derechos reservados.</p>
+    </footer>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
+
+

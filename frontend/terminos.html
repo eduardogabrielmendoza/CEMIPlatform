@@ -1,0 +1,603 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e1e1e">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>Términos de Servicio - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <link rel="stylesheet" href="assets/css/terminos.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolongblack.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div class="harvard-search-quicklink">
+            <span>QUICK LINKS</span>
+            <a href="a-to-z.html">Ir a Índice A-Z</a>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva. Tareas, calificaciones, anuncios y más.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-funciones" data-image="images/STOCK2.jpg">Funciones Principales <span class="chevron">›</span></a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa de alumnos, profesores, cursos, pagos y estadísticas.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-paneles" data-image="images/STOCK3.webp">Paneles por Rol <span class="chevron">›</span></a>
+            <a href="index.html#modulos" class="mega-sub-link">Ver Módulos</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-nosotros" data-image="images/menu/nosotros.jpg">
+          <a href="index.html#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Conoce nuestra historia, misión y el equipo detrás de Cemi.</p>
+          <div class="mega-sub-links">
+            <a href="index.html#historia" class="mega-sub-link">Nuestra Historia</a>
+            <a href="index.html#filosofia" class="mega-sub-link">Misión y Visión</a>
+            <a href="index.html#valores" class="mega-sub-link">Nuestros Valores</a>
+            <a href="index.html#equipo" class="mega-sub-link">El Equipo</a>
+            <a href="index.html#tecnologias" class="mega-sub-link">Tecnologías</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-soporte" data-image="images/menu/soporte.jpg">
+          <a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a>
+          <p class="mega-sub-description">¿Necesitas ayuda? Estamos aquí para asistirte.</p>
+          <div class="mega-sub-links">
+            <a href="index.html#faq" class="mega-sub-link">Preguntas Frecuentes</a>
+            <a href="mailto:soporte@Cemiedu" class="mega-sub-link">Contactar Soporte</a>
+            <a href="status.html" class="mega-sub-link">Estado del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-seguridad" data-image="images/menu/seguridad.jpg">
+          <a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Reporta vulnerabilidades o infracciones de forma segura.</p>
+          <div class="mega-sub-links">
+            <a href="cemi-seguridad.html" class="mega-sub-link">Centro de Ayuda de Seguridad</a>
+            <a href="reportar-copyright.html" class="mega-sub-link">Reportar Infracción de Copyright</a>
+            <a href="privacidad.html" class="mega-sub-link">Política de Privacidad</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-recursos" data-image="images/menu/recursos.webp">
+          <a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Documentación, descargas y más recursos útiles.</p>
+          <div class="mega-sub-links">
+            <a href="https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk" class="mega-sub-link">Descargar App Android</a>
+            <a href="index.html#caracteristicas" class="mega-sub-link">Características del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-accesibilidad" data-image="images/menu/accesibilidad.jpg">
+          <a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Herramientas de acceso y administración institucional.</p>
+          <div class="mega-sub-links">
+            <a href="login-selector.html" class="mega-sub-link">Acceso Público</a>
+            <a href="login-admin.html" class="mega-sub-link">Acceso Administrativo</a>
+            <a href="reglamento-institucional.html" class="mega-sub-link">Reglamento Institucional</a>
+            <a href="register.html" class="mega-sub-link">Registro</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mega-nav-tertiary-container">
+        <div class="mega-nav-tertiary" id="tertiary-funciones">
+          <div class="mega-tertiary-header">
+            <h4>Funciones del Classroom</h4>
+            <p>Explora todas las herramientas disponibles para el aprendizaje.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/tareas.webp">
+              <button class="mega-tertiary-link">Tareas y Entregas</button>
+              <div class="mega-tertiary-info">
+                <p>Gestiona tus tareas pendientes, sube entregas y revisa el historial de trabajos completados.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/calificaciones.jpg">
+              <button class="mega-tertiary-link">Calificaciones</button>
+              <div class="mega-tertiary-info">
+                <p>Consulta tus notas por materia, promedios parciales y finales.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/anuncios.jpg">
+              <button class="mega-tertiary-link">Anuncios</button>
+              <div class="mega-tertiary-info">
+                <p>Mantente informado con las últimas novedades de tus cursos.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mega-nav-tertiary" id="tertiary-paneles">
+          <div class="mega-tertiary-header">
+            <h4>Paneles por Rol</h4>
+            <p>Accede al panel correspondiente a tu perfil.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/panel-alumno.jpg">
+              <button class="mega-tertiary-link">Panel del Alumno</button>
+              <div class="mega-tertiary-info">
+                <p>Tu espacio personal para gestionar inscripciones, ver horarios y estado de cuotas.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-profesor.jpg">
+              <button class="mega-tertiary-link">Panel del Profesor</button>
+              <div class="mega-tertiary-info">
+                <p>Administra tus cursos, carga calificaciones y gestiona la asistencia.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-admin.jpg">
+              <button class="mega-tertiary-link">Panel Administrativo</button>
+              <div class="mega-tertiary-info">
+                <p>Control total del sistema: usuarios, cursos, pagos y configuración.</p>
+                <a href="login-admin.html" class="mega-tertiary-action">Acceso Admin →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mega-menu-footer">
+      <a href="login.html" class="mega-footer-btn mega-footer-btn-primary">
+        <i data-lucide="log-in"></i>
+        Iniciar Sesión
+      </a>
+      <a href="register.html" class="mega-footer-btn mega-footer-btn-secondary">
+        <i data-lucide="user-plus"></i>
+        Registrarse
+      </a>
+    </div>
+  </div>
+
+  <div class="terms-container">
+    
+    <aside class="terms-sidebar">
+      <div class="sidebar-sticky">
+        <h3>Contenido</h3>
+        <nav class="terms-nav">
+          <a href="#introduccion" class="nav-link active">Introducción</a>
+          <a href="#aceptacion" class="nav-link">Aceptación de Términos</a>
+          <a href="#servicio" class="nav-link">Descripción del Servicio</a>
+          <a href="#registro" class="nav-link">Registro y Cuentas</a>
+          <a href="#privacidad" class="nav-link">Privacidad y Datos</a>
+          <a href="#propiedad" class="nav-link">Propiedad Intelectual</a>
+          <a href="#responsabilidades" class="nav-link">Responsabilidades</a>
+          <a href="#pagos" class="nav-link">Pagos y Suscripciones</a>
+          <a href="#limitacion" class="nav-link">Limitación de Responsabilidad</a>
+          <a href="#modificaciones" class="nav-link">Modificaciones</a>
+          <a href="#contacto" class="nav-link">Contacto</a>
+        </nav>
+        <button class="back-btn" onclick="window.location.href='index.html'">
+          <i data-lucide="arrow-left"></i>
+          Volver al Inicio
+        </button>
+      </div>
+    </aside>
+
+    <main class="terms-content">
+      
+      <header class="terms-header">
+        <h1>Términos de Servicio</h1>
+        <p class="last-update">Última actualización: 3 de noviembre de 2025</p>
+      </header>
+
+      <section id="introduccion" class="term-section">
+        <h2>1. Introducción</h2>
+        <p>Bienvenido a Cemi (Centro de Enseñanza de Múltiples Idiomas). Estos Términos de Servicio ("Términos") rigen el uso de nuestra plataforma de gestión académica y aula virtual.</p>
+        <p>Al acceder o utilizar nuestros servicios, usted acepta estar vinculado por estos Términos. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestros servicios.</p>
+      </section>
+
+      <section id="aceptacion" class="term-section">
+        <h2>2. Aceptación de los Términos</h2>
+        <p>Al crear una cuenta, acceder a nuestra plataforma o utilizar cualquiera de nuestros servicios, usted:</p>
+        <ul>
+          <li>Confirma que ha leído y comprende estos Términos de Servicio</li>
+          <li>Acepta estar legalmente vinculado por estos términos y nuestra Política de Privacidad</li>
+          <li>Declara que tiene al menos 18 años de edad, o que cuenta con el consentimiento de un padre o tutor legal</li>
+          <li>Reconoce que es responsable de mantener la confidencialidad de su cuenta</li>
+        </ul>
+      </section>
+
+      <section id="servicio" class="term-section">
+        <h2>3. Descripción del Servicio</h2>
+        <p>Cemi proporciona una plataforma integral de gestión académica que incluye:</p>
+        
+        <ul>
+          <li><strong>Classroom Virtual:</strong> Aula virtual para gestión de cursos, tareas, calificaciones y comunicación entre profesores y alumnos.</li>
+          <li><strong>Dashboard Administrativo:</strong> Panel de control para administración de usuarios, cursos, pagos, asistencias y reportes estadísticos.</li>
+          <li><strong>Gestión de Usuarios:</strong> Sistema de roles (Administrador, Profesor, Alumno) con permisos diferenciados y gestión de perfiles.</li>
+          <li><strong>Gestión Académica:</strong> Control de inscripciones, asistencias, calificaciones, eventos y calendario académico integrado.</li>
+        </ul>
+
+        <p class="mt-20">Nos reservamos el derecho de modificar, suspender o discontinuar cualquier aspecto del servicio en cualquier momento, con o sin previo aviso.</p>
+      </section>
+
+      <section id="registro" class="term-section">
+        <h2>4. Registro y Cuentas de Usuario</h2>
+        
+        <h3>4.1 Creación de Cuenta</h3>
+        <p>Para utilizar nuestros servicios, debe crear una cuenta proporcionando información precisa y completa. Usted es responsable de:</p>
+        <ul>
+          <li>Proporcionar información veraz, actual y completa durante el proceso de registro</li>
+          <li>Mantener actualizada su información de cuenta</li>
+          <li>Mantener la seguridad de su contraseña y cuenta</li>
+          <li>Notificarnos inmediatamente sobre cualquier uso no autorizado de su cuenta</li>
+        </ul>
+
+        <h3>4.2 Tipos de Cuenta</h3>
+        <div class="info-box">
+          <p><strong>Administrador:</strong> Acceso completo a todas las funcionalidades del sistema, gestión de usuarios, configuración global.</p>
+          <p><strong>Profesor:</strong> Gestión de cursos asignados, creación de tareas, calificaciones, comunicación con alumnos.</p>
+          <p><strong>Alumno:</strong> Acceso a cursos inscritos, envío de tareas, visualización de calificaciones, comunicación con profesores.</p>
+        </div>
+
+        <h3>4.3 Seguridad de la Cuenta</h3>
+        <p>Usted es el único responsable de todas las actividades que ocurran bajo su cuenta. No comparta su contraseña con terceros y notifíquenos inmediatamente si sospecha de cualquier acceso no autorizado.</p>
+      </section>
+
+      <section id="privacidad" class="term-section">
+        <h2>5. Privacidad y Protección de Datos</h2>
+        <p>La privacidad de sus datos es fundamental para nosotros. Al utilizar Cemi, usted acepta que:</p>
+        <ul>
+          <li>Recopilamos y procesamos datos personales según nuestra Política de Privacidad</li>
+          <li>Los datos académicos (calificaciones, asistencias, entregas) son almacenados de forma segura</li>
+          <li>Los profesores y administradores tienen acceso a datos académicos necesarios para sus funciones</li>
+          <li>Implementamos medidas de seguridad técnicas y organizativas para proteger sus datos</li>
+          <li>No vendemos ni compartimos sus datos personales con terceros sin su consentimiento</li>
+        </ul>
+        
+        <div class="warning-box">
+          <i data-lucide="shield-alert"></i>
+          <p><strong>Importante:</strong> Los datos de menores de edad deben ser gestionados con el consentimiento de padres o tutores legales.</p>
+        </div>
+      </section>
+
+      <section id="propiedad" class="term-section">
+        <h2>6. Propiedad Intelectual</h2>
+        
+        <h3>6.1 Contenido de Cemi</h3>
+        <p>Todo el contenido, características y funcionalidad de la plataforma Cemi, incluyendo pero no limitado a:</p>
+        <ul>
+          <li>Diseño de la interfaz y experiencia de usuario</li>
+          <li>Código fuente y arquitectura del sistema</li>
+          <li>Logotipos, marcas comerciales y material gráfico</li>
+          <li>Textos, documentación y materiales instructivos</li>
+        </ul>
+        <p>Son propiedad exclusiva de Cemi y están protegidos por leyes de derechos de autor y propiedad intelectual.</p>
+
+        <h3>6.2 Contenido del Usuario</h3>
+        <p>Los usuarios conservan todos los derechos sobre el contenido que suben a la plataforma (tareas, archivos, materiales educativos). Al subir contenido, usted:</p>
+        <ul>
+          <li>Garantiza que tiene los derechos necesarios sobre el contenido</li>
+          <li>Otorga a Cemi una licencia para almacenar, procesar y mostrar dicho contenido</li>
+          <li>Acepta que el contenido académico puede ser visible para profesores y administradores autorizados</li>
+          <li>No debe subir contenido que infrinja derechos de terceros o sea ilegal</li>
+        </ul>
+      </section>
+
+      <section id="responsabilidades" class="term-section">
+        <h2>7. Responsabilidades del Usuario</h2>
+        <p>Al utilizar Cemi, usted se compromete a:</p>
+        
+        <div class="responsibility-list">
+          <div class="resp-item">
+            <i data-lucide="check-circle"></i>
+            <div>
+              <h4>Uso Apropiado</h4>
+              <p>Utilizar la plataforma únicamente para fines educativos y académicos legítimos.</p>
+            </div>
+          </div>
+          
+          <div class="resp-item">
+            <i data-lucide="check-circle"></i>
+            <div>
+              <h4>Conducta Ética</h4>
+              <p>Mantener un comportamiento respetuoso con otros usuarios, sin acoso, discriminación o contenido ofensivo.</p>
+            </div>
+          </div>
+          
+          <div class="resp-item">
+            <i data-lucide="check-circle"></i>
+            <div>
+              <h4>Cumplimiento Legal</h4>
+              <p>No utilizar la plataforma para actividades ilegales o que violen regulaciones aplicables.</p>
+            </div>
+          </div>
+          
+          <div class="resp-item">
+            <i data-lucide="check-circle"></i>
+            <div>
+              <h4>Seguridad</h4>
+              <p>No intentar acceder a áreas no autorizadas, realizar ingeniería inversa o comprometer la seguridad del sistema.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>7.1 Actividades Prohibidas</h3>
+        <p>Está estrictamente prohibido:</p>
+        <ul>
+          <li>Compartir credenciales de acceso con terceros no autorizados</li>
+          <li>Realizar intentos de hacking, phishing o ataques al sistema</li>
+          <li>Subir malware, virus o código malicioso</li>
+          <li>Realizar scraping automatizado o extracción masiva de datos</li>
+          <li>Suplantar la identidad de otros usuarios</li>
+          <li>Interferir con el funcionamiento normal de la plataforma</li>
+        </ul>
+      </section>
+
+      <section id="pagos" class="term-section">
+        <h2>8. Pagos y Suscripciones</h2>
+        
+        <h3>8.1 Tarifas y Facturación</h3>
+        <p>El acceso a Cemi puede estar sujeto a tarifas de inscripción, mensualidades o suscripciones según el tipo de usuario y servicios contratados:</p>
+        <ul>
+          <li>Las tarifas se especifican claramente en el momento de la inscripción</li>
+          <li>Los pagos se procesan de forma segura a través de métodos autorizados</li>
+          <li>Las instituciones pueden tener planes personalizados con facturación corporativa</li>
+          <li>Los recibos y comprobantes están disponibles en el panel de usuario</li>
+        </ul>
+
+        <h3>8.2 Política de Reembolsos</h3>
+        <p>Los reembolsos se gestionan según las políticas específicas de cada institución. Generalmente:</p>
+        <ul>
+          <li>Las inscripciones canceladas antes del inicio del curso pueden ser reembolsables</li>
+          <li>Los reembolsos parciales pueden aplicar según el tiempo transcurrido del curso</li>
+          <li>Las situaciones excepcionales se evalúan caso por caso</li>
+          <li>Los reembolsos se procesan en un plazo de 15-30 días hábiles</li>
+        </ul>
+
+        <h3>8.3 Renovaciones y Cancelaciones</h3>
+        <p>Las suscripciones se renuevan automáticamente según el período contratado. Puede cancelar su suscripción en cualquier momento desde su panel de usuario, y seguirá teniendo acceso hasta el final del período pagado.</p>
+      </section>
+
+      <section id="limitacion" class="term-section">
+        <h2>9. Limitación de Responsabilidad</h2>
+        
+        <h3>9.1 Disponibilidad del Servicio</h3>
+        <p>Nos esforzamos por mantener la plataforma disponible 24/7, pero no garantizamos que:</p>
+        <ul>
+          <li>El servicio estará libre de interrupciones o errores</li>
+          <li>Los defectos serán corregidos inmediatamente</li>
+          <li>La plataforma estará disponible en todo momento sin mantenimientos programados</li>
+        </ul>
+
+        <h3>9.2 Exclusión de Garantías</h3>
+        <p>Cemi se proporciona "tal cual" y "según disponibilidad". No garantizamos que:</p>
+        <ul>
+          <li>La plataforma satisfará todas sus necesidades específicas</li>
+          <li>Los resultados académicos mejorarán únicamente por el uso del sistema</li>
+          <li>La información proporcionada por usuarios será precisa o confiable</li>
+        </ul>
+
+        <h3>9.3 Límites de Responsabilidad</h3>
+        <div class="warning-box">
+          <i data-lucide="alert-triangle"></i>
+          <p><strong>Importante:</strong> En ningún caso Cemi será responsable por daños indirectos, incidentales, especiales, consecuentes o punitivos, incluyendo pérdida de beneficios, datos, uso o buena voluntad, que resulten del uso o imposibilidad de uso de nuestros servicios.</p>
+        </div>
+      </section>
+
+      <section id="modificaciones" class="term-section">
+        <h2>10. Modificaciones de los Términos</h2>
+        <p>Nos reservamos el derecho de modificar estos Términos de Servicio en cualquier momento. Cuando realicemos cambios:</p>
+        <ul>
+          <li>Publicaremos los términos actualizados en esta página</li>
+          <li>Actualizaremos la fecha de "Última actualización" en la parte superior</li>
+          <li>Notificaremos a los usuarios registrados sobre cambios significativos por email</li>
+          <li>Los cambios entrarán en vigor inmediatamente después de su publicación</li>
+        </ul>
+        <p>El uso continuado de la plataforma después de las modificaciones constituye su aceptación de los nuevos términos.</p>
+      </section>
+
+      <section id="contacto" class="term-section">
+        <h2>11. Contacto y Soporte</h2>
+        <p>Si tiene preguntas sobre estos Términos de Servicio o necesita asistencia, puede contactarnos:</p>
+        
+        <div class="contact-grid">
+          <div class="contact-card">
+            <i data-lucide="mail"></i>
+            <h4>Email</h4>
+            <p>soporte@Cemiedu</p>
+            <p class="small">Respuesta en 24-48 horas</p>
+          </div>
+          
+          <div class="contact-card">
+            <i data-lucide="phone"></i>
+            <h4>Teléfono</h4>
+            <p>+54 11 4567-8900</p>
+            <p class="small">Lun-Vie: 9:00 - 18:00</p>
+          </div>
+          
+          <div class="contact-card">
+            <i data-lucide="map-pin"></i>
+            <h4>Dirección</h4>
+            <p>Av. Corrientes 1234</p>
+            <p class="small">Ciudad de Buenos Aires, Argentina</p>
+          </div>
+          
+          <div class="contact-card">
+            <i data-lucide="message-circle"></i>
+            <h4>Chat en Vivo</h4>
+            <p>Disponible en plataforma</p>
+            <p class="small">Usuarios registrados</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long">
+        </div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <div class="footer-social">
+        </div>
+        <a href="register.html" class="footer-cta-link">
+          <i data-lucide="user-plus"></i> Registrarse
+        </a>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <p class="footer-tech">Desarrollado con Node.js, MySQL y tecnologías modernas</p>
+      <div class="footer-links-bottom">
+        <a href="terminos.html">Términos de Servicio</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/harvard-menu.js"></script>
+  <script>
+    // Inicializar Lucide icons
+    lucide.createIcons();
+
+    // Navegación lateral activa basada en scroll
+    const sections = document.querySelectorAll('.term-section');
+    const navLinks = document.querySelectorAll('.terms-nav .nav-link');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= (sectionTop - 100)) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').slice(1) === current) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    // Smooth scroll para los enlaces internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
+
+
+

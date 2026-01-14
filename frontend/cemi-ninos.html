@@ -1,0 +1,702 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e1e1e">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="apple-touch-icon" href="images/logo.png">
+  <title>CEMI Niños - Centro de Enseñanza Multilingüe Integral</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Hero Section */
+    .program-hero {
+      position: relative;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+      overflow: hidden;
+    }
+
+    .program-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('images/niñosaprendiendo.webp') center/cover no-repeat;
+      opacity: 0.25;
+    }
+
+    .program-hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 80px;
+      text-align: center;
+    }
+
+    .program-hero-badge {
+      display: inline-block;
+      background: rgba(101, 111, 119, 0.2);
+      border: 1px solid rgba(147, 161, 173, 0.8);
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #a0a8b0;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.2s;
+    }
+
+    .program-hero h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 400;
+      color: #ffffff;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.4s;
+    }
+
+    .program-hero p {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.6s;
+    }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Info Section */
+    .program-info-section {
+      background: #f8f9fa;
+      padding: 100px 40px;
+    }
+
+    .program-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: center;
+    }
+
+    .program-info-content h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .program-info-content p {
+      font-size: 1.1rem;
+      color: #656f77;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .program-info-image {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+
+    .program-info-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Features Grid */
+    .program-features {
+      background: #ffffff;
+      padding: 100px 40px;
+    }
+
+    .program-features-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .program-features-header h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      letter-spacing: -0.02em;
+    }
+
+    .program-features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .program-feature-card {
+      text-align: center;
+      padding: 40px 24px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .program-feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+
+    .program-feature-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #656f77 0%, #4a5259 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+
+    .program-feature-icon i {
+      width: 32px;
+      height: 32px;
+      color: #ffffff;
+    }
+
+    .program-feature-card h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin-bottom: 12px;
+    }
+
+    .program-feature-card p {
+      font-size: 0.95rem;
+      color: #656f77;
+      line-height: 1.6;
+    }
+
+    /* Ages Section */
+    .program-ages {
+      background: #1e1e1e;
+      padding: 80px 40px;
+    }
+
+    .program-ages-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .program-ages h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2rem;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 40px;
+    }
+
+    .program-ages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .age-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 32px 24px;
+      transition: all 0.3s ease;
+    }
+
+    .age-card:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-4px);
+    }
+
+    .age-card h3 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #a0a8b0;
+      margin-bottom: 8px;
+    }
+
+    .age-card p {
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
+    }
+
+    /* CTA Section */
+    .program-cta {
+      background: linear-gradient(135deg, #656f77 0%, #4a5259 100%);
+      padding: 80px 40px;
+      text-align: center;
+    }
+
+    .program-cta h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .program-cta p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 32px;
+    }
+
+    .program-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 40px;
+      background: #ffffff;
+      color: #4a5259;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .program-cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(147, 161, 173, 0.45);
+    }
+
+    /* Scroll Animations */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .program-hero h1 { font-size: 2.5rem; }
+      .program-info-grid { grid-template-columns: 1fr; gap: 40px; }
+      .program-features-grid { grid-template-columns: 1fr; }
+      .program-ages-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 576px) {
+      .program-hero-content { padding: 40px 24px; }
+      .program-hero h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolong.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva. Tareas, calificaciones, anuncios y más.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-funciones" data-image="images/STOCK2.jpg">Funciones Principales <span class="chevron">›</span></a>
+            <a href="guia.html" class="mega-sub-link">Guía de Uso</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa de alumnos, profesores, cursos, pagos y estadísticas.</p>
+          <div class="mega-sub-links">
+            <a href="#" class="mega-sub-link has-children" data-tertiary="tertiary-paneles" data-image="images/STOCK3.webp">Paneles por Rol <span class="chevron">›</span></a>
+            <a href="#modulos" class="mega-sub-link">Ver Módulos</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-nosotros" data-image="images/menu/nosotros.jpg">
+          <a href="#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Conoce nuestra historia, misión y el equipo detrás de Cemi.</p>
+          <div class="mega-sub-links">
+            <a href="#historia" class="mega-sub-link">Nuestra Historia</a>
+            <a href="#filosofia" class="mega-sub-link">Misión y Visión</a>
+            <a href="#valores" class="mega-sub-link">Nuestros Valores</a>
+            <a href="#equipo" class="mega-sub-link">El Equipo</a>
+            <a href="#tecnologias" class="mega-sub-link">Tecnologías</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-soporte" data-image="images/menu/soporte.jpg">
+          <a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a>
+          <p class="mega-sub-description">¿Necesitas ayuda? Estamos aquí para asistirte.</p>
+          <div class="mega-sub-links">
+            <a href="#faq" class="mega-sub-link">Preguntas Frecuentes</a>
+            <a href="mailto:soporte@Cemiedu" class="mega-sub-link">Contactar Soporte</a>
+            <a href="status.html" class="mega-sub-link">Estado del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-seguridad" data-image="images/menu/seguridad.jpg">
+          <a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Reporta vulnerabilidades o infracciones de forma segura.</p>
+          <div class="mega-sub-links">
+            <a href="cemi-seguridad.html" class="mega-sub-link">Centro de Ayuda de Seguridad</a>
+            <a href="reportar-copyright.html" class="mega-sub-link">Reportar Infracción de Copyright</a>
+            <a href="privacidad.html" class="mega-sub-link">Política de Privacidad</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-recursos" data-image="images/menu/recursos.webp">
+          <a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Documentación, descargas y más recursos útiles.</p>
+          <div class="mega-sub-links">
+            <a href="https://Cemiup.railway.app/downloads/cemi-app-v1.2.apk" class="mega-sub-link">Descargar App Android</a>
+            <a href="#caracteristicas" class="mega-sub-link">Características del Sistema</a>
+          </div>
+        </div>
+        
+        <div class="mega-nav-secondary" id="panel-accesibilidad" data-image="images/menu/accesibilidad.jpg">
+          <a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Herramientas de acceso y administración institucional.</p>
+          <div class="mega-sub-links">
+            <a href="login-selector.html" class="mega-sub-link">Acceso Público</a>
+            <a href="login-admin.html" class="mega-sub-link">Acceso Administrativo</a>
+            <a href="reglamento-institucional.html" class="mega-sub-link">Reglamento Institucional</a>
+            <a href="register.html" class="mega-sub-link">Registro</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mega-nav-tertiary-container">
+        <div class="mega-nav-tertiary" id="tertiary-funciones">
+          <div class="mega-tertiary-header">
+            <h4>Funciones del Classroom</h4>
+            <p>Explora todas las herramientas disponibles para el aprendizaje.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/tareas.webp">
+              <button class="mega-tertiary-link">Tareas y Entregas</button>
+              <div class="mega-tertiary-info">
+                <p>Gestiona tus tareas pendientes, sube entregas y revisa el historial de trabajos completados. Sistema de fechas límite con recordatorios automáticos.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/calificaciones.jpg">
+              <button class="mega-tertiary-link">Calificaciones</button>
+              <div class="mega-tertiary-info">
+                <p>Consulta tus notas por materia, promedios parciales y finales. Visualiza tu progreso académico con gráficos detallados.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/anuncios.jpg">
+              <button class="mega-tertiary-link">Anuncios</button>
+              <div class="mega-tertiary-info">
+                <p>Mantente informado con las últimas novedades de tus cursos. Notificaciones de profesores, cambios de horario y eventos importantes.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/recursos.jpg">
+              <button class="mega-tertiary-link">Recursos de Clase</button>
+              <div class="mega-tertiary-info">
+                <p>Accede a materiales de estudio, presentaciones, documentos PDF y recursos multimedia compartidos por tus profesores.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/foros.webp">
+              <button class="mega-tertiary-link">Foros de Discusión</button>
+              <div class="mega-tertiary-info">
+                <p>Participa en debates académicos, resuelve dudas con compañeros y colabora en proyectos grupales de forma organizada.</p>
+                <a href="classroom-login.html" class="mega-tertiary-action">Ir al Classroom →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mega-nav-tertiary" id="tertiary-paneles">
+          <div class="mega-tertiary-header">
+            <h4>Paneles por Rol</h4>
+            <p>Accede al panel correspondiente a tu perfil.</p>
+          </div>
+          <div class="mega-tertiary-links">
+            <div class="mega-tertiary-item" data-image="images/menu/panel-alumno.jpg">
+              <button class="mega-tertiary-link">Panel del Alumno</button>
+              <div class="mega-tertiary-info">
+                <p>Tu espacio personal para gestionar inscripciones, ver horarios, estado de cuotas y acceder a tu historial académico completo.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-profesor.jpg">
+              <button class="mega-tertiary-link">Panel del Profesor</button>
+              <div class="mega-tertiary-info">
+                <p>Administra tus cursos, carga calificaciones, publica anuncios y gestiona la asistencia de tus alumnos de forma eficiente.</p>
+                <a href="login.html" class="mega-tertiary-action">Iniciar Sesión →</a>
+              </div>
+            </div>
+            <div class="mega-tertiary-item" data-image="images/menu/panel-administrador.jpg">
+              <button class="mega-tertiary-link">Panel Administrativo</button>
+              <div class="mega-tertiary-info">
+                <p>Control total del sistema: gestión de usuarios, reportes institucionales, configuración de cursos y monitoreo del sistema.</p>
+                <a href="login-admin.html" class="mega-tertiary-action">Acceso Admin →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mega-menu-footer">
+      <div class="mega-footer-inner">
+        <span class="mega-footer-label">
+          Enlaces rápidos <span class="chevron">›</span>
+        </span>
+        <div class="mega-footer-links">
+          <a href="terminos.html" class="mega-footer-link">Términos de Servicio</a>
+          <a href="privacidad.html" class="mega-footer-link">Privacidad</a>
+          <a href="ayuda.html" class="mega-footer-link">Ayuda</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="program-hero">
+    <div class="program-hero-content">
+      <span class="program-hero-badge">Programa Infantil</span>
+      <h1>CEMI Niños</h1>
+      <p>Un espacio diseñado especialmente para que los más pequeños descubran el mundo de los idiomas a través del juego, la música y actividades interactivas.</p>
+    </div>
+  </section>
+
+  <section class="program-info-section">
+    <div class="program-info-grid">
+      <div class="program-info-content scroll-reveal">
+        <h2>Aprendizaje natural y divertido</h2>
+        <p>En CEMI Niños, entendemos que los niños aprenden de manera diferente. Por eso, nuestras clases están diseñadas para aprovechar la capacidad natural de los pequeños para absorber nuevos idiomas.</p>
+        <p>Utilizamos metodologías lúdicas que incluyen canciones, juegos, cuentos y actividades creativas que hacen que aprender un nuevo idioma sea una experiencia emocionante y memorable.</p>
+        <p>Nuestros docentes especializados en educación infantil crean un ambiente seguro y estimulante donde cada niño puede desarrollarse a su propio ritmo.</p>
+      </div>
+      <div class="program-info-image scroll-reveal">
+        <img src="images/niñosaprendiendo.webp" alt="Niños aprendiendo idiomas">
+      </div>
+    </div>
+  </section>
+
+  <section class="program-features">
+    <div class="program-features-header scroll-reveal">
+      <h2>¿Qué hace especial a Cemi Niños?</h2>
+    </div>
+    <div class="program-features-grid">
+      <div class="program-feature-card scroll-reveal">
+        <div class="program-feature-icon">
+          <i data-lucide="gamepad-2"></i>
+        </div>
+        <h3>Aprendizaje Lúdico</h3>
+        <p>Juegos, canciones y actividades interactivas que mantienen a los niños motivados y comprometidos.</p>
+      </div>
+      <div class="program-feature-card scroll-reveal">
+        <div class="program-feature-icon">
+          <i data-lucide="users"></i>
+        </div>
+        <h3>Grupos Reducidos</h3>
+        <p>Máximo 10 niños por grupo para garantizar atención personalizada a cada estudiante.</p>
+      </div>
+      <div class="program-feature-card scroll-reveal">
+        <div class="program-feature-icon">
+          <i data-lucide="heart"></i>
+        </div>
+        <h3>Docentes Especializados</h3>
+        <p>Profesores con formación en educación infantil y enseñanza de idiomas a niños.</p>
+      </div>
+      <div class="program-feature-card scroll-reveal">
+        <div class="program-feature-icon">
+          <i data-lucide="book-open"></i>
+        </div>
+        <h3>Material Didáctico</h3>
+        <p>Recursos coloridos y atractivos diseñados específicamente para el aprendizaje infantil.</p>
+      </div>
+      <div class="program-feature-card scroll-reveal">
+        <div class="program-feature-icon">
+          <i data-lucide="calendar"></i>
+        </div>
+        <h3>Horarios Flexibles</h3>
+        <p>Clases en horarios adaptados al calendario escolar de los niños.</p>
+      </div>
+      <div class="program-feature-card scroll-reveal">
+        <div class="program-feature-icon">
+          <i data-lucide="award"></i>
+        </div>
+        <h3>Seguimiento Continuo</h3>
+        <p>Informes regulares para padres sobre el progreso de sus hijos.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="program-ages">
+    <div class="program-ages-inner">
+      <h2 class="scroll-reveal">Grupos por edad</h2>
+      <div class="program-ages-grid">
+        <div class="age-card scroll-reveal">
+          <h3>5-7</h3>
+          <p>Iniciación al idioma</p>
+        </div>
+        <div class="age-card scroll-reveal">
+          <h3>8-10</h3>
+          <p>Nivel elemental</p>
+        </div>
+        <div class="age-card scroll-reveal">
+          <h3>11-12</h3>
+          <p>Pre-adolescentes</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="program-cta">
+    <h2 class="scroll-reveal">¡Inscribe a tu hijo hoy!</h2>
+    <p class="scroll-reveal">Dale a tu pequeño la ventaja de aprender un nuevo idioma desde temprana edad.</p>
+    <a href="register.html" class="program-cta-btn scroll-reveal">
+      <i data-lucide="user-plus" style="width: 20px; height: 20px;"></i>
+      Registrarse ahora
+    </a>
+  </section>
+
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long">
+        </div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <div class="footer-social">
+        </div>
+        <a href="register.html" class="footer-cta-link">
+          <i data-lucide="user-plus"></i> Registrarse
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <div class="footer-links-bottom">
+        <a href="porque-cemi.html">¿Por qué CEMI?</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script>
+    lucide.createIcons();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 100);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+  </script>
+  <script src="assets/js/harvard-menu.js?v=1.0"></script>
+</body>
+</html>

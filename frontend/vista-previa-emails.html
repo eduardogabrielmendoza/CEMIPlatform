@@ -1,0 +1,610 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Vista Previa - Emails Cemi (Estilo Harvard)</title>
+  <script src="assets/js/console-manager.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: #1e1e1e; 
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .page-header h1 {
+      color: #fff;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      color: #a0a0a0;
+      font-size: 16px;
+    }
+    .email-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+    .email-nav button {
+      background: #4a4a4a;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .email-nav button:hover, .email-nav button.active {
+      background: #656f77;
+    }
+    .email-preview {
+      max-width: 650px;
+      margin: 0 auto;
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 30px;
+    }
+    .email-container {
+      display: none;
+    }
+    .email-container.active {
+      display: block;
+    }
+    .email-label {
+      background: #1e1e1e;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    /* Email Styles */
+    .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .header { background: #1e1e1e; padding: 30px 30px; text-align: center; }
+    .header img { height: 50px; width: auto; }
+    .header h1 { color: #ffffff; margin: 20px 0 0 0; font-size: 22px; font-weight: 600; font-family: 'Times New Roman', Georgia, serif; letter-spacing: 0.5px; }
+    .header-accent { height: 4px; background: #4a4a4a; }
+    .header-accent.success { background: #10b981; }
+    .header-accent.warning { background: #f59e0b; }
+    .content { padding: 40px 30px; }
+    .content h2 { color: #1e1e1e; margin-bottom: 20px; font-size: 20px; font-family: 'Times New Roman', Georgia, serif; }
+    .content h3 { color: #1e1e1e; margin-top: 25px; margin-bottom: 15px; font-family: 'Times New Roman', Georgia, serif; }
+    .content p { color: #4a4a4a; line-height: 1.7; margin-bottom: 15px; font-size: 15px; }
+    .info-box { background: #f5f5f5; border-left: 4px solid #1e1e1e; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0; }
+    .info-box.warning { border-left-color: #f59e0b; background: #fef3c7; }
+    .info-box p { margin: 8px 0; color: #1e1e1e; }
+    .info-box strong { color: #1e1e1e; }
+    .credential-box { background: #f5f5f5; border: 2px solid #1e1e1e; padding: 25px; margin: 25px 0; border-radius: 8px; text-align: center; }
+    .credential-box h3 { color: #1e1e1e; margin-bottom: 20px; margin-top: 0; }
+    .credential-item { background: #ffffff; padding: 15px 25px; margin: 10px 5px; border-radius: 6px; display: inline-block; min-width: 200px; border: 1px solid #e5e5e5; }
+    .credential-item label { display: block; font-size: 11px; color: #656f77; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .credential-item span { font-size: 18px; font-weight: 600; color: #1e1e1e; font-family: 'Consolas', monospace; }
+    .warning-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+    .warning-box p { color: #92400e; margin: 0; font-size: 14px; }
+    .success-box { background: #d1fae5; border-left: 4px solid #10b981; padding: 15px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+    .success-box p { color: #065f46; margin: 0; font-size: 14px; }
+    .btn { display: inline-block; background: #1e1e1e; color: #ffffff !important; padding: 14px 35px; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: 20px; }
+    .btn-secondary { display: inline-block; background: transparent; color: #1e1e1e !important; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-weight: 500; border: 2px solid #1e1e1e; margin: 10px 5px; }
+    .success-icon { font-size: 48px; margin-bottom: 15px; text-align: center; }
+    .divider { height: 1px; background: #e5e5e5; margin: 30px 0; }
+    .footer { background: #f5f5f5; padding: 30px; text-align: center; border-top: 1px solid #e5e5e5; }
+    .footer p { color: #656f77; font-size: 13px; margin: 5px 0; }
+    .footer-links { margin: 20px 0; padding: 0; }
+    .footer-links a { color: #1e1e1e; text-decoration: none; margin: 0 12px; font-size: 13px; font-weight: 500; }
+    .footer-brand { color: #1e1e1e; font-weight: 600; font-size: 14px; margin-bottom: 10px; font-family: 'Times New Roman', Georgia, serif; }
+    .footer-legal { font-size: 11px; color: #a0a0a0; margin-top: 15px; line-height: 1.6; }
+    ul { padding-left: 20px; }
+    ul li { color: #4a4a4a; line-height: 2; margin-bottom: 5px; }
+    .cta-box { background: #f5f5f5; padding: 30px; border-radius: 8px; margin: 30px 0; text-align: center; border: 2px solid #1e1e1e; }
+    .cta-box p { margin: 0 0 15px 0; }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <h1>Vista Previa de Emails Cemi</h1>
+    <p>Estilo Harvard - 9 plantillas de correo electronico</p>
+  </div>
+
+  <nav class="email-nav">
+    <button onclick="showEmail(1)" class="active">1. Solicitud Recibida</button>
+    <button onclick="showEmail(2)">2. Notif. Admin</button>
+    <button onclick="showEmail(3)">3. Credenciales</button>
+    <button onclick="showEmail(4)">4. Agradecimiento</button>
+    <button onclick="showEmail(5)">5. Bienvenida</button>
+    <button onclick="showEmail(6)">6. GDPR Usuario</button>
+    <button onclick="showEmail(7)">7. GDPR Admin</button>
+    <button onclick="showEmail(8)">8. 2FA Usuario</button>
+    <button onclick="showEmail(9)">9. 2FA Admin</button>
+  </nav>
+
+  <div class="email-preview">
+    <div class="email-container active" id="email-1">
+      <span class="email-label">Email 1: Solicitud Recibida (Usuario)</span>
+      <div class="container">
+        <div class="header">
+          <img src="https://Cemiup.railway.app/images/logolong.png" alt="Cemi">
+          <h1>Solicitud Recibida</h1>
+        </div>
+        <div class="header-accent"></div>
+        <div class="content">
+          <div class="success-icon">&#128233;</div>
+          <h2>Hola Juan Garcia,</h2>
+          <p>Hemos recibido tu solicitud de recuperacion de contrasena para tu cuenta en el <strong>Centro Educativo Multilingue Integral (Cemi)</strong>.</p>
+          
+          <div class="info-box">
+            <p><strong>Email registrado:</strong> juan.garcia@email.com</p>
+            <p><strong>Fecha de solicitud:</strong> martes, 3 de diciembre de 2025, 14:30</p>
+            <p><strong>Numero de referencia:</strong> #87654321</p>
+          </div>
+          
+          <p>Un administrador revisara tu solicitud y te enviara tus nuevas credenciales de acceso a este mismo correo electronico.</p>
+          
+          <div class="warning-box">
+            <p><strong>Importante:</strong> Si no solicitaste este cambio, por favor ignora este mensaje o contacta inmediatamente con soporte.</p>
+          </div>
+          
+          <p>Te notificaremos cuando tus credenciales hayan sido actualizadas. Este proceso suele tomar entre 24-48 horas habiles.</p>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="#" class="btn-secondary">Visitar Centro de Ayuda</a>
+          </div>
+        </div>
+        <div class="footer">
+          <p class="footer-brand">Centro Educativo Multilingue Integral</p>
+          <p>Tu plataforma educativa de confianza</p>
+          <div class="footer-links">
+            <a href="#">Centro de Ayuda</a>
+            <a href="#">Terminos de Uso</a>
+            <a href="#">Privacidad</a>
+            <a href="#">Contacto</a>
+          </div>
+          <p class="footer-legal">Este es un correo automatico enviado por el sistema Cemi.<br>Por favor no responda directamente a este mensaje.<br>&copy; 2025 Cemi - Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="email-container" id="email-2">
+      <span class="email-label">Email 2: Notificacion Admin (Nueva Solicitud)</span>
+      <div class="container">
+        <div class="header">
+          <img src="https://Cemiup.railway.app/images/logolong.png" alt="Cemi">
+          <h1>Nueva Solicitud de Recuperacion</h1>
+        </div>
+        <div class="header-accent"></div>
+        <div class="content">
+          <h2>Accion Requerida: Solicitud de Restablecimiento</h2>
+          <p>Se ha recibido una nueva solicitud de recuperacion de contrasena que requiere tu atencion.</p>
+          
+          <div class="info-box warning">
+            <p><strong>Usuario:</strong> Juan Garcia</p>
+            <p><strong>Email:</strong> juan.garcia@email.com</p>
+            <p><strong>Rol:</strong> Alumno</p>
+            <p><strong>ID de Usuario:</strong> 1234</p>
+            <p><strong>Fecha/Hora:</strong> martes, 3 de diciembre de 2025, 14:30:45</p>
+          </div>
+          
+          <div class="divider"></div>
+          
+          <h3>Pasos a seguir:</h3>
+          <ul>
+            <li>Accede al panel de administracion</li>
+            <li>Verifica la identidad del usuario solicitante</li>
+            <li>Genera nuevas credenciales de acceso</li>
+            <li>El sistema enviara automaticamente las credenciales al usuario</li>
+          </ul>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="#" class="btn">Ir al Panel de Admin</a>
+          </div>
+        </div>
+        <div class="footer">
+          <p class="footer-brand">Centro Educativo Multilingue Integral</p>
+          <div class="footer-links">
+            <a href="#">Centro de Ayuda</a>
+            <a href="#">Terminos de Uso</a>
+            <a href="#">Privacidad</a>
+          </div>
+          <p class="footer-legal">&copy; 2025 Cemi - Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="email-container" id="email-3">
+      <span class="email-label">Email 3: Credenciales Actualizadas (Usuario)</span>
+      <div class="container">
+        <div class="header">
+          <img src="https://Cemiup.railway.app/images/logolong.png" alt="Cemi">
+          <h1>Contrasena Restablecida</h1>
+        </div>
+        <div class="header-accent success"></div>
+        <div class="content">
+          <div class="success-icon">&#10003;</div>
+          <h2>Hola Juan Garcia!</h2>
+          <p>Tu contrasena ha sido <strong>restablecida exitosamente</strong> por el administrador del sistema.</p>
+          <p>A continuacion encontraras tus nuevas credenciales de acceso:</p>
+          
+          <div class="credential-box">
+            <h3>Tus Nuevas Credenciales</h3>
+            <div class="credential-item">
+              <label>Usuario</label>
+              <span>jgarcia2025</span>
+            </div>
+            <div class="credential-item">
+              <label>Contrasena</label>
+              <span>Temp@1234</span>
+            </div>
+          </div>
+          
+          <div class="success-box">
+            <p><strong>Recomendacion de seguridad:</strong> Te sugerimos cambiar tu contrasena despues de iniciar sesion por primera vez desde tu perfil.</p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 25px;">
+            <a href="#" class="btn">Iniciar Sesion Ahora</a>
+          </div>
+        </div>
+        <div class="footer">
+          <p class="footer-brand">Centro Educativo Multilingue Integral</p>
+          <div class="footer-links">
+            <a href="#">Centro de Ayuda</a>
+            <a href="#">Terminos de Uso</a>
+            <a href="#">Privacidad</a>
+          </div>
+          <p class="footer-legal">&copy; 2025 Cemi - Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="email-container" id="email-4">
+      <span class="email-label">Email 4: Agradecimiento por Encuesta</span>
+      <div class="container">
+        <div class="header">
+          <img src="https://Cemiup.railway.app/images/logolong.png" alt="Cemi">
+          <h1>Gracias por Participar</h1>
+        </div>
+        <div class="header-accent success"></div>
+        <div class="content">
+          <div class="success-icon">&#10003;</div>
+          <h2>Hola Maria Lopez,</h2>
+          <p>Queremos agradecerte sinceramente por tomarte el tiempo de completar nuestra <strong>encuesta de investigacion</strong>.</p>
+          
+          <div class="info-box">
+            <p>Tu opinion es fundamental para nosotros. Cada respuesta nos ayuda a entender mejor las necesidades de nuestra comunidad educativa y a mejorar continuamente <strong>Cemi Classroom</strong>.</p>
+          </div>
+          
+          <h3>Que sigue ahora?</h3>
+          <p>Tu perfil ya esta activo en nuestro sistema de investigacion. Esto significa que:</p>
+          
+          <ul>
+            <li>Seras considerado/a para futuros estudios y encuestas</li>
+            <li>Recibiras invitaciones exclusivas para probar nuevas funcionalidades</li>
+            <li>Podras influir directamente en el desarrollo de Cemi</li>
+            <li>Tendras acceso prioritario a novedades y actualizaciones</li>
+          </ul>
+          
+          <div class="cta-box">
+            <p style="font-weight: 600; font-size: 16px; color: #1e1e1e;">Manten un ojo en tu bandeja de entrada</p>
+            <p style="color: #656f77; font-size: 14px;">Pronto recibiras mas novedades y oportunidades para seguir colaborando con nosotros.</p>
+          </div>
+          
+          <div style="text-align: center;">
+            <a href="#" class="btn">Explorar Cemi Classroom</a>
+          </div>
+          
+          <div class="divider"></div>
+          
+          <p>Con gratitud,<br><strong style="color: #1e1e1e;">El equipo de Cemi</strong></p>
+        </div>
+        <div class="footer">
+          <p class="footer-brand">Centro Educativo Multilingue Integral</p>
+          <div class="footer-links">
+            <a href="#">Centro de Ayuda</a>
+            <a href="#">Privacidad</a>
+          </div>
+          <p class="footer-legal">&copy; 2025 Cemi - Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="email-container" id="email-5">
+      <span class="email-label">Email 5: Bienvenida / Confirmar Cuenta</span>
+      <div class="container">
+        <div class="header">
+          <img src="https://Cemiup.railway.app/images/logolong.png" alt="Cemi">
+          <h1>Confirma tu Cuenta</h1>
+        </div>
+        <div class="header-accent"></div>
+        <div class="content">
+          <div class="success-icon">&#9993;</div>
+          <h2>Hola Carlos Rodriguez!</h2>
+          <p>Gracias por registrarte en el <strong>Centro Educativo Multilingue Integral</strong>. Estas a un solo paso de activar tu cuenta.</p>
+          
+          <div class="cta-box">
+            <p style="font-weight: 600; font-size: 18px; color: #1e1e1e;">Solo falta un paso</p>
+            <p style="color: #4a4a4a; font-size: 15px; margin-bottom: 25px;">Hace clic en el boton de abajo para confirmar tu cuenta y comenzar tu experiencia educativa.</p>
+            <a href="#" class="btn" style="font-size: 16px; padding: 16px 45px;">Confirmar mi Cuenta</a>
+          </div>
+          
+          <div class="credential-box">
+            <h3>Tus Datos de Acceso</h3>
+            <div class="credential-item">
+              <label>Usuario</label>
+              <span>crodriguez</span>
+            </div>
+            <div class="credential-item">
+              <label>Legajo</label>
+              <span>2025-0042</span>
+            </div>
+          </div>
+          
+          <div class="info-box">
+            <p><strong>Recordatorio:</strong> Tu contrasena es la que elegiste durante el registro. Guardala en un lugar seguro.</p>
+          </div>
+          
+          <h3>Una vez confirmada tu cuenta, podras:</h3>
+          <ul>
+            <li>Explorar los cursos disponibles e inscribirte</li>
+            <li>Consultar tus horarios y calendario academico</li>
+            <li>Ver tu progreso y calificaciones</li>
+            <li>Gestionar tus pagos de cuotas online</li>
+            <li>Personalizar tu perfil con foto</li>
+          </ul>
+          
+          <div class="divider"></div>
+          
+          <div class="warning-box">
+            <p><strong>Importante:</strong> Si no creaste esta cuenta, podes ignorar este mensaje de forma segura.</p>
+          </div>
+          
+          <p style="margin-top: 25px;">Te esperamos dentro!</p>
+          <p>Saludos cordiales,<br><strong style="color: #1e1e1e;">El equipo de Cemi</strong></p>
+        </div>
+        <div class="footer">
+          <p class="footer-brand">Centro Educativo Multilingue Integral</p>
+          <div class="footer-links">
+            <a href="#">Centro de Ayuda</a>
+            <a href="#">Privacidad</a>
+          </div>
+          <p class="footer-legal">&copy; 2025 Cemi - Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="email-container" id="email-6">
+      <span class="email-label">Email 6: Solicitud GDPR (Usuario)</span>
+      <div class="container">
+        <div class="header">
+          <img src="https://Cemiup.railway.app/images/logolong.png" alt="Cemi">
+          <h1>Solicitud GDPR Recibida</h1>
+        </div>
+        <div class="header-accent"></div>
+        <div class="content">
+          <div class="success-icon">&#128203;</div>
+          <h2>Hola Ana Martinez,</h2>
+          <p>Hemos recibido tu solicitud de <strong>exportacion de datos personales</strong> conforme al Reglamento General de Proteccion de Datos (GDPR).</p>
+          
+          <div class="info-box">
+            <p><strong>Email asociado:</strong> ana.martinez@email.com</p>
+            <p><strong>Tipo de solicitud:</strong> Exportacion de datos personales</p>
+            <p><strong>Numero de referencia:</strong> #GDPR-2025-001</p>
+            <p><strong>Fecha de solicitud:</strong> martes, 3 de diciembre de 2025, 10:15</p>
+          </div>
+          
+          <div class="success-box">
+            <p><strong>Que sigue ahora?</strong> Un administrador procesara tu solicitud en los proximos dias habiles. Recibiras un correo con los resultados.</p>
+          </div>
+          
+          <h3>Tiempos estimados:</h3>
+          <ul>
+            <li><strong>Exportacion de datos:</strong> 48-72 horas habiles</li>
+            <li><strong>Eliminacion de cuenta:</strong> 5-7 dias habiles</li>
+            <li><strong>Rectificacion de datos:</strong> 24-48 horas habiles</li>
+          </ul>
+          
+          <div class="warning-box">
+            <p><strong>Importante:</strong> Si no realizaste esta solicitud, por favor contacta inmediatamente con soporte.</p>
+          </div>
+          
+          <p style="margin-top: 25px;">Gracias por confiar en nosotros.</p>
+          <p>Atentamente,<br><strong style="color: #1e1e1e;">El equipo de Cemi</strong></p>
+        </div>
+        <div class="footer">
+          <p class="footer-brand">Centro Educativo Multilingue Integral</p>
+          <div class="footer-links">
+            <a href="#">Privacidad</a>
+            <a href="#">Contacto</a>
+          </div>
+          <p class="footer-legal">&copy; 2025 Cemi - Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="email-container" id="email-7">
+      <span class="email-label">Email 7: Solicitud GDPR (Admin)</span>
+      <div class="container">
+        <div class="header">
+          <img src="https://Cemiup.railway.app/images/logolong.png" alt="Cemi">
+          <h1>Nueva Solicitud GDPR</h1>
+        </div>
+        <div class="header-accent warning"></div>
+        <div class="content">
+          <h2>Accion Requerida: Exportacion de Datos</h2>
+          <p>Se ha recibido una nueva solicitud de derechos GDPR que requiere tu atencion.</p>
+          
+          <div class="info-box warning">
+            <p><strong>Referencia:</strong> #GDPR-2025-001</p>
+            <p><strong>Tipo:</strong> Exportacion de Datos</p>
+            <p><strong>Fecha/Hora:</strong> martes, 3 de diciembre de 2025, 10:15:30</p>
+          </div>
+          
+          <div class="credential-box">
+            <h3>Datos del Solicitante</h3>
+            <table style="width: 100%; text-align: left; margin-top: 15px;">
+              <tr><td style="padding: 8px; color: #656f77;"><strong>Nombre:</strong></td><td style="padding: 8px;">Ana Martinez</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>Email:</strong></td><td style="padding: 8px;">ana.martinez@email.com</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>DNI:</strong></td><td style="padding: 8px;">12345678</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>Legajo:</strong></td><td style="padding: 8px;">2024-0015</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>ID Usuario:</strong></td><td style="padding: 8px;">456</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>Formato:</strong></td><td style="padding: 8px;">JSON</td></tr>
+            </table>
+          </div>
+          
+          <h3>Pasos a seguir:</h3>
+          <ul>
+            <li>Accede al panel de administracion</li>
+            <li>Localiza al usuario en la seccion correspondiente</li>
+            <li>Genera el archivo de exportacion en el formato solicitado</li>
+            <li>Envia el archivo al email del usuario</li>
+          </ul>
+          
+          <div class="warning-box">
+            <p><strong>Plazo legal:</strong> Segun GDPR, tienes un maximo de 30 dias para responder a esta solicitud.</p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="#" class="btn">Ir al Panel de Admin</a>
+          </div>
+        </div>
+        <div class="footer">
+          <p class="footer-brand">Centro Educativo Multilingue Integral</p>
+          <p class="footer-legal">&copy; 2025 Cemi - Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="email-container" id="email-8">
+      <span class="email-label">Email 8: Codigos 2FA (Usuario)</span>
+      <div class="container">
+        <div class="header">
+          <img src="https://Cemiup.railway.app/images/logolong.png" alt="Cemi">
+          <h1>Solicitud de Codigos Recibida</h1>
+        </div>
+        <div class="header-accent"></div>
+        <div class="content">
+          <div class="success-icon">&#128274;</div>
+          <h2>Hola Pedro Sanchez,</h2>
+          <p>Hemos recibido tu solicitud para <strong>generar/regenerar codigos de recuperacion</strong> para la verificacion en dos pasos (2FA).</p>
+          
+          <div class="info-box">
+            <p><strong>Email asociado:</strong> pedro.sanchez@email.com</p>
+            <p><strong>Tipo de solicitud:</strong> Codigos de Recuperacion 2FA</p>
+            <p><strong>Numero de referencia:</strong> #2FA-2025-003</p>
+            <p><strong>Fecha de solicitud:</strong> martes, 3 de diciembre de 2025, 16:45</p>
+          </div>
+          
+          <div class="success-box">
+            <p><strong>Que sigue ahora?</strong> Un administrador verificara tu identidad y generara tus nuevos codigos de recuperacion. Los recibiras por este mismo correo.</p>
+          </div>
+          
+          <h3>Tiempo estimado:</h3>
+          <p>El proceso suele completarse en <strong>24-48 horas habiles</strong>.</p>
+          
+          <div class="warning-box">
+            <p><strong>Importante:</strong> Si no realizaste esta solicitud, por favor contacta inmediatamente con soporte. Tu cuenta podria estar comprometida.</p>
+          </div>
+          
+          <div class="divider"></div>
+          
+          <h3>Para que sirven los codigos de recuperacion?</h3>
+          <ul>
+            <li>Acceder a tu cuenta si pierdes tu dispositivo 2FA</li>
+            <li>Cada codigo solo puede usarse <strong>una vez</strong></li>
+            <li>Recibiras 10 codigos unicos de 8 digitos</li>
+            <li>Guardalos en un lugar seguro (no en tu telefono)</li>
+          </ul>
+          
+          <p style="margin-top: 25px;">Gracias por mantener tu cuenta segura.</p>
+          <p>Atentamente,<br><strong style="color: #1e1e1e;">El equipo de Cemi</strong></p>
+        </div>
+        <div class="footer">
+          <p class="footer-brand">Centro Educativo Multilingue Integral</p>
+          <div class="footer-links">
+            <a href="#">Centro de Ayuda</a>
+            <a href="#">Privacidad</a>
+          </div>
+          <p class="footer-legal">&copy; 2025 Cemi - Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="email-container" id="email-9">
+      <span class="email-label">Email 9: Codigos 2FA (Admin)</span>
+      <div class="container">
+        <div class="header">
+          <img src="https://Cemiup.railway.app/images/logolong.png" alt="Cemi">
+          <h1>Solicitud de Codigos 2FA</h1>
+        </div>
+        <div class="header-accent warning"></div>
+        <div class="content">
+          <h2>Accion Requerida: Generar Codigos de Recuperacion</h2>
+          <p>Se ha recibido una nueva solicitud de codigos de recuperacion para 2FA que requiere tu atencion.</p>
+          
+          <div class="info-box warning">
+            <p><strong>Referencia:</strong> #2FA-2025-003</p>
+            <p><strong>Tipo:</strong> Codigos de Recuperacion 2FA</p>
+            <p><strong>Fecha/Hora:</strong> martes, 3 de diciembre de 2025, 16:45:22</p>
+          </div>
+          
+          <div class="credential-box">
+            <h3>Datos del Solicitante</h3>
+            <table style="width: 100%; text-align: left; margin-top: 15px;">
+              <tr><td style="padding: 8px; color: #656f77;"><strong>Nombre:</strong></td><td style="padding: 8px;">Pedro Sanchez</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>Usuario:</strong></td><td style="padding: 8px;">psanchez</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>Email:</strong></td><td style="padding: 8px;">pedro.sanchez@email.com</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>DNI:</strong></td><td style="padding: 8px;">87654321</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>ID Usuario:</strong></td><td style="padding: 8px;">789</td></tr>
+              <tr><td style="padding: 8px; color: #656f77;"><strong>Motivo:</strong></td><td style="padding: 8px;">Perdi acceso a mi telefono</td></tr>
+            </table>
+          </div>
+          
+          <h3>Pasos a seguir:</h3>
+          <ul>
+            <li>Verificar la identidad del usuario (DNI, usuario, email)</li>
+            <li>Acceder al panel de administracion</li>
+            <li>Localizar al usuario en la gestion de 2FA</li>
+            <li>Generar nuevos codigos de recuperacion (10 codigos)</li>
+            <li>Enviar los codigos de forma segura al usuario</li>
+            <li>Los codigos anteriores quedaran invalidados</li>
+          </ul>
+          
+          <div class="warning-box">
+            <p><strong>Seguridad:</strong> Antes de generar codigos, verifica que la solicitud sea legitima. Podrias contactar al usuario por otro medio para confirmar.</p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="#" class="btn">Ir al Panel de Admin</a>
+          </div>
+        </div>
+        <div class="footer">
+          <p class="footer-brand">Centro Educativo Multilingue Integral</p>
+          <p class="footer-legal">&copy; 2025 Cemi - Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showEmail(num) {
+      // Ocultar todos
+      document.querySelectorAll('.email-container').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.email-nav button').forEach(el => el.classList.remove('active'));
+      
+      // Mostrar seleccionado
+      document.getElementById('email-' + num).classList.add('active');
+      document.querySelectorAll('.email-nav button')[num - 1].classList.add('active');
+    }
+  </script>
+</body>
+</html>

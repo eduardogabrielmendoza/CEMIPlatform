@@ -1,0 +1,718 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A2540">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="apple-touch-icon" href="images/logo.png">
+  <title>Registrarse - Cemi</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/login-harvard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  
+  <script src="assets/js/console-manager.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/check-maintenance.js"></script>
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    @media (max-width: 768px) {
+      .login-side-panel {
+        padding: 24px 20px 20px !important;
+      }
+      .side-panel-icon {
+        width: 50px !important;
+        height: 50px !important;
+        margin-bottom: 8px !important;
+      }
+      .side-panel-icon i,
+      .side-panel-icon svg {
+        width: 26px !important;
+        height: 26px !important;
+      }
+      .side-panel-content h2 {
+        font-size: 1.3rem !important;
+        margin-bottom: 4px !important;
+      }
+      .side-panel-content > p {
+        font-size: 0.85rem !important;
+      }
+      .register-box,
+      .login-box {
+        padding: 24px 16px 24px 24px !important;
+      }
+      .login-header {
+        margin-bottom: 20px !important;
+        text-align: left !important;
+      }
+      .login-logo {
+        width: 55px !important;
+        height: 55px !important;
+        margin: 0 0 10px 0 !important;
+      }
+      .login-header h1 {
+        font-size: 1.4rem !important;
+        margin: 6px 0 3px 0 !important;
+      }
+      .login-header p {
+        font-size: 0.8rem !important;
+        margin: 0 0 4px 0 !important;
+      }
+      .form-row {
+        gap: 10px !important;
+      }
+      .form-group {
+        margin-bottom: 10px !important;
+      }
+      .form-label {
+        font-size: 0.85rem !important;
+        margin-bottom: 4px !important;
+      }
+      #registerForm input,
+      #registerForm select {
+        font-size: 15px !important;
+        padding: 10px 12px !important;
+      }
+      .input-wrapper {
+        margin-bottom: 0 !important;
+      }
+      .login-submit {
+        padding: 11px 18px !important;
+        font-size: 0.9rem !important;
+        margin-top: 14px !important;
+        margin-bottom: 10px !important;
+      }
+      .login-divider {
+        margin: 10px 0 !important;
+        font-size: 0.8rem !important;
+      }
+      .register-text {
+        font-size: 0.85rem !important;
+        margin: 8px 0 !important;
+        text-align: left !important;
+      }
+      .login-footer {
+        margin-top: 10px !important;
+      }
+      .back-link,
+      .login-help a {
+        font-size: 0.85rem !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-side-panel {
+        padding: 20px 16px 16px !important;
+      }
+      .side-panel-icon {
+        width: 45px !important;
+        height: 45px !important;
+        margin-bottom: 6px !important;
+      }
+      .side-panel-icon i,
+      .side-panel-icon svg {
+        width: 24px !important;
+        height: 24px !important;
+      }
+      .side-panel-content h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 3px !important;
+      }
+      .side-panel-content > p {
+        font-size: 0.8rem !important;
+      }
+      .register-box,
+      .login-box {
+        padding: 20px 12px 24px 20px !important;
+      }
+      .login-header {
+        margin-bottom: 16px !important;
+        text-align: left !important;
+      }
+      .login-logo {
+        width: 50px !important;
+        height: 50px !important;
+        margin: 0 0 8px 0 !important;
+      }
+      .login-header h1 {
+        font-size: 1.25rem !important;
+        margin: 4px 0 2px 0 !important;
+      }
+      .login-header p {
+        font-size: 0.75rem !important;
+        margin: 0 0 3px 0 !important;
+      }
+      .form-row {
+        gap: 8px !important;
+      }
+      .form-group {
+        margin-bottom: 8px !important;
+      }
+      .form-label {
+        font-size: 0.8rem !important;
+        margin-bottom: 3px !important;
+      }
+      #registerForm input,
+      #registerForm select {
+        font-size: 14px !important;
+        padding: 9px 10px !important;
+      }
+      .login-submit {
+        padding: 10px 16px !important;
+        font-size: 0.85rem !important;
+        margin-top: 12px !important;
+        margin-bottom: 8px !important;
+      }
+      .login-divider {
+        margin: 8px 0 !important;
+        font-size: 0.75rem !important;
+      }
+      .register-text {
+        font-size: 0.8rem !important;
+        margin: 6px 0 !important;
+        text-align: left !important;
+      }
+      .login-footer {
+        margin-top: 8px !important;
+        gap: 8px !important;
+      }
+      .back-link,
+      .login-help a {
+        font-size: 0.8rem !important;
+      }
+    }
+
+    /* Indicador de coincidencia de contraseñas */
+    .password-match {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      margin-top: 6px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .password-match.match {
+      background: rgba(34, 197, 94, 0.1);
+    }
+    .password-match.no-match {
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .password-match i,
+    .password-match svg {
+      width: 14px;
+      height: 14px;
+    }
+  </style>
+</head>
+<body class="login-body">
+
+  <div class="login-particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <div class="login-wrapper">
+    <div class="login-side-panel register-panel">
+      <div class="side-panel-content">
+        <div class="side-panel-icon">
+          <i data-lucide="graduation-cap"></i>
+        </div>
+        <h2>Bienvenido a Cemi</h2>
+        <p>Únete a nuestra comunidad educativa</p>
+        
+        <div class="login-features">
+          <div class="login-feature-item">
+            <div class="feature-icon">
+              <i data-lucide="zap"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Registro Rápido</h3>
+              <p>Crea tu cuenta en menos de 2 minutos</p>
+            </div>
+          </div>
+
+          <div class="login-feature-item">
+            <div class="feature-icon">
+              <i data-lucide="graduation-cap"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Acceso Completo</h3>
+              <p>Todos los cursos disponibles</p>
+            </div>
+          </div>
+
+          <div class="login-feature-item">
+            <div class="feature-icon">
+              <i data-lucide="user-check"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Gestión Personal</h3>
+              <p>Panel personalizado para ti</p>
+            </div>
+          </div>
+
+          <div class="login-feature-item">
+            <div class="feature-icon">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Soporte Continuo</h3>
+              <p>Ayuda y asistencia disponible</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="register-box">
+      <div class="login-header">
+        <img src="images/logo.png" alt="Logo Cemi" class="login-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+        <h1>Crear Cuenta</h1>
+        <p>Registro de nuevo usuario</p>
+      </div>
+
+      <form id="registerForm" class="register-form">
+        <div class="form-row">
+          <div class="form-group">
+            <div class="input-wrapper">
+              <input type="text" id="nombre" placeholder="Nombre" required>
+              <i data-lucide="user" class="input-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-wrapper">
+              <input type="text" id="apellido" placeholder="Apellido" required>
+              <i data-lucide="user" class="input-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <div class="input-wrapper">
+              <input type="text" id="dni" placeholder="DNI" maxlength="8" required pattern="[0-9]*" inputmode="numeric">
+              <i data-lucide="credit-card" class="input-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-wrapper">
+              <input type="tel" id="telefono" placeholder="Teléfono" required pattern="[0-9]*" inputmode="numeric">
+              <i data-lucide="phone" class="input-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-wrapper">
+            <input type="email" id="email" placeholder="Email" required>
+            <i data-lucide="mail" class="input-icon"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-wrapper">
+            <input type="text" id="newUser" placeholder="Nombre de usuario" required>
+            <i data-lucide="at-sign" class="input-icon"></i>
+          </div>
+          <small class="input-hint">Mínimo 3 caracteres</small>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <div class="input-wrapper">
+              <input type="password" id="newPass" placeholder="Contraseña" required>
+              <i data-lucide="lock" class="input-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-wrapper">
+              <input type="password" id="confirmPass" placeholder="Confirmar contraseña" required>
+              <i data-lucide="lock" class="input-icon"></i>
+            </div>
+            <div class="password-match" id="passwordMatch" style="display: none;">
+              <i id="matchIcon"></i>
+              <span id="matchText"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="password-strength" id="passwordStrength">
+          <div class="strength-bar">
+            <div class="strength-fill" id="strengthFill"></div>
+          </div>
+          <p class="strength-text" id="strengthText">Ingresá una contraseña</p>
+        </div>
+
+        <button type="submit" class="login-submit">
+          <span>Crear cuenta</span>
+          <i data-lucide="user-plus"></i>
+        </button>
+      </form>
+
+      <div class="login-divider">
+        <span>o</span>
+      </div>
+
+      <p class="register-text">
+        ¿Ya tenés cuenta? <a href="login.html" class="register-link">Iniciar sesión</a>
+      </p>
+
+      <div class="login-footer">
+        <a href="index.html" class="back-link">
+          <i data-lucide="arrow-left"></i>
+          Volver al inicio
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    // Inicializar Lucide Icons
+    lucide.createIcons();
+    
+    // Inicializar AOS
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true
+    });
+
+    const API_URL = window.API_URL || "http://localhost:3000/api";
+    
+    // Validación: solo números en DNI y Teléfono
+    const dniInput = document.getElementById('dni');
+    const telefonoInput = document.getElementById('telefono');
+    
+    dniInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+    
+    telefonoInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+    
+    // Indicador de fortaleza de contraseña
+    const passwordInput = document.getElementById('newPass');
+    const confirmPassInput = document.getElementById('confirmPass');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    const passwordMatch = document.getElementById('passwordMatch');
+    const matchIcon = document.getElementById('matchIcon');
+    const matchText = document.getElementById('matchText');
+
+    // Función para verificar coincidencia de contraseñas
+    function checkPasswordMatch() {
+      const password = passwordInput.value;
+      const confirmPassword = confirmPassInput.value;
+      
+      if (confirmPassword.length === 0) {
+        passwordMatch.style.display = 'none';
+        return;
+      }
+      
+      passwordMatch.style.display = 'flex';
+      
+      if (password === confirmPassword) {
+        matchIcon.setAttribute('data-lucide', 'check-circle');
+        matchText.textContent = 'Las contraseñas coinciden';
+        passwordMatch.style.color = '#22c55e';
+        passwordMatch.classList.remove('no-match');
+        passwordMatch.classList.add('match');
+      } else {
+        matchIcon.setAttribute('data-lucide', 'x-circle');
+        matchText.textContent = 'Las contraseñas no coinciden';
+        passwordMatch.style.color = '#ef4444';
+        passwordMatch.classList.remove('match');
+        passwordMatch.classList.add('no-match');
+      }
+      
+      lucide.createIcons();
+    }
+
+    // Escuchar cambios en ambos campos de contraseña
+    confirmPassInput.addEventListener('input', checkPasswordMatch);
+    passwordInput.addEventListener('input', () => {
+      checkPasswordMatch();
+    });
+
+    passwordInput.addEventListener('input', (e) => {
+      const password = e.target.value;
+      let strength = 0;
+      
+      if (password.length >= 6) strength += 25;
+      if (password.length >= 10) strength += 25;
+      if (/[A-Z]/.test(password)) strength += 25;
+      if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) strength += 25;
+
+      strengthFill.style.width = strength + '%';
+      
+      if (strength === 0) {
+        strengthFill.style.background = '#e0e0e0';
+        strengthText.textContent = 'Ingresá una contraseña';
+        strengthText.style.color = '#999';
+      } else if (strength <= 25) {
+        strengthFill.style.background = '#e53935';
+        strengthText.textContent = 'Débil';
+        strengthText.style.color = '#e53935';
+      } else if (strength <= 50) {
+        strengthFill.style.background = '#fb8c00';
+        strengthText.textContent = 'Regular';
+        strengthText.style.color = '#fb8c00';
+      } else if (strength <= 75) {
+        strengthFill.style.background = '#7e9ac8';
+        strengthText.textContent = 'Buena';
+        strengthText.style.color = '#1A3A5C';
+      } else {
+        strengthFill.style.background = 'linear-gradient(135deg, #0A2540, #1A3A5C)';
+        strengthText.textContent = 'Excelente';
+        strengthText.style.color = '#0A2540';
+      }
+    });
+
+    // Manejo del formulario
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nombre = document.getElementById('nombre').value.trim();
+      const apellido = document.getElementById('apellido').value.trim();
+      const dni = document.getElementById('dni').value.trim();
+      const telefono = document.getElementById('telefono').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const username = document.getElementById('newUser').value.trim();
+      const password = document.getElementById('newPass').value.trim();
+      const confirmPassword = document.getElementById('confirmPass').value.trim();
+
+      // Validaciones de campos obligatorios
+      if (!nombre) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Campo obligatorio',
+          text: 'El nombre es obligatorio',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (!apellido) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Campo obligatorio',
+          text: 'El apellido es obligatorio',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (!dni) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Campo obligatorio',
+          text: 'El DNI es obligatorio',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (dni.length < 7 || dni.length > 8) {
+        Swal.fire({
+          icon: 'error',
+          title: 'DNI inválido',
+          text: 'El DNI debe tener 7 u 8 dígitos',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (!telefono) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Campo obligatorio',
+          text: 'El teléfono es obligatorio',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (telefono.length < 10) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Teléfono inválido',
+          text: 'El teléfono debe tener al menos 10 dígitos',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (!email) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Campo obligatorio',
+          text: 'El email es obligatorio',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (!username) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Campo obligatorio',
+          text: 'El usuario es obligatorio',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (username.length < 3) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Usuario inválido',
+          text: 'El usuario debe tener al menos 3 caracteres',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (!password) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Campo obligatorio',
+          text: 'La contraseña es obligatoria',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (password.length < 6) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Contraseña débil',
+          text: 'La contraseña debe tener al menos 6 caracteres',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (!confirmPassword) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Campo obligatorio',
+          text: 'Debe confirmar la contraseña',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Las contraseñas no coinciden',
+          confirmButtonColor: '#0A2540'
+        });
+        return;
+      }
+
+      // Mostrar loading
+      Swal.fire({
+        title: 'Creando tu cuenta...',
+        html: 'Por favor espera un momento',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre,
+            apellido,
+            dni: dni || null,
+            telefono: telefono || null,
+            email,
+            username,
+            password
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: '¡Cuenta creada exitosamente!',
+            html: `
+              <div style="text-align: center; padding: 10px 0;">
+                <p style="font-size: 16px; color: #333; margin-bottom: 15px;">
+                  Para activar tu cuenta, te enviamos un correo de confirmación a:
+                </p>
+                <p style="font-size: 18px; font-weight: 600; color: #0070F3; background: #e3f2fd; padding: 12px 20px; border-radius: 8px; display: inline-block;">
+                   ${email}
+                </p>
+                <p style="font-size: 14px; color: #666; margin-top: 20px;">
+                  Abrí el correo y hacé clic en el botón de confirmación para comenzar.
+                </p>
+                <p style="font-size: 12px; color: #999; margin-top: 15px; font-style: italic;">
+                   Si no encontrás el correo en tu bandeja principal, revisá la carpeta de spam o correo no deseado.
+                </p>
+              </div>
+            `,
+            confirmButtonColor: '#0070F3',
+            confirmButtonText: 'Entendido',
+            allowOutsideClick: false
+          }).then(() => {
+            window.location.href = 'index.html';
+          });
+          
+          document.getElementById('registerForm').reset();
+          strengthFill.style.width = '0%';
+          strengthText.textContent = 'Ingresá una contraseña';
+          strengthText.style.color = '#999';
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al registrar',
+            text: data.message || 'Error al crear la cuenta',
+            confirmButtonColor: '#0A2540'
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de conexión',
+          text: 'No se pudo conectar con el servidor',
+          confirmButtonColor: '#0A2540'
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+

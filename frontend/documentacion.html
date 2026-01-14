@@ -1,0 +1,433 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+    <title>Documentación del Proyecto - Cemi</title>
+    <link rel="icon" type="image/png" href="images/logocuadrado.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="assets/js/console-manager.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --hw-charcoal: #1e1e1e;
+            --hw-dark: #2d2d2d;
+            --hw-graphite: #4a4a4a;
+            --hw-gray: #656f77;
+            --hw-light-gray: #8c939a;
+            --hw-off-white: #f5f5f0;
+            --hw-white: #ffffff;
+            --hw-border: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--hw-off-white);
+            color: var(--hw-charcoal);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Hero Section */
+        .doc-hero {
+            background: linear-gradient(145deg, var(--hw-charcoal) 0%, var(--hw-dark) 40%, var(--hw-graphite) 100%);
+            color: white;
+            padding: 80px 20px 70px;
+            text-align: center;
+            position: relative;
+        }
+
+        .doc-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--hw-gray), var(--hw-graphite), var(--hw-gray));
+        }
+
+        .doc-hero h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .doc-hero p {
+            font-size: 1rem;
+            opacity: 0.8;
+            max-width: 550px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        .doc-main {
+            flex: 1;
+            max-width: 1100px;
+            margin: -35px auto 60px;
+            padding: 0 25px;
+            width: 100%;
+        }
+
+        /* Section Title */
+        .section-title {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 35px;
+            padding: 28px 20px;
+            background: var(--hw-white);
+            border: 1px solid var(--hw-border);
+        }
+
+        .section-title h2 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--hw-charcoal);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .section-title p {
+            color: var(--hw-gray);
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        /* Documents Grid */
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .doc-card {
+            background: var(--hw-white);
+            border: 1px solid var(--hw-border);
+            padding: 28px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--hw-graphite);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-color: var(--hw-gray);
+        }
+
+        .doc-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Featured card for Gantt */
+        .doc-card.featured {
+            grid-column: span 2;
+            background: linear-gradient(145deg, var(--hw-charcoal), var(--hw-dark));
+            color: var(--hw-white);
+            border: none;
+        }
+
+        .doc-card.featured .doc-number {
+            color: var(--hw-light-gray);
+        }
+
+        .doc-card.featured h3 {
+            color: var(--hw-white);
+        }
+
+        .doc-card.featured p {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .doc-card.featured .doc-link {
+            color: var(--hw-white);
+            background: rgba(255,255,255,0.1);
+            padding: 10px 18px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .doc-card.featured .doc-link:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .doc-card.featured::before {
+            background: var(--hw-gray);
+        }
+
+        .doc-number {
+            font-size: 0.75rem;
+            color: var(--hw-gray);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .doc-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--hw-charcoal);
+            margin-bottom: 10px;
+        }
+
+        .doc-card p {
+            font-size: 0.88rem;
+            color: var(--hw-gray);
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--hw-graphite);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .doc-link:hover {
+            gap: 12px;
+            color: var(--hw-charcoal);
+        }
+
+        .doc-link i {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Info Box */
+        .doc-info {
+            background: var(--hw-white);
+            border: 1px solid var(--hw-border);
+            padding: 22px 28px;
+            margin-top: 35px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .doc-info i {
+            width: 32px;
+            height: 32px;
+            color: var(--hw-gray);
+            flex-shrink: 0;
+        }
+
+        .doc-info-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--hw-charcoal);
+            margin-bottom: 4px;
+        }
+
+        .doc-info-content p {
+            font-size: 0.85rem;
+            color: var(--hw-gray);
+            margin: 0;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+
+        .back-link:hover {
+            color: white;
+            transform: translateX(-3px);
+        }
+
+        .back-link i {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Footer */
+        .doc-footer {
+            background: var(--hw-charcoal);
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 0.8rem;
+        }
+
+        .doc-footer a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .doc-footer a:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .doc-card.featured {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .doc-hero {
+                padding: 60px 20px 55px;
+            }
+
+            .doc-hero h1 {
+                font-size: 1.6rem;
+                letter-spacing: 2px;
+            }
+
+            .documents-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .doc-info {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="doc-hero">
+        <a href="index.html" class="back-link">
+            <i data-lucide="arrow-left"></i>
+            Volver al inicio
+        </a>
+        <h1>Documentación del Proyecto</h1>
+        <p>Documentación técnica y manuales del Sistema de Gestión Académica CEMI</p>
+    </section>
+
+    <main class="doc-main">
+        <div class="section-title">
+            <h2>Documentos Disponibles</h2>
+            <p>Selecciona un documento para visualizarlo</p>
+        </div>
+
+        <div class="documents-grid">
+            <article class="doc-card featured">
+                <span class="doc-number">Cronograma</span>
+                <h3>Diagrama de Gantt</h3>
+                <p>Cronograma completo del proyecto. Visualización interactiva de las fases, tareas, hitos y distribución de trabajo del equipo de desarrollo.</p>
+                <a href="docs/gantt/index.html" class="doc-link">
+                    Ver diagrama <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="doc-card">
+                <span class="doc-number">Documento 01</span>
+                <h3>Manual de Usuario</h3>
+                <p>Guía completa para usuarios del sistema con instrucciones de navegación y uso.</p>
+                <a href="docs/01-Manual-de-Usuario.html" class="doc-link">
+                    Ver documento <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="doc-card">
+                <span class="doc-number">Documento 02</span>
+                <h3>Manual Técnico</h3>
+                <p>Documentación técnica: arquitectura, configuración y requisitos de instalación.</p>
+                <a href="docs/02-Manual-Tecnico.html" class="doc-link">
+                    Ver documento <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="doc-card">
+                <span class="doc-number">Documento 03</span>
+                <h3>Diagramas UML</h3>
+                <p>Casos de uso, diagramas de clases, secuencia y arquitectura del software.</p>
+                <a href="docs/03-Diagramas-UML.html" class="doc-link">
+                    Ver documento <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="doc-card">
+                <span class="doc-number">Documento 04</span>
+                <h3>Prototipos y Mockups</h3>
+                <p>Diseños iniciales de la interfaz y prototipos visuales del sistema.</p>
+                <a href="docs/04-Prototipos-Mockups.html" class="doc-link">
+                    Ver documento <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="doc-card">
+                <span class="doc-number">Documento 05</span>
+                <h3>Plan de Pruebas</h3>
+                <p>Casos de prueba, criterios de aceptación y resultados de validación.</p>
+                <a href="docs/05-Plan-de-Pruebas.html" class="doc-link">
+                    Ver documento <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="doc-card">
+                <span class="doc-number">Documento 06</span>
+                <h3>Arquitectura del Sistema</h3>
+                <p>Componentes, servicios, integraciones y flujo de datos del sistema.</p>
+                <a href="docs/06-Arquitectura-Sistema.html" class="doc-link">
+                    Ver documento <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+
+            <article class="doc-card">
+                <span class="doc-number">Documento 07</span>
+                <h3>Bibliografía APA7</h3>
+                <p>Referencias bibliográficas citadas según normas APA 7ma edición.</p>
+                <a href="docs/07-Bibliografia-APA7.html" class="doc-link">
+                    Ver documento <i data-lucide="arrow-right"></i>
+                </a>
+            </article>
+        </div>
+
+        <div class="doc-info">
+            <i data-lucide="info"></i>
+            <div class="doc-info-content">
+                <h4>Proyecto Final</h4>
+                <p>Documentación del Sistema de Gestión Académica Cemi - UTN Tecnicatura en Programación, Bella Vista 2025.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="doc-footer">
+        <p>&copy; 2025 Cemi Sistema de Gestión Académica | <a href="index.html">Volver al inicio</a></p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

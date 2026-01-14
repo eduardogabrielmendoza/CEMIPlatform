@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Comunidad de Ayuda - Cemi Classroom</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root { --hw-charcoal: #1e1e1e; --hw-graphite: #656f77; --hw-light-gray: #8c939a; --hw-silver: #b8bdc2; --hw-off-white: #f8f9fa; --hw-cream: #f5f5f7; --hw-accent-orange: #f5a623; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--hw-off-white); color: var(--hw-charcoal); line-height: 1.6; }
+    body::before { content: ''; position: fixed; top: 20%; right: 5%; width: 250px; height: 250px; border: 1px solid rgba(101, 111, 119, 0.05); border-radius: 50%; pointer-events: none; }
+
+    .help-header { background: var(--hw-light-gray); position: sticky; top: 0; z-index: 100; }
+    .header-top { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; }
+    .header-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+    .header-logo img { width: 52px; height: 52px; border-radius: 10px; }
+    .header-logo span { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 500; }
+    .header-nav { display: flex; gap: 8px; }
+    .header-nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 500; transition: all 0.3s ease; position: relative; }
+    .header-nav a::after { content: ''; position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: var(--hw-silver); transition: width 0.3s ease; }
+    .header-nav a:hover::after, .header-nav a.active::after { width: 30px; }
+    .header-nav a:hover, .header-nav a.active { color: white; }
+
+    .hero-section { background: var(--hw-light-gray); padding: 30px 40px 24px; text-align: center; position: relative; overflow: hidden; transition: max-height 0.5s ease, padding 0.5s ease; max-height: 350px; }
+    .hero-section::before { content: ''; position: absolute; top: -80px; right: -80px; width: 250px; height: 250px; border: 2px solid rgba(255,255,255,0.03); border-radius: 50%; }
+    .hero-section.hidden { max-height: 0; padding-top: 0; padding-bottom: 0; }
+    .hero-section h1 { font-family: 'Inter', sans-serif; color: white; font-size: 26px; font-weight: 600; margin-bottom: 8px; animation: fadeIn 0.6s ease; }
+    .hero-section p { color: rgba(255,255,255,0.75); font-size: 15px; margin-bottom: 20px; animation: fadeIn 0.6s ease 0.1s both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero-stats { display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; margin-bottom: 20px; animation: fadeIn 0.6s ease 0.2s both; }
+    .stat-item { text-align: center; }
+    .stat-number { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 600; color: white; }
+    .stat-label { font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; }
+
+    .hero-search { max-width: 500px; margin: 0 auto; animation: fadeIn 0.6s ease 0.3s both; }
+    .hero-search input { width: 100%; padding: 14px 20px 14px 48px; border: none; border-radius: 12px; font-size: 14px; font-family: 'Inter', sans-serif; background: rgba(255,255,255,0.95); box-shadow: 0 8px 30px rgba(0,0,0,0.15); transition: all 0.3s ease; }
+    .hero-search input:focus { outline: none; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.2), 0 0 0 3px rgba(147, 161, 173, 0.25); }
+    .hero-search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--hw-graphite); width: 18px; height: 18px; }
+    .hero-search-wrapper { position: relative; }
+
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 40px; }
+    .content-grid { display: grid; grid-template-columns: 280px 1fr; gap: 30px; }
+
+    .sidebar { position: sticky; top: 100px; height: fit-content; }
+    .sidebar-card { background: white; border-radius: 18px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 20px; border: 1px solid rgba(101, 111, 119, 0.08); transition: all 0.3s ease; }
+    .sidebar-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+    .sidebar-title { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--hw-charcoal); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+    .sidebar-title i { width: 18px; height: 18px; color: var(--hw-graphite); }
+
+    .user-info-card { background: var(--hw-cream); border: 1px solid rgba(101, 111, 119, 0.1); position: relative; overflow: hidden; }
+    .user-info-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; border: 1px solid rgba(101, 111, 119, 0.08); border-radius: 50%; }
+    .user-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; position: relative; z-index: 1; }
+    .user-avatar { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 3px solid var(--hw-charcoal); }
+    .user-name { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 500; color: var(--hw-charcoal); }
+    .user-role { font-size: 12px; color: var(--hw-graphite); background: white; padding: 3px 12px; border-radius: 20px; margin-top: 4px; display: inline-block; }
+    .ask-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px 20px; background: var(--hw-light-gray); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); text-decoration: none; position: relative; z-index: 1; overflow: hidden; }
+    .ask-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(147, 161, 173, 0.35); background: #93a1ad; }
+    .ask-btn i { width: 18px; height: 18px; }
+
+    .login-prompt-card { text-align: center; padding: 30px 24px; }
+    .login-prompt-icon { width: 60px; height: 60px; background: var(--hw-cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .login-prompt-icon i { width: 28px; height: 28px; color: var(--hw-graphite); }
+    .login-prompt-card h4 { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 500; color: var(--hw-charcoal); margin-bottom: 8px; }
+    .login-prompt-card p { font-size: 13px; color: var(--hw-graphite); margin-bottom: 20px; }
+
+    .category-list { list-style: none; }
+    .category-list li { margin-bottom: 4px; }
+    .category-list a { display: flex; align-items: center; gap: 12px; padding: 12px 14px; color: var(--hw-graphite); text-decoration: none; border-radius: 10px; font-size: 14px; transition: all 0.3s ease; cursor: pointer; position: relative; }
+    .category-list a::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 0; background: #93a1ad; border-radius: 2px; transition: height 0.3s ease; }
+    .category-list a:hover, .category-list a.active { background: var(--hw-cream); color: var(--hw-charcoal); }
+    .category-list a:hover::before, .category-list a.active::before { height: 50%; }
+    .category-list a i { width: 18px; height: 18px; transition: color 0.3s ease; }
+    .category-list a:hover i, .category-list a.active i { color: var(--hw-charcoal); }
+    .category-count { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--hw-light-gray); background: var(--hw-off-white); padding: 2px 8px; border-radius: 10px; }
+
+    .posts-area { min-width: 0; }
+    .posts-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+    .section-title { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 600; color: var(--hw-charcoal); display: flex; align-items: center; gap: 12px; margin: 0; }
+    .section-title i { width: 24px; height: 24px; color: var(--hw-graphite); }
+    .sort-dropdown select { padding: 10px 36px 10px 14px; border: 1px solid rgba(101, 111, 119, 0.15); border-radius: 10px; font-size: 13px; font-family: 'Inter', sans-serif; background: white; cursor: pointer; transition: all 0.3s ease; color: var(--hw-charcoal); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23656f77' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+    .sort-dropdown select:focus { outline: none; border-color: var(--hw-charcoal); }
+
+    .posts-grid { display: grid; gap: 20px; margin-bottom: 40px; }
+    .post-card { background: white; border-radius: 18px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.03); border: 1px solid rgba(101, 111, 119, 0.08); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden; animation: cardFadeIn 0.5s ease forwards; opacity: 0; }
+    @keyframes cardFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    .post-card:nth-child(1) { animation-delay: 0.05s; } .post-card:nth-child(2) { animation-delay: 0.1s; } .post-card:nth-child(3) { animation-delay: 0.15s; } .post-card:nth-child(4) { animation-delay: 0.2s; } .post-card:nth-child(5) { animation-delay: 0.25s; }
+    .post-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #93a1ad; transform: scaleY(0); transition: transform 0.3s ease; transform-origin: top; }
+    .post-card:hover { border-color: rgba(147, 161, 173, 0.3); box-shadow: 0 15px 45px rgba(147, 161, 173, 0.12); transform: translateY(-4px); }
+    .post-card:hover::before { transform: scaleY(1); }
+    .post-card.featured { background: var(--hw-cream); }
+    .post-card.featured::before { transform: scaleY(1); }
+
+    .post-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+    .post-author-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(101, 111, 119, 0.1); flex-shrink: 0; transition: border-color 0.3s ease; }
+    .post-card:hover .post-author-avatar { border-color: var(--hw-charcoal); }
+    .post-author-name { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--hw-charcoal); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .author-badge { font-size: 10px; padding: 2px 10px; border-radius: 10px; font-weight: 600; font-family: 'Inter', sans-serif; }
+    .author-badge.profesor { background: var(--hw-charcoal); color: white; }
+    .author-badge.admin { background: var(--hw-graphite); color: white; }
+    .post-date { font-size: 12px; color: var(--hw-light-gray); margin-top: 3px; }
+
+    .post-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .post-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .post-badge i { width: 12px; height: 12px; }
+    .post-badge.category { background: var(--hw-cream); color: var(--hw-graphite); }
+    .post-badge.announcement { background: var(--hw-charcoal); color: white; }
+    .post-badge.pinned { background: rgba(245, 166, 35, 0.15); color: #b8860b; }
+    .post-badge.resolved { background: #d1fae5; color: #065f46; }
+
+    .post-title { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 500; color: var(--hw-charcoal); margin-bottom: 10px; line-height: 1.4; transition: color 0.3s ease; }
+    .post-card:hover .post-title { color: var(--hw-graphite); }
+    .post-excerpt { font-size: 14px; color: var(--hw-graphite); margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.6; }
+
+    .post-preview { background: var(--hw-off-white); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; border-left: 3px solid var(--hw-graphite); }
+    .post-preview-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .post-preview-avatar { width: 22px; height: 22px; border-radius: 50%; }
+    .post-preview-author { font-size: 12px; font-weight: 600; color: var(--hw-charcoal); }
+    .post-preview-badge { font-size: 9px; background: var(--hw-charcoal); color: white; padding: 2px 8px; border-radius: 8px; }
+    .post-preview-text { font-size: 13px; color: var(--hw-graphite); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .post-meta { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; padding-top: 14px; border-top: 1px solid rgba(101, 111, 119, 0.08); }
+    .meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--hw-light-gray); }
+    .meta-item i { width: 16px; height: 16px; }
+    .meta-item.votes { color: var(--hw-graphite); cursor: pointer; padding: 8px 14px; border-radius: 10px; transition: all 0.3s ease; background: var(--hw-off-white); }
+    .meta-item.votes:hover { background: rgba(147, 161, 173, 0.15); color: #93a1ad; }
+    .meta-item.votes.voted { color: white; background: var(--hw-light-gray); }
+
+    .empty-state { text-align: center; padding: 80px 20px; }
+    .empty-state-icon { width: 80px; height: 80px; background: var(--hw-cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .empty-state-icon i { width: 40px; height: 40px; color: var(--hw-graphite); }
+    .empty-state h3 { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 600; color: var(--hw-charcoal); margin-bottom: 10px; }
+    .empty-state p { font-size: 14px; color: var(--hw-graphite); margin-bottom: 24px; }
+
+    .loading { text-align: center; padding: 60px; }
+    .loading-spinner { width: 48px; height: 48px; border: 3px solid rgba(101, 111, 119, 0.15); border-top-color: var(--hw-charcoal); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(30, 30, 30, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.4s ease; }
+    .modal.active { display: flex; opacity: 1; }
+    .modal-content { background: var(--hw-off-white); border-radius: 24px; max-width: 600px; width: 100%; max-height: 90vh; overflow: hidden; transform: translateY(30px) scale(0.95); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 30px 90px rgba(0,0,0,0.25); }
+    .modal.active .modal-content { transform: translateY(0) scale(1); }
+    .modal-header { padding: 28px; border-bottom: 1px solid rgba(101, 111, 119, 0.1); display: flex; justify-content: space-between; align-items: center; background: white; }
+    .modal-header h2 { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 600; color: var(--hw-charcoal); display: flex; align-items: center; gap: 12px; }
+    .modal-header h2 i { width: 24px; height: 24px; color: var(--hw-graphite); }
+    .close-modal { background: var(--hw-cream); border: none; cursor: pointer; padding: 10px; border-radius: 10px; transition: all 0.3s ease; }
+    .close-modal:hover { background: var(--hw-charcoal); transform: rotate(90deg); }
+    .close-modal i { width: 18px; height: 18px; color: var(--hw-graphite); transition: color 0.3s ease; }
+    .close-modal:hover i { color: white; }
+    .modal-body { padding: 28px; max-height: 60vh; overflow-y: auto; background: white; }
+    .form-group { margin-bottom: 24px; }
+    .form-group label { display: block; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--hw-charcoal); margin-bottom: 10px; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 14px 18px; border: 1px solid rgba(101, 111, 119, 0.15); border-radius: 12px; font-size: 14px; font-family: 'Inter', sans-serif; transition: all 0.3s ease; background: var(--hw-off-white); }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #93a1ad; box-shadow: 0 0 0 4px rgba(147, 161, 173, 0.1); background: white; }
+    .form-group textarea { min-height: 140px; resize: vertical; }
+    .form-group small { display: block; margin-top: 8px; font-size: 12px; color: var(--hw-light-gray); }
+    .modal-footer { padding: 20px 28px; border-top: 1px solid rgba(101, 111, 119, 0.1); display: flex; justify-content: flex-end; gap: 12px; background: var(--hw-cream); }
+    .btn { padding: 14px 28px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; border: none; }
+    .btn-secondary { background: white; color: var(--hw-graphite); border: 1px solid rgba(101, 111, 119, 0.15); }
+    .btn-secondary:hover { background: var(--hw-off-white); border-color: var(--hw-graphite); }
+    .btn-primary { background: var(--hw-charcoal); color: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(147, 161, 173, 0.35); background: #93a1ad; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+
+    .help-footer { background: white; border-top: 1px solid rgba(101, 111, 119, 0.1); padding: 30px 40px; margin-top: 60px; }
+    .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a { color: var(--hw-graphite); text-decoration: none; font-size: 13px; transition: color 0.3s ease; }
+    .footer-links a:hover { color: #93a1ad; }
+    .footer-copy { color: var(--hw-light-gray); font-size: 13px; }
+
+    @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } .sidebar { position: static; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; } .sidebar-card { margin-bottom: 0; } }
+    @media (max-width: 768px) { .header-top { padding: 12px 20px; } .header-nav { display: none; } .hero-section { padding: 30px 20px; } .hero-section h1 { font-size: 22px; } .hero-stats { gap: 30px; } .main-content { padding: 24px 16px; } .posts-toolbar { flex-direction: column; align-items: stretch; } }
+  </style>
+</head>
+<body>
+  <header class="help-header">
+    <div class="header-top">
+      <a href="classroom.html" class="header-logo"><img src="images/logo.png" alt="CEMI"><span>Comunidad Cemi</span></a>
+      <nav class="header-nav">
+        <a href="ayuda-classroom.html">Centro de Ayuda</a>
+        <a href="comunidad-ayuda.html" class="active">Comunidad</a>
+        <a href="novedades-cemi.html">Novedades</a>
+        <a href="classroom.html">Volver a Classroom</a>
+      </nav>
+    </div>
+  </header>
+  <div class="hero-section" id="heroSection">
+    <h1>Comunidad de Ayuda CEMI</h1>
+    <p>Conecta con profesores y alumnos, comparte conocimientos y encuentra respuestas</p>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-number" id="statPreguntas">0</div><div class="stat-label">Preguntas</div></div>
+      <div class="stat-item"><div class="stat-number" id="statRespuestas">0</div><div class="stat-label">Respuestas</div></div>
+      <div class="stat-item"><div class="stat-number" id="statParticipantes">0</div><div class="stat-label">Participantes</div></div>
+    </div>
+    <div class="hero-search"><div class="hero-search-wrapper"><i data-lucide="search"></i><input type="text" placeholder="Buscar en la comunidad..." id="communitySearch"></div></div>
+  </div>
+  <main class="main-content">
+    <div class="content-grid">
+      <aside class="sidebar">
+        <div class="sidebar-card user-info-card" id="userInfoCard" style="display: none;">
+          <div class="user-header"><img src="" alt="" class="user-avatar" id="userAvatar"><div><div class="user-name" id="userName"></div><div class="user-role" id="userRole"></div></div></div>
+          <button class="ask-btn" onclick="openAskModal()" id="askBtn"><i data-lucide="plus-circle"></i>Hacer una pregunta</button>
+        </div>
+        <div class="sidebar-card login-prompt-card" id="loginPromptCard">
+          <div class="login-prompt-icon"><i data-lucide="user-plus"></i></div>
+          <h4>Únete a la conversación</h4>
+          <p>Inicia sesión para hacer preguntas y ayudar a otros usuarios.</p>
+          <a href="login-selector.html" class="ask-btn"><i data-lucide="log-in"></i>Iniciar sesión</a>
+        </div>
+        <div class="sidebar-card">
+          <h3 class="sidebar-title"><i data-lucide="layers"></i>Categorías</h3>
+          <ul class="category-list" id="categoryList">
+            <li><a class="active" data-filter="all"><i data-lucide="grid-3x3"></i>Todas<span class="category-count" id="countAll">0</span></a></li>
+            <li><a data-filter="primeros-pasos"><i data-lucide="rocket"></i>Primeros Pasos<span class="category-count" id="countPrimeros">0</span></a></li>
+            <li><a data-filter="tareas"><i data-lucide="clipboard-list"></i>Tareas y Entregas<span class="category-count" id="countTareas">0</span></a></li>
+            <li><a data-filter="comunicacion"><i data-lucide="message-circle"></i>Comunicación<span class="category-count" id="countComunicacion">0</span></a></li>
+            <li><a data-filter="recursos"><i data-lucide="folder-open"></i>Recursos<span class="category-count" id="countRecursos">0</span></a></li>
+            <li><a data-filter="cuenta"><i data-lucide="user-cog"></i>Mi Cuenta<span class="category-count" id="countCuenta">0</span></a></li>
+            <li><a data-filter="otro"><i data-lucide="help-circle"></i>Otro<span class="category-count" id="countOtro">0</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-card">
+          <h3 class="sidebar-title"><i data-lucide="info"></i>Acerca de</h3>
+          <p style="font-size: 13px; color: var(--hw-graphite); line-height: 1.7;">La Comunidad Cemi es un espacio colaborativo donde profesores y alumnos pueden resolver dudas y compartir experiencias.</p>
+        </div>
+      </aside>
+      <div class="posts-area">
+        <section id="featuredSection" style="display: none;"><div class="posts-toolbar"><h2 class="section-title"><i data-lucide="star"></i>Destacados</h2></div><div class="posts-grid" id="featuredPosts"></div></section>
+        <section><div class="posts-toolbar"><h2 class="section-title"><i data-lucide="message-square"></i>Preguntas</h2><div class="sort-dropdown"><select id="sortSelect" onchange="handleSort()"><option value="recent">Más recientes</option><option value="popular">Más votadas</option><option value="unanswered">Sin respuesta</option></select></div></div><div id="postsContainer"><div class="loading"><div class="loading-spinner"></div><p>Cargando preguntas...</p></div></div></section>
+      </div>
+    </div>
+  </main>
+  <div class="modal" id="askModal">
+    <div class="modal-content">
+      <div class="modal-header"><h2><i data-lucide="help-circle"></i>Hacer una pregunta</h2><button class="close-modal" onclick="closeAskModal()"><i data-lucide="x"></i></button></div>
+      <div class="modal-body">
+        <div class="form-group"><label>Categoría</label><select id="questionCategory"><option value="">Selecciona una categoría...</option><option value="primeros-pasos"> Primeros Pasos</option><option value="tareas"> Tareas y Entregas</option><option value="comunicacion"> Comunicación</option><option value="recursos"> Recursos y Materiales</option><option value="cuenta"> Mi Cuenta</option><option value="otro"> Otro</option></select></div>
+        <div class="form-group"><label>Título de tu pregunta</label><input type="text" id="questionTitle" placeholder="Escribe un título claro..." maxlength="150"><small>Sé específico para obtener mejores respuestas</small></div>
+        <div class="form-group"><label>Descripción</label><textarea id="questionDescription" placeholder="Describe tu problema o pregunta con detalle..." maxlength="2000"></textarea><small>Mientras más detalles proporciones, mejor podrán ayudarte</small></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" onclick="closeAskModal()">Cancelar</button><button class="btn btn-primary" onclick="submitQuestion()" id="submitBtn"><i data-lucide="send"></i>Publicar pregunta</button></div>
+    </div>
+  </div>
+  <footer class="help-footer"><div class="footer-content"><div class="footer-links"><a href="ayuda-classroom.html">Centro de Ayuda</a><a href="privacidad.html">Política de Privacidad</a><a href="terminos.html">Términos de Servicio</a></div><div class="footer-copy">© 2025 Cemi - Centro Educativo Multilingüe Integral</div></div></footer>
+  <script>
+    let currentUser = null, allPreguntas = [], currentFilter = 'all', currentSort = 'recent', searchQuery = '';
+    function checkSession() { const nombre = localStorage.getItem('nombre'), rol = localStorage.getItem('rol'), avatar = localStorage.getItem('avatar'), idProfesor = localStorage.getItem('id_profesor'), idAlumno = localStorage.getItem('id_alumno'), idUsuario = localStorage.getItem('id_usuario'); if (nombre && rol) { let tipo = 'alumno', id = idAlumno || idUsuario, rolDisplay = 'Alumno'; if (rol === 'profesor' || idProfesor) { tipo = 'profesor'; id = idProfesor || idUsuario; rolDisplay = 'Profesor'; } else if (rol === 'admin' || rol === 'administrador') { tipo = 'admin'; id = idUsuario; rolDisplay = 'Administrador'; } currentUser = { tipo, id, nombre, avatar, rol: rolDisplay }; } updateUserUI(); }
+    function updateUserUI() { const userCard = document.getElementById('userInfoCard'), loginCard = document.getElementById('loginPromptCard'); if (currentUser) { userCard.style.display = 'block'; loginCard.style.display = 'none'; document.getElementById('userName').textContent = currentUser.nombre; document.getElementById('userRole').textContent = currentUser.rol; const avatar = document.getElementById('userAvatar'); avatar.src = currentUser.avatar ? (currentUser.avatar.startsWith('http') ? currentUser.avatar : `/uploads/avatars/${currentUser.avatar}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.nombre)}&background=1e1e1e&color=fff`; } else { userCard.style.display = 'none'; loginCard.style.display = 'block'; } }
+    function animateCounter(el, target) { const duration = 600, start = performance.now(); function update(now) { const p = Math.min((now - start) / duration, 1); el.textContent = Math.floor(p * target); if (p < 1) requestAnimationFrame(update); } requestAnimationFrame(update); }
+    async function loadPreguntas() { try { const res = await fetch('/api/comunidad/preguntas'), data = await res.json(); if (data.success) { allPreguntas = data.preguntas; animateCounter(document.getElementById('statPreguntas'), data.stats.preguntas); animateCounter(document.getElementById('statRespuestas'), data.stats.respuestas); animateCounter(document.getElementById('statParticipantes'), data.stats.participantes); updateCategoryCounts(); renderPreguntas(); } } catch (e) { console.error('Error:', e); showEmptyState('Error al cargar', 'Intenta recargar la página'); } }
+    function updateCategoryCounts() { document.getElementById('countAll').textContent = allPreguntas.length; const c = { 'primeros-pasos': 0, 'tareas': 0, 'comunicacion': 0, 'recursos': 0, 'cuenta': 0, 'otro': 0 }; allPreguntas.forEach(p => { if (c[p.categoria] !== undefined) c[p.categoria]++; }); document.getElementById('countPrimeros').textContent = c['primeros-pasos']; document.getElementById('countTareas').textContent = c['tareas']; document.getElementById('countComunicacion').textContent = c['comunicacion']; document.getElementById('countRecursos').textContent = c['recursos']; document.getElementById('countCuenta').textContent = c['cuenta']; document.getElementById('countOtro').textContent = c['otro']; }
+    function getFilteredAndSortedPreguntas() { let p = [...allPreguntas]; if (currentFilter !== 'all') p = p.filter(q => q.categoria === currentFilter); if (searchQuery) p = p.filter(q => q.titulo.toLowerCase().includes(searchQuery) || q.descripcion.toLowerCase().includes(searchQuery)); if (currentSort === 'popular') p.sort((a, b) => b.votos - a.votos); else if (currentSort === 'unanswered') { p = p.filter(q => !q.numRespuestas); p.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)); } else p.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)); return p; }
+    function renderPreguntas() { const preguntas = getFilteredAndSortedPreguntas(), destacados = preguntas.filter(p => p.destacado || p.esAnuncio), regulares = preguntas.filter(p => !p.destacado && !p.esAnuncio), featuredSection = document.getElementById('featuredSection'), featuredContainer = document.getElementById('featuredPosts'); if (destacados.length > 0 && currentFilter === 'all' && !searchQuery) { featuredSection.style.display = 'block'; featuredContainer.innerHTML = destacados.map(p => renderPostCard(p, true)).join(''); } else { featuredSection.style.display = 'none'; } const container = document.getElementById('postsContainer'); if (regulares.length === 0 && destacados.length === 0) { if (searchQuery) showEmptyState('No se encontraron resultados', `No hay preguntas que coincidan con "${searchQuery}"`); else if (currentSort === 'unanswered') showEmptyState('¡Excelente!', 'Todas las preguntas han sido respondidas'); else showEmptyState('No hay preguntas aún', 'Sé el primero en hacer una pregunta'); } else { container.innerHTML = `<div class="posts-grid">${regulares.map(p => renderPostCard(p, false)).join('')}</div>`; } lucide.createIcons(); }
+    function showEmptyState(title, message) { document.getElementById('postsContainer').innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i data-lucide="message-circle"></i></div><h3>${title}</h3><p>${message}</p>${currentUser ? '<button class="btn btn-primary" onclick="openAskModal()"><i data-lucide="plus-circle"></i>Hacer una pregunta</button>' : ''}</div>`; lucide.createIcons(); }
+    function renderPostCard(p, isFeatured) { const fecha = formatTimeAgo(p.fechaCreacion), votanteKey = currentUser ? `${currentUser.tipo}_${currentUser.id}` : null, hasVoted = votanteKey && p.votantes && p.votantes.includes(votanteKey), catNames = { 'primeros-pasos': 'Primeros Pasos', 'tareas': 'Tareas', 'comunicacion': 'Comunicación', 'recursos': 'Recursos', 'cuenta': 'Mi Cuenta', 'otro': 'Otro' }; let badges = `<span class="post-badge category">${catNames[p.categoria] || p.categoria}</span>`; if (p.esAnuncio) badges += '<span class="post-badge announcement"><i data-lucide="megaphone"></i>Anuncio</span>'; else if (p.destacado) badges += '<span class="post-badge pinned"><i data-lucide="pin"></i>Fijado</span>'; if (p.estado === 'resuelta') badges += '<span class="post-badge resolved"><i data-lucide="check-circle"></i>Resuelta</span>'; const avatarUrl = p.autorAvatar ? (p.autorAvatar.startsWith('http') ? p.autorAvatar : `/uploads/avatars/${p.autorAvatar}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(p.autorNombre)}&background=1e1e1e&color=fff&size=88`; let authorBadge = ''; if (p.autorTipo === 'profesor') authorBadge = '<span class="author-badge profesor">Profesor</span>'; else if (p.autorTipo === 'admin') authorBadge = '<span class="author-badge admin">Admin</span>'; let previewHtml = ''; if (p.respuestas && p.respuestas.length > 0) { const r = p.respuestas.find(x => x.esRecomendada) || p.respuestas[0]; const respAvatar = r.autorAvatar ? (r.autorAvatar.startsWith('http') ? r.autorAvatar : `/uploads/avatars/${r.autorAvatar}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(r.autorNombre)}&background=1e1e1e&color=fff&size=44`; previewHtml = `<div class="post-preview"><div class="post-preview-header"><img src="${respAvatar}" class="post-preview-avatar" alt=""><span class="post-preview-author">${escapeHtml(r.autorNombre)}</span>${r.esRecomendada ? '<span class="post-preview-badge">Mejor respuesta</span>' : ''}</div><div class="post-preview-text">${escapeHtml(r.contenido)}</div></div>`; } return `<div class="post-card ${isFeatured ? 'featured' : ''}" onclick="viewPregunta('${p.id}')"><div class="post-header"><img src="${avatarUrl}" alt="" class="post-author-avatar"><div class="post-author-info"><div class="post-author-name">${escapeHtml(p.autorNombre)}${authorBadge}</div><div class="post-date">${fecha}</div></div></div><div class="post-badges">${badges}</div><h3 class="post-title">${escapeHtml(p.titulo)}</h3><p class="post-excerpt">${escapeHtml(p.descripcion)}</p>${previewHtml}<div class="post-meta"><span class="meta-item"><i data-lucide="message-circle"></i>${p.numRespuestas || 0} respuestas</span><span class="meta-item votes ${hasVoted ? 'voted' : ''}" onclick="event.stopPropagation(); votarPregunta('${p.id}')"><i data-lucide="thumbs-up"></i>${p.votos} votos</span></div></div>`; }
+    function formatTimeAgo(dateString) { const s = Math.floor((new Date() - new Date(dateString)) / 1000); if (s < 60) return 'Hace un momento'; if (s < 3600) return `Hace ${Math.floor(s / 60)} min`; if (s < 86400) return `Hace ${Math.floor(s / 3600)} horas`; if (s < 604800) return `Hace ${Math.floor(s / 86400)} días`; return new Date(dateString).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }); }
+    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+    function viewPregunta(id) { window.location.href = `pregunta-detalle.html?id=${id}`; }
+    async function votarPregunta(id) { if (!currentUser) { alert('Debes iniciar sesión para votar'); return; } try { const res = await fetch(`/api/comunidad/preguntas/${id}/votar`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ votanteTipo: currentUser.tipo, votanteId: currentUser.id }) }); const data = await res.json(); if (data.success) { const p = allPreguntas.find(q => q.id === id); if (p) { p.votos = data.votos; const vk = `${currentUser.tipo}_${currentUser.id}`; if (data.action === 'added') { if (!p.votantes) p.votantes = []; p.votantes.push(vk); } else { p.votantes = p.votantes.filter(v => v !== vk); } renderPreguntas(); } } } catch (e) { console.error('Error:', e); } }
+    function handleSort() { currentSort = document.getElementById('sortSelect').value; renderPreguntas(); }
+    const searchInput = document.getElementById('communitySearch'); let searchTimeout;
+    searchInput.addEventListener('input', function() { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { searchQuery = this.value.toLowerCase().trim(); renderPreguntas(); }, 300); });
+    document.querySelectorAll('.category-list a').forEach(link => { link.addEventListener('click', function(e) { e.preventDefault(); document.querySelectorAll('.category-list a').forEach(l => l.classList.remove('active')); this.classList.add('active'); currentFilter = this.dataset.filter; renderPreguntas(); }); });
+    function openAskModal() { if (!currentUser) { alert('Debes iniciar sesión'); return; } document.getElementById('askModal').classList.add('active'); document.body.style.overflow = 'hidden'; lucide.createIcons(); }
+    function closeAskModal() { document.getElementById('askModal').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('questionCategory').value = ''; document.getElementById('questionTitle').value = ''; document.getElementById('questionDescription').value = ''; }
+    async function submitQuestion() { const category = document.getElementById('questionCategory').value, title = document.getElementById('questionTitle').value.trim(), description = document.getElementById('questionDescription').value.trim(); if (!category) { alert('Selecciona una categoría'); return; } if (!title) { alert('Escribe un título'); return; } if (!description) { alert('Describe tu pregunta'); return; } const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.innerHTML = '<i data-lucide="loader"></i>Publicando...'; lucide.createIcons(); try { const res = await fetch('/api/comunidad/preguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ titulo: title, descripcion: description, categoria: category, autorTipo: currentUser.tipo, autorId: currentUser.id, autorNombre: currentUser.nombre, autorAvatar: currentUser.avatar }) }); const data = await res.json(); if (data.success) { closeAskModal(); allPreguntas.unshift(data.pregunta); updateCategoryCounts(); renderPreguntas(); animateCounter(document.getElementById('statPreguntas'), allPreguntas.length); } else { alert(data.error || 'Error al publicar'); } } catch (e) { console.error('Error:', e); alert('Error al publicar'); } finally { submitBtn.disabled = false; submitBtn.innerHTML = '<i data-lucide="send"></i>Publicar pregunta'; lucide.createIcons(); } }
+    document.getElementById('askModal').addEventListener('click', function(e) { if (e.target === this) closeAskModal(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAskModal(); });
+    const heroSection = document.getElementById('heroSection');
+    window.addEventListener('scroll', function() { heroSection.classList.toggle('hidden', window.scrollY > 80); }, { passive: true });
+    document.addEventListener('DOMContentLoaded', function() { lucide.createIcons(); checkSession(); loadPreguntas(); });
+  </script>
+</body>
+</html>

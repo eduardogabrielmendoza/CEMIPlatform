@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Ubicaciones Sospechosas | Cemi Seguridad</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="security-header">
+        <div class="security-header-content">
+            <div class="security-icon"><i data-lucide="map-pin"></i></div>
+            <h1>Ubicaciones Sospechosas</h1>
+            <p>Detecta accesos desde ubicaciones inusuales o peligrosas.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-privsec-home.html" style="color: #0071e3; text-decoration: none;">Privacidad y Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Ubicaciones sospechosas</span>
+        </div>
+
+        <div class="security-alert">
+            <i data-lucide="info"></i>
+            <div>
+                <strong>Detección de anomalías</strong>
+                <p>Nuestro sistema analiza patrones de ubicación para detectar accesos desde lugares inusuales, países de alto riesgo, o VPNs/proxies anónimos.</p>
+            </div>
+        </div>
+
+        <div class="security-card" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: white; margin: 0;"><i data-lucide="check-circle"></i> Estado de seguridad</h2>
+                <span style="background: white; color: #28a745; padding: 8px 20px; border-radius: 20px; font-weight: 700; font-size: 14px;"> SEGURO</span>
+            </div>
+            <p style="color: rgba(255,255,255,0.9);">No hemos detectado actividad sospechosa reciente en tu cuenta. Todas tus ubicaciones de acceso son reconocidas.</p>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="map"></i> Ubicaciones de acceso (últimos 90 días)</h2>
+            <p style="margin-bottom: 30px;">Mapa de dónde has iniciado sesión:</p>
+            
+            <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); height: 300px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 50%; left: 30%; transform: translate(-50%, -50%);">
+                    <div style="width: 30px; height: 30px; background: #28a745; border-radius: 50%; border: 4px solid white; box-shadow: 0 0 20px rgba(40, 167, 69, 0.5); animation: pulse 2s infinite;"></div>
+                    <span style="position: absolute; top: 35px; left: 50%; transform: translateX(-50%); background: white; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; color: #28a745; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">Buenos Aires (85%)</span>
+                </div>
+                <div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);">
+                    <div style="width: 20px; height: 20px; background: #0071e3; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(0, 113, 227, 0.5);"></div>
+                    <span style="position: absolute; top: 25px; left: 50%; transform: translateX(-50%); background: white; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 600; color: #0071e3; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">Córdoba (12%)</span>
+                </div>
+                <div style="position: absolute; top: 35%; left: 70%; transform: translate(-50%, -50%);">
+                    <div style="width: 15px; height: 15px; background: #6c757d; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(108, 117, 125, 0.5);"></div>
+                    <span style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 3px 6px; border-radius: 6px; font-size: 9px; font-weight: 600; color: #6c757d; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">Rosario (3%)</span>
+                </div>
+                <style>
+                    @keyframes pulse {
+                        0%, 100% { transform: scale(1); opacity: 1; }
+                        50% { transform: scale(1.2); opacity: 0.8; }
+                    }
+                </style>
+            </div>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;">
+                <span style="background: #e8f5e9; color: #28a745; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                    <i data-lucide="check-circle" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Buenos Aires, Argentina (85%)
+                </span>
+                <span style="background: #e3f2fd; color: #0071e3; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                    <i data-lucide="check-circle" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Córdoba, Argentina (12%)
+                </span>
+                <span style="background: #f8f9fa; color: #6c757d; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                    <i data-lucide="check-circle" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Rosario, Argentina (3%)
+                </span>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="alert-triangle"></i> Accesos desde ubicaciones inusuales</h2>
+            <p style="margin-bottom: 30px;">Estos accesos fueron desde ubicaciones que no usas habitualmente:</p>
+            
+            <div style="background: #fff3cd; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #FFC107;">
+                <div style="display: flex; gap: 20px;">
+                    <i data-lucide="map-pin" style="width: 32px; height: 32px; color: #856404; flex-shrink: 0;"></i>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                            <div>
+                                <strong style="color: #856404; display: block; font-size: 16px; margin-bottom: 10px;">️ Mendoza, Argentina</strong>
+                                <div style="color: #5a6c7d; font-size: 14px; line-height: 1.8;">
+                                    <div><i data-lucide="monitor" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Windows 10 - Firefox 118</div>
+                                    <div><i data-lucide="calendar" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Hace 1 semana - 15/05/2024 a las 16:20</div>
+                                    <div><i data-lucide="wifi" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> IP: 190.xxx.xxx.xxx</div>
+                                </div>
+                                <div style="background: rgba(255, 193, 7, 0.2); padding: 12px; border-radius: 8px; margin-top: 15px;">
+                                    <strong style="color: #856404; font-size: 14px;">Primera vez desde esta ciudad</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="alert('Ubicación marcada como segura')" style="background: #28a745; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                <i data-lucide="check" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Sí fui yo
+                            </button>
+                            <button onclick="if(confirm('¿Reportar este acceso como sospechoso?')) alert('Reporte enviado al equipo de seguridad')" style="background: #dc3545; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                <i data-lucide="flag" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> No fui yo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center; color: #6c757d;">
+                <i data-lucide="check-circle" style="width: 32px; height: 32px; margin-bottom: 10px;"></i>
+                <p style="margin: 0; font-size: 14px;">No hay más ubicaciones inusuales detectadas</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="shield"></i> Configuración de detección</h2>
+            <p style="margin-bottom: 30px;">Personaliza qué se considera sospechoso:</p>
+            
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Bloquear países de alto riesgo</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Impedir accesos desde países con alta actividad de fraude</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #6c757d; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block;"></span></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Alerta para VPN/Proxy</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Notificar cuando se detecta VPN o proxy anónimo</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #28a745; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block; transform: translateX(30px);"></span></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Verificación adicional en nueva ciudad</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Requerir código 2FA cuando accedes desde ciudad nueva</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #28a745; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block; transform: translateX(30px);"></span></span>
+                    </label>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-radius: 8px;">
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Limitar accesos internacionales</strong>
+                        <span style="color: #5a6c7d; font-size: 14px;">Solo permitir acceso desde Argentina (requiere aprobación manual para otros países)</span>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 60px; height: 30px;">
+                        <input type="checkbox" style="opacity: 0; width: 0; height: 0;">
+                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #6c757d; transition: 0.4s; border-radius: 30px; display: block;"><span style="position: absolute; content: ''; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: 0.4s; border-radius: 50%; display: block;"></span></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="info"></i> ¿Cómo funciona la detección?</h2>
+            <div style="margin-top: 30px;">
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #0071e3; display: block; margin-bottom: 10px;"> Análisis de patrones</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Nuestro sistema aprende tus ubicaciones habituales. Si accedes desde un lugar nuevo o lejano, se marca como inusual.</p>
+                </div>
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #0071e3; display: block; margin-bottom: 10px;"> Geolocalización por IP</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Usamos bases de datos de geolocalización IP para determinar ciudad y país aproximados. Puede tener variaciones de 20-50km.</p>
+                </div>
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 12px;">
+                    <strong style="color: #0071e3; display: block; margin-bottom: 10px;">️ Listas de riesgo</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Mantenemos listas actualizadas de rangos IP conocidos por fraude, datacenters sospechosos, y servicios VPN/Tor.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <button onclick="alert('Configuración guardada')" style="background: #28a745; color: white; border: none; padding: 15px 50px; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);">
+                <i data-lucide="check" style="width: 20px; height: 20px; display: inline; vertical-align: middle;"></i> Guardar configuración
+            </button>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="historial-acceso.html" class="security-action-btn">
+                    <i data-lucide="clock"></i>
+                    <strong>Historial completo</strong>
+                    <span>Ver todos los accesos (90 días)</span>
+                </a>
+                <a href="alertas-acceso.html" class="security-action-btn">
+                    <i data-lucide="bell"></i>
+                    <strong>Configurar alertas</strong>
+                    <span>Notificaciones de seguridad</span>
+                </a>
+                <a href="../cemi-privsec-home.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Portal</strong>
+                    <span>Privacidad y Seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../privacidad.html">Privacidad</a>
+            <a href="../terminos.html">Términos</a>
+            <a href="../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi. Todos los derechos reservados.</p>
+    </footer>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
+
+

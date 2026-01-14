@@ -1,0 +1,294 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Aplicaciones Conectadas | Cemi Seguridad</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="seguridad">
+    <header class="security-header-blur bg-apps">
+        <div class="security-header-content" style="text-align: center; position: relative; z-index: 1;">
+            <div class="security-icon" style="background: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i data-lucide="share-2" style="width: 40px; height: 40px;"></i>
+            </div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Aplicaciones Conectadas</h1>
+            <p style="font-size: 1.1rem; opacity: 0.95;">Gestiona qué aplicaciones tienen acceso a tu cuenta Cemi.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-privsec-home.html" style="color: #0071e3; text-decoration: none;">Privacidad y Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Apps conectadas</span>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #fff3cd 0%, #fffbf0 100%); border-left: 6px solid #FFC107; padding: 25px; margin: 30px 0; border-radius: 12px; box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);">
+            <div style="display: flex; align-items: start; gap: 20px;">
+                <i data-lucide="shield-alert" style="width: 32px; height: 32px; color: #FFC107; flex-shrink: 0; margin-top: 4px;"></i>
+                <div>
+                    <strong style="display: block; font-size: 1.2rem; margin-bottom: 10px; color: #856404;">️ Gestión de Acceso Controlada</strong>
+                    <p style="margin: 0; color: #856404; line-height: 1.6;">La revocación de acceso a aplicaciones debe ser gestionada por un administrador para mantener la integridad del sistema.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%); padding: 30px; border-radius: 12px; margin: 25px 0; text-align: center; box-shadow: 0 4px 12px rgba(0,113,227,0.1);">
+            <h3 style="margin-bottom: 20px; color: #1a1f36;">
+                <i data-lucide="headset" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"></i>
+                Gestionar Aplicaciones
+            </h3>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="window.location.href='mailto:soporte@Cemiedu.ar?subject=Solicitud: Revocar Acceso de Aplicación&body=Estimado equipo,%0D%0A%0D%0ASolicito revocar el acceso de una aplicación a mi cuenta.%0D%0A%0D%0ADatos:%0D%0A- Usuario: [TU USUARIO]%0D%0A- DNI: [TU DNI]%0D%0A- Aplicación: [NOMBRE DE LA APP]%0D%0A%0D%0AGracias.'" 
+                        style="background: #0071e3; color: white; padding: 16px 36px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,113,227,0.3); display: inline-flex; align-items: center; gap: 10px;">
+                    <i data-lucide="mail" style="width: 20px; height: 20px;"></i>
+                    Solicitar Revocación
+                </button>
+                <a href="tel:+5491112345678" 
+                   style="background: #28a745; color: white; padding: 16px 36px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(40,167,69,0.3); display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <i data-lucide="phone" style="width: 20px; height: 20px;"></i>
+                    Llamar: +54 911 1234-5678
+                </a>
+            </div>
+        </div>
+
+        <div class="security-alert">
+            <i data-lucide="info"></i>
+            <div>
+                <strong>¿Qué son apps conectadas?</strong>
+                <p>Son aplicaciones y servicios externos que te permiten iniciar sesión usando tu cuenta Cemi o que tienen permiso para acceder a cierta información de tu perfil.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="apps"></i> Aplicaciones con acceso activo</h2>
+            <p style="margin-bottom: 30px;">Apps que actualmente tienen permiso para acceder a tu cuenta:</p>
+            
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                <div style="display: flex; gap: 20px;">
+                    <div style="width: 60px; height: 60px; background: #4285F4; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i data-lucide="graduation-cap" style="width: 32px; height: 32px; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="color: #2c3e50; margin: 0 0 10px;">Google Classroom Sync</h3>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0 0 15px;">Sincroniza tus clases y tareas con Google Classroom</p>
+                        
+                        <div style="display: flex; gap: 30px; margin-bottom: 15px; flex-wrap: wrap;">
+                            <div style="font-size: 13px; color: #5a6c7d;">
+                                <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Permisos:</strong>
+                                <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 3px;">
+                                    <i data-lucide="check" style="width: 14px; height: 14px; color: #28a745;"></i>
+                                    <span>Leer información de perfil</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 3px;">
+                                    <i data-lucide="check" style="width: 14px; height: 14px; color: #28a745;"></i>
+                                    <span>Ver lista de clases</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <i data-lucide="check" style="width: 14px; height: 14px; color: #28a745;"></i>
+                                    <span>Crear tareas automáticas</span>
+                                </div>
+                            </div>
+                            <div style="font-size: 13px; color: #5a6c7d;">
+                                <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Conectada:</strong>
+                                <span>Hace 3 meses</span>
+                                <br>
+                                <strong style="display: block; color: #2c3e50; margin-top: 10px; margin-bottom: 5px;">Último uso:</strong>
+                                <span>Hoy a las 10:30</span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="alert('Revocando acceso...')" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                <i data-lucide="x" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Revocar acceso
+                            </button>
+                            <button onclick="alert('Mostrando detalles...')" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                <i data-lucide="info" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Ver detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                <div style="display: flex; gap: 20px;">
+                    <div style="width: 60px; height: 60px; background: #5558AF; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i data-lucide="users" style="width: 32px; height: 32px; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="color: #2c3e50; margin: 0 0 10px;">Microsoft Teams Integration</h3>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0 0 15px;">Accede a Cemi desde Microsoft Teams</p>
+                        
+                        <div style="display: flex; gap: 30px; margin-bottom: 15px; flex-wrap: wrap;">
+                            <div style="font-size: 13px; color: #5a6c7d;">
+                                <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Permisos:</strong>
+                                <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 3px;">
+                                    <i data-lucide="check" style="width: 14px; height: 14px; color: #28a745;"></i>
+                                    <span>Leer información básica</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <i data-lucide="check" style="width: 14px; height: 14px; color: #28a745;"></i>
+                                    <span>Enviar notificaciones</span>
+                                </div>
+                            </div>
+                            <div style="font-size: 13px; color: #5a6c7d;">
+                                <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Conectada:</strong>
+                                <span>Hace 1 mes</span>
+                                <br>
+                                <strong style="display: block; color: #2c3e50; margin-top: 10px; margin-bottom: 5px;">Último uso:</strong>
+                                <span>Hace 2 días</span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="alert('Revocando acceso...')" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                <i data-lucide="x" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Revocar acceso
+                            </button>
+                            <button onclick="alert('Mostrando detalles...')" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                <i data-lucide="info" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Ver detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                <div style="display: flex; gap: 20px;">
+                    <div style="width: 60px; height: 60px; background: #000000; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i data-lucide="file-text" style="width: 32px; height: 32px; color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="color: #2c3e50; margin: 0 0 10px;">Notion Study Planner</h3>
+                        <p style="color: #5a6c7d; font-size: 14px; margin: 0 0 15px;">Planifica tu estudio con integración CEMI</p>
+                        
+                        <div style="display: flex; gap: 30px; margin-bottom: 15px; flex-wrap: wrap;">
+                            <div style="font-size: 13px; color: #5a6c7d;">
+                                <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Permisos:</strong>
+                                <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 3px;">
+                                    <i data-lucide="check" style="width: 14px; height: 14px; color: #28a745;"></i>
+                                    <span>Ver calendario de tareas</span>
+                                </div>
+                            </div>
+                            <div style="font-size: 13px; color: #5a6c7d;">
+                                <strong style="display: block; color: #2c3e50; margin-bottom: 5px;">Conectada:</strong>
+                                <span>Hace 2 semanas</span>
+                                <br>
+                                <strong style="display: block; color: #2c3e50; margin-top: 10px; margin-bottom: 5px;">Último uso:</strong>
+                                <span>Hace 1 semana</span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="alert('Revocando acceso...')" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                <i data-lucide="x" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Revocar acceso
+                            </button>
+                            <button onclick="alert('Mostrando detalles...')" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                <i data-lucide="info" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Ver detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-alert" style="background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%); border-left-color: #FFC107;">
+            <i data-lucide="alert-triangle" style="color: white;"></i>
+            <div>
+                <strong style="color: white;">️ Revisa periódicamente</strong>
+                <p style="color: rgba(255,255,255,0.9);">Recomendamos revisar tus apps conectadas cada 3 meses y revocar el acceso de aquellas que ya no uses. Esto reduce riesgos de seguridad.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="shield-off"></i> Permisos que puedes otorgar</h2>
+            <p style="margin-bottom: 30px;">Cuando conectas una app, puede solicitar uno o más de estos permisos:</p>
+            
+            <div class="security-grid">
+                <div style="background: #e8f5e9; padding: 20px; border-radius: 12px; border-left: 4px solid #28a745;">
+                    <i data-lucide="check-circle" style="width: 24px; height: 24px; color: #28a745; margin-bottom: 10px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #28a745;">Permisos seguros</strong>
+                    <ul style="margin-left: 20px; color: #5a6c7d; font-size: 13px; line-height: 1.8;">
+                        <li>Leer información básica de perfil</li>
+                        <li>Ver lista de clases públicas</li>
+                        <li>Leer calendario</li>
+                    </ul>
+                </div>
+                <div style="background: #fff3cd; padding: 20px; border-radius: 12px; border-left: 4px solid #FFC107;">
+                    <i data-lucide="alert-triangle" style="width: 24px; height: 24px; color: #856404; margin-bottom: 10px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #856404;">Precaución</strong>
+                    <ul style="margin-left: 20px; color: #5a6c7d; font-size: 13px; line-height: 1.8;">
+                        <li>Crear o modificar contenido</li>
+                        <li>Enviar mensajes en tu nombre</li>
+                        <li>Acceder a calificaciones</li>
+                    </ul>
+                </div>
+                <div style="background: #ffebee; padding: 20px; border-radius: 12px; border-left: 4px solid #dc3545;">
+                    <i data-lucide="x-circle" style="width: 24px; height: 24px; color: #dc3545; margin-bottom: 10px;"></i>
+                    <strong style="display: block; margin-bottom: 10px; color: #dc3545;">Alto riesgo</strong>
+                    <ul style="margin-left: 20px; color: #5a6c7d; font-size: 13px; line-height: 1.8;">
+                        <li>Eliminar tu contenido</li>
+                        <li>Cambiar configuración de cuenta</li>
+                        <li>Acceso completo a mensajes privados</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="help-circle"></i> Preguntas Frecuentes</h2>
+            <div style="margin-top: 30px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Qué pasa si revoco el acceso?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">La app dejará de funcionar con Cemi inmediatamente. Tendrás que volver a conectarla si quieres usarla en el futuro.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Puedo cambiar los permisos?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">No directamente. Debes revocar el acceso y reconectar la app seleccionando solo los permisos que deseas.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <strong style="color: #2c3e50; display: block; margin-bottom: 10px;"> ¿Cómo sé si una app es confiable?</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Verifica que sea una app oficial, lee reseñas, y solo otorga permisos necesarios. Si algo parece sospechoso, no conectes la app.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="autenticacion-aplicaciones.html" class="security-action-btn">
+                    <i data-lucide="key"></i>
+                    <strong>Tokens de API</strong>
+                    <span>Gestiona tokens de autenticación</span>
+                </a>
+                <a href="configuracion-privacidad.html" class="security-action-btn">
+                    <i data-lucide="settings"></i>
+                    <strong>Configuración de privacidad</strong>
+                    <span>Controla tu información personal</span>
+                </a>
+                <a href="../cemi-privsec-home.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Portal</strong>
+                    <span>Privacidad y Seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../privacidad.html">Privacidad</a>
+            <a href="../terminos.html">Términos</a>
+            <a href="../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi. Todos los derechos reservados.</p>
+    </footer>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
+
+
+

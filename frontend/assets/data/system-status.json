@@ -1,0 +1,13 @@
+{
+  "global_status": "operational",
+  "services": [
+    { "id": "platform", "name": "Plataforma Principal", "status": "operational", "description": "Acceso al sistema y autenticación" },
+    { "id": "classroom", "name": "Classroom", "status": "operational", "description": "Cursos, tareas y entregas" },
+    { "id": "payments", "name": "Sistema de Pagos", "status": "operational", "description": "Gestión de cuotas y pagos" },
+    { "id": "chat", "name": "Chat de Soporte", "status": "operational", "description": "Comunicación en tiempo real" },
+    { "id": "api", "name": "API / Backend", "status": "operational", "description": "Servicios y base de datos" }
+  ],
+  "active_incident": null,
+  "incidents_history": [],
+  "last_updated": "2025-11-27T00:00:00.000Z"
+}

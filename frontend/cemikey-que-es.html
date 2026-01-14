@@ -1,0 +1,570 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A2540">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>¿Qué es CemiKey? - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <link rel="stylesheet" href="assets/css/harvard-menu.css">
+  <link rel="stylesheet" href="assets/css/terminos.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .article-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .article-header {
+      margin-bottom: 40px;
+    }
+
+    .article-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #656f77;
+      margin-bottom: 24px;
+    }
+
+    .article-breadcrumb a {
+      color: #4a5259;
+      text-decoration: none;
+    }
+
+    .article-breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .article-breadcrumb i {
+      width: 12px;
+      height: 12px;
+    }
+
+    .article-title {
+      font-family: Georgia, serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #1e1e1e;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: #656f77;
+    }
+
+    .article-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .article-meta i {
+      width: 14px;
+      height: 14px;
+    }
+
+    .article-content {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 48px;
+    }
+
+    .article-content h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin: 32px 0 16px 0;
+    }
+
+    .article-content h2:first-child {
+      margin-top: 0;
+    }
+
+    .article-content p {
+      color: #4b5563;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .article-content ul {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+
+    .article-content li {
+      color: #4b5563;
+      line-height: 1.8;
+      margin-bottom: 8px;
+    }
+
+    .cemikey-feature-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+      gap: 24px !important;
+      margin: 32px 0 !important;
+      width: 100% !important;
+    }
+
+    .cemikey-feature-card {
+      background: #f5f5f5 !important;
+      border: 2px solid #d1d5db !important;
+      border-radius: 12px !important;
+      padding: 28px !important;
+      min-height: 200px !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+      display: block !important;
+    }
+
+    .cemikey-feature-card:hover {
+      border-color: #93a1ad  !important;
+      box-shadow: 0 4px 16px rgba(131, 127, 128, 0.15) !important;
+      transform: translateY(-2px) !important;
+    }
+
+    .cemikey-feature-card-icon {
+      width: 48px !important;
+      height: 48px !important;
+      background: linear-gradient(135deg, #4a5259) !important;
+      border-radius: 12px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin-bottom: 18px !important;
+      box-shadow: 0 4px 12px #93a1ad !important;
+    }
+
+    .cemikey-feature-card-icon svg {
+      width: 24px !important;
+      height: 24px !important;
+      stroke: #ffffff !important;
+      fill: none !important;
+    }
+
+    .cemikey-feature-card h4 {
+      font-size: 1.1rem !important;
+      font-weight: 700 !important;
+      color: #1a1a1a !important;
+      margin: 0 0 10px 0 !important;
+      letter-spacing: -0.01em !important;
+    }
+
+    .cemikey-feature-card p {
+      font-size: 0.95rem !important;
+      color: #4a5568 !important;
+      margin: 0 !important;
+      line-height: 1.6 !important;
+    }
+
+    .info-box {
+      background: #f0f9ff;
+      border: 1px solid #7dd3fc;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 24px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .info-box i {
+      width: 20px;
+      height: 20px;
+      color: #0284c7;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .info-box p {
+      margin: 0;
+      color: #0369a1;
+    }
+
+    .cta-section {
+      background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+      border-radius: 12px;
+      padding: 32px;
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    .cta-section h3 {
+      color: #fff;
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+
+    .cta-section p {
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 20px;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fbbf24;
+      color: #1e1e1e;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: #f59e0b;
+    }
+
+    .cta-btn i {
+      width: 18px;
+      height: 18px;
+    }
+
+    .related-articles {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .related-articles h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .related-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .related-links a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #4a5259;
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 8px 16px;
+      background: rgba(30, 60, 114, 0.1);
+      border-radius: 20px;
+      transition: background 0.2s;
+    }
+
+    .related-links a:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .related-links i {
+      width: 14px;
+      height: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .article-title {
+        font-size: 1.75rem;
+      }
+
+      .article-content {
+        padding: 24px;
+      }
+
+      .article-meta {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="harvard-header">
+    <div class="harvard-header-inner">
+      <div class="harvard-branding">
+        <a href="index.html">
+          <img src="images/logolongblack.png" alt="Logo Cemi" class="harvard-logo-img" style="width: 226px; height: 79px; object-fit: contain;">
+        </a>
+      </div>
+      
+      <div class="harvard-actions">
+        <div class="harvard-search-wrapper" id="harvardSearchWrapper">
+          <input type="text" class="harvard-search-field" id="harvardSearchField" placeholder="Buscar en Cemi" autocomplete="off">
+          <div class="harvard-search-icons">
+            <button class="harvard-search-submit" id="harvardSearchSubmit" aria-label="Buscar">
+              <i data-lucide="search"></i>
+            </button>
+            <button class="harvard-search-close" id="harvardSearchClose" aria-label="Cerrar búsqueda">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div class="harvard-search-quicklink">
+            <span>QUICK LINKS</span>
+            <a href="a-to-z.html">Ir a Índice A-Z</a>
+          </div>
+        </div>
+        <button class="harvard-az-btn" id="harvardAzBtn" aria-label="Índice A-Z">
+          <span>A-Z</span>
+        </button>
+        <button class="harvard-menu-btn" id="harvardMenuBtn">
+          <span>Menu</span>
+          <div class="harvard-hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="harvard-mega-menu" id="harvardMegaMenu">
+    <div class="mega-menu-backdrop"></div>
+    <div class="mega-menu-bg-image" id="megaMenuBgImage">
+      <img src="images/STOCK1.jpg" alt="">
+    </div>
+    <div class="mega-menu-header">
+      <a href="index.html" class="mega-menu-logo">
+        <img src="images/logolong.png" alt="Logo Cemi" class="mega-logo-long">
+      </a>
+      <button class="mega-menu-close" id="megaMenuClose">
+        <span>Cerrar</span>
+        <span class="close-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div class="mega-menu-content">
+      <nav class="mega-nav-primary">
+        <a href="#" class="mega-nav-item" data-panel="panel-classroom"><span class="mega-nav-item-text">Classroom</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-dashboard"><span class="mega-nav-item-text">Dashboard</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-nosotros"><span class="mega-nav-item-text">Nosotros</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-soporte"><span class="mega-nav-item-text">Soporte</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-seguridad"><span class="mega-nav-item-text">Seguridad</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-recursos"><span class="mega-nav-item-text">Recursos</span></a>
+        <a href="#" class="mega-nav-item" data-panel="panel-accesibilidad"><span class="mega-nav-item-text">Accesibilidad</span></a>
+      </nav>
+      <div class="mega-nav-secondary-container">
+        <div class="mega-nav-secondary" id="panel-classroom">
+          <a href="classroom-login.html" class="mega-sub-title">Classroom <span class="arrow">→</span></a>
+          <p class="mega-sub-description">El aula virtual más intuitiva.</p>
+        </div>
+        <div class="mega-nav-secondary" id="panel-dashboard">
+          <a href="login-selector.html" class="mega-sub-title">Dashboard <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Gestión completa del sistema.</p>
+        </div>
+        <div class="mega-nav-secondary" id="panel-nosotros">
+          <a href="index.html#nosotros" class="mega-sub-title">Nosotros <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Conoce nuestra historia.</p>
+        </div>
+        <div class="mega-nav-secondary" id="panel-soporte">
+          <a href="ayuda.html" class="mega-sub-title">Soporte <span class="arrow">→</span></a>
+          <p class="mega-sub-description">¿Necesitas ayuda?</p>
+        </div>
+        <div class="mega-nav-secondary" id="panel-seguridad">
+          <a href="reportar-seguridad.html" class="mega-sub-title">Seguridad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Reporta vulnerabilidades.</p>
+        </div>
+        <div class="mega-nav-secondary" id="panel-recursos">
+          <a href="guia.html" class="mega-sub-title">Recursos <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Documentación y descargas.</p>
+        </div>
+        <div class="mega-nav-secondary" id="panel-accesibilidad">
+          <a href="accesibilidad.html" class="mega-sub-title">Accesibilidad <span class="arrow">→</span></a>
+          <p class="mega-sub-description">Herramientas de acceso.</p>
+        </div>
+      </div>
+    </div>
+    <div class="mega-menu-footer">
+      <div class="mega-footer-inner">
+        <span class="mega-footer-label">Enlaces rápidos <span class="chevron">›</span></span>
+        <div class="mega-footer-links">
+          <a href="terminos.html" class="mega-footer-link">Términos</a>
+          <a href="privacidad.html" class="mega-footer-link">Privacidad</a>
+          <a href="ayuda.html" class="mega-footer-link">Ayuda</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="article-container">
+    <header class="article-header">
+      <div class="article-breadcrumb">
+        <a href="ayuda.html">Ayuda</a>
+        <i data-lucide="chevron-right"></i>
+        <a href="ayuda-cemikey.html">CemiKey</a>
+        <i data-lucide="chevron-right"></i>
+        <span>¿Qué es CemiKey?</span>
+      </div>
+
+      <h1 class="article-title">¿Qué es CemiKey?</h1>
+
+      <div class="article-meta">
+        <span><i data-lucide="clock"></i> 3 min de lectura</span>
+        <span><i data-lucide="calendar"></i> Actualizado: Diciembre 2025</span>
+      </div>
+    </header>
+
+    <article class="article-content">
+      <h2>Introducción</h2>
+      <p>
+        CemiKey es el sistema de autenticación unificado diseñado para usuarios 
+        del sistema Cemi. Proporciona un método de acceso alternativo, rápido y seguro al 
+        sistema mediante una clave de acceso única.
+      </p>
+      <p>
+        A diferencia del login tradicional que requiere usuario y contraseña, CemiKey utiliza una 
+        sola clave alfanumérica que identifica de manera única a cada usuario, simplificando 
+        el proceso de inicio de sesión.
+      </p>
+
+      <h2>Características principales</h2>
+      <div class="cemikey-feature-grid">
+        <div class="cemikey-feature-card">
+          <div class="cemikey-feature-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          </div>
+          <h4>Acceso rápido</h4>
+          <p>Inicia sesión con una sola clave, sin necesidad de recordar usuario y contraseña.</p>
+        </div>
+        <div class="cemikey-feature-card">
+          <div class="cemikey-feature-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <h4>Seguro</h4>
+          <p>Cada clave es única e intransferible. Todos los accesos quedan registrados.</p>
+        </div>
+        <div class="cemikey-feature-card">
+          <div class="cemikey-feature-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h4>Universal</h4>
+          <p>Disponible para todos los usuarios del sistema Cemi.</p>
+        </div>
+        <div class="cemikey-feature-card">
+          <div class="cemikey-feature-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+          </div>
+          <h4>Renovable</h4>
+          <p>La clave puede ser actualizada en cualquier momento por un administrador.</p>
+        </div>
+      </div>
+
+      <h2>¿Cómo funciona?</h2>
+      <p>El proceso de autenticación con CemiKey es sencillo:</p>
+      <ul>
+        <li><strong>Asignación:</strong> Un administrador te asigna una clave única desde el panel de control.</li>
+        <li><strong>Acceso:</strong> Visitas la página de CemiKey e ingresas tu clave.</li>
+        <li><strong>Verificación:</strong> El sistema valida tu clave y genera una sesión segura.</li>
+        <li><strong>Redirección:</strong> Eres redirigido automáticamente a tu dashboard correspondiente.</li>
+      </ul>
+
+      <div class="info-box">
+        <i data-lucide="info"></i>
+        <p>
+          <strong>Nota:</strong> CemiKey no reemplaza el login tradicional. Ambos métodos están 
+          disponibles y puedes elegir el que prefieras en cada momento.
+        </p>
+      </div>
+
+      <h2>¿Quién puede usar CemiKey?</h2>
+      <p>
+        CemiKey está disponible para todos los usuarios del sistema Cemi. Para obtener tu clave 
+        de acceso, contacta a un administrador quien podrá asignarte una desde la sección de 
+        credenciales en el panel de administración.
+      </p>
+      <p>
+        Una vez que tengas tu clave asignada, podrás usarla para acceder rápidamente a tu 
+        dashboard sin necesidad de recordar tu usuario y contraseña.
+      </p>
+
+      <div class="cta-section">
+        <h3>¿Listo para empezar?</h3>
+        <p>Accede al portal CemiKey y comienza a usar tu clave de acceso.</p>
+        <a href="login-key.html" class="cta-btn">
+          <i data-lucide="key"></i>
+          Ir a CemiKey
+        </a>
+      </div>
+
+      <div class="related-articles">
+        <h3>Artículos relacionados</h3>
+        <div class="related-links">
+          <a href="ayuda-cemikey.html">
+            <i data-lucide="file-text"></i>
+            Centro de Ayuda CemiKey
+          </a>
+          <a href="cemikey-configurar.html">
+            <i data-lucide="file-text"></i>
+            Configurar mi cuenta
+          </a>
+          <a href="cemikey-seguridad.html">
+            <i data-lucide="file-text"></i>
+            Seguridad de la cuenta
+          </a>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <footer class="professional-footer">
+    <div class="footer-main">
+      <div class="footer-column">
+        <div class="footer-logo">
+          <img src="images/logolong.png" alt="Logo Cemi" class="footer-logo-long">
+        </div>
+        <p class="footer-description">Sistema de Gestión Académica Integral para instituciones educativas modernas.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Contacto</h4>
+        <ul class="footer-contact">
+          <li><i data-lucide="mail"></i> contacto@cemi.edu</li>
+          <li><i data-lucide="phone"></i> +54 0800 CEMI 4433</li>
+          <li><i data-lucide="map-pin"></i> San Miguel, Argentina</li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Acceso</h4>
+        <a href="register.html" class="footer-cta-link">
+          <i data-lucide="user-plus"></i> Registrarse
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Cemi - Sistema de Gestión Académica. Todos los derechos reservados.</p>
+      <p class="footer-tech">Desarrollado con Node.js, MySQL y tecnologías modernas</p>
+      <div class="footer-links-bottom">
+        <a href="terminos.html">Términos de Servicio</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="ayuda.html">Ayuda</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/harvard-menu.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

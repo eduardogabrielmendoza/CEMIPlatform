@@ -1,0 +1,294 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Estado del Sistema - Cemi</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/status.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="status-container">
+    <header class="status-header">
+      <div class="logo-container">
+        <img src="images/logo.png" alt="Cemi">
+        <span>Cemi</span>
+      </div>
+      <h1>Estado del Sistema</h1>
+      <p>Monitoreo en tiempo real de todos los servicios</p>
+    </header>
+
+    <div id="statusContent">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>Verificando estado de los servicios...</p>
+      </div>
+    </div>
+
+    <footer class="status-footer">
+      <div class="footer-links">
+        <a href="index.html" class="footer-link">
+          <i data-lucide="home"></i>
+          Ir al Inicio
+        </a>
+        <a href="ayuda-classroom.html" class="footer-link">
+          <i data-lucide="help-circle"></i>
+          Centro de Ayuda
+        </a>
+        <a href="mailto:soporte@Cemiedu" class="footer-link">
+          <i data-lucide="mail"></i>
+          Contactar Soporte
+        </a>
+      </div>
+      <p class="footer-credit">Cemi - Sistema de Gestión Académica</p>
+    </footer>
+  </div>
+
+  <script>
+    const STATUS_LABELS = {
+      operational: 'Todos los sistemas operativos',
+      degraded: 'Rendimiento degradado',
+      outage: 'Interrupción del servicio',
+      maintenance: 'Mantenimiento en curso'
+    };
+
+    const STATUS_ICONS = {
+      operational: 'check-circle',
+      degraded: 'alert-triangle',
+      outage: 'x-circle',
+      maintenance: 'wrench'
+    };
+
+    const SERVICE_STATUS_LABELS = {
+      operational: 'Operativo',
+      degraded: 'Degradado',
+      outage: 'Caído',
+      maintenance: 'Mantenimiento'
+    };
+
+    const SEVERITY_LABELS = {
+      degraded: 'Rendimiento Degradado',
+      outage: 'Interrupción',
+      maintenance: 'Mantenimiento Programado'
+    };
+
+    const SEVERITY_ICONS = {
+      degraded: 'alert-triangle',
+      outage: 'x-circle',
+      maintenance: 'wrench'
+    };
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('es-AR', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function formatRelativeTime(dateStr) {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffMins < 1) return 'Hace un momento';
+      if (diffMins < 60) return `Hace ${diffMins} minuto${diffMins !== 1 ? 's' : ''}`;
+      if (diffHours < 24) return `Hace ${diffHours} hora${diffHours !== 1 ? 's' : ''}`;
+      return `Hace ${diffDays} día${diffDays !== 1 ? 's' : ''}`;
+    }
+
+    async function loadStatus() {
+      try {
+        const response = await fetch('/api/status');
+        if (!response.ok) throw new Error('Error al cargar');
+        const status = await response.json();
+        renderStatus(status);
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('statusContent').innerHTML = `
+          <div class="main-status">
+            <div class="status-ring operational">
+              <div class="status-icon-inner operational">
+                <i data-lucide="check-circle"></i>
+              </div>
+            </div>
+            <h2 class="operational">Todos los sistemas operativos</h2>
+            <p class="last-updated"><i data-lucide="wifi-off"></i> No se pudo conectar al servidor de estado</p>
+          </div>
+        `;
+        lucide.createIcons();
+      }
+    }
+
+    function renderStatus(status) {
+      const { global_status, services, active_incident, incidents_history, last_updated } = status;
+
+      let html = `
+        <div class="main-status">
+          <div class="status-ring ${global_status}">
+            <div class="status-icon-inner ${global_status}">
+              <i data-lucide="${STATUS_ICONS[global_status]}"></i>
+            </div>
+          </div>
+          <h2 class="${global_status}">${STATUS_LABELS[global_status]}</h2>
+          <p class="last-updated"><i data-lucide="clock"></i> ${formatRelativeTime(last_updated)}</p>
+          <div class="live-indicator">
+            <span class="live-dot"></span>
+            Actualizando en vivo
+          </div>
+        </div>
+      `;
+
+      // Incidente Activo
+      if (active_incident) {
+        html += `
+          <div class="active-incident ${active_incident.severity}">
+            <div class="incident-header">
+              <span class="incident-badge ${active_incident.severity}">
+                <i data-lucide="${SEVERITY_ICONS[active_incident.severity]}"></i>
+                ${SEVERITY_LABELS[active_incident.severity]}
+              </span>
+              <span class="incident-title">${active_incident.title}</span>
+            </div>
+            ${active_incident.message ? `<p class="incident-message">${active_incident.message}</p>` : ''}
+            <div class="incident-meta">
+              <span><i data-lucide="clock"></i> Iniciado: ${formatDate(active_incident.created_at)}</span>
+              ${active_incident.affected_services?.length ? `
+                <span><i data-lucide="layers"></i> Servicios afectados: ${active_incident.affected_services.map(id => {
+                  const svc = services.find(s => s.id === id);
+                  return svc ? svc.name : id;
+                }).join(', ')}</span>
+              ` : ''}
+            </div>
+            ${active_incident.updates?.length ? `
+              <div class="incident-updates">
+                <h4><i data-lucide="message-circle"></i> Actualizaciones</h4>
+                ${active_incident.updates.map(u => `
+                  <div class="update-item">
+                    <div class="update-dot"></div>
+                    <div class="update-content">
+                      <div class="update-time">${formatDate(u.timestamp)}</div>
+                      <div class="update-message">${u.message}</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      // Servicios
+      // Calcular uptime basado en servicios operativos
+      const totalServices = services.length;
+      const operationalServices = services.filter(s => s.status === 'operational').length;
+      const degradedServices = services.filter(s => s.status === 'degraded').length;
+      
+      // Servicios operativos = 100%, degradados = 50%, caídos = 0%
+      const uptimePercent = totalServices > 0 
+        ? Math.round(((operationalServices * 100) + (degradedServices * 50)) / totalServices)
+        : 100;
+      
+      // Determinar clase de color según uptime
+      let uptimeBadgeClass = 'uptime-good';
+      if (uptimePercent < 50) {
+        uptimeBadgeClass = 'uptime-critical';
+      } else if (uptimePercent < 80) {
+        uptimeBadgeClass = 'uptime-warning';
+      }
+
+      html += `
+        <div class="services-section">
+          <div class="section-header">
+            <div class="section-title">
+              <i data-lucide="server"></i>
+              Estado de Servicios
+            </div>
+            <div class="uptime-badge ${uptimeBadgeClass}">
+              <span class="uptime-value">${operationalServices}/${totalServices}</span>
+              <span class="uptime-label">Servicios Operativos</span>
+            </div>
+          </div>
+          <div class="services-grid">
+            ${services.map(service => `
+              <div class="service-item">
+                <div class="service-info">
+                  <h4>${service.name}</h4>
+                  <p>${service.description}</p>
+                </div>
+                <div class="service-status ${service.status}">
+                  <i data-lucide="${STATUS_ICONS[service.status]}"></i>
+                  ${SERVICE_STATUS_LABELS[service.status]}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      // Historial
+      html += `
+        <div class="history-section">
+          <div class="section-header">
+            <div class="section-title">
+              <i data-lucide="history"></i>
+              Historial de Incidentes
+            </div>
+          </div>
+          ${incidents_history.length === 0 ? `
+            <div class="no-history">
+              <div class="no-history-icon">
+                <i data-lucide="shield-check"></i>
+              </div>
+              <h4>Sin incidentes recientes</h4>
+              <p>No ha habido problemas reportados en los últimos 90 días</p>
+            </div>
+          ` : incidents_history.slice(0, 10).map(inc => `
+            <div class="history-item ${inc.severity}">
+              <div class="history-header">
+                <span class="history-title">${inc.title}</span>
+                <span class="history-resolved">
+                  <i data-lucide="check-circle"></i> Resuelto
+                </span>
+              </div>
+              ${inc.message ? `<p class="history-message">${inc.message}</p>` : ''}
+              <div class="history-dates">
+                <i data-lucide="calendar"></i>
+                ${formatDate(inc.created_at)} — ${formatDate(inc.resolved_at)}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      document.getElementById('statusContent').innerHTML = html;
+      lucide.createIcons();
+    }
+
+    // Cargar al inicio
+    loadStatus();
+
+    // Actualizar cada 30 segundos
+    setInterval(loadStatus, 30000);
+
+    // Inicializar iconos
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+
+
+

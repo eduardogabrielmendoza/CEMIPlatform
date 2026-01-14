@@ -1,0 +1,565 @@
+
+:root {
+  --hp-bg: #ffffff;
+  --hp-text: #1e1e1e;
+  --hp-text-muted: #656f77;
+  --hp-accent: #1e1e1e;
+  --hp-accent-hover: #333333;
+  --hp-border: #e5e5e5;
+  --hp-header-bg: #1e1e1e;
+  --hp-footer-bg: #1e1e1e;
+  --hp-font-heading: Georgia, 'Times New Roman', serif;
+  --hp-font-body: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.harvard-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--hp-bg);
+}
+
+.harvard-page-content {
+  flex: 1;
+}
+
+.harvard-internal-header {
+  background: var(--hp-header-bg);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.harvard-internal-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+@media (min-width: 768px) {
+  .harvard-internal-header-inner {
+    height: 80px;
+    padding: 0 40px;
+  }
+}
+
+.harvard-internal-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.harvard-internal-logo img {
+  height: 32px;
+  width: auto;
+}
+
+@media (min-width: 768px) {
+  .harvard-internal-logo img {
+    height: 40px;
+  }
+}
+
+.harvard-internal-logo span {
+  font-family: var(--hp-font-heading);
+  font-size: 1.1rem;
+  font-weight: 400;
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .harvard-internal-logo span {
+    display: inline;
+  }
+}
+
+.harvard-internal-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.harvard-internal-nav a {
+  font-family: var(--hp-font-body);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.harvard-internal-nav a:hover {
+  color: #fff;
+}
+
+.harvard-hero-banner {
+  background: var(--hp-header-bg);
+  padding: 60px 24px 80px;
+  text-align: left;
+}
+
+@media (min-width: 768px) {
+  .harvard-hero-banner {
+    padding: 80px 40px 100px;
+  }
+}
+
+.harvard-hero-banner-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.harvard-hero-title {
+  font-family: var(--hp-font-heading);
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .harvard-hero-title {
+    font-size: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .harvard-hero-title {
+    font-size: 4rem;
+  }
+}
+
+.harvard-hero-subtitle {
+  font-family: var(--hp-font-body);
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 16px 0 0;
+  line-height: 1.6;
+}
+
+.harvard-main-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+@media (min-width: 768px) {
+  .harvard-main-content {
+    padding: 64px 40px 100px;
+  }
+}
+
+.harvard-main-content h2 {
+  font-family: var(--hp-font-heading);
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: var(--hp-text);
+  margin: 48px 0 20px;
+  letter-spacing: -0.01em;
+}
+
+.harvard-main-content h2:first-child {
+  margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  .harvard-main-content h2 {
+    font-size: 2rem;
+  }
+}
+
+.harvard-main-content h3 {
+  font-family: var(--hp-font-heading);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--hp-text);
+  margin: 32px 0 16px;
+}
+
+.harvard-main-content p {
+  font-family: var(--hp-font-body);
+  font-size: 1rem;
+  color: var(--hp-text);
+  line-height: 1.8;
+  margin: 0 0 20px;
+}
+
+.harvard-main-content ul,
+.harvard-main-content ol {
+  font-family: var(--hp-font-body);
+  font-size: 1rem;
+  color: var(--hp-text);
+  line-height: 1.8;
+  margin: 0 0 24px;
+  padding-left: 24px;
+}
+
+.harvard-main-content li {
+  margin-bottom: 8px;
+}
+
+.harvard-main-content a {
+  color: var(--hp-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+
+.harvard-main-content a:hover {
+  opacity: 0.7;
+}
+
+.harvard-section {
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--hp-border);
+}
+
+.harvard-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.harvard-info-box {
+  display: flex;
+  gap: 16px;
+  padding: 24px;
+  background: #f8f8f8;
+  border-left: 4px solid var(--hp-accent);
+  margin: 24px 0;
+}
+
+.harvard-info-box i {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--hp-text-muted);
+}
+
+.harvard-info-box h4 {
+  font-family: var(--hp-font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--hp-text);
+  margin: 0 0 8px;
+}
+
+.harvard-info-box p {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.harvard-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--hp-font-body);
+  font-size: 0.9rem;
+  color: var(--hp-text-muted);
+  text-decoration: none;
+  margin-bottom: 32px;
+  transition: color 0.2s ease;
+}
+
+.harvard-back-link:hover {
+  color: var(--hp-text);
+}
+
+.harvard-back-link i {
+  width: 16px;
+  height: 16px;
+}
+
+.harvard-effective-date {
+  font-family: var(--hp-font-body);
+  font-size: 0.9rem;
+  color: var(--hp-text-muted);
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hp-border);
+}
+
+.harvard-internal-footer {
+  background: var(--hp-footer-bg);
+  padding: 48px 24px;
+  margin-top: auto;
+}
+
+@media (min-width: 768px) {
+  .harvard-internal-footer {
+    padding: 64px 40px;
+  }
+}
+
+.harvard-internal-footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.harvard-footer-top {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (min-width: 768px) {
+  .harvard-footer-top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.harvard-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.harvard-footer-brand img {
+  height: 40px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+.harvard-footer-brand p {
+  font-family: var(--hp-font-body);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.harvard-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+}
+
+.harvard-footer-links a {
+  font-family: var(--hp-font-body);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.harvard-footer-links a:hover {
+  color: #fff;
+}
+
+.harvard-footer-bottom {
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .harvard-footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.harvard-footer-copy {
+  font-family: var(--hp-font-body);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+.harvard-footer-social {
+  display: flex;
+  gap: 16px;
+}
+
+.harvard-footer-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s ease;
+}
+
+.harvard-footer-social a:hover {
+  color: #fff;
+}
+
+.harvard-footer-social i {
+  width: 20px;
+  height: 20px;
+}
+
+.harvard-footer-quick-links {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 32px;
+}
+
+@media (min-width: 640px) {
+  .harvard-footer-quick-links {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .harvard-footer-quick-links {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.harvard-footer-quick-links a {
+  font-family: var(--hp-font-body);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.harvard-footer-quick-links a:hover {
+  color: #fff;
+}
+
+.harvard-main-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-family: var(--hp-font-body);
+}
+
+.harvard-main-content thead {
+  background: #f5f5f5;
+}
+
+.harvard-main-content th {
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--hp-border);
+  font-size: 0.9rem;
+}
+
+.harvard-main-content td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--hp-border);
+  font-size: 0.95rem;
+}
+
+.harvard-main-content tbody tr:hover {
+  background: #fafafa;
+}
+
+.harvard-main-content kbd {
+  display: inline-block;
+  padding: 4px 8px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 0.85em;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.harvard-step-list {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  counter-reset: step;
+}
+
+.harvard-step-item {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--hp-border);
+}
+
+.harvard-step-item:last-child {
+  border-bottom: none;
+}
+
+.harvard-step-number {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--hp-accent);
+  color: #fff;
+  font-family: var(--hp-font-heading);
+  font-size: 1rem;
+  border-radius: 50%;
+}
+
+.harvard-step-content h4 {
+  font-family: var(--hp-font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--hp-text);
+  margin: 0 0 4px;
+}
+
+.harvard-step-content p {
+  font-size: 0.95rem;
+  color: var(--hp-text-muted);
+  margin: 0;
+}
+
+.harvard-toc {
+  background: #f8f8f8;
+  padding: 24px 32px;
+  margin-bottom: 48px;
+}
+
+.harvard-toc h4 {
+  font-family: var(--hp-font-heading);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--hp-text);
+  margin: 0 0 16px;
+}
+
+.harvard-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  columns: 1;
+}
+
+@media (min-width: 640px) {
+  .harvard-toc ul {
+    columns: 2;
+    column-gap: 32px;
+  }
+}
+
+.harvard-toc li {
+  margin-bottom: 8px;
+  break-inside: avoid;
+}
+
+.harvard-toc a {
+  font-family: var(--hp-font-body);
+  font-size: 0.95rem;
+  color: var(--hp-accent);
+  text-decoration: none;
+}
+
+.harvard-toc a:hover {
+  text-decoration: underline;
+}

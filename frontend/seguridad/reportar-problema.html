@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../assets/css/mobile-responsive-master.css">
+    <title>Reportar Problema de Seguridad | CEMI</title>
+    <link rel="stylesheet" href="../assets/css/seguridad.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="security-header">
+        <div class="security-header-content">
+            <div class="security-icon"><i data-lucide="alert-circle"></i></div>
+            <h1>Reportar Problema de Seguridad</h1>
+            <p>Informa sobre un problema de acceso, error o fallo de seguridad en tu cuenta.</p>
+        </div>
+    </header>
+    <main class="security-container">
+        <div style="margin-bottom: 30px;">
+            <a href="../index.html" style="color: #0071e3; text-decoration: none;">Inicio</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <a href="../cemi-privsec-home.html" style="color: #0071e3; text-decoration: none;">Privacidad y Seguridad</a>
+            <span style="color: #5a6c7d;"> / </span>
+            <span style="color: #2c3e50;">Reportar problema</span>
+        </div>
+
+        <div class="security-alert" style="background: #fff3cd; border-left-color: #FFC107;">
+            <i data-lucide="alert-triangle" style="color: #856404;"></i>
+            <div>
+                <strong style="color: #856404;">Diferencia entre problema y vulnerabilidad</strong>
+                <p style="color: #856404;">Esta herramienta es para problemas que afectan TU cuenta (acceso bloqueado, error al cambiar contraseña, etc.). Para reportar bugs/vulnerabilidades del sistema, usa <a href="../reportar-seguridad.html" style="color: #0071e3; text-decoration: underline;">Reportar Vulnerabilidad</a>.</p>
+            </div>
+        </div>
+
+        <div class="security-card" style="background: linear-gradient(135deg, #0071e3 0%, #0056b3 100%); color: white;">
+            <h2 style="color: white; margin-bottom: 20px;"><i data-lucide="file-text"></i> Formulario de reporte</h2>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 30px;">Completa todos los campos para que podamos ayudarte rápidamente. Campos con * son obligatorios.</p>
+            
+            <form id="reportForm" style="background: white; padding: 30px; border-radius: 12px; color: #2c3e50;">
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 10px; color: #2c3e50;">
+                        <i data-lucide="tag" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Tipo de problema *
+                    </label>
+                    <select required style="width: 100%; padding: 12px; border: 2px solid #e0e6ed; border-radius: 8px; font-size: 14px; background: white;">
+                        <option value="">-- Selecciona un tipo --</option>
+                        <option value="acceso"> No puedo iniciar sesión</option>
+                        <option value="password"> Error al cambiar contraseña</option>
+                        <option value="2fa"> Problema con verificación en dos pasos</option>
+                        <option value="recovery"> No puedo recuperar mi cuenta</option>
+                        <option value="sesion"> Sesión cerrada inesperadamente</option>
+                        <option value="dispositivo"> Dispositivo no reconocido/bloqueado</option>
+                        <option value="email"> No recibo emails de verificación</option>
+                        <option value="datos"> Error al descargar mis datos</option>
+                        <option value="privacidad"> Configuración de privacidad no funciona</option>
+                        <option value="sospechoso">️ Actividad sospechosa en mi cuenta</option>
+                        <option value="otro"> Otro problema</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 10px; color: #2c3e50;">
+                        <i data-lucide="message-square" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Descripción del problema *
+                    </label>
+                    <textarea required rows="6" placeholder="Describe con el mayor detalle posible qué sucedió, cuándo comenzó, qué estabas haciendo cuando ocurrió, mensajes de error que viste, etc." style="width: 100%; padding: 12px; border: 2px solid #e0e6ed; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
+                    <small style="color: #5a6c7d; display: block; margin-top: 5px;">Mínimo 50 caracteres. Incluye todos los detalles relevantes.</small>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 10px; color: #2c3e50;">
+                        <i data-lucide="repeat" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> ¿Con qué frecuencia ocurre? *
+                    </label>
+                    <select required style="width: 100%; padding: 12px; border: 2px solid #e0e6ed; border-radius: 8px; font-size: 14px; background: white;">
+                        <option value="">-- Selecciona --</option>
+                        <option value="siempre">Siempre (cada vez que intento)</option>
+                        <option value="frecuente">Frecuentemente (70-90% de las veces)</option>
+                        <option value="intermitente">A veces (30-70% de las veces)</option>
+                        <option value="raro">Rara vez (menos del 30%)</option>
+                        <option value="una-vez">Solo ocurrió una vez</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 10px; color: #2c3e50;">
+                        <i data-lucide="monitor" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Dispositivo y navegador *
+                    </label>
+                    <input type="text" required placeholder="Ej: Windows 11, Chrome 118 / iPhone 14, Safari 17" style="width: 100%; padding: 12px; border: 2px solid #e0e6ed; border-radius: 8px; font-size: 14px;">
+                    <small style="color: #5a6c7d; display: block; margin-top: 5px;">Incluye sistema operativo y navegador/app</small>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 10px; color: #2c3e50;">
+                        <i data-lucide="image" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Captura de pantalla (opcional)
+                    </label>
+                    <div style="border: 2px dashed #e0e6ed; border-radius: 8px; padding: 30px; text-align: center; background: #f8f9fa; cursor: pointer;" onclick="alert('En la versión final, aquí podrías subir imágenes. Por ahora usa el campo de descripción para indicar lo que se ve en pantalla.')">
+                        <i data-lucide="upload-cloud" style="width: 48px; height: 48px; color: #5a6c7d; margin-bottom: 10px;"></i>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;"><strong>Haz clic para subir</strong> o arrastra una imagen aquí</p>
+                        <small style="color: #5a6c7d; display: block; margin-top: 5px;">Formatos: JPG, PNG, GIF (máx. 5MB)</small>
+                    </div>
+                    <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #FFC107;">
+                        <small style="color: #856404;"><strong>️ Privacidad:</strong> Asegúrate de ocultar información sensible (contraseñas, emails completos, DNI) antes de subir.</small>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 10px; color: #2c3e50;">
+                        <i data-lucide="thermometer" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Urgencia *
+                    </label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <label style="border: 2px solid #e0e6ed; padding: 15px; border-radius: 8px; cursor: pointer; display: block; transition: all 0.3s;">
+                            <input type="radio" name="urgency" value="baja" style="margin-right: 10px;">
+                            <strong style="color: #28a745; display: block; margin-bottom: 5px;"> Baja</strong>
+                            <small style="color: #5a6c7d; font-size: 12px;">Puedo trabajar normalmente</small>
+                        </label>
+                        <label style="border: 2px solid #e0e6ed; padding: 15px; border-radius: 8px; cursor: pointer; display: block; transition: all 0.3s;">
+                            <input type="radio" name="urgency" value="media" style="margin-right: 10px;">
+                            <strong style="color: #FFC107; display: block; margin-bottom: 5px;"> Media</strong>
+                            <small style="color: #5a6c7d; font-size: 12px;">Afecta mi uso, pero puedo esperar</small>
+                        </label>
+                        <label style="border: 2px solid #e0e6ed; padding: 15px; border-radius: 8px; cursor: pointer; display: block; transition: all 0.3s;">
+                            <input type="radio" name="urgency" value="alta" style="margin-right: 10px;">
+                            <strong style="color: #dc3545; display: block; margin-bottom: 5px;"> Alta</strong>
+                            <small style="color: #5a6c7d; font-size: 12px;">No puedo acceder/usar la plataforma</small>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 10px; color: #2c3e50;">
+                        <i data-lucide="mail" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i> Email de contacto *
+                    </label>
+                    <input type="email" required placeholder="tu-email@ejemplo.com" value="usuario@Cemiedu.ar" style="width: 100%; padding: 12px; border: 2px solid #e0e6ed; border-radius: 8px; font-size: 14px;">
+                    <small style="color: #5a6c7d; display: block; margin-top: 5px;">Te contactaremos a este email. Si es un problema de acceso, usa un email alternativo.</small>
+                </div>
+
+                <button type="submit" style="width: 100%; background: linear-gradient(135deg, #28a745 0%, #218838 100%); color: white; border: none; padding: 15px; font-size: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; margin-top: 10px;">
+                    <i data-lucide="send" style="width: 20px; height: 20px; display: inline; vertical-align: middle;"></i> Enviar reporte
+                </button>
+            </form>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="help-circle"></i> ¿Qué sucede después?</h2>
+            <div style="margin-top: 30px;">
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <div style="background: #0071e3; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; flex-shrink: 0;">1</div>
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 8px;">Recepción inmediata</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Recibirás un email de confirmación con tu número de ticket (formato: #PROB-XXXXX) en menos de 1 minuto.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <div style="background: #0071e3; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; flex-shrink: 0;">2</div>
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 8px;">Revisión por el equipo</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Nuestro equipo de soporte revisará tu caso según urgencia:
+                            <br> Alta: 1-2 horas
+                            <br> Media: 4-8 horas
+                            <br> Baja: 24-48 horas
+                        </p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <div style="background: #0071e3; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; flex-shrink: 0;">3</div>
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 8px;">Contacto y resolución</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Te contactaremos por email para darte una solución o pedirte más información. El ticket se actualizará en tiempo real.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div style="background: #28a745; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; flex-shrink: 0;"></div>
+                    <div>
+                        <strong style="display: block; color: #2c3e50; margin-bottom: 8px;">Cierre del caso</strong>
+                        <p style="color: #5a6c7d; margin: 0; font-size: 14px;">Una vez resuelto, te pediremos confirmar que todo funciona. Podrás calificar la atención recibida.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <h2><i data-lucide="zap"></i> Soluciones rápidas</h2>
+            <p style="margin-bottom: 30px;">Antes de reportar, prueba estos pasos comunes:</p>
+            <div class="security-button-grid">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center;">
+                    <i data-lucide="refresh-cw" style="width: 32px; height: 32px; color: #0071e3; margin-bottom: 10px;"></i>
+                    <strong style="display: block; color: #2c3e50; margin-bottom: 8px;">Borrar caché y cookies</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 13px;">Resuelve el 40% de problemas de acceso</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center;">
+                    <i data-lucide="globe" style="width: 32px; height: 32px; color: #0071e3; margin-bottom: 10px;"></i>
+                    <strong style="display: block; color: #2c3e50; margin-bottom: 8px;">Probar otro navegador</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 13px;">Descarta problemas de compatibilidad</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center;">
+                    <i data-lucide="smartphone" style="width: 32px; height: 32px; color: #0071e3; margin-bottom: 10px;"></i>
+                    <strong style="display: block; color: #2c3e50; margin-bottom: 8px;">Usar app móvil</strong>
+                    <p style="color: #5a6c7d; margin: 0; font-size: 13px;">Verifica si es problema del navegador</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <div style="background: #e3f2fd; padding: 30px; border-radius: 12px; border-left: 4px solid #0071e3;">
+                <i data-lucide="phone" style="width: 48px; height: 48px; color: #0071e3; margin-bottom: 15px;"></i>
+                <strong style="display: block; color: #0071e3; font-size: 18px; margin-bottom: 10px;">¿Necesitas ayuda urgente?</strong>
+                <p style="color: #5a6c7d; margin-bottom: 20px;">Si no puedes acceder a tu cuenta o es una emergencia de seguridad, llámanos:</p>
+                <a href="tel:+5491112345678" style="display: inline-block; background: #0071e3; color: white; padding: 15px 40px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px;">
+                    <i data-lucide="phone-call" style="width: 20px; height: 20px; display: inline; vertical-align: middle;"></i> +54 911 1234-5678
+                </a>
+                <p style="color: #5a6c7d; margin-top: 15px; font-size: 13px;">Lunes a viernes 9:00-18:00 hs (GMT-3)</p>
+            </div>
+        </div>
+
+        <div class="security-section" style="margin-top: 40px;">
+            <h3><i data-lucide="arrow-right-circle"></i> Recursos Relacionados</h3>
+            <div class="security-button-grid" style="margin-top: 20px;">
+                <a href="ayuda/cuenta-comprometida.html" class="security-action-btn">
+                    <i data-lucide="shield-alert"></i>
+                    <strong>Cuenta comprometida</strong>
+                    <span>Pasos de emergencia</span>
+                </a>
+                <a href="../ayuda.html" class="security-action-btn">
+                    <i data-lucide="book-open"></i>
+                    <strong>Centro de Ayuda</strong>
+                    <span>Preguntas frecuentes</span>
+                </a>
+                <a href="../cemi-privsec-home.html" class="security-action-btn">
+                    <i data-lucide="arrow-left"></i>
+                    <strong>Volver al Portal</strong>
+                    <span>Privacidad y Seguridad</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <footer class="security-footer">
+        <div class="security-footer-links">
+            <a href="../index.html">Inicio</a>
+            <a href="../privacidad.html">Privacidad</a>
+            <a href="../terminos.html">Términos</a>
+            <a href="../ayuda.html">Ayuda</a>
+        </div>
+        <p>&copy; 2024 Cemi. Todos los derechos reservados.</p>
+    </footer>
+    <script>
+        lucide.createIcons();
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const ticketNumber = 'PROB-' + Math.floor(Math.random() * 90000 + 10000);
+            alert(' Reporte enviado exitosamente\\n\\nNúmero de ticket: #' + ticketNumber + '\\n\\nRecibirás un email de confirmación en 1 minuto. Te contactaremos pronto.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,731 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.href = 'index.html?auth=required';
+    }
+  </script>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <title>Cemi Classroom - Plataforma Educativa</title>
+  <link rel="stylesheet" href="assets/css/classroom.css">
+  <link rel="stylesheet" href="assets/css/classroom-chat.css">
+  
+  <!-- Sistema de gestión de consola - debe ir PRIMERO -->
+  <script src="assets/js/console-manager.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/check-maintenance.js"></script>
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <header class="classroom-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button id="menuToggle" class="menu-toggle">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="logo-section">
+          <i data-lucide="graduation-cap" class="logo-icon"></i>
+          <h1>Cemi Classroom</h1>
+        </div>
+        
+        <div id="courseSelectorContainer" style="margin-left: 24px; display: none; position: relative;">
+          <button id="btnCourseSelector" style="display: flex; align-items: center; gap: 10px; padding: 8px 16px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; color: #ffffff; cursor: pointer; transition: all 0.25s; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; font-weight: 500; min-width: 180px; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="book-open" style="width: 16px; height: 16px; color: #ffffff;"></i>
+              <span id="currentCourseName" style="color: #4a5568;">Todos los cursos</span>
+            </div>
+            <i data-lucide="chevron-down" style="width: 14px; height: 14px; color: #ffffff;"></i>
+          </button>
+          <div id="courseDropdown" style="display: none; position: absolute; top: calc(100% + 8px); left: 0; background: white; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); min-width: 280px; max-height: 400px; overflow-y: auto; z-index: 1000; border: 1px solid #dee2e6;">
+          </div>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <button class="header-icon-btn" id="btnNotifications">
+          <i data-lucide="bell"></i>
+          <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+        </button>
+        
+        <div class="notifications-dropdown" id="notificationsDropdown">
+          <div class="notifications-header">
+            <h3>Notificaciones</h3>
+            <button class="mark-all-read-btn" id="btnMarkAllRead">
+              <i data-lucide="check-check"></i>
+              Marcar todas como leídas
+            </button>
+          </div>
+          <div class="notifications-list" id="notificationsList">
+            <div class="empty-notifications">
+              <i data-lucide="inbox"></i>
+              <p>No tienes notificaciones</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="user-menu">
+          <button class="user-avatar" id="userMenuBtn">
+            <span id="userInitials">ED</span>
+          </button>
+          <div class="user-dropdown" id="userDropdown">
+            <div class="user-info">
+              <div class="user-name" id="userName">Eduardo</div>
+              <div class="user-role" id="userRole">Profesor</div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a href="dashboard_profesor.html" class="dropdown-item">
+              <i data-lucide="layout-dashboard"></i>
+              Mi Dashboard
+            </a>
+            <a href="perfil-classroom.html" class="dropdown-item">
+              <i data-lucide="user"></i>
+              Mi Perfil
+            </a>
+            <a href="#" class="dropdown-item" id="openConfiguracion">
+              <i data-lucide="settings"></i>
+              Configuración
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item" id="logoutClassroom">
+              <i data-lucide="log-out"></i>
+              Cerrar Sesión
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="classroom-container">
+    <button class="mobile-sidebar-toggle" id="mobileSidebarToggle">
+      <i data-lucide="menu"></i>
+    </button>
+
+    <div class="sidebar-overlay-classroom" id="sidebarOverlayClassroom"></div>
+
+    <aside class="classroom-sidebar" id="sidebar">
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-view="activity">
+          <i data-lucide="home"></i>
+          <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-item" data-view="home">
+          <i data-lucide="library"></i>
+          <span>Biblioteca</span>
+        </a>
+        <a href="#" class="nav-item" data-view="classes">
+          <i data-lucide="book-open"></i>
+          <span>Mis Clases</span>
+        </a>
+        <a href="#" class="nav-item" data-view="tasks">
+          <i data-lucide="clipboard-list"></i>
+          <span>Tareas</span>
+        </a>
+        <a href="#" class="nav-item" data-view="calendar">
+          <i data-lucide="calendar"></i>
+          <span>Calendario</span>
+        </a>
+        
+        <div class="nav-divider"></div>
+        
+        <div id="profesorMenu" style="display: none;">
+          <a href="#" class="nav-item" data-view="create-task">
+            <i data-lucide="plus-circle"></i>
+            <span>Crear Tarea</span>
+          </a>
+          <a href="#" class="nav-item" data-view="announcements">
+            <i data-lucide="megaphone"></i>
+            <span>Anuncios</span>
+          </a>
+        </div>
+        
+        <div id="adminMenu" style="display: none;">
+          <a href="#" class="nav-item" data-view="analytics">
+            <i data-lucide="bar-chart"></i>
+            <span>Estadísticas</span>
+          </a>
+          <a href="#" class="nav-item" data-view="all-classes">
+            <i data-lucide="layers"></i>
+            <span>Todas las Clases</span>
+          </a>
+        </div>
+        
+        <div class="nav-divider"></div>
+        
+        <a href="#" class="nav-item" data-view="messages">
+          <i data-lucide="message-circle"></i>
+          <span>Mensajes</span>
+          <span class="nav-badge" id="chatUnreadBadge" style="display: none;">0</span>
+        </a>
+        
+        <div class="nav-divider"></div>
+        
+        <a href="#" class="nav-item nav-item-dashboard" id="btnBackToDashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Volver al Dashboard</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="storage-info">
+          <div class="storage-header">
+            <i data-lucide="hard-drive"></i>
+            <span>Almacenamiento</span>
+          </div>
+          <div class="storage-bar">
+            <div class="storage-fill" style="width: 45%"></div>
+          </div>
+          <div class="storage-text">4.5 GB de 10 GB</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="classroom-main" id="mainContent">
+      <div class="content-view" id="viewHome">
+        <div class="resources-header">
+          <div class="resources-title-section">
+            <div class="resources-icon-wrapper">
+              <i data-lucide="folder-open"></i>
+            </div>
+            <div>
+              <h2>Recursos y Material de Estudio</h2>
+              <p>Accede a todo el material compartido por tus profesores</p>
+            </div>
+          </div>
+          <div class="resources-actions">
+            <div class="search-box-resources">
+              <i data-lucide="search"></i>
+              <input type="text" id="searchRecursos" placeholder="Buscar recursos...">
+            </div>
+            <select class="filter-select-resources" id="filterTipoRecurso">
+              <option value="">Todos los tipos</option>
+              <option value="pdf"> PDFs</option>
+              <option value="documento"> Documentos</option>
+              <option value="enlace"> Enlaces</option>
+              <option value="audio"> Audio</option>
+              <option value="video"> Video</option>
+              <option value="imagen">️ Imágenes</option>
+            </select>
+            <button class="btn-upload-resource" id="btnSubirRecurso" style="display: none;">
+              <i data-lucide="upload-cloud"></i>
+              <span>Subir Recurso</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="resources-container" id="resourcesContainer">
+          <div class="resources-section" id="recursosPorCurso">
+            <div class="section-header">
+              <i data-lucide="graduation-cap"></i>
+              <h3>Mis Cursos</h3>
+            </div>
+            <div class="resources-grid" id="gridRecursosCursos">
+              <div class="loading-resources">
+                <div class="loading-spinner"></div>
+                <p>Cargando recursos...</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="resources-section" id="bibliotecaGeneral">
+            <div class="section-header">
+              <i data-lucide="library"></i>
+              <h3>Biblioteca General CEMI</h3>
+              <span class="section-badge">Público</span>
+            </div>
+            <div class="resources-grid" id="gridBibliotecaGeneral">
+              <div class="loading-resources">
+                <div class="loading-spinner"></div>
+                <p>Cargando biblioteca...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-view" id="viewActivity" style="display: none;">
+        <div class="welcome-section">
+          <video class="welcome-video" src="images/cemiclassroombanneranimated.mp4" muted loop playsinline></video>
+        </div>
+
+        <div class="research-banner" id="researchBanner">
+          <button class="research-banner-close" onclick="cerrarBannerInvestigacion()" title="Cerrar">
+            <i data-lucide="x"></i>
+          </button>
+          <div class="research-banner-icon">
+            <div class="research-icon-bg">
+              <i data-lucide="message-square-text"></i>
+            </div>
+            <div class="research-icon-accent">
+              <i data-lucide="pencil"></i>
+            </div>
+          </div>
+          <div class="research-banner-content">
+            <h3>Participa en investigaciones para mejorar Cemi Classroom</h3>
+            <p>Comparte tu experiencia para ayudar a diseñar el futuro de la tecnología educativa. Únete a nuestro creciente grupo de usuarios de Cemi Classroom y ayúdanos a mejorar las herramientas educativas para ti, tu institución y tus estudiantes.</p>
+          </div>
+          <div class="research-banner-action">
+            <a href="encuesta-classroom.html" class="btn-research">Más información</a>
+          </div>
+        </div>
+
+        <div class="activity-stream">
+          <div class="stream-header">
+            <h3>Actividad Reciente</h3>
+            <select class="filter-select" id="filterCurso">
+              <option value="">Todas las clases</option>
+            </select>
+          </div>
+
+          <div id="activityContainer">
+            <p style="text-align: center; color: #666; padding: 40px;">Cargando actividades...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-view" id="viewClasses" style="display: none;">
+        <div class="view-header">
+          <h2 style="display: flex; align-items: center; gap: 12px; font-family: Inter, sans-serif; font-weight: 600;">
+            <i data-lucide="book-open" style="color: #656f77;"></i>
+            Mis Clases
+          </h2>
+          <button class="btn-primary" id="btnCreateClass" style="display: none;">
+            <i data-lucide="plus"></i>
+            Crear Clase
+          </button>
+        </div>
+
+        <div id="classesGrid" class="classes-grid">
+          <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #656f77;">
+            <i data-lucide="loader" style="width: 48px; height: 48px; margin-bottom: 16px; animation: spin 1s linear infinite;"></i>
+            <p>Cargando clases...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-view" id="viewTasks" style="display: none;">
+        <div class="view-header">
+          <h2>Tareas</h2>
+          <div class="view-actions" style="display: flex; gap: 12px; align-items: center;">
+            <div class="view-filters">
+              <button class="filter-btn active" data-filter="all">Todas</button>
+              <button class="filter-btn" data-filter="pending">Pendientes</button>
+              <button class="filter-btn" data-filter="completed">Completadas</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tasks-list" id="tasksContainer">
+          <p style="text-align: center; color: #666; padding: 40px;">Cargando tareas...</p>
+        </div>
+      </div>
+
+      <div class="content-view" id="viewCalendar" style="display: none;">
+        <div style="background: white; padding: 24px; border-radius: 8px; margin-bottom: 24px; border: 1px solid #dee2e6;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #1e1e1e; display: flex; align-items: center; gap: 12px; font-family: Inter, sans-serif; font-weight: 600; font-size: 1.5rem;">
+              <i data-lucide="calendar" style="color: #656f77; width: 28px; height: 28px;"></i>
+              Calendario Académico
+            </h2>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <div class="calendar-view-selector" style="display: flex; gap: 4px; background: #f8f9fa; padding: 4px; border-radius: 6px;">
+                <button class="view-btn" data-calendar-view="mes" style="padding: 8px 16px; background: #1e1e1e; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s;">
+                  Mes
+                </button>
+                <button class="view-btn" data-calendar-view="semana" style="padding: 8px 16px; background: transparent; color: #1e1e1e; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s;">
+                  Semana
+                </button>
+                <button class="view-btn" data-calendar-view="dia" style="padding: 8px 16px; background: transparent; color: #1e1e1e; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s;">
+                  Día
+                </button>
+              </div>
+              <button id="btnCrearEvento" style="display: none;" class="btn-primary">
+                <i data-lucide="plus-circle"></i>
+                Nuevo Evento
+              </button>
+            </div>
+          </div>
+          
+          <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+            <button id="btnMesAnterior" style="background: #f8f9fa; color: #1e1e1e; border: 1px solid #dee2e6; padding: 10px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center;">
+              <i data-lucide="chevron-left" style="width: 20px; height: 20px;"></i>
+            </button>
+            <h3 id="mesActual" style="margin: 0; color: #1e1e1e; min-width: 200px; text-align: center; font-size: 18px; font-weight: 500; font-family: Inter, sans-serif;">
+              Noviembre 2025
+            </h3>
+            <button id="btnMesSiguiente" style="background: #f8f9fa; color: #1e1e1e; border: 1px solid #dee2e6; padding: 10px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center;">
+              <i data-lucide="chevron-right" style="width: 20px; height: 20px;"></i>
+            </button>
+            <button id="btnHoy" style="padding: 10px 20px; background: #1e1e1e; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s;">
+              Hoy
+            </button>
+          </div>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6;">
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px;">
+            <div style="text-align: center; font-weight: 600; color: #1e1e1e; padding: 12px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Dom</div>
+            <div style="text-align: center; font-weight: 600; color: #1e1e1e; padding: 12px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Lun</div>
+            <div style="text-align: center; font-weight: 600; color: #1e1e1e; padding: 12px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Mar</div>
+            <div style="text-align: center; font-weight: 600; color: #1e1e1e; padding: 12px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Mié</div>
+            <div style="text-align: center; font-weight: 600; color: #1e1e1e; padding: 12px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Jue</div>
+            <div style="text-align: center; font-weight: 600; color: #1e1e1e; padding: 12px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Vie</div>
+            <div style="text-align: center; font-weight: 600; color: #1e1e1e; padding: 12px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Sáb</div>
+          </div>
+          
+          <div id="calendarGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; background: #f8f9fa; padding: 4px; border-radius: 6px;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista de Mensajes/Chat -->
+      <div class="content-view" id="viewMessages" style="display: none;">
+        <div class="messages-container">
+          <!-- Panel de Contactos/Bandeja -->
+          <div class="messages-contacts-panel">
+            <div class="messages-contacts-header">
+              <h3>
+                <i data-lucide="message-circle"></i>
+                Mensajes
+              </h3>
+            </div>
+            
+            <div class="messages-search">
+              <i data-lucide="search"></i>
+              <input type="text" id="chatContactSearch" placeholder="Buscar...">
+            </div>
+            
+            <!-- Tabs principales: Bandeja y Contactos -->
+            <div class="messages-tabs messages-main-tabs">
+              <button class="messages-tab active" data-main-tab="bandeja">
+                <i data-lucide="inbox"></i>
+                Bandeja
+                <span class="tab-badge tab-badge-unread" id="badgeBandeja" style="display: none;">0</span>
+              </button>
+              <button class="messages-tab" data-main-tab="contactos">
+                <i data-lucide="users"></i>
+                Contactos
+                <span class="tab-badge" id="badgeContactos" style="display: none;">0</span>
+              </button>
+            </div>
+            
+            <!-- Contenido de Bandeja de Entrada -->
+            <div class="messages-list" id="panelBandeja">
+              <div id="chatListBandeja" class="messages-list-section">
+                <div class="messages-empty">
+                  <i data-lucide="inbox"></i>
+                  <p>No hay conversaciones activas</p>
+                  <small>Inicia una conversación desde Contactos</small>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Contenido de Contactos -->
+            <div class="messages-list" id="panelContactos" style="display: none;">
+              <!-- Sub-tabs para tipo de contacto -->
+              <div class="messages-tabs messages-sub-tabs">
+                <button class="messages-tab active" data-tab="profesores">
+                  <i data-lucide="user-check"></i>
+                  Profesores
+                  <span class="tab-badge" style="display: none;">0</span>
+                </button>
+                <button class="messages-tab" data-tab="companeros">
+                  <i data-lucide="users"></i>
+                  Compañeros
+                  <span class="tab-badge" style="display: none;">0</span>
+                </button>
+              </div>
+              
+              <div id="chatListProfesores" class="messages-list-section">
+                <div class="messages-loading">
+                  <div class="spinner"></div>
+                  <p>Cargando contactos...</p>
+                </div>
+              </div>
+              <div id="chatListCompaneros" class="messages-list-section" style="display: none;">
+                <div class="messages-loading">
+                  <div class="spinner"></div>
+                  <p>Cargando contactos...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Panel de Conversación -->
+          <div class="messages-conversation-panel">
+            <div class="conversation-header" id="conversationHeader" style="display: none;">
+              <div class="conversation-avatar" id="conversationAvatar"></div>
+              <div class="conversation-info">
+                <div class="conversation-name" id="conversationName">Nombre</div>
+                <div class="conversation-role" id="conversationRole">Rol</div>
+              </div>
+              <button class="conversation-delete-btn" id="conversationDeleteBtn" title="Eliminar conversación">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+            
+            <div class="conversation-messages" id="conversationMessages" style="display: none;">
+            </div>
+            
+            <div class="conversation-empty" id="conversationEmpty">
+              <i data-lucide="message-square"></i>
+              <h4>Selecciona una conversación</h4>
+              <p>Elige una conversación de tu bandeja o inicia una nueva desde Contactos</p>
+            </div>
+            
+            <div class="conversation-input-area" id="conversationInput" style="display: none;">
+              <div class="chat-file-preview" id="chatFilePreview" style="display: none;"></div>
+              
+              <div class="conversation-input-wrapper">
+                <button class="input-action-btn" id="chatAttachBtn" title="Adjuntar archivo">
+                  <i data-lucide="paperclip"></i>
+                </button>
+                <input type="file" id="chatFileInput" style="display: none;" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                
+                <textarea id="chatMessageInput" placeholder="Escribe un mensaje..." rows="1"></textarea>
+                
+                <button class="send-btn" id="chatSendBtn" title="Enviar">
+                  <i data-lucide="send"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-view" id="viewAnnouncements" style="display: none;">
+        <div class="view-header">
+          <h2>Mis Anuncios</h2>
+          <button class="btn-primary profesor-only" onclick="mostrarFormularioAnuncio()" style="display: none;">
+            <i data-lucide="plus"></i>
+            Nuevo Anuncio
+          </button>
+        </div>
+
+        <div class="activity-stream" id="anunciosProfesorContainer">
+          <p style="text-align: center; color: #666; padding: 40px;">Cargando anuncios...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="course-panel-overlay" id="coursePanelOverlay" onclick="cerrarPanelCurso()"></div>
+  
+  <div id="courseSidePanel" class="course-side-panel">
+    <div class="course-panel-content">
+      <div class="course-panel-header">
+        <button class="course-panel-close" onclick="cerrarPanelCurso()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div id="coursePanelBody" class="course-panel-body">
+      </div>
+    </div>
+  </div>
+
+  <div class="loader hidden" id="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="modal-overlay-config" id="modalConfiguracion">
+    <div class="modal-config-container">
+      <div class="modal-config-header">
+        <div class="modal-config-title">
+          <i data-lucide="settings"></i>
+          <h2>Configuración del Classroom</h2>
+        </div>
+        <button class="btn-close-config" onclick="cerrarConfiguracion()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <div class="modal-config-body">
+        <div class="config-tabs-sidebar">
+          <button class="config-tab-btn active" data-tab="general" onclick="cambiarTab('general')">
+            <i data-lucide="sliders"></i>
+            <span>General</span>
+          </button>
+          <button class="config-tab-btn" data-tab="apariencia" onclick="cambiarTab('apariencia')">
+            <i data-lucide="palette"></i>
+            <span>Apariencia</span>
+          </button>
+        </div>
+
+        <div class="config-content-area">
+          <div class="config-tab-content active" id="tab-general">
+            <h3 class="config-section-title">
+              <i data-lucide="calendar"></i>
+              Vista de Calendario Predeterminada
+            </h3>
+            <div class="config-option">
+              <select id="config-vista-calendario" class="config-select">
+                <option value="mes">Vista de Mes</option>
+                <option value="semana">Vista de Semana</option>
+                <option value="dia">Vista de Día</option>
+              </select>
+              <p class="config-hint">Elige cómo quieres ver el calendario por defecto</p>
+            </div>
+
+            <div class="config-divider"></div>
+
+            <div id="seccionExportar" style="display: none;">
+              <h3 class="config-section-title">
+                <i data-lucide="download"></i>
+                Exportar Mis Datos Académicos
+              </h3>
+              <div class="config-option">
+                <div class="config-buttons-grid">
+                  <button class="btn-config-action" onclick="exportarTareasPDF()">
+                    <i data-lucide="file-text"></i>
+                    <span>Exportar Tareas (PDF)</span>
+                  </button>
+                  <button class="btn-config-action" onclick="exportarCalificacionesPDF()">
+                    <i data-lucide="award"></i>
+                    <span>Exportar Calificaciones (PDF)</span>
+                  </button>
+                </div>
+                <p class="config-hint">Descarga tus datos académicos en formato PDF</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="config-tab-content" id="tab-apariencia">
+            <h3 class="config-section-title">
+              <i data-lucide="sun"></i>
+              Tema de Interfaz
+            </h3>
+            <div class="config-option">
+              <div class="theme-selector">
+                <button class="theme-card active" data-theme="light" onclick="cambiarTema('light')">
+                  <i data-lucide="sun"></i>
+                  <span>Claro</span>
+                </button>
+                <button class="theme-card" data-theme="dark" onclick="cambiarTema('dark')">
+                  <i data-lucide="moon"></i>
+                  <span>Oscuro</span>
+                </button>
+                <button class="theme-card" data-theme="auto" onclick="cambiarTema('auto')">
+                  <i data-lucide="monitor"></i>
+                  <span>Automático</span>
+                </button>
+              </div>
+              <p class="config-hint">Cambia entre modo claro y oscuro según tu preferencia</p>
+            </div>
+
+            <div class="config-divider"></div>
+
+            <h3 class="config-section-title">
+              <i data-lucide="type"></i>
+              Tamaño de Fuente
+            </h3>
+            <div class="config-option">
+              <div class="font-size-selector">
+                <button class="font-size-btn" data-size="pequeño">
+                  <span style="font-size: 14px;">A</span>
+                  <small>Pequeño</small>
+                </button>
+                <button class="font-size-btn active" data-size="normal">
+                  <span style="font-size: 16px;">A</span>
+                  <small>Normal</small>
+                </button>
+                <button class="font-size-btn" data-size="grande">
+                  <span style="font-size: 20px;">A</span>
+                  <small>Grande</small>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-config-footer">
+        <button class="btn-config-secondary" onclick="cerrarConfiguracion()">
+          <i data-lucide="x"></i>
+          Cerrar
+        </button>
+        <button class="btn-config-primary" onclick="guardarTodasConfiguraciones()">
+          <i data-lucide="save"></i>
+          Guardar Cambios
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/classroom.js"></script>
+  
+  <script>
+    // Funcionalidad del menú mobile para Classroom
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlayClassroom');
+      
+      if (mobileSidebarToggle && sidebar && sidebarOverlay) {
+        // Abrir/cerrar sidebar
+        mobileSidebarToggle.addEventListener('click', function() {
+          sidebar.classList.toggle('show');
+          sidebarOverlay.classList.toggle('active');
+          
+          // Cambiar icono
+          const icon = this.querySelector('i');
+          if (sidebar.classList.contains('show')) {
+            icon.setAttribute('data-lucide', 'x');
+            sidebarOverlay.style.display = 'block';
+          } else {
+            icon.setAttribute('data-lucide', 'menu');
+            sidebarOverlay.style.display = 'none';
+          }
+          lucide.createIcons();
+        });
+        
+        // Cerrar sidebar al hacer clic en overlay
+        sidebarOverlay.addEventListener('click', function() {
+          sidebar.classList.remove('show');
+          sidebarOverlay.classList.remove('active');
+          sidebarOverlay.style.display = 'none';
+          
+          const icon = mobileSidebarToggle.querySelector('i');
+          icon.setAttribute('data-lucide', 'menu');
+          lucide.createIcons();
+        });
+        
+        // Cerrar sidebar al hacer clic en un link del menú (solo en mobile)
+        const navItems = sidebar.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+          item.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+              sidebar.classList.remove('show');
+              sidebarOverlay.classList.remove('active');
+              sidebarOverlay.style.display = 'none';
+              
+              const icon = mobileSidebarToggle.querySelector('i');
+              icon.setAttribute('data-lucide', 'menu');
+              lucide.createIcons();
+            }
+          });
+        });
+      }
+    });
+  </script>
+  
+  <script>
+    lucide.createIcons();
+  </script>
+  
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="assets/js/classroom-chat.js"></script>
+  
+  <script src="assets/js/help-widget.js"></script>
+</body>
+</html>
+
+
+

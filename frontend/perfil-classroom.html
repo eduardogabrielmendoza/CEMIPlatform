@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.href = 'index.html?auth=required';
+    }
+  </script>
+  <title>Mi Perfil - Cemi Classroom</title>
+  <link rel="stylesheet" href="assets/css/perfil-classroom.css">
+  
+  <script src="assets/js/console-manager.js"></script>
+  <script src="assets/js/config.js"></script>
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <header class="perfil-header">
+    <div class="header-container">
+      <div class="header-left">
+        <button class="btn-back" onclick="window.location.href='classroom.html'">
+          <i data-lucide="arrow-left"></i>
+          Volver al Classroom
+        </button>
+      </div>
+      <div class="header-center">
+        <h1>Mi Perfil</h1>
+      </div>
+      <div class="header-right">
+        <button class="btn-theme" id="toggleTheme">
+          <i data-lucide="sun"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="perfil-container">
+    <aside class="perfil-sidebar">
+      <nav class="perfil-nav">
+        <button class="nav-item active" data-section="info-general" onclick="cambiarSeccion('info-general')">
+          <i data-lucide="user"></i>
+          <span>Información General</span>
+        </button>
+        <button class="nav-item" data-section="info-personal" onclick="cambiarSeccion('info-personal')">
+          <i data-lucide="id-card"></i>
+          <span>Datos Personales</span>
+        </button>
+        <button class="nav-item" data-section="configuracion-perfil" onclick="cambiarSeccion('configuracion-perfil')">
+          <i data-lucide="settings"></i>
+          <span>Configuración</span>
+        </button>
+      </nav>
+    </aside>
+
+    <main class="perfil-content">
+      <section class="perfil-section active" id="info-general">
+        <div class="profile-header-card" id="profileBanner">
+          <button class="btn-change-banner" onclick="document.getElementById('bannerInput').click()" title="Cambiar banner">
+            <i data-lucide="image"></i>
+          </button>
+          <input type="file" id="bannerInput" accept="image/*" style="display: none;" onchange="cambiarBanner(event)">
+          <div class="profile-avatar-container">
+            <div class="profile-avatar" id="profileAvatar">
+              <span id="avatarInitials">ED</span>
+            </div>
+            <button class="btn-change-avatar" onclick="document.getElementById('avatarInput').click()">
+              <i data-lucide="camera"></i>
+            </button>
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="cambiarAvatar(event)">
+          </div>
+          <div class="profile-header-info">
+            <h2 id="profileName">Cargando...</h2>
+            <div class="profile-badges">
+              <span class="badge badge-role" id="profileRole">Profesor</span>
+              <span class="badge badge-status"><i data-lucide="check-circle"></i> Activo</span>
+            </div>
+            <p class="profile-username">@<span id="profileUsername">username</span></p>
+            <p class="profile-joined">Miembro desde <span id="profileJoined">2025</span></p>
+          </div>
+        </div>
+
+        <div class="info-cards-grid">
+          <div class="info-card">
+            <div class="info-card-icon">
+              <i data-lucide="mail"></i>
+            </div>
+            <div class="info-card-content">
+              <h4>Email</h4>
+              <p id="infoEmail">cargando...</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">
+              <i data-lucide="phone"></i>
+            </div>
+            <div class="info-card-content">
+              <h4>Teléfono</h4>
+              <p id="infoTelefono">cargando...</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">
+              <i data-lucide="calendar"></i>
+            </div>
+            <div class="info-card-content">
+              <h4>Fecha de Nacimiento</h4>
+              <p id="infoFechaNac">cargando...</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon">
+              <i data-lucide="map-pin"></i>
+            </div>
+            <div class="info-card-content">
+              <h4>Dirección</h4>
+              <p id="infoDireccion">cargando...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="biografia-section">
+          <h3>
+            <i data-lucide="file-text"></i>
+            Biografía
+          </h3>
+          <div class="biografia-content">
+            <p id="biografiaDisplay">Sin biografía</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="perfil-section" id="info-personal">
+        <div class="section-header">
+          <h2>
+            <i data-lucide="id-card"></i>
+            Datos Personales
+          </h2>
+          <p>Actualiza tu información personal</p>
+        </div>
+
+        <form class="perfil-form" id="formDatosPersonales">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inputNombre">Nombre</label>
+              <input type="text" id="inputNombre" class="form-input" placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+              <label for="inputApellido">Apellido</label>
+              <input type="text" id="inputApellido" class="form-input" placeholder="Tu apellido">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inputEmail">Email</label>
+              <input type="email" id="inputEmail" class="form-input" placeholder="tucorreo@ejemplo.com">
+            </div>
+            <div class="form-group">
+              <label for="inputTelefono">Teléfono</label>
+              <input type="tel" id="inputTelefono" class="form-input" placeholder="+54 11 1234-5678">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inputFechaNac">Fecha de Nacimiento</label>
+              <input type="date" id="inputFechaNac" class="form-input">
+            </div>
+            <div class="form-group">
+              <label for="inputDireccion">Dirección</label>
+              <input type="text" id="inputDireccion" class="form-input" placeholder="Calle, Ciudad">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="cancelarEdicion()">
+              <i data-lucide="x"></i>
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary">
+              <i data-lucide="save"></i>
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="perfil-section" id="configuracion-perfil">
+        <div class="section-header">
+          <h2>
+            <i data-lucide="settings"></i>
+            Configuración del Perfil
+          </h2>
+          <p>Personaliza tu perfil</p>
+        </div>
+
+        <div class="config-card">
+          <h3>Biografía</h3>
+          <p class="config-description">Cuéntanos un poco sobre ti</p>
+          <textarea id="inputBiografia" class="form-textarea" rows="4" placeholder="Escribe una breve descripción sobre ti..."></textarea>
+          <button class="btn-primary btn-sm" onclick="guardarBiografia()">
+            <i data-lucide="save"></i>
+            Guardar Biografía
+          </button>
+        </div>
+
+        <div class="config-card">
+          <h3>Acciones Rápidas</h3>
+          <div class="quick-actions">
+            <button class="btn-action" onclick="window.location.href='classroom.html'">
+              <i data-lucide="home"></i>
+              <span>Volver al Classroom</span>
+            </button>
+            <button class="btn-action" onclick="irAlDashboard()">
+              <i data-lucide="layout-dashboard"></i>
+              <span>Ir a Mi Dashboard</span>
+            </button>
+            <button class="btn-action" onclick="exportarMisDatos()">
+              <i data-lucide="download"></i>
+              <span>Exportar Mis Datos</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/perfil-classroom.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
+
+
+

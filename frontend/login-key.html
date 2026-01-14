@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Acceso con Clave - Cemi</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/login-key.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="assets/js/config.js"></script>
+</head>
+<body class="login-key-body">
+  <header class="login-key-header">
+    <div class="header-content">
+      <i data-lucide="settings" class="header-icon"></i>
+      <span>Inicia sesion con tu clave para acceder</span>
+    </div>
+  </header>
+
+  <main class="login-key-main">
+    <div class="login-key-card">
+      <div class="card-logo">
+        <img src="images/logo.png" alt="Cemi Logo" class="logo-img">
+        <div class="logo-text">
+          <span class="logo-cemi">CEMI</span><span class="logo-key">KEY</span>
+        </div>
+      </div>
+
+      <div class="card-divider"></div>
+
+      <form id="loginKeyForm" class="login-key-form">
+        <h2 class="form-title">Ingresar</h2>
+
+        <div class="form-group">
+          <label for="accessKey" class="form-label">Clave de acceso</label>
+          <input 
+            type="password" 
+            id="accessKey" 
+            name="accessKey" 
+            class="form-input" 
+            placeholder=""
+            required 
+            autocomplete="off"
+          >
+        </div>
+
+        <button type="submit" class="submit-btn">
+          Ingresar
+        </button>
+
+        <div class="form-links">
+          <a href="login-admin.html" class="form-link">Volver al login tradicional</a>
+        </div>
+
+        <div class="form-links">
+          <a href="ayuda-cemikey.html" class="form-link">Ayuda <i data-lucide="external-link" class="link-icon"></i></a>
+        </div>
+      </form>
+
+      <p id="loginMessage" class="login-message"></p>
+    </div>
+  </main>
+
+  <footer class="login-key-footer">
+    <a href="privacidad.html" class="footer-link">Politica de Privacidad</a>
+  </footer>
+
+  <div class="loader-overlay" id="loader">
+    <div class="loader-spinner">
+      <div class="spinner-circle"></div>
+      <div class="spinner-circle"></div>
+      <div class="spinner-circle"></div>
+    </div>
+    <p class="loader-text">Verificando clave de acceso...</p>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    document.getElementById('loginKeyForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const accessKey = document.getElementById('accessKey').value.trim();
+      const messageEl = document.getElementById('loginMessage');
+      const loader = document.getElementById('loader');
+      
+      if (!accessKey) {
+        messageEl.textContent = 'Por favor, ingrese su clave de acceso';
+        messageEl.className = 'login-message error';
+        return;
+      }
+      
+      if (loader) {
+        loader.classList.add('show');
+      }
+      messageEl.textContent = '';
+      
+      try {
+        const startTime = Date.now();
+        const response = await fetch(`${API_URL}/auth/login-key`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accessKey })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          if (data.token) {
+            localStorage.setItem('token', data.token);
+          }
+          localStorage.setItem('rol', data.rol);
+          localStorage.setItem('id_usuario', data.id_usuario);
+          localStorage.setItem('nombre', data.nombre);
+          localStorage.setItem('username', data.username);
+          if (data.id_administrador) {
+            localStorage.setItem('id_administrador', data.id_administrador);
+          }
+          if (data.id_profesor) {
+            localStorage.setItem('id_profesor', data.id_profesor);
+          }
+          if (data.id_alumno) {
+            localStorage.setItem('id_alumno', data.id_alumno);
+          }
+          
+          messageEl.textContent = 'Acceso exitoso. Redirigiendo...';
+          messageEl.className = 'login-message success';
+          
+          const elapsedTime = Date.now() - startTime;
+          const minDelay = 1500;
+          const remainingDelay = Math.max(0, minDelay - elapsedTime);
+          
+          await new Promise(resolve => setTimeout(resolve, remainingDelay));
+          
+          // Redirigir según el rol
+          let redirectUrl = 'index.html';
+          if (data.rol === 'administrador' || data.rol === 'admin') {
+            redirectUrl = 'dashboard_admin.html';
+          } else if (data.rol === 'profesor') {
+            redirectUrl = 'dashboard_profesor.html';
+          } else if (data.rol === 'alumno') {
+            redirectUrl = 'dashboard_alumno.html';
+          }
+          window.location.href = redirectUrl;
+        } else {
+          if (loader) {
+            loader.classList.remove('show');
+          }
+          messageEl.textContent = data.message || 'Clave de acceso invalida';
+          messageEl.className = 'login-message error';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        if (loader) {
+          loader.classList.remove('show');
+        }
+        messageEl.textContent = 'Error de conexion. Intente nuevamente.';
+        messageEl.className = 'login-message error';
+      }
+    });
+  </script>
+</body>
+</html>

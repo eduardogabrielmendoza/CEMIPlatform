@@ -1,0 +1,3648 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.href = 'index.html?auth=required';
+    }
+  </script>
+  <meta name="theme-color" content="#1e1e1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="apple-touch-icon" href="images/logo.png">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Panel del Alumno - Cemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/dashboard_alumno_extras.css" />
+  <link rel="stylesheet" href="assets/css/credit-card.css" />
+  <link rel="stylesheet" href="assets/css/user-chat-manager.css" />
+  <link rel="stylesheet" href="assets/css/cursado.css" />
+  <link rel="stylesheet" href="assets/css/ayuda-section.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Sistema de gestión de consola -->
+  <script src="assets/js/console-manager.js"></script>
+  <script src="assets/js/config.js?v=1.1"></script>
+  <script src="assets/js/check-maintenance.js"></script>
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="dashboard-body">
+
+  <button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <i data-lucide="menu"></i>
+  </button>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="sidebar entrance-sidebar" id="sidebar">
+    <div class="sidebar-header animate-fadeIn" style="display: flex; justify-content: center; align-items: center; padding: 24px 12px;">
+      <img src="images/logodashboard.png" alt="Logo Cemi" class="logo-hover" style="width: 100%; max-width: 200px; height: auto;">
+    </div>
+    <nav class="sidebar-menu">
+      <button id="btnCursos" class="stagger-item hover-lift"><i data-lucide="book-open"></i> Mis Cursos</button>
+      <button id="btnCursado" class="stagger-item hover-lift"><i data-lucide="graduation-cap"></i> Cursado</button>
+      <button id="btnNotas" class="stagger-item hover-lift"><i data-lucide="clipboard-list"></i> Mis Calificaciones</button>
+      <button id="btnPagos" class="stagger-item hover-lift"><i data-lucide="credit-card"></i> Mis Pagos</button>
+      <button id="btnPerfil" class="stagger-item hover-lift"><i data-lucide="user"></i> Mi Perfil</button>
+      <button id="btnClassroom" class="stagger-item hover-lift" onclick="window.location.href='classroom.html'"><i data-lucide="school"></i> Classroom</button>
+      <button id="btnChatSoporte" class="stagger-item hover-lift" style="position: relative;">
+        <i data-lucide="message-circle"></i> Chat Soporte
+        <span id="chatNotificationBadge" class="notification-badge" style="display: none;"></span>
+      </button>
+      <button id="btnAyuda" class="stagger-item hover-lift"><i data-lucide="help-circle"></i> Ayuda</button>
+      <button id="logoutBtn" class="logout stagger-item hover-lift"><i data-lucide="log-out"></i> Cerrar sesión</button>
+    </nav>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="dashboard-header entrance-header">
+      <h1 class="animate-fadeInDown">Panel del Alumno</h1>
+      <div class="user-info animate-fadeInRight">
+        <div class="user-avatar-header" id="userAvatarHeader">
+          <i data-lucide="user"></i>
+        </div>
+        <span id="welcomeMessage">Alumno</span>
+      </div>
+    </header>
+
+    <div id="loader" class="loader hidden"></div>
+
+    <section id="mainContent" class="dashboard-content spa-animate active entrance-content"></section>
+  </main>
+
+  <script>
+  // VERSION: TICKET EFECTIVO v3.0 - 2025-11-14 04:09
+  console.log('%c DASHBOARD ALUMNO - VERSION TICKET EFECTIVO v3.0', 'background: #1e3c72; color: white; padding: 10px; font-size: 16px; font-weight: bold;');
+  console.log(' Script cargado correctamente');
+  
+  lucide.createIcons();
+
+  const API_URL = window.API_URL || "http://localhost:3000/api";
+  const loader = document.getElementById("loader");
+  const mainContent = document.getElementById("mainContent");
+  const welcomeMessage = document.getElementById("welcomeMessage");
+  const id_alumno = localStorage.getItem("id_alumno");
+  
+  if (!id_alumno) {
+    console.error("No se encontró el ID del alumno");
+    window.location.href = "login.html";
+  }
+
+  // Cargar Socket.IO primero
+  const socketScript = document.createElement('script');
+  socketScript.src = 'https://cdn.socket.io/4.7.2/socket.io.min.js';
+  socketScript.onload = () => {
+    // Luego cargar script del chat y crear instancia
+    const chatScript = document.createElement('script');
+    chatScript.src = `assets/js/user-chat-manager.js?v=${Date.now()}`; // Cache busting
+    chatScript.onload = () => {
+      console.log(' user-chat-manager.js cargado correctamente');
+      if (typeof UserChatManager !== 'undefined') {
+        window.userChatManager = new UserChatManager('alumno');
+        // Inicializar Socket.IO inmediatamente para recibir notificaciones
+        window.userChatManager.init();
+      } else {
+        console.error(' UserChatManager no está definido');
+      }
+    };
+    chatScript.onerror = () => {
+      console.error(' Error al cargar user-chat-manager.js');
+    };
+    document.head.appendChild(chatScript);
+  };
+  document.head.appendChild(socketScript);
+
+  // Mostrar saludo dinámico con nombre guardado
+  const nombreAlumno = localStorage.getItem("nombre") || "Alumno";
+  welcomeMessage.textContent = `Bienvenido/a, ${nombreAlumno} `;
+
+  // Cargar avatar del usuario
+  async function cargarAvatarHeader() {
+    try {
+      console.log(' Iniciando carga de avatar...');
+      
+      // Detectar tipo de usuario según qué ID existe en localStorage
+      let tipoUsuario = 'alumno';
+      let idUsuario = localStorage.getItem('id_alumno');
+      
+      console.log(' id_alumno:', idUsuario);
+      
+      if (!idUsuario) {
+        idUsuario = localStorage.getItem('id_profesor');
+        if (idUsuario) {
+          tipoUsuario = 'profesor';
+        }
+      }
+      
+      if (!idUsuario) {
+        console.log(' No se encontró ID de usuario');
+        return;
+      }
+      
+      console.log(`Buscando perfil de ${tipoUsuario} con ID: ${idUsuario}`);
+      
+      const url = `${API_URL}/classroom/perfil/${idUsuario}?tipo=${tipoUsuario}`;
+      console.log('URL:', url);
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      console.log('Respuesta del servidor:', { status: response.status, data });
+      
+      if (response.ok && data.success && data.perfil) {
+        const avatarContainer = document.getElementById('userAvatarHeader');
+        console.log('Contenedor encontrado:', !!avatarContainer);
+        
+        if (avatarContainer && data.perfil.avatar) {
+          const BASE_URL = window.BASE_URL || 'http://localhost:3000';
+          const avatarUrl = data.perfil.avatar.startsWith('http') 
+            ? data.perfil.avatar 
+            : `${BASE_URL}${data.perfil.avatar}?t=${Date.now()}`;
+          console.log('Cargando avatar:', avatarUrl);
+          
+          const img = new Image();
+          img.onload = function() {
+            avatarContainer.innerHTML = `<img src="${avatarUrl}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+          };
+          img.onerror = function() {
+            console.log('Avatar no disponible, usando icono');
+            avatarContainer.innerHTML = '<i data-lucide="user"></i>';
+            lucide.createIcons();
+          };
+          img.src = avatarUrl;
+        } else {
+          console.log('Sin avatar, usando icono');
+          if (avatarContainer) {
+            avatarContainer.innerHTML = '<i data-lucide="user"></i>';
+            lucide.createIcons();
+          }
+        }
+      } else {
+        console.log('Respuesta no valida o usuario no encontrado');
+      }
+    } catch (error) {
+      console.error(' Error al cargar avatar:', error);
+    }
+  }
+  
+  cargarAvatarHeader();
+
+  const sections = {
+    btnCursos: async () => {
+      loader.classList.remove("hidden");
+      mainContent.classList.remove("active");
+      
+      console.log("ID Alumno:", id_alumno); // Debug
+      
+      try {
+        const response = await fetch(`${API_URL}/alumnos/${id_alumno}`);
+        
+        console.log("Response status:", response.status); // Debug
+        
+        if (!response.ok) {
+          throw new Error(`Error al cargar los datos del alumno: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        console.log("Datos recibidos:", data); // Debug
+
+        const cursos = data.cursos || [];
+        const totalCursos = cursos.length;
+        const promedioGeneral = parseFloat(data.promedio_general) || 0;
+
+        mainContent.innerHTML = `
+          <div style="padding: 20px;">
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <i data-lucide="book-open" style="width: 28px; height: 28px; color: #4a5259;"></i>
+                <h2 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 500; font-family: 'Inter', sans-serif;">Mis Cursos</h2>
+              </div>
+              <p style="margin: 0; color: #6b7280; font-size: 14px;">Gestiona tus cursos inscritos y visualiza tu progreso</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 32px;">
+              <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+                  <i data-lucide="book-open" style="width: 28px; height: 28px; color: #4a5259;"></i>
+                </div>
+                <div>
+                  <div style="font-size: 32px; font-weight: 600; color: #1e1e1e;">${totalCursos}</div>
+                  <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Cursos Inscritos</div>
+                </div>
+              </div>
+
+              <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+                  <i data-lucide="trending-up" style="width: 28px; height: 28px; color: #4a5259;"></i>
+                </div>
+                <div>
+                  <div style="font-size: 32px; font-weight: 600; color: #1e1e1e;">${promedioGeneral > 0 ? promedioGeneral.toFixed(1) : 'S/N'}</div>
+                  <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Promedio General</div>
+                </div>
+              </div>
+
+              <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+                  <i data-lucide="award" style="width: 28px; height: 28px; color: #4a5259;"></i>
+                </div>
+                <div>
+                  <div style="font-size: 32px; font-weight: 600; color: #1e1e1e;">${cursos.filter(c => c.promedio && c.promedio >= 7).length}/${totalCursos}</div>
+                  <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Aprobados</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px;">
+              ${cursos.length > 0 ? cursos.map((curso, index) => {
+                const promedio = parseFloat(curso.promedio) || 0;
+                const progreso = promedio > 0 ? Math.min((promedio / 10) * 100, 100) : 0;
+                let barColor = '#4a5259';
+                if (promedio >= 7) barColor = '#22c55e';
+                else if (promedio >= 5) barColor = '#f59e0b';
+                else if (promedio > 0) barColor = '#ef4444';
+                
+                return `
+                <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s ease;" onclick="abrirDetalleCursoAlumno(${curso.id_curso}, '${curso.nombre_curso}')" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
+                  
+                  <div style="position: absolute; top: 12px; right: 12px; background: rgba(74, 82, 89, 0.1); color: #4a5259; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 12px;">Nivel ${curso.id_nivel || 'N/A'}</div>
+                  
+                  <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+                    <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                      <i data-lucide="book-open" style="width: 28px; height: 28px; color: #4a5259;"></i>
+                    </div>
+                    <div style="flex: 1; min-width: 0; padding-right: 70px;">
+                      <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 16px; font-weight: 500; font-family: 'Inter', sans-serif;">${curso.nombre_curso}</h3>
+                      <p style="margin: 0; color: #6b7280; font-size: 13px;">${curso.nombre_idioma || 'Curso'}</p>
+                    </div>
+                  </div>
+                  
+                  <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
+                      <i data-lucide="clock" style="width: 14px; height: 14px; color: #9ca3af;"></i>
+                      <span>${curso.horario || 'Por confirmar'}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
+                      <i data-lucide="trending-up" style="width: 14px; height: 14px; color: #9ca3af;"></i>
+                      <span>Promedio: <strong style="color: ${promedio >= 7 ? '#22c55e' : promedio >= 5 ? '#f59e0b' : promedio > 0 ? '#ef4444' : '#6b7280'}">${promedio > 0 ? promedio.toFixed(1) : 'S/N'}</strong></span>
+                    </div>
+                  </div>
+                  
+                  ${promedio > 0 ? `
+                  <div style="margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                      <span style="color: #6b7280; font-size: 12px;">Progreso</span>
+                      <span style="color: #1e1e1e; font-size: 12px; font-weight: 500;">${progreso.toFixed(0)}%</span>
+                    </div>
+                    <div style="height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
+                      <div style="height: 100%; width: ${progreso}%; background: ${barColor}; border-radius: 3px; transition: width 0.3s ease;"></div>
+                    </div>
+                  </div>
+                  ` : `
+                  <div style="padding: 12px; background: rgba(74, 82, 89, 0.05); border-radius: 8px; margin-bottom: 16px;">
+                    <span style="color: #6b7280; font-size: 13px;">Sin calificaciones registradas</span>
+                  </div>
+                  `}
+                  
+                  <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
+                  
+                  <div style="display: flex; justify-content: flex-end;">
+                    <button style="background: rgba(74, 82, 89, 0.08); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: #4a5259; font-size: 13px; font-weight: 500; transition: all 0.2s;" onclick="event.stopPropagation(); abrirDetalleCursoAlumno(${curso.id_curso}, '${curso.nombre_curso}')" onmouseenter="this.style.background='rgba(74, 82, 89, 0.15)'" onmouseleave="this.style.background='rgba(74, 82, 89, 0.08)'">
+                      <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+                      Ver detalles
+                    </button>
+                  </div>
+                </div>
+              `}).join('') : `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 2px dashed #e5e7eb;">
+                  <div style="background: rgba(74, 82, 89, 0.08); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i data-lucide="inbox" style="width: 40px; height: 40px; color: #9ca3af;"></i>
+                  </div>
+                  <h3 style="margin: 0 0 8px 0; color: #1e1e1e; font-size: 18px; font-weight: 500;">No hay cursos inscritos</h3>
+                  <p style="margin: 0; color: #6b7280; font-size: 14px;">Aún no estás inscrito en ningún curso. Contacta con administración para más información.</p>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+
+      } catch (error) {
+        console.error("Error al cargar cursos:", error);
+        mainContent.innerHTML = `
+          <div class="error-container">
+            <i data-lucide="alert-circle"></i>
+            <h3>Error al cargar los cursos</h3>
+            <p>Por favor, intenta nuevamente más tarde.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+      }
+    },
+
+    btnCursado: async () => {
+      loader.classList.remove("hidden");
+      mainContent.classList.remove("active");
+
+      try {
+        mainContent.innerHTML = `
+          <div id="cursado-section" style="padding: 20px;">
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <i data-lucide="graduation-cap" style="width: 28px; height: 28px; color: #4a5259;"></i>
+                <h2 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 500; font-family: 'Inter', sans-serif;">Catálogo de Cursos</h2>
+              </div>
+              <p style="margin: 0; color: #6b7280; font-size: 14px;">Explora todos los cursos disponibles y solicita tu inscripción</p>
+            </div>
+
+            <div style="background: white; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+              <h3 style="font-family: 'Inter'; margin: 0 0 16px 0; color: #1e1e1e; font-size: 20px; font-weight: 400; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="book-open" style="width: 20px; height: 20px; color: #4a5259;"></i>
+                Mis Cursos Actuales
+              </h3>
+              <div id="mis-cursos-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+                <div style="text-align: center; padding: 20px; color: #6b7280;">
+                  <p>Cargando...</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="height: 1px; background: #e5e7eb; margin: 24px 0;"></div>
+
+            <div style="background: white; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+              <h3 style="font-family: 'Inter'; margin: 0 0 16px 0; color: #1e1e1e; font-size: 20px; font-weight: 400; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="search" style="width: 20px; height: 20px; color: #4a5259;"></i>
+                Buscar Cursos
+              </h3>
+              <input 
+                type="text" 
+                id="busqueda-curso" 
+                placeholder="Buscar por nombre de curso, idioma o profesor..."
+                style="width: 100%; padding: 14px 18px; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: all 0.2s;"
+                onfocus="this.style.borderColor='#4a5259'; this.style.boxShadow='0 0 0 3px rgba(74, 82, 89, 0.1)'"
+                onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h3 style="font-family: 'Inter'; padding-top: 20px; margin: 0; color: #1e1e1e; font-size: 20px; font-weight: 500; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="book" style="width: 20px; height: 20px; color: #4a5259;"></i>
+                Cursos Disponibles
+              </h3>
+              <span id="total-cursos-count" style="background: rgba(74, 82, 89, 0.1); color: #4a5259; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;">Cargando...</span>
+            </div>
+
+            <div id="catalogo-cursos-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px;">
+              <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #6b7280;">
+                <p>Cargando catálogo de cursos...</p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+
+        // Cargar/Reinicializar el manager (evitar duplicados)
+        if (!window.cursadoManagerLoaded) {
+          const script = document.createElement('script');
+          script.src = `assets/js/cursado-manager.js?v=${Date.now()}`;
+          script.onload = () => {
+            console.log(' cursado-manager.js cargado correctamente');
+            window.cursadoManagerLoaded = true;
+          };
+          script.onerror = () => {
+            console.error(' Error al cargar cursado-manager.js');
+            mainContent.innerHTML = `
+              <div class="error-container">
+                <i data-lucide="alert-circle"></i>
+                <h3>Error al cargar la sección</h3>
+                <p>No se pudo cargar el módulo de cursado. Por favor, recarga la página.</p>
+              </div>
+            `;
+            lucide.createIcons();
+          };
+          document.head.appendChild(script);
+        } else if (window.cursadoManager) {
+          // Si ya está cargado, reinicializar
+          window.cursadoManager.init();
+        }
+
+      } catch (error) {
+        console.error("Error al cargar sección Cursado:", error);
+        mainContent.innerHTML = `
+          <div class="error-container">
+            <i data-lucide="alert-circle"></i>
+            <h3>Error al cargar el catálogo</h3>
+            <p>Por favor, intenta nuevamente más tarde.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+      }
+    },
+
+    btnNotas: async () => {
+      loader.classList.remove("hidden");
+      mainContent.classList.remove("active");
+
+      try {
+        const response = await fetch(`${API_URL}/alumnos/${id_alumno}`);
+        
+        if (!response.ok) {
+          throw new Error(`Error al cargar calificaciones: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const cursos = data.cursos || [];
+
+        mainContent.innerHTML = `
+          <div style="padding: 0;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+              <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="clipboard-list" style="width: 22px; height: 22px; color: #4a5259;"></i>
+              </div>
+              <h2 style="font-family: 'Inter';margin: 0;color: #1e1e1e;font-size: 22px;font-weight: 400;">Mis Calificaciones</h2>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px;">
+              <div style="background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <i data-lucide="book-open" style="width: 24px; height: 24px; color: #4a5259;"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 600;">${cursos.length}</h3>
+                  <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">Cursos Activos</p>
+                </div>
+              </div>
+
+              <div style="background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <i data-lucide="bar-chart-3" style="width: 24px; height: 24px; color: #4a5259;"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 600;">${parseFloat(data.promedio_general) > 0 ? parseFloat(data.promedio_general).toFixed(1) : 'S/N'}</h3>
+                  <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">Promedio General</p>
+                </div>
+              </div>
+
+              <div style="background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <i data-lucide="trending-up" style="width: 24px; height: 24px; color: #4a5259;"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 600;">${cursos.filter(c => c.promedio && c.promedio >= 7).length}</h3>
+                  <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">Cursos Aprobados</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: #ffffff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+              <h3 style="margin: 0 0 20px 0; color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="list" style="width: 18px; height: 18px; color: #4a5259;"></i>
+                Detalle de Calificaciones
+              </h3>
+              
+              ${cursos.length > 0 ? `
+                <div style="border-radius: 12px;">
+                  <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                    <thead>
+                      <tr style="background: #f9fafb;">
+                        <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                        <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                        <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Parcial 1</th>
+                        <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Parcial 2</th>
+                        <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Final</th>
+                        <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Promedio</th>
+                        <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${cursos.map(curso => {
+                        const promedio = parseFloat(curso.promedio) || 0;
+                        let estadoBg = 'rgba(156, 163, 175, 0.1)';
+                        let estadoColor = '#9ca3af';
+                        let estadoTexto = 'Pendiente';
+                        
+                        if (promedio >= 7) {
+                          estadoBg = 'rgba(74, 82, 89, 0.1)';
+                          estadoColor = '#4a5259';
+                          estadoTexto = 'Aprobado';
+                        } else if (promedio >= 4) {
+                          estadoBg = 'rgba(107, 114, 128, 0.1)';
+                          estadoColor = '#6b7280';
+                          estadoTexto = 'Regular';
+                        } else if (promedio > 0) {
+                          estadoBg = 'rgba(156, 163, 175, 0.15)';
+                          estadoColor = '#9ca3af';
+                          estadoTexto = 'Reprobado';
+                        }
+
+                        return `
+                          <tr style="border-bottom: 1px solid #e5e7eb; transition: background 0.2s;" onmouseenter="this.style.background='#f9fafb'" onmouseleave="this.style.background='transparent'" onclick="verDetalleCalificacion(${curso.id_curso}, '${curso.nombre_curso}')">
+                            <td style="padding: 14px 16px; color: #1e1e1e; font-size: 14px; cursor: pointer;">
+                              <div style="display: flex; align-items: center; gap: 10px;">
+                                <i data-lucide="book" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                                <span style="font-weight: 500;">${curso.nombre_curso}</span>
+                              </div>
+                            </td>
+                            <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">${curso.nombre_idioma || 'N/A'}</td>
+                            <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center; font-weight: 500;">${curso.parcial1 || '-'}</td>
+                            <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center; font-weight: 500;">${curso.parcial2 || '-'}</td>
+                            <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center; font-weight: 500;">${curso.final || '-'}</td>
+                            <td style="padding: 14px 16px; text-align: center;">
+                              <span style="font-size: 15px; font-weight: 600; color: ${promedio >= 7 ? '#4a5259' : promedio >= 4 ? '#6b7280' : '#9ca3af'};">${promedio > 0 ? promedio.toFixed(1) : '-'}</span>
+                            </td>
+                            <td style="padding: 14px 16px; text-align: center;">
+                              <span style="background: ${estadoBg}; color: ${estadoColor}; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">
+                                ${estadoTexto}
+                              </span>
+                            </td>
+                          </tr>
+                        `;
+                      }).join('')}
+                    </tbody>
+                  </table>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 12px;">
+                  <h4 style="margin: 0 0 12px 0; color: #4a5259; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="info" style="width: 16px; height: 16px;"></i>
+                    Escala de Calificaciones
+                  </h4>
+                  <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="width: 10px; height: 10px; border-radius: 50%; background: #4a5259;"></span>
+                      <span style="color: #6b7280; font-size: 13px;">Aprobado: 7.0 - 10.0</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="width: 10px; height: 10px; border-radius: 50%; background: #6b7280;"></span>
+                      <span style="color: #6b7280; font-size: 13px;">Regular: 4.0 - 6.9</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="width: 10px; height: 10px; border-radius: 50%; background: #9ca3af;"></span>
+                      <span style="color: #6b7280; font-size: 13px;">Reprobado: 0.0 - 3.9</span>
+                    </div>
+                  </div>
+                </div>
+              ` : `
+                <div style="text-align: center; padding: 40px 20px;">
+                  <i data-lucide="clipboard-x" style="width: 48px; height: 48px; color: #9ca3af; margin-bottom: 16px;"></i>
+                  <h3 style="margin: 0 0 8px 0; color: #4a5259; font-size: 16px; font-weight: 600;">No hay calificaciones disponibles</h3>
+                  <p style="margin: 0; color: #6b7280; font-size: 14px;">Aún no tienes cursos con calificaciones registradas.</p>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+
+      } catch (error) {
+        console.error("Error al cargar calificaciones:", error);
+        mainContent.innerHTML = `
+          <div class="error-container">
+            <i data-lucide="alert-circle"></i>
+            <h3>Error al cargar las calificaciones</h3>
+            <p>Por favor, intenta nuevamente más tarde.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+      }
+    },
+
+    btnPagos: async () => {
+      loader.classList.remove("hidden");
+      mainContent.classList.remove("active");
+
+      try {
+        const response = await fetch(`${API_URL}/pagos/alumno/${id_alumno}`);
+        
+        if (!response.ok) {
+          throw new Error(`Error al cargar pagos: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log("Datos de pagos por curso:", data);
+
+        const cursos = data.cursos || [];
+        const estadisticas = data.estadisticas_globales || {
+          total_pagado: 0,
+          total_pendiente: 0,
+          total_cursos: 0,
+          cuotas_vencidas: 0
+        };
+
+        mainContent.innerHTML = `
+          <div style="padding: 0;">
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+                  <i data-lucide="credit-card" style="width: 22px; height: 22px; color: #4a5259;"></i>
+                </div>
+                <h2 style="font-family: 'Inter';margin: 0;color: #1e1e1e;font-size: 22px;font-weight: 400;">Mis Pagos</h2>
+              </div>
+              <p style="margin: 0 0 0 56px; color: #6b7280; font-size: 14px;">Gestiona los pagos de tus cursos activos</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px;">
+              <div style="background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <i data-lucide="check-circle" style="width: 24px; height: 24px; color: #4a5259;"></i>
+                </div>
+                <div>
+                  <p style="margin: 0 0 4px 0; color: #6b7280; font-size: 13px;">Total Pagado</p>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 20px; font-weight: 600;">$${estadisticas.total_pagado.toLocaleString('es-AR', {minimumFractionDigits: 2})}</h3>
+                </div>
+              </div>
+
+              <div style="background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <i data-lucide="clock" style="width: 24px; height: 24px; color: #4a5259;"></i>
+                </div>
+                <div>
+                  <p style="margin: 0 0 4px 0; color: #6b7280; font-size: 13px;">Total Pendiente</p>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 20px; font-weight: 600;">$${estadisticas.total_pendiente.toLocaleString('es-AR', {minimumFractionDigits: 2})}</h3>
+                </div>
+              </div>
+
+              <div style="background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 16px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <i data-lucide="alert-triangle" style="width: 24px; height: 24px; color: #4a5259;"></i>
+                </div>
+                <div>
+                  <p style="margin: 0 0 4px 0; color: #6b7280; font-size: 13px;">Cuotas Impagas</p>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 20px; font-weight: 600;">${estadisticas.cuotas_impagas || 0}</h3>
+                </div>
+              </div>
+            </div>
+
+            ${cursos.length > 0 ? `
+              <div>
+                <h3 style="margin: 0 0 16px 0; color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 10px;">
+                  <i data-lucide="graduation-cap" style="width: 18px; height: 18px; color: #4a5259;"></i>
+                  Pagos por Curso
+                </h3>
+                
+                <div style="display: grid; gap: 20px;">
+                  ${cursos.map(curso => `
+                    <div style="background: #ffffff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                            <i data-lucide="book-open" style="width: 18px; height: 18px; color: #4a5259;"></i>
+                            <span style="color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif;">${curso.nombre_curso}</span>
+                          </div>
+                          <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
+                            <i data-lucide="user" style="width: 14px; height: 14px;"></i>
+                            <span>${curso.profesor}</span>
+                          </div>
+                        </div>
+                        <div style="display: flex; gap: 20px;">
+                          <div style="text-align: center;">
+                            <span style="display: block; color: #6b7280; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">Pagadas</span>
+                            <span style="color: #4a5259; font-size: 15px; font-weight: 600;">${curso.estadisticas.cuotas_pagadas}/10</span>
+                          </div>
+                          <div style="text-align: center;">
+                            <span style="display: block; color: #6b7280; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">Monto</span>
+                            <span style="color: #4a5259; font-size: 15px; font-weight: 600;">$${parseFloat(curso.costo_mensual).toLocaleString('es-AR')}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(55px, 1fr)); gap: 8px; margin-bottom: 20px;">
+                        ${curso.meses.map(mes => {
+                          let estadoIcon = '';
+                          let bgColor = '';
+                          let iconColor = '';
+                          
+                          if (mes.estado === 'pagado') {
+                            estadoIcon = 'check-circle';
+                            bgColor = 'rgba(34, 197, 94, 0.12)';
+                            iconColor = '#16a34a';
+                          } else if (mes.estado === 'impago') {
+                            estadoIcon = 'x-circle';
+                            bgColor = 'rgba(239, 68, 68, 0.12)';
+                            iconColor = '#dc2626';
+                          } else if (mes.estado === 'pendiente') {
+                            estadoIcon = 'clock';
+                            bgColor = 'rgba(107, 114, 128, 0.1)';
+                            iconColor = '#6b7280';
+                          } else {
+                            estadoIcon = 'circle';
+                            bgColor = 'rgba(229, 231, 235, 0.5)';
+                            iconColor = '#d1d5db';
+                          }
+                          
+                          return `
+                            <div style="background: ${bgColor}; border-radius: 10px; padding: 10px 6px; text-align: center; cursor: ${mes.estado === 'pagado' || mes.estado === 'pendiente' || mes.estado === 'impago' ? 'pointer' : 'default'}; transition: all 0.2s ease;" 
+                                 onclick="${mes.estado === 'pagado' ? `generarComprobantePago(${mes.id_pago})` : (mes.estado === 'pendiente' || mes.estado === 'impago' ? `window.abrirModalSeleccionMes(${curso.id_curso}, '${curso.nombre_curso}', '${mes.mes}', ${mes.monto})` : '')}"
+                                 ${mes.estado === 'pagado' ? 'title="Descargar comprobante"' : ''}
+                                 onmouseenter="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'; this.style.filter='brightness(0.95)'" onmouseleave="this.style.boxShadow='none'; this.style.filter='brightness(1)'">
+                              <i data-lucide="${estadoIcon}" style="width: 18px; height: 18px; color: ${iconColor}; margin-bottom: 4px;"></i>
+                              <span style="display: block; color: #4a5259; font-size: 11px; font-weight: 500;">${mes.mes === 'Matricula' ? 'Mat' : mes.mes.substring(0, 3)}</span>
+                              ${mes.estado === 'pagado' ? `<span style="display: block; color: #16a34a; font-size: 9px; margin-top: 2px;">${new Date(mes.fecha_pago).toLocaleDateString('es-ES', {day: '2-digit', month: '2-digit'})}</span>` : ''}
+                            </div>
+                          `;
+                        }).join('')}
+                      </div>
+
+                      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <div style="flex: 1; min-width: 200px;">
+                          <div style="height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; margin-bottom: 6px;">
+                            <div style="height: 100%; background: #43a047; border-radius: 3px; width: ${(curso.estadisticas.cuotas_pagadas / 10) * 100}%; transition: width 0.3s;"></div>
+                          </div>
+                          <span style="color: #6b7280; font-size: 12px;">${Math.round((curso.estadisticas.cuotas_pagadas / 10) * 100)}% completado</span>
+                        </div>
+                        ${curso.estadisticas.cuotas_impagas > 0 ? `
+                          <div style="display: flex; align-items: center; gap: 6px; background: rgba(239, 68, 68, 0.1); padding: 6px 12px; border-radius: 20px;">
+                            <i data-lucide="alert-triangle" style="width: 14px; height: 14px; color: #dc2626;"></i>
+                            <span style="color: #dc2626; font-size: 12px; font-weight: 500;">${curso.estadisticas.cuotas_impagas} cuota${curso.estadisticas.cuotas_impagas > 1 ? 's' : ''} impaga${curso.estadisticas.cuotas_impagas > 1 ? 's' : ''}</span>
+                          </div>
+                        ` : ''}
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : `
+              <div style="text-align: center; padding: 40px 20px; background: #ffffff; border-radius: 16px; border: 1px solid #e5e7eb;">
+                <i data-lucide="inbox" style="width: 48px; height: 48px; color: #9ca3af; margin-bottom: 16px;"></i>
+                <h4 style="margin: 0 0 8px 0; color: #4a5259; font-size: 16px; font-weight: 600;">No tienes cursos activos</h4>
+                <p style="margin: 0; color: #6b7280; font-size: 14px;">Inscríbete a un curso para comenzar a gestionar tus pagos.</p>
+              </div>
+            `}
+          </div>
+        `;
+
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+
+      } catch (error) {
+        console.error("Error al cargar pagos:", error);
+        mainContent.innerHTML = `
+          <div class="error-container">
+            <i data-lucide="alert-circle"></i>
+            <h3>Error al cargar los pagos</h3>
+            <p>${error.message || 'Por favor, intenta nuevamente más tarde.'}</p>
+          </div>
+        `;
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+      }
+    },
+
+    // Sección: Mi Perfil
+    btnPerfil: async () => {
+      loader.classList.remove("hidden");
+      mainContent.classList.remove("active");
+
+      try {
+        const response = await fetch(`${API_URL}/alumnos/${id_alumno}/perfil`);
+        const perfil = await response.json();
+
+        mainContent.innerHTML = `
+          <div style="padding: 0;">
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+                  <i data-lucide="user" style="width: 22px; height: 22px; color: #4a5259;"></i>
+                </div>
+                <h2 style="font-family: 'Inter';margin: 0;color: #1e1e1e;font-size: 22px;font-weight: 400;">Mi Perfil</h2>
+              </div>
+              <p style="margin: 0 0 0 56px; color: #6b7280; font-size: 14px;">Administra tu información personal</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              <div style="background: #ffffff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                  <i data-lucide="user-circle" style="width: 20px; height: 20px; color: #4a5259;"></i>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif;">Datos Personales</h3>
+                </div>
+                
+                <div style="background: rgba(74, 82, 89, 0.05); border-left: 3px solid #4a5259; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                  <i data-lucide="lock" style="color: #6b7280; width: 16px; height: 16px; flex-shrink: 0;"></i>
+                  <span style="color: #6b7280; font-size: 13px;">Esta información no puede ser editada</span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                  <div style="background: #f9fafb; border-radius: 12px; padding: 16px;">
+                    <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Nombre Completo</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <i data-lucide="user" style="width: 18px; height: 18px; color: #4a5259;"></i>
+                      <span style="color: #1e1e1e; font-size: 15px; font-weight: 500;">${perfil.nombre || 'No especificado'} ${perfil.apellido || ''}</span>
+                    </div>
+                  </div>
+
+                  <div style="background: #f9fafb; border-radius: 12px; padding: 16px;">
+                    <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">DNI</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <i data-lucide="id-card" style="width: 18px; height: 18px; color: #4a5259;"></i>
+                      <span style="color: #1e1e1e; font-size: 15px; font-weight: 500;">${perfil.dni || 'No especificado'}</span>
+                    </div>
+                  </div>
+
+                  <div style="background: #f9fafb; border-radius: 12px; padding: 16px;">
+                    <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Legajo</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <i data-lucide="bookmark" style="width: 18px; height: 18px; color: #4a5259;"></i>
+                      <span style="color: #1e1e1e; font-size: 15px; font-weight: 500;">${perfil.legajo || 'No especificado'}</span>
+                    </div>
+                  </div>
+
+                  <div style="background: #f9fafb; border-radius: 12px; padding: 16px;">
+                    <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Email</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <i data-lucide="mail" style="width: 18px; height: 18px; color: #4a5259;"></i>
+                      <span style="color: #1e1e1e; font-size: 15px; font-weight: 500;">${perfil.mail || 'No especificado'}</span>
+                    </div>
+                  </div>
+
+                  <div style="background: #f9fafb; border-radius: 12px; padding: 16px;">
+                    <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Estado</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <span style="background: ${perfil.estado === 'activo' ? 'rgba(74, 82, 89, 0.1)' : 'rgba(156, 163, 175, 0.15)'}; color: ${perfil.estado === 'activo' ? '#4a5259' : '#9ca3af'}; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;">${perfil.estado || 'Sin estado'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: #ffffff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                  <i data-lucide="info" style="width: 20px; height: 20px; color: #4a5259;"></i>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif;">Información Adicional</h3>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                  <div style="background: #f9fafb; border-radius: 12px; padding: 16px;">
+                    <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Fecha de Registro</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <i data-lucide="calendar-plus" style="width: 18px; height: 18px; color: #4a5259;"></i>
+                      <span style="color: #1e1e1e; font-size: 15px; font-weight: 500;">${perfil.fecha_registro ? new Date(perfil.fecha_registro).toLocaleDateString('es-ES') : 'No disponible'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+
+      } catch (error) {
+        console.error("Error al cargar perfil:", error);
+        mainContent.innerHTML = `
+          <div class="error-container">
+            <i data-lucide="alert-circle"></i>
+            <h3>Error al cargar perfil</h3>
+            <p>Por favor, intenta nuevamente más tarde.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        loader.classList.add("hidden");
+        setTimeout(() => mainContent.classList.add("active"), 100);
+      }
+    },
+
+    btnChatSoporte: () => {
+      mainContent.classList.remove("active");
+      mainContent.innerHTML = `<div id="userChatContainer"></div>`;
+      setTimeout(() => {
+        if (window.userChatManager) {
+          window.userChatManager.renderChatView();
+          // Ya NO llamamos init() aquí - se llamó automáticamente al cargar la página
+        }
+        mainContent.classList.add("active");
+        lucide.createIcons();
+      }, 100);
+    },
+
+    btnAyuda: () => {
+      mainContent.classList.remove("active");
+      mainContent.innerHTML = `
+        <div class="ayuda-container">
+          <div class="ayuda-header">
+            <h2 style="color: white;"><i data-lucide="help-circle"></i> Centro de Ayuda</h2>
+            <p>Guías completas para aprovechar al máximo tu experiencia en CEMI</p>
+            <div class="ayuda-stats">
+              <div class="ayuda-stat-item">
+                <div class="ayuda-stat-number">25+</div>
+                <div class="ayuda-stat-label">Guías disponibles</div>
+              </div>
+              <div class="ayuda-stat-item">
+                <div class="ayuda-stat-number">9</div>
+                <div class="ayuda-stat-label">Categorías</div>
+              </div>
+              <div class="ayuda-stat-item">
+                <div class="ayuda-stat-number">24/7</div>
+                <div class="ayuda-stat-label">Acceso disponible</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ayuda-search-container">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" class="ayuda-search-input" id="ayudaSearchInput" placeholder="¿Qué necesitas aprender hoy?" autocomplete="off">
+            <div class="search-suggestions">
+              <span class="search-suggestion" onclick="document.getElementById('ayudaSearchInput').value='pagos'; document.getElementById('ayudaSearchInput').dispatchEvent(new Event('input'))">Pagos</span>
+              <span class="search-suggestion" onclick="document.getElementById('ayudaSearchInput').value='notas'; document.getElementById('ayudaSearchInput').dispatchEvent(new Event('input'))">Calificaciones</span>
+              <span class="search-suggestion" onclick="document.getElementById('ayudaSearchInput').value='inscripcion'; document.getElementById('ayudaSearchInput').dispatchEvent(new Event('input'))">Inscripción</span>
+              <span class="search-suggestion" onclick="document.getElementById('ayudaSearchInput').value='perfil'; document.getElementById('ayudaSearchInput').dispatchEvent(new Event('input'))">Mi Perfil</span>
+            </div>
+          </div>
+
+          <div class="search-results-count" id="searchResultsCount"></div>
+          <div class="no-results-message" id="noResultsMessage">
+            <i data-lucide="search-x"></i>
+            <h3>No se encontraron resultados</h3>
+            <p>Intenta con otros términos de búsqueda o explora las categorías</p>
+          </div>
+
+          <div class="ayuda-quick-access">
+            <div class="quick-access-card" onclick="document.querySelector('[data-category=pagos] .accordion-header').click()">
+              <div class="qa-icon"><i data-lucide="credit-card"></i></div>
+              <div class="qa-text">
+                <h4>Realizar Pagos</h4>
+                <span>Métodos y comprobantes</span>
+              </div>
+            </div>
+            <div class="quick-access-card" onclick="document.querySelector('[data-category=calificaciones] .accordion-header').click()">
+              <div class="qa-icon"><i data-lucide="clipboard-list"></i></div>
+              <div class="qa-text">
+                <h4>Ver Calificaciones</h4>
+                <span>Notas y promedios</span>
+              </div>
+            </div>
+            <div class="quick-access-card" onclick="document.querySelector('[data-category=cursado] .accordion-header').click()">
+              <div class="qa-icon"><i data-lucide="graduation-cap"></i></div>
+              <div class="qa-text">
+                <h4>Inscripciones</h4>
+                <span>Nuevos cursos</span>
+              </div>
+            </div>
+            <div class="quick-access-card" onclick="document.querySelector('[data-category=chat] .accordion-header').click()">
+              <div class="qa-icon"><i data-lucide="message-circle"></i></div>
+              <div class="qa-text">
+                <h4>Soporte</h4>
+                <span>Contactar ayuda</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ayuda-categorias" id="ayudaCategorias">
+            
+            <div class="ayuda-accordion" data-category="inicio">
+              <div class="accordion-header">
+                <div class="accordion-title">
+                  <div class="cat-icon"><i data-lucide="home"></i></div>
+                  <div class="accordion-title-text">
+                    <span>Primeros Pasos</span>
+                    <small>Aprende a navegar y entender tu panel</small>
+                  </div>
+                </div>
+                <div class="accordion-meta">
+                  <span class="accordion-count">2 guías</span>
+                  <i data-lucide="chevron-down" class="accordion-icon"></i>
+                </div>
+              </div>
+              <div class="accordion-content">
+                <div class="accordion-body">
+                  <div class="guia-list">
+                    <div class="guia-item" data-keywords="inicio bienvenida panel dashboard navegacion menu">
+                      <div class="guia-icon"><i data-lucide="layout-dashboard"></i></div>
+                      <div class="guia-content">
+                        <h4>Navegación del Panel</h4>
+                        <p>El menú lateral izquierdo te permite acceder a todas las secciones: Mis Cursos, Cursado, Calificaciones, Pagos, Perfil y más. Haz clic en cualquier opción para cargar esa sección.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Básico</span>
+                          <span class="guia-tag">Navegación</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="entender dashboard resumen informacion estadisticas">
+                      <div class="guia-icon"><i data-lucide="info"></i></div>
+                      <div class="guia-content">
+                        <h4>Entender tu Dashboard</h4>
+                        <p>Al ingresar verás un resumen de tus cursos activos, tu promedio general y tu progreso académico. Las tarjetas de estadísticas te muestran información clave de un vistazo.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Básico</span>
+                          <span class="guia-tag">Estadísticas</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ayuda-accordion" data-category="cursos">
+              <div class="accordion-header">
+                <div class="accordion-title">
+                  <div class="cat-icon"><i data-lucide="book-open"></i></div>
+                  <div class="accordion-title-text">
+                    <span>Mis Cursos</span>
+                    <small>Visualiza y gestiona tus cursos inscritos</small>
+                  </div>
+                </div>
+                <div class="accordion-meta">
+                  <span class="accordion-count">3 guías</span>
+                  <i data-lucide="chevron-down" class="accordion-icon"></i>
+                </div>
+              </div>
+              <div class="accordion-content">
+                <div class="accordion-body">
+                  <div class="guia-list">
+                    <div class="guia-item" data-keywords="cursos inscritos ver lista mis cursos matriculado">
+                      <div class="guia-icon"><i data-lucide="book-open"></i></div>
+                      <div class="guia-content">
+                        <h4>Ver Cursos Inscritos</h4>
+                        <p>En esta sección encontrarás todos los cursos en los que estás matriculado. Cada tarjeta muestra el nombre del curso, idioma, nivel y tu progreso actual.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Cursos</span>
+                          <span class="guia-tag">Lista</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="detalles curso informacion profesor horario aula">
+                      <div class="guia-icon"><i data-lucide="eye"></i></div>
+                      <div class="guia-content">
+                        <h4>Detalles de un Curso</h4>
+                        <p>Haz clic en cualquier tarjeta de curso para ver información detallada: profesor asignado, horario de clases, aula y tus calificaciones específicas.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Detalles</span>
+                          <span class="guia-tag">Horarios</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="progreso barra porcentaje avance notas rendimiento">
+                      <div class="guia-icon"><i data-lucide="trending-up"></i></div>
+                      <div class="guia-content">
+                        <h4>Entender el Progreso</h4>
+                        <p>La barra de progreso indica tu avance basado en calificaciones. Verde = aprobado (7+), amarillo = en proceso, rojo = requiere atención.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Progreso</span>
+                          <span class="guia-tag">Rendimiento</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ayuda-accordion" data-category="cursado">
+              <div class="accordion-header">
+                <div class="accordion-title">
+                  <div class="cat-icon"><i data-lucide="graduation-cap"></i></div>
+                  <div class="accordion-title-text">
+                    <span>Cursado e Inscripciones</span>
+                    <small>Explora cursos disponibles y solicita inscripción</small>
+                  </div>
+                </div>
+                <div class="accordion-meta">
+                  <span class="accordion-count">3 guías</span>
+                  <i data-lucide="chevron-down" class="accordion-icon"></i>
+                </div>
+              </div>
+              <div class="accordion-content">
+                <div class="accordion-body">
+                  <div class="guia-list">
+                    <div class="guia-item" data-keywords="catalogo cursos disponibles explorar buscar filtrar">
+                      <div class="guia-icon"><i data-lucide="search"></i></div>
+                      <div class="guia-content">
+                        <h4>Catálogo de Cursos</h4>
+                        <p>Explora todos los cursos disponibles en el instituto. Usa el buscador para filtrar por nombre, idioma o profesor. Cada curso muestra disponibilidad.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Catálogo</span>
+                          <span class="guia-tag">Búsqueda</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="inscripcion solicitar inscribirse curso nuevo matricula">
+                      <div class="guia-icon"><i data-lucide="user-plus"></i></div>
+                      <div class="guia-content">
+                        <h4>Solicitar Inscripción</h4>
+                        <p>Para inscribirte en un nuevo curso, haz clic en "Solicitar Inscripción" de la tarjeta del curso. Un administrador revisará tu solicitud.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Inscripción</span>
+                          <span class="guia-tag">Solicitud</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="disponibilidad cupos lugares disponibles lleno vacantes">
+                      <div class="guia-icon"><i data-lucide="users"></i></div>
+                      <div class="guia-content">
+                        <h4>Verificar Disponibilidad</h4>
+                        <p>Cada curso muestra cupos disponibles. Si está lleno, contacta a administración para alternativas o lista de espera.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Cupos</span>
+                          <span class="guia-tag">Disponibilidad</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ayuda-accordion" data-category="calificaciones">
+              <div class="accordion-header">
+                <div class="accordion-title">
+                  <div class="cat-icon"><i data-lucide="clipboard-list"></i></div>
+                  <div class="accordion-title-text">
+                    <span>Mis Calificaciones</span>
+                    <small>Consulta notas, promedios e historial académico</small>
+                  </div>
+                </div>
+                <div class="accordion-meta">
+                  <span class="accordion-count">3 guías</span>
+                  <i data-lucide="chevron-down" class="accordion-icon"></i>
+                </div>
+              </div>
+              <div class="accordion-content">
+                <div class="accordion-body">
+                  <div class="guia-list">
+                    <div class="guia-item" data-keywords="notas ver calificaciones parciales final examenes">
+                      <div class="guia-icon"><i data-lucide="file-text"></i></div>
+                      <div class="guia-content">
+                        <h4>Ver Calificaciones</h4>
+                        <p>Consulta tus notas de Parcial 1, Parcial 2 y Final de cada curso. El sistema calcula automáticamente tu promedio por curso y general.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Notas</span>
+                          <span class="guia-tag">Parciales</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="promedio calcular media notas general rendimiento">
+                      <div class="guia-icon"><i data-lucide="calculator"></i></div>
+                      <div class="guia-content">
+                        <h4>Entender Promedios</h4>
+                        <p>El promedio se calcula sumando tus notas y dividiendo por evaluaciones rendidas. El promedio general incluye todos tus cursos activos.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Promedio</span>
+                          <span class="guia-tag">Cálculo</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="historial academico registro notas anteriores evolucion">
+                      <div class="guia-icon"><i data-lucide="history"></i></div>
+                      <div class="guia-content">
+                        <h4>Historial Académico</h4>
+                        <p>Tu historial muestra todas las calificaciones obtenidas a lo largo del tiempo, permitiéndote ver tu evolución académica.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Historial</span>
+                          <span class="guia-tag">Evolución</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ayuda-accordion" data-category="pagos">
+              <div class="accordion-header">
+                <div class="accordion-title">
+                  <div class="cat-icon"><i data-lucide="credit-card"></i></div>
+                  <div class="accordion-title-text">
+                    <span>Mis Pagos</span>
+                    <small>Métodos de pago, cuotas y comprobantes</small>
+                  </div>
+                </div>
+                <div class="accordion-meta">
+                  <span class="accordion-count">5 guías</span>
+                  <i data-lucide="chevron-down" class="accordion-icon"></i>
+                </div>
+              </div>
+              <div class="accordion-content">
+                <div class="accordion-body">
+                  <div class="guia-list">
+                    <div class="guia-item" data-keywords="estado pagos cuotas pendientes ver deuda">
+                      <div class="guia-icon"><i data-lucide="receipt"></i></div>
+                      <div class="guia-content">
+                        <h4>Ver Estado de Pagos</h4>
+                        <p>Consulta el estado de tus cuotas: pagadas, pendientes o vencidas. El sistema muestra un resumen completo de tu situación financiera.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Estado</span>
+                          <span class="guia-tag">Cuotas</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="pagar cuota realizar pago metodo mercadopago efectivo abonar">
+                      <div class="guia-icon"><i data-lucide="wallet"></i></div>
+                      <div class="guia-content">
+                        <h4>Realizar un Pago</h4>
+                        <p>Selecciona el mes a abonar y elige el método: Mercado Pago (online) o Efectivo (genera ticket para pagar presencialmente).</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Pagar</span>
+                          <span class="guia-tag">Métodos</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="efectivo ticket comprobante pago presencial secretaria">
+                      <div class="guia-icon"><i data-lucide="banknote"></i></div>
+                      <div class="guia-content">
+                        <h4>Pago en Efectivo</h4>
+                        <p>Al elegir efectivo, se genera un ticket con código único. Presenta este ticket en secretaría para completar el pago. Puedes descargarlo o imprimirlo.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Efectivo</span>
+                          <span class="guia-tag">Ticket</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="mercadopago online tarjeta debito credito digital">
+                      <div class="guia-icon"><i data-lucide="smartphone"></i></div>
+                      <div class="guia-content">
+                        <h4>Pago con Mercado Pago</h4>
+                        <p>El pago online te redirige a Mercado Pago donde puedes usar tarjeta de débito, crédito o dinero en cuenta. Se acredita automáticamente.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Online</span>
+                          <span class="guia-tag">Tarjeta</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="descargar ticket comprobante pdf imprimir recibo">
+                      <div class="guia-icon"><i data-lucide="download"></i></div>
+                      <div class="guia-content">
+                        <h4>Descargar Comprobantes</h4>
+                        <p>Descarga tickets de pago en efectivo o comprobantes de pagos realizados para tu registro personal desde la sección de pagos.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Descarga</span>
+                          <span class="guia-tag">PDF</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ayuda-accordion" data-category="perfil">
+              <div class="accordion-header">
+                <div class="accordion-title">
+                  <div class="cat-icon"><i data-lucide="user"></i></div>
+                  <div class="accordion-title-text">
+                    <span>Mi Perfil</span>
+                    <small>Personaliza tu cuenta y actualiza datos</small>
+                  </div>
+                </div>
+                <div class="accordion-meta">
+                  <span class="accordion-count">2 guías</span>
+                  <i data-lucide="chevron-down" class="accordion-icon"></i>
+                </div>
+              </div>
+              <div class="accordion-content">
+                <div class="accordion-body">
+                  <div class="guia-list">
+                    <div class="guia-item" data-keywords="avatar foto perfil imagen cambiar subir fotografia">
+                      <div class="guia-icon"><i data-lucide="camera"></i></div>
+                      <div class="guia-content">
+                        <h4>Cambiar Avatar</h4>
+                        <p>Personaliza tu perfil subiendo una foto. Haz clic en tu avatar actual y selecciona una imagen de tu dispositivo (formatos: JPG, PNG).</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Avatar</span>
+                          <span class="guia-tag">Foto</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="datos personales editar informacion telefono email contacto">
+                      <div class="guia-icon"><i data-lucide="edit"></i></div>
+                      <div class="guia-content">
+                        <h4>Actualizar Datos Personales</h4>
+                        <p>Mantén tu información actualizada: teléfono, email de contacto. Datos como DNI y legajo solo los modifica administración.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Datos</span>
+                          <span class="guia-tag">Contacto</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ayuda-accordion" data-category="classroom">
+              <div class="accordion-header">
+                <div class="accordion-title">
+                  <div class="cat-icon"><i data-lucide="school"></i></div>
+                  <div class="accordion-title-text">
+                    <span>Classroom</span>
+                    <small>Accede a materiales y recursos de estudio</small>
+                  </div>
+                </div>
+                <div class="accordion-meta">
+                  <span class="accordion-count">2 guías</span>
+                  <i data-lucide="chevron-down" class="accordion-icon"></i>
+                </div>
+              </div>
+              <div class="accordion-content">
+                <div class="accordion-body">
+                  <div class="guia-list">
+                    <div class="guia-item" data-keywords="classroom google acceder materiales recursos plataforma">
+                      <div class="guia-icon"><i data-lucide="external-link"></i></div>
+                      <div class="guia-content">
+                        <h4>Acceder a Classroom</h4>
+                        <p>Classroom te conecta con Google Classroom donde encontrarás materiales de estudio, tareas y recursos compartidos por tus profesores.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Google</span>
+                          <span class="guia-tag">Acceso</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="materiales archivos documentos descargar recursos tareas">
+                      <div class="guia-icon"><i data-lucide="folder-open"></i></div>
+                      <div class="guia-content">
+                        <h4>Acceder a Materiales</h4>
+                        <p>Una vez en Classroom, podrás ver y descargar los materiales que tus profesores hayan compartido para cada curso.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Materiales</span>
+                          <span class="guia-tag">Descargas</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ayuda-accordion" data-category="chat">
+              <div class="accordion-header">
+                <div class="accordion-title">
+                  <div class="cat-icon"><i data-lucide="message-circle"></i></div>
+                  <div class="accordion-title-text">
+                    <span>Chat de Soporte</span>
+                    <small>Comunícate con el equipo de administración</small>
+                  </div>
+                </div>
+                <div class="accordion-meta">
+                  <span class="accordion-count">2 guías</span>
+                  <i data-lucide="chevron-down" class="accordion-icon"></i>
+                </div>
+              </div>
+              <div class="accordion-content">
+                <div class="accordion-body">
+                  <div class="guia-list">
+                    <div class="guia-item" data-keywords="contactar administracion mensaje soporte ayuda consulta">
+                      <div class="guia-icon"><i data-lucide="send"></i></div>
+                      <div class="guia-content">
+                        <h4>Contactar Administración</h4>
+                        <p>Usa el Chat de Soporte para comunicarte directamente con el equipo administrativo. Envía consultas, dudas o reporta problemas.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Contacto</span>
+                          <span class="guia-tag">Consultas</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="notificaciones mensajes nuevos badge alerta respuesta">
+                      <div class="guia-icon"><i data-lucide="bell"></i></div>
+                      <div class="guia-content">
+                        <h4>Notificaciones de Chat</h4>
+                        <p>Cuando recibas respuesta, verás una insignia en Chat Soporte. Habilita las notificaciones del navegador para alertas en tiempo real.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Alertas</span>
+                          <span class="guia-tag">Respuestas</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ayuda-accordion" data-category="faq">
+              <div class="accordion-header">
+                <div class="accordion-title">
+                  <div class="cat-icon"><i data-lucide="message-square-text"></i></div>
+                  <div class="accordion-title-text">
+                    <span>Preguntas Frecuentes</span>
+                    <small>Respuestas rápidas a dudas comunes</small>
+                  </div>
+                </div>
+                <div class="accordion-meta">
+                  <span class="accordion-count">4 guías</span>
+                  <i data-lucide="chevron-down" class="accordion-icon"></i>
+                </div>
+              </div>
+              <div class="accordion-content">
+                <div class="accordion-body">
+                  <div class="guia-list">
+                    <div class="guia-item" data-keywords="contraseña olvidé recuperar acceso login clave">
+                      <div class="guia-icon"><i data-lucide="key"></i></div>
+                      <div class="guia-content">
+                        <h4>¿Olvidé mi contraseña?</h4>
+                        <p>Contacta a administración a través del formulario de ayuda o acude presencialmente a secretaría para restablecer tu contraseña.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Contraseña</span>
+                          <span class="guia-tag">Acceso</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="datos incorrectos error informacion mal legajo corregir">
+                      <div class="guia-icon"><i data-lucide="alert-circle"></i></div>
+                      <div class="guia-content">
+                        <h4>¿Mis datos están incorrectos?</h4>
+                        <p>Si notas errores en tu información personal (nombre, DNI, legajo), comunícate con administración para la corrección.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Corrección</span>
+                          <span class="guia-tag">Datos</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="baja curso desinscribir eliminar salir abandonar">
+                      <div class="guia-icon"><i data-lucide="user-minus"></i></div>
+                      <div class="guia-content">
+                        <h4>¿Cómo me doy de baja de un curso?</h4>
+                        <p>Para solicitar la baja, contacta a administración indicando el curso del que deseas desvincularte y el motivo.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Baja</span>
+                          <span class="guia-tag">Curso</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="guia-item" data-keywords="problema error funciona mal bug reporte tecnico">
+                      <div class="guia-icon"><i data-lucide="bug"></i></div>
+                      <div class="guia-content">
+                        <h4>¿Encontré un error en el sistema?</h4>
+                        <p>Repórtalo a través del Chat de Soporte describiendo qué sucedió y en qué sección. Esto nos ayuda a mejorar el sistema.</p>
+                        <div class="guia-tags">
+                          <span class="guia-tag">Error</span>
+                          <span class="guia-tag">Reporte</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="ayuda-tips">
+            <h3><i data-lucide="lightbulb"></i> Tips Rápidos para Estudiantes</h3>
+            <div class="tips-list">
+              <div class="tip-badge"><i data-lucide="refresh-cw"></i> Recarga la página si algo no carga correctamente</div>
+              <div class="tip-badge"><i data-lucide="bell"></i> Habilita notificaciones para recibir alertas importantes</div>
+              <div class="tip-badge"><i data-lucide="smartphone"></i> El sistema funciona perfectamente desde tu celular</div>
+              <div class="tip-badge"><i data-lucide="message-circle"></i> El chat de soporte es el canal más rápido para ayuda</div>
+            </div>
+          </div>
+
+          <div class="ayuda-footer">
+            <p>¿No encontraste lo que buscabas? Estamos aquí para ayudarte.</p>
+            <div class="ayuda-footer-links">
+              <span class="ayuda-footer-link" onclick="document.getElementById('btnChatSoporte').click()">
+                <i data-lucide="message-circle"></i> Abrir Chat de Soporte
+              </span>
+              <span class="ayuda-footer-link" onclick="window.open('ayuda.html', '_blank')">
+                <i data-lucide="external-link"></i> Centro de Ayuda Completo
+              </span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      setTimeout(() => {
+        mainContent.classList.add("active");
+        lucide.createIcons();
+        initAyudaInteractivity();
+      }, 100);
+    }
+  };
+
+  // Función para inicializar interactividad de la sección Ayuda
+  function initAyudaInteractivity() {
+    // Acordeones
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const accordion = header.parentElement;
+        accordion.classList.toggle('open');
+      });
+    });
+
+    // Buscador
+    const searchInput = document.getElementById('ayudaSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        filterAyudaContent(query);
+      });
+    }
+    
+    // Modales de guía
+    document.querySelectorAll('.guia-item').forEach(item => {
+      item.addEventListener('click', () => {
+        openGuiaModal(item);
+      });
+    });
+  }
+
+  // Datos detallados para guías de alumno
+  const guiasDetalladas = {
+    'Navegación del Panel': {
+      descripcion: 'El menú lateral izquierdo es tu centro de control. Desde aquí accedes a todas las secciones del sistema.',
+      pasos: [
+        { titulo: 'Localiza el menú lateral', desc: 'Está ubicado en el lado izquierdo de la pantalla.' },
+        { titulo: 'Explora las secciones', desc: 'Cada ícono representa una sección diferente.' },
+        { titulo: 'Haz clic para navegar', desc: 'Un solo clic te llevará a la sección seleccionada.' },
+        { titulo: 'Observa los indicadores', desc: 'Los badges rojos indican notificaciones pendientes.' }
+      ],
+      tip: 'En dispositivos móviles, el menú se oculta automáticamente. Usa el ícono de menú para desplegarlo.'
+    },
+    'Entender tu Dashboard': {
+      descripcion: 'Tu dashboard es tu centro de información. Aquí ves un resumen de todo lo importante de un vistazo.',
+      pasos: [
+        { titulo: 'Tarjetas de estadísticas', desc: 'Muestran cursos activos, promedio y progreso.' },
+        { titulo: 'Cursos destacados', desc: 'Acceso rápido a tus cursos principales.' },
+        { titulo: 'Notificaciones', desc: 'Alertas sobre pagos, notas o mensajes.' },
+        { titulo: 'Accesos directos', desc: 'Botones para las funciones más usadas.' }
+      ],
+      tip: 'Revisa tu dashboard al inicio de cada sesión para estar al día.'
+    },
+    'Ver Cursos Inscritos': {
+      descripcion: 'Consulta todos los cursos donde estás matriculado y su información detallada.',
+      pasos: [
+        { titulo: 'Ve a Mis Cursos', desc: 'Desde el menú lateral.' },
+        { titulo: 'Revisa las tarjetas', desc: 'Cada curso muestra su información básica.' },
+        { titulo: 'Consulta el progreso', desc: 'La barra indica tu avance en el curso.' },
+        { titulo: 'Accede a detalles', desc: 'Haz clic para ver más información.' }
+      ],
+      tip: 'El color de la barra de progreso indica tu estado: verde es bueno, amarillo es alerta.'
+    },
+    'Detalles de un Curso': {
+      descripcion: 'Accede a toda la información de un curso: profesor, horario, aula y tus calificaciones.',
+      pasos: [
+        { titulo: 'Selecciona el curso', desc: 'Haz clic en la tarjeta del curso.' },
+        { titulo: 'Ve la información', desc: 'Horario, aula, profesor asignado.' },
+        { titulo: 'Consulta tus notas', desc: 'Parciales y final aparecen aquí.' },
+        { titulo: 'Revisa tu asistencia', desc: 'Historial de asistencias del curso.' }
+      ],
+      tip: 'Guarda el horario en tu calendario personal para no olvidar las clases.'
+    },
+    'Entender el Progreso': {
+      descripcion: 'La barra de progreso refleja tu rendimiento académico basado en tus calificaciones.',
+      pasos: [
+        { titulo: 'Verde (7-10)', desc: 'Excelente rendimiento, vas por buen camino.' },
+        { titulo: 'Amarillo (5-6.99)', desc: 'Aprobado pero podrías mejorar.' },
+        { titulo: 'Rojo (0-4.99)', desc: 'Necesitas atención, considera refuerzo.' },
+        { titulo: 'Promedio general', desc: 'Se calcula con todas tus notas.' }
+      ],
+      tip: 'Habla con tu profesor si ves rojo, hay tiempo para mejorar.'
+    },
+    'Catálogo de Cursos': {
+      descripcion: 'Explora todos los cursos disponibles en el instituto para futuras inscripciones.',
+      pasos: [
+        { titulo: 'Ve a Cursado', desc: 'Desde el menú lateral.' },
+        { titulo: 'Navega el catálogo', desc: 'Todos los cursos disponibles aparecen aquí.' },
+        { titulo: 'Usa filtros', desc: 'Por idioma, nivel o disponibilidad.' },
+        { titulo: 'Revisa la info', desc: 'Cada tarjeta muestra horario y cupos.' }
+      ],
+      tip: 'Los cursos con pocos cupos se llenan rápido, solicita inscripción a tiempo.'
+    },
+    'Solicitar Inscripción': {
+      descripcion: 'Pide inscribirte en nuevos cursos. Un administrador revisará tu solicitud.',
+      pasos: [
+        { titulo: 'Encuentra el curso', desc: 'Navega el catálogo de cursos.' },
+        { titulo: 'Verifica requisitos', desc: 'Algunos cursos requieren nivel previo.' },
+        { titulo: 'Haz clic en inscribir', desc: 'Botón "Solicitar Inscripción".' },
+        { titulo: 'Espera confirmación', desc: 'Recibirás respuesta por el sistema.' }
+      ],
+      tip: 'Asegúrate de no tener conflictos de horario con tus cursos actuales.'
+    },
+    'Verificar Disponibilidad': {
+      descripcion: 'Cada curso tiene un cupo máximo. Verifica si hay lugar antes de solicitar inscripción.',
+      pasos: [
+        { titulo: 'Busca el indicador', desc: 'Cada curso muestra cupos disponibles.' },
+        { titulo: 'Interpreta los colores', desc: 'Verde hay lugar, rojo lleno.' },
+        { titulo: 'Consulta alternativas', desc: 'Si está lleno, busca otros horarios.' },
+        { titulo: 'Contacta soporte', desc: 'Para listas de espera o excepciones.' }
+      ],
+      tip: 'A inicio de cuatrimestre hay más movimiento, los cupos pueden liberarse.'
+    },
+    'Ver Calificaciones': {
+      descripcion: 'Consulta tus notas de parciales y finales de cada curso.',
+      pasos: [
+        { titulo: 'Ve a Calificaciones', desc: 'Desde el menú lateral.' },
+        { titulo: 'Selecciona el curso', desc: 'Si tienes varios, elige uno.' },
+        { titulo: 'Revisa tus notas', desc: 'Parcial 1, Parcial 2, Final.' },
+        { titulo: 'Consulta el promedio', desc: 'Se calcula automáticamente.' }
+      ],
+      tip: 'Las notas se actualizan cuando el profesor las carga, puede demorar unos días.'
+    },
+    'Entender Promedios': {
+      descripcion: 'El promedio se calcula automáticamente basado en tus calificaciones registradas.',
+      pasos: [
+        { titulo: 'Promedio por curso', desc: 'Suma de notas dividido cantidad de evaluaciones.' },
+        { titulo: 'Promedio general', desc: 'Incluye todos tus cursos activos.' },
+        { titulo: 'Peso de evaluaciones', desc: 'Todas las evaluaciones valen igual.' },
+        { titulo: 'Actualización', desc: 'Se recalcula con cada nueva nota.' }
+      ],
+      tip: 'El promedio general es importante para becas y certificados.'
+    },
+    'Historial Académico': {
+      descripcion: 'Tu historial muestra toda tu trayectoria académica en el instituto.',
+      pasos: [
+        { titulo: 'Accede al historial', desc: 'Desde la sección Calificaciones.' },
+        { titulo: 'Revisa cursos pasados', desc: 'Todos tus cursos completados.' },
+        { titulo: 'Consulta notas finales', desc: 'Cada curso muestra nota de cierre.' },
+        { titulo: 'Solicita certificados', desc: 'Contacta administración si necesitas.' }
+      ],
+      tip: 'El historial es tu carta de presentación académica, cuídalo.'
+    },
+    'Ver Estado de Pagos': {
+      descripcion: 'Consulta el estado de tus cuotas: pagadas, pendientes o vencidas.',
+      pasos: [
+        { titulo: 'Ve a Mis Pagos', desc: 'Desde el menú lateral.' },
+        { titulo: 'Revisa la lista', desc: 'Cada cuota aparece con su estado.' },
+        { titulo: 'Identifica pendientes', desc: 'En amarillo o rojo según urgencia.' },
+        { titulo: 'Consulta vencimientos', desc: 'Fechas límite de cada cuota.' }
+      ],
+      tip: 'Mantén tus pagos al día para evitar recargos e inconvenientes.'
+    },
+    'Realizar un Pago': {
+      descripcion: 'Paga tus cuotas de forma simple eligiendo el método que prefieras.',
+      pasos: [
+        { titulo: 'Selecciona la cuota', desc: 'Elige el mes a pagar.' },
+        { titulo: 'Elige método de pago', desc: 'Mercado Pago o Efectivo.' },
+        { titulo: 'Completa el proceso', desc: 'Sigue las instrucciones según método.' },
+        { titulo: 'Guarda el comprobante', desc: 'Siempre conserva tu recibo.' }
+      ],
+      tip: 'Mercado Pago se acredita al instante, efectivo requiere ir a secretaría.'
+    },
+    'Pago en Efectivo': {
+      descripcion: 'Genera un ticket para pagar en efectivo presencialmente en secretaría.',
+      pasos: [
+        { titulo: 'Selecciona la cuota', desc: 'Elige el mes a pagar.' },
+        { titulo: 'Elige "Efectivo"', desc: 'Como método de pago.' },
+        { titulo: 'Descarga el ticket', desc: 'Se genera un PDF con código único.' },
+        { titulo: 'Presenta en secretaría', desc: 'Paga en efectivo y entrégalo.' }
+      ],
+      tip: 'El ticket tiene fecha de vencimiento, preséntalo a tiempo.'
+    },
+    'Pago con Mercado Pago': {
+      descripcion: 'Paga online con tarjeta o dinero en cuenta de Mercado Pago.',
+      pasos: [
+        { titulo: 'Selecciona la cuota', desc: 'Elige el mes a pagar.' },
+        { titulo: 'Elige "Mercado Pago"', desc: 'Como método de pago.' },
+        { titulo: 'Serás redirigido', desc: 'A la página segura de MP.' },
+        { titulo: 'Completa el pago', desc: 'Con tarjeta o dinero en cuenta.' }
+      ],
+      tip: 'Asegúrate de tener fondos o tarjeta habilitada antes de iniciar.'
+    },
+    'Descargar Comprobantes': {
+      descripcion: 'Descarga tickets y comprobantes de tus pagos para tu registro.',
+      pasos: [
+        { titulo: 'Ve a Mis Pagos', desc: 'Desde el menú lateral.' },
+        { titulo: 'Busca el pago', desc: 'Localiza el pago del que necesitas comprobante.' },
+        { titulo: 'Haz clic en descargar', desc: 'Ícono de descarga junto al pago.' },
+        { titulo: 'Guarda el archivo', desc: 'Se descarga un PDF.' }
+      ],
+      tip: 'Guarda todos tus comprobantes en una carpeta organizada por fecha.'
+    },
+    'Cambiar Avatar': {
+      descripcion: 'Personaliza tu perfil subiendo una foto o imagen.',
+      pasos: [
+        { titulo: 'Ve a Mi Perfil', desc: 'Desde el menú lateral.' },
+        { titulo: 'Haz clic en tu avatar', desc: 'El círculo con tu imagen actual.' },
+        { titulo: 'Selecciona archivo', desc: 'Elige una imagen de tu dispositivo.' },
+        { titulo: 'Confirma el cambio', desc: 'La imagen se actualiza automáticamente.' }
+      ],
+      tip: 'Usa una foto clara de tu rostro para fácil identificación.'
+    },
+    'Actualizar Datos Personales': {
+      descripcion: 'Mantén tu información de contacto actualizada para comunicaciones importantes.',
+      pasos: [
+        { titulo: 'Ve a Mi Perfil', desc: 'Desde el menú lateral.' },
+        { titulo: 'Haz clic en editar', desc: 'Botón para modificar datos.' },
+        { titulo: 'Actualiza la información', desc: 'Teléfono, email de contacto.' },
+        { titulo: 'Guarda los cambios', desc: 'Confirma las modificaciones.' }
+      ],
+      tip: 'Datos como DNI y legajo solo los puede modificar administración.'
+    },
+    'Acceder a Classroom': {
+      descripcion: 'Conecta con Google Classroom para acceder a materiales de estudio.',
+      pasos: [
+        { titulo: 'Ve a Classroom', desc: 'Desde el menú lateral.' },
+        { titulo: 'Haz clic en acceder', desc: 'Serás redirigido a Google.' },
+        { titulo: 'Inicia sesión', desc: 'Con tu cuenta de Google.' },
+        { titulo: 'Explora los cursos', desc: 'Verás los cursos donde estás inscrito.' }
+      ],
+      tip: 'Usa la misma cuenta de Google siempre para no perder acceso.'
+    },
+    'Acceder a Materiales': {
+      descripcion: 'Descarga materiales de estudio compartidos por tus profesores.',
+      pasos: [
+        { titulo: 'Ingresa a Classroom', desc: 'Conecta con tu cuenta Google.' },
+        { titulo: 'Selecciona el curso', desc: 'El que te interesa revisar.' },
+        { titulo: 'Busca Materiales', desc: 'Sección de recursos del curso.' },
+        { titulo: 'Descarga lo que necesites', desc: 'PDFs, documentos, presentaciones.' }
+      ],
+      tip: 'Descarga los materiales a tu dispositivo para estudiar sin conexión.'
+    },
+    'Contactar Administración': {
+      descripcion: 'Usa el chat de soporte para comunicarte directamente con el equipo administrativo.',
+      pasos: [
+        { titulo: 'Ve a Chat Soporte', desc: 'Desde el menú lateral.' },
+        { titulo: 'Escribe tu mensaje', desc: 'Describe tu consulta o problema.' },
+        { titulo: 'Envía el mensaje', desc: 'Presiona Enter o el botón enviar.' },
+        { titulo: 'Espera respuesta', desc: 'Te notificarán cuando respondan.' }
+      ],
+      tip: 'Sé claro y específico en tu consulta para recibir mejor ayuda.'
+    },
+    'Notificaciones de Chat': {
+      descripcion: 'Recibe alertas cuando el equipo de soporte responda a tus consultas.',
+      pasos: [
+        { titulo: 'Observa el badge', desc: 'Número rojo en Chat Soporte.' },
+        { titulo: 'Habilita notificaciones', desc: 'Acepta cuando el navegador pregunte.' },
+        { titulo: 'Recibirás alertas', desc: 'Incluso con la pestaña cerrada.' },
+        { titulo: 'Revisa mensajes nuevos', desc: 'Haz clic para ver respuestas.' }
+      ],
+      tip: 'Las notificaciones funcionan mejor si mantienes sesión activa.'
+    },
+    '¿Olvidé mi contraseña?': {
+      descripcion: 'Si olvidaste tu contraseña, hay formas de recuperar el acceso a tu cuenta.',
+      pasos: [
+        { titulo: 'No te preocupes', desc: 'Es un problema común con solución.' },
+        { titulo: 'Contacta administración', desc: 'Vía email o presencialmente.' },
+        { titulo: 'Verifica tu identidad', desc: 'Con DNI o datos personales.' },
+        { titulo: 'Recibe nueva contraseña', desc: 'Te darán una temporal para cambiar.' }
+      ],
+      tip: 'Usa un gestor de contraseñas para no olvidarlas en el futuro.'
+    },
+    '¿Mis datos están incorrectos?': {
+      descripcion: 'Si encuentras errores en tu información personal, puedes solicitar corrección.',
+      pasos: [
+        { titulo: 'Identifica el error', desc: 'Qué dato específico está mal.' },
+        { titulo: 'Contacta administración', desc: 'Por chat o presencialmente.' },
+        { titulo: 'Proporciona información correcta', desc: 'Y documentación si es necesario.' },
+        { titulo: 'Espera la corrección', desc: 'Los cambios se reflejan pronto.' }
+      ],
+      tip: 'DNI y legajo requieren documentación para modificarse.'
+    },
+    '¿Cómo me doy de baja de un curso?': {
+      descripcion: 'Si necesitas abandonar un curso, debes solicitar la baja formalmente.',
+      pasos: [
+        { titulo: 'Evalúa tu decisión', desc: 'La baja puede afectar tu historial.' },
+        { titulo: 'Contacta administración', desc: 'Explica tu situación.' },
+        { titulo: 'Completa el proceso', desc: 'Puede requerir firma o confirmación.' },
+        { titulo: 'Verifica la baja', desc: 'El curso desaparecerá de tu lista.' }
+      ],
+      tip: 'Consulta sobre períodos de baja sin penalización antes de decidir.'
+    },
+    '¿Encontré un error en el sistema?': {
+      descripcion: 'Los errores deben reportarse para que el equipo técnico pueda solucionarlos.',
+      pasos: [
+        { titulo: 'Documenta el error', desc: 'Anota qué estabas haciendo.' },
+        { titulo: 'Captura pantalla', desc: 'Si es posible, toma una captura.' },
+        { titulo: 'Anota los pasos', desc: 'Describe cómo reproducir el problema.' },
+        { titulo: 'Reporta por chat', desc: 'Envía la información a soporte.' }
+      ],
+      tip: 'Cuanto más detallada sea tu descripción, más rápido podremos solucionarlo.'
+    }
+  };
+
+  function openGuiaModal(item) {
+    const title = item.querySelector('h4')?.textContent || 'Guía';
+    const description = item.querySelector('p')?.textContent || '';
+    const iconHTML = item.querySelector('.guia-icon')?.innerHTML || '';
+    const tags = item.querySelectorAll('.guia-tag');
+    
+    const datos = guiasDetalladas[title] || {
+      descripcion: description,
+      pasos: [
+        { titulo: 'Paso 1', desc: 'Sigue las instrucciones en pantalla.' },
+        { titulo: 'Paso 2', desc: 'Completa la información requerida.' },
+        { titulo: 'Paso 3', desc: 'Confirma los cambios realizados.' },
+        { titulo: 'Paso 4', desc: 'Verifica que todo esté correcto.' }
+      ],
+      tip: 'Si necesitas ayuda adicional, contacta al equipo de soporte.'
+    };
+    
+    let tagsHTML = '';
+    tags.forEach(tag => {
+      tagsHTML += `<span class="guia-tag">${tag.textContent}</span>`;
+    });
+    
+    const modalHTML = `
+      <div class="guia-modal-overlay active" onclick="closeGuiaModal(event)">
+        <div class="guia-modal" onclick="event.stopPropagation()">
+          <div class="guia-modal-header">
+            <button class="guia-modal-close" onclick="closeGuiaModal()">
+              <i data-lucide="x"></i>
+            </button>
+            <div class="guia-modal-icon">${iconHTML}</div>
+            <h3>${title}</h3>
+            <p>${datos.descripcion}</p>
+          </div>
+          <div class="guia-modal-body">
+            <div class="guia-modal-section">
+              <h4><i data-lucide="list-ordered"></i> Pasos a seguir</h4>
+              <ul class="guia-modal-steps">
+                ${datos.pasos.map((paso, i) => `
+                  <li>
+                    <span class="step-number">${i + 1}</span>
+                    <div class="step-content">
+                      <strong>${paso.titulo}</strong>
+                      <span>${paso.desc}</span>
+                    </div>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+            <div class="guia-modal-section">
+              <div class="guia-modal-tip">
+                <i data-lucide="lightbulb"></i>
+                <p><strong>Tip:</strong> ${datos.tip}</p>
+              </div>
+            </div>
+          </div>
+          <div class="guia-modal-footer">
+            <div class="guia-modal-tags">${tagsHTML}</div>
+            <button class="guia-modal-action" onclick="closeGuiaModal()">
+              <i data-lucide="check"></i> Entendido
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    lucide.createIcons();
+    document.addEventListener('keydown', handleEscapeKey);
+  }
+
+  function handleEscapeKey(e) {
+    if (e.key === 'Escape') closeGuiaModal();
+  }
+
+  function closeGuiaModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    const overlay = document.querySelector('.guia-modal-overlay');
+    if (overlay) {
+      overlay.classList.remove('active');
+      setTimeout(() => overlay.remove(), 300);
+    }
+    document.removeEventListener('keydown', handleEscapeKey);
+  }
+
+  function filterAyudaContent(query) {
+    const accordions = document.querySelectorAll('.ayuda-accordion');
+    const guiaItems = document.querySelectorAll('.guia-item');
+    const noResults = document.getElementById('noResultsMessage');
+    const resultsCount = document.getElementById('searchResultsCount');
+    let totalVisible = 0;
+
+    if (!query) {
+      // Sin búsqueda: mostrar todo normal
+      accordions.forEach(acc => {
+        acc.classList.remove('hidden', 'open');
+      });
+      guiaItems.forEach(item => {
+        item.classList.remove('hidden', 'highlight');
+      });
+      noResults.classList.remove('visible');
+      resultsCount.classList.remove('visible');
+      return;
+    }
+
+    // Con búsqueda: filtrar
+    accordions.forEach(accordion => {
+      const items = accordion.querySelectorAll('.guia-item');
+      let hasVisibleItems = false;
+
+      items.forEach(item => {
+        const keywords = item.dataset.keywords || '';
+        const title = item.querySelector('h4')?.textContent.toLowerCase() || '';
+        const desc = item.querySelector('p')?.textContent.toLowerCase() || '';
+        const searchText = keywords + ' ' + title + ' ' + desc;
+
+        if (searchText.includes(query)) {
+          item.classList.remove('hidden');
+          item.classList.add('highlight');
+          hasVisibleItems = true;
+          totalVisible++;
+        } else {
+          item.classList.add('hidden');
+          item.classList.remove('highlight');
+        }
+      });
+
+      if (hasVisibleItems) {
+        accordion.classList.remove('hidden');
+        accordion.classList.add('open');
+      } else {
+        accordion.classList.add('hidden');
+      }
+    });
+
+    // Mostrar mensaje si no hay resultados
+    if (totalVisible === 0) {
+      noResults.classList.add('visible');
+      resultsCount.classList.remove('visible');
+    } else {
+      noResults.classList.remove('visible');
+      resultsCount.textContent = `Se encontraron ${totalVisible} resultado${totalVisible !== 1 ? 's' : ''}`;
+      resultsCount.classList.add('visible');
+    }
+  }
+
+  // Función auxiliar para mostrar notificaciones
+  function showNotification(message, type = 'success') {
+    document.querySelectorAll('.notification').forEach(n => n.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  }
+
+  // Función para abrir detalle de curso
+  window.abrirDetalleCursoAlumno = async function(idCurso, nombreCurso) {
+    try {
+      loader.classList.remove('hidden');
+      
+      const id_alumno = localStorage.getItem("id_alumno");
+      const response = await fetch(`${API_URL}/cursos/${idCurso}/detalles`);
+      const data = await response.json();
+      
+      // Buscar las calificaciones del alumno actual
+      const misCalificaciones = data.alumnos.find(a => a.id_alumno == id_alumno);
+      
+      // Crear overlay y panel
+      const overlay = document.createElement('div');
+      overlay.className = 'curso-detalle-overlay active';
+      overlay.onclick = cerrarDetalleCursoAlumno;
+      
+      const panel = document.createElement('div');
+      panel.className = 'curso-detalle-panel-alumno active';
+      panel.id = 'cursoDetallePanel';
+      
+      panel.innerHTML = `
+        <div class="panel-header-alumno">
+          <div>
+            <h2>${nombreCurso}</h2>
+            <p class="curso-idioma-badge">${data.curso.nombre_idioma || 'Curso'}</p>
+          </div>
+          <button class="btn-cerrar-panel" onclick="cerrarDetalleCursoAlumno()">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        
+        <div class="panel-body-alumno">
+          <div class="info-section">
+            <h3><i data-lucide="info"></i> Información del Curso</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Profesor:</span>
+                <span class="info-value">${data.curso.profesor || 'No asignado'}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Horario:</span>
+                <span class="info-value">${data.curso.horario || 'Por confirmar'}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Aula:</span>
+                <span class="info-value">${data.curso.nombre_aula || 'Por asignar'}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Nivel:</span>
+                <span class="info-value">${data.curso.nivel || 'N/A'}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="calificaciones-section">
+            <h3><i data-lucide="clipboard-check"></i> Mis Calificaciones</h3>
+            ${misCalificaciones ? `
+              <div class="calificaciones-detalle">
+                <div class="nota-item">
+                  <span>Parcial 1:</span>
+                  <span class="nota-valor">${misCalificaciones.parcial1 > 0 ? misCalificaciones.parcial1 : 'Pendiente'}</span>
+                </div>
+                <div class="nota-item">
+                  <span>Parcial 2:</span>
+                  <span class="nota-valor">${misCalificaciones.parcial2 > 0 ? misCalificaciones.parcial2 : 'Pendiente'}</span>
+                </div>
+                <div class="nota-item">
+                  <span>Final:</span>
+                  <span class="nota-valor">${misCalificaciones.final > 0 ? misCalificaciones.final : 'Pendiente'}</span>
+                </div>
+                ${misCalificaciones.promedio > 0 ? `
+                  <div class="nota-item promedio-final">
+                    <span>Promedio:</span>
+                    <span class="nota-valor destacado">${parseFloat(misCalificaciones.promedio).toFixed(1)}</span>
+                  </div>
+                ` : ''}
+              </div>
+            ` : '<p class="sin-datos">Aún no hay calificaciones registradas</p>'}
+          </div>
+
+          <div class="companeros-section">
+            <h3><i data-lucide="users"></i> Compañeros de Curso</h3>
+            ${data.alumnos && data.alumnos.length > 1 ? `
+              <div class="companeros-list">
+                ${data.alumnos.filter(a => a.id_alumno != id_alumno).map(alumno => {
+                  const iniciales = alumno.nombre_completo.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
+                  let avatarHTML = '';
+                  
+                  if (alumno.avatar) {
+                    const BASE_URL = window.BASE_URL || 'http://localhost:3000';
+                    const avatarUrl = alumno.avatar.startsWith('http') ? alumno.avatar : `${BASE_URL}${alumno.avatar}`;
+                    avatarHTML = `<img src="${avatarUrl}" alt="${alumno.nombre_completo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                  } else {
+                    avatarHTML = `<i data-lucide="user"></i>`;
+                  }
+                  
+                  return `
+                    <div class="companero-item">
+                      <div class="companero-avatar">
+                        ${avatarHTML}
+                      </div>
+                      <span>${alumno.nombre_completo}</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            ` : '<p class="sin-datos">Eres el único alumno inscrito en este curso</p>'}
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(overlay);
+      document.body.appendChild(panel);
+      lucide.createIcons();
+      loader.classList.add('hidden');
+      
+    } catch (error) {
+      console.error('Error al cargar detalles:', error);
+      loader.classList.add('hidden');
+      showNotification('Error al cargar los detalles del curso', 'error');
+    }
+  };
+
+  window.cerrarDetalleCursoAlumno = function() {
+    const overlay = document.querySelector('.curso-detalle-overlay');
+    const panel = document.getElementById('cursoDetallePanel');
+    
+    if (overlay) overlay.remove();
+    if (panel) panel.remove();
+  };
+
+  // Función para ver detalle de calificación (desde tabla)
+  window.verDetalleCalificacion = function(idCurso, nombreCurso) {
+    abrirDetalleCursoAlumno(idCurso, nombreCurso);
+  };
+
+  // Modal de selección de mes (NUEVO SISTEMA DE PAGOS)
+  window.abrirModalSeleccionMes = function(idCurso, nombreCurso, mesSeleccionado, monto) {
+    const modal = document.createElement('div');
+    modal.id = 'modalSeleccionMes';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; transition: opacity 0.3s ease;';
+    
+    modal.innerHTML = `
+      <div style="background: #ffffff; border-radius: 20px; width: 100%; max-width: 420px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.15); transform: scale(0.95); transition: transform 0.3s ease;" id="modalSeleccionMesContent">
+        <div style="background: #4a5259; padding: 24px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="background: rgba(255,255,255,0.15); border-radius: 10px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="calendar" style="width: 22px; height: 22px; color: #ffffff;"></i>
+            </div>
+            <div>
+              <h3 style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;">Confirmar Pago</h3>
+              <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.8); font-size: 13px;">${nombreCurso}</p>
+            </div>
+          </div>
+          <button onclick="cerrarModalSeleccionMes()" style="background: rgba(255,255,255,0.15); border: none; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s;" onmouseenter="this.style.background='rgba(255,255,255,0.25)'" onmouseleave="this.style.background='rgba(255,255,255,0.15)'">
+            <i data-lucide="x" style="width: 20px; height: 20px; color: #ffffff;"></i>
+          </button>
+        </div>
+        
+        <div style="padding: 28px;">
+          <div style="background: rgba(74, 82, 89, 0.06); border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 16px; margin-bottom: 24px; border: 1px solid #e5e7eb;">
+            <div style="background: #ffffff; border-radius: 10px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+              <i data-lucide="check-circle" style="width: 22px; height: 22px; color: #4a5259;"></i>
+            </div>
+            <div>
+              <span style="display: block; color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Cuota de:</span>
+              <span style="color: #1e1e1e; font-size: 18px; font-weight: 600;">${mesSeleccionado}</span>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #e5e7eb; margin-bottom: 28px;">
+            <span style="color: #6b7280; font-size: 14px;">Monto a pagar:</span>
+            <span style="color: #1e1e1e; font-size: 24px; font-weight: 700;">$${parseFloat(monto).toLocaleString('es-AR', {minimumFractionDigits: 2})}</span>
+          </div>
+          
+          <div style="display: flex; gap: 12px;">
+            <button onclick="cerrarModalSeleccionMes()" style="flex: 1; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 20px; font-size: 14px; font-weight: 500; color: #4a5259; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;" onmouseenter="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db'" onmouseleave="this.style.background='#ffffff'; this.style.borderColor='#e5e7eb'">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+              Cancelar
+            </button>
+            <button onclick="confirmarPagoMes(${idCurso}, '${mesSeleccionado}', ${monto})" style="flex: 1.5; background: #4a5259; border: none; border-radius: 12px; padding: 14px 20px; font-size: 14px; font-weight: 500; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;" onmouseenter="this.style.background='#3d444a'" onmouseleave="this.style.background='#4a5259'">
+              <i data-lucide="credit-card" style="width: 18px; height: 18px;"></i>
+              Continuar al Pago
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    lucide.createIcons();
+    
+    // Animación de entrada
+    requestAnimationFrame(() => {
+      modal.style.opacity = '1';
+      document.getElementById('modalSeleccionMesContent').style.transform = 'scale(1)';
+    });
+    
+    // Cerrar al hacer clic fuera del modal
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        cerrarModalSeleccionMes();
+      }
+    });
+  };
+
+  window.cerrarModalSeleccionMes = function() {
+    const modal = document.getElementById('modalSeleccionMes');
+    if (modal) {
+      modal.style.opacity = '0';
+      setTimeout(() => modal.remove(), 200);
+    }
+  };
+
+  window.confirmarPagoMes = function(idCurso, mesCuota, monto) {
+    // Cerrar modal de selección inmediatamente
+    const modalSeleccion = document.getElementById('modalSeleccionMes');
+    if (modalSeleccion) {
+      modalSeleccion.remove();
+    }
+    
+    // Guardar datos del pago para enviar después
+    window.datosPagoActual = {
+      id_curso: idCurso,
+      mes_cuota: mesCuota,
+      monto: monto
+    };
+    
+    // Determinar el concepto correcto
+    const conceptoPago = mesCuota === 'Matricula' ? 'Matricula' : `Cuota ${mesCuota}`;
+    
+    // Abrir el modal de métodos de pago inmediatamente
+    window.creditCardForm.openModal({
+      amount: monto,
+      concepto: conceptoPago,
+      periodo: mesCuota,
+      id_curso: idCurso
+    });
+  };
+
+  // Función para abrir modal de pago
+  window.abrirModalPago = function(periodo, monto, mesNombre) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-pago-overlay active';
+    modal.id = 'modalPago';
+    
+    modal.innerHTML = `
+      <div class="modal-pago-content">
+        <div class="modal-pago-header">
+          <h2><i data-lucide="credit-card"></i> Realizar Pago</h2>
+          <button class="btn-cerrar-modal" onclick="cerrarModalPago()">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        
+        <div class="modal-pago-body">
+          <div class="info-pago-detalle">
+            <div class="info-row">
+              <span class="info-label">Período:</span>
+              <span class="info-valor">${mesNombre}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Monto a pagar:</span>
+              <span class="info-valor monto-destacado">$${parseFloat(monto).toLocaleString('es-AR', {minimumFractionDigits: 2})}</span>
+            </div>
+          </div>
+
+          <div class="metodo-pago-selector">
+            <label><i data-lucide="credit-card"></i> Selecciona el medio de pago:</label>
+            <div class="metodos-pago-grid">
+              <div class="metodo-option" data-metodo="Tarjeta de Crédito">
+                <i data-lucide="credit-card"></i>
+                <span>Tarjeta de Crédito</span>
+              </div>
+              <div class="metodo-option" data-metodo="Tarjeta de Débito">
+                <i data-lucide="credit-card"></i>
+                <span>Tarjeta de Débito</span>
+              </div>
+              <div class="metodo-option" data-metodo="Transferencia">
+                <i data-lucide="arrow-right-left"></i>
+                <span>Transferencia</span>
+              </div>
+              <div class="metodo-option" data-metodo="Efectivo">
+                <i data-lucide="banknote"></i>
+                <span>Efectivo</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="formularioTarjeta" class="formulario-tarjeta" style="display: none;">
+            <h4><i data-lucide="credit-card"></i> Datos de la Tarjeta</h4>
+            
+            <div class="form-group">
+              <label>Número de Tarjeta</label>
+              <input type="text" id="numeroTarjeta" placeholder="1234 5678 9012 3456" maxlength="19" 
+                     oninput="formatearNumeroTarjeta(this)">
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>Titular</label>
+                <input type="text" id="titularTarjeta" placeholder="NOMBRE APELLIDO">
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>Vencimiento (MM/AA)</label>
+                <input type="text" id="vencimientoTarjeta" placeholder="MM/AA" maxlength="5"
+                       oninput="formatearVencimiento(this)">
+              </div>
+              <div class="form-group">
+                <label>CVV</label>
+                <input type="text" id="cvvTarjeta" placeholder="123" maxlength="4"
+                       oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-confirmar-pago" onclick="procesarPago('${periodo}', ${monto})">
+            <i data-lucide="check-circle"></i>
+            <span>Confirmar Pago</span>
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    lucide.createIcons();
+    
+    // Agregar event listeners a las opciones de pago DESPUÉS de crear el modal
+    const opciones = modal.querySelectorAll('.metodo-option');
+    console.log(' Opciones de pago encontradas:', opciones.length);
+    
+    opciones.forEach((opcion, index) => {
+      const metodo = opcion.getAttribute('data-metodo');
+      console.log(` Agregando listener ${index + 1}: ${metodo}`);
+      
+      opcion.addEventListener('click', function() {
+        console.log(' Click detectado en:', metodo);
+        window.seleccionarMetodo(this, metodo);
+      });
+    });
+  };
+
+  window.cerrarModalPago = function() {
+    const modal = document.getElementById('modalPago');
+    if (modal) modal.remove();
+  };
+
+  let medioPagoSeleccionado = null;
+
+  window.seleccionarMetodo = function(elemento, metodo) {
+    console.log(' seleccionarMetodo llamado con:', metodo);
+    
+    // Si es efectivo, cerrar modal de pago y mostrar ticket inmediatamente
+    if (metodo === 'Efectivo') {
+      console.log(' Detectado pago en efectivo');
+      
+      // Cerrar el modal de pago primero
+      const modal = document.getElementById('modalPago');
+      if (modal) {
+        modal.remove();
+        console.log('️ Modal de pago cerrado');
+      }
+      
+      // Pequeño delay para asegurar que el modal se cerró completamente
+      setTimeout(() => {
+        console.log(' Mostrando ticket de efectivo...');
+        window.mostrarTicketEfectivo();
+      }, 100);
+      
+      return;
+    }
+    
+    // Remover selección anterior
+    document.querySelectorAll('.metodo-option').forEach(el => el.classList.remove('selected'));
+    
+    // Marcar como seleccionado
+    elemento.classList.add('selected');
+    medioPagoSeleccionado = metodo;
+    
+    // Mostrar/ocultar formulario de tarjeta
+    const formulario = document.getElementById('formularioTarjeta');
+    if (metodo.includes('Tarjeta')) {
+      formulario.style.display = 'block';
+    } else {
+      formulario.style.display = 'none';
+    }
+  };
+
+  // Función para generar y mostrar ticket de efectivo
+  window.mostrarTicketEfectivo = function() {
+    console.log(' INICIO mostrarTicketEfectivo');
+    
+    // Generar número de ticket aleatorio (12 dígitos)
+    const numeroTicket = Math.floor(100000000000 + Math.random() * 900000000000);
+    console.log(' Ticket generado:', numeroTicket);
+    
+    // Crear modal HTML nativo
+    const modalTicket = document.createElement('div');
+    modalTicket.className = 'modal-pago-overlay active';
+    modalTicket.id = 'modalTicket';
+    modalTicket.style.zIndex = '10000';
+    
+    modalTicket.innerHTML = `
+      <div class="modal-pago-content" style="max-width: 500px;">
+        <div class="modal-pago-header" style="background: #4a5259;">
+          <h2 style="color: white;"><i data-lucide="banknote"></i> Pago en Efectivo</h2>
+          <button class="btn-cerrar-modal" onclick="cerrarModalTicket()" style="color: white;">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        
+        <div class="modal-pago-body" style="text-align: center; padding: 30px;">
+          <div style="background: #4a5259; color: white; padding: 30px; border-radius: 12px; margin-bottom: 20px; position: relative;">
+            <button onclick="descargarTicketPDF('${numeroTicket}')" 
+                    style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(10px);" 
+                    onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.05)'" 
+                    onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)'" 
+                    title="Descargar Ticket PDF">
+              <i data-lucide="download" style="width: 20px; height: 20px;"></i>
+            </button>
+            <p style="margin: 0 0 15px 0; font-size: 16px; opacity: 0.9; font-weight: 500;">
+              Tu número de ticket es
+            </p>
+            <p style="margin: 0; font-size: 36px; font-weight: 700; letter-spacing: 3px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+              Nº ${numeroTicket}
+            </p>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #4a5259; margin-bottom: 20px;">
+            <p style="margin: 0; color: #333; line-height: 1.8; font-size: 15px;">
+              <strong style="color: #4a5259;"> Acercate a una de nuestras oficinas</strong><br>
+              <span style="color: #666;">Lunes a Viernes de 7:00 a 14:00 hs</span>
+            </p>
+          </div>
+          
+          <button onclick="cerrarModalTicket()" style="background: #4a5259; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s;">
+            Entendido
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modalTicket);
+    lucide.createIcons();
+    
+    console.log(' Modal de ticket creado y mostrado');
+  };
+  
+  window.cerrarModalTicket = function() {
+    const modal = document.getElementById('modalTicket');
+    if (modal) {
+      modal.remove();
+      console.log('️ Modal de ticket cerrado');
+    }
+  };
+
+  // Función para descargar ticket de pago en efectivo como PDF
+  window.descargarTicketPDF = async function(numeroTicket) {
+    try {
+      const { jsPDF } = window.jspdf;
+      
+      // Harvard Color Palette
+      const HARVARD_COLORS = {
+        charcoal: [30, 30, 30],
+        wroughtIron: [74, 74, 74],
+        graphite: [101, 111, 119],
+        silver: [160, 160, 160],
+        lightGray: [245, 245, 245],
+        success: [16, 185, 129],
+        white: [255, 255, 255]
+      };
+      
+      // Crear PDF en formato ticket (80mm de ancho)
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [80, 160] // Ticket térmico elegante
+      });
+      
+      const ticketWidth = 80;
+      const centerX = ticketWidth / 2;
+      
+      // ===== HEADER ELEGANTE =====
+      doc.setFillColor(...HARVARD_COLORS.charcoal);
+      doc.rect(0, 0, ticketWidth, 42, 'F');
+      
+      // Logo
+      let yPos = 8;
+      const img = new Image();
+      img.src = '/images/logo.png';
+      await new Promise((resolve) => {
+        img.onload = () => {
+          try {
+            doc.setFillColor(...HARVARD_COLORS.white);
+            doc.roundedRect(centerX - 12, yPos, 24, 24, 2, 2, 'F');
+            doc.addImage(img, 'PNG', centerX - 10, yPos + 2, 20, 20);
+          } catch (e) {}
+          resolve();
+        };
+        img.onerror = resolve;
+      });
+      
+      yPos += 28;
+      
+      // Título CEMI
+      doc.setTextColor(...HARVARD_COLORS.white);
+      doc.setFont('times', 'bold');
+      doc.setFontSize(14);
+      doc.text('CEMI', centerX, yPos, { align: 'center' });
+      yPos += 4;
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(...HARVARD_COLORS.silver);
+      doc.text('Centro de Enseñanza de Múltiples Idiomas', centerX, yPos, { align: 'center' });
+      
+      // Línea decorativa
+      yPos = 44;
+      doc.setDrawColor(...HARVARD_COLORS.wroughtIron);
+      doc.setLineWidth(1.5);
+      doc.line(8, yPos, ticketWidth - 8, yPos);
+      doc.setDrawColor(...HARVARD_COLORS.graphite);
+      doc.setLineWidth(0.5);
+      doc.line(8, yPos + 2, ticketWidth - 8, yPos + 2);
+      
+      yPos += 10;
+      
+      // ===== TÍTULO DEL TICKET =====
+      doc.setFont('times', 'bold');
+      doc.setFontSize(13);
+      doc.setTextColor(...HARVARD_COLORS.charcoal);
+      doc.text('TICKET DE PAGO', centerX, yPos, { align: 'center' });
+      yPos += 5;
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(...HARVARD_COLORS.graphite);
+      doc.text('Pago en Efectivo', centerX, yPos, { align: 'center' });
+      yPos += 10;
+      
+      // ===== NÚMERO DE TICKET DESTACADO =====
+      doc.setFillColor(...HARVARD_COLORS.charcoal);
+      doc.roundedRect(8, yPos, ticketWidth - 16, 22, 3, 3, 'F');
+      
+      // Icono decorativo (círculo)
+      doc.setFillColor(...HARVARD_COLORS.wroughtIron);
+      doc.circle(centerX, yPos + 6, 3, 'F');
+      doc.setFillColor(...HARVARD_COLORS.charcoal);
+      doc.circle(centerX, yPos + 6, 2, 'F');
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(...HARVARD_COLORS.silver);
+      doc.text('Tu número de ticket', centerX, yPos + 12, { align: 'center' });
+      
+      doc.setFont('times', 'bold');
+      doc.setFontSize(16);
+      doc.setTextColor(...HARVARD_COLORS.white);
+      doc.text(`Nº ${numeroTicket}`, centerX, yPos + 19, { align: 'center' });
+      yPos += 28;
+      
+      // ===== FECHA Y HORA =====
+      doc.setTextColor(...HARVARD_COLORS.graphite);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      const ahora = new Date();
+      const fecha = ahora.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+      const hora = ahora.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      doc.text(`Generado: ${fecha}`, centerX, yPos, { align: 'center' });
+      doc.text(`${hora} hrs`, centerX, yPos + 4, { align: 'center' });
+      yPos += 10;
+      
+      // Línea separadora
+      doc.setDrawColor(...HARVARD_COLORS.silver);
+      doc.setLineWidth(0.3);
+      doc.line(12, yPos, ticketWidth - 12, yPos);
+      yPos += 6;
+      
+      // ===== INSTRUCCIONES =====
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...HARVARD_COLORS.charcoal);
+      doc.text('INSTRUCCIONES', centerX, yPos, { align: 'center' });
+      yPos += 5;
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(...HARVARD_COLORS.wroughtIron);
+      
+      const instrucciones = [
+        '1. Acercate a nuestras oficinas',
+        '2. Presentá este ticket',
+        '3. Realizá el pago en efectivo',
+        '4. Recibirás tu comprobante'
+      ];
+      
+      instrucciones.forEach((linea) => {
+        doc.text(linea, 12, yPos);
+        yPos += 4;
+      });
+      yPos += 3;
+      
+      // ===== HORARIOS =====
+      doc.setFillColor(...HARVARD_COLORS.lightGray);
+      doc.roundedRect(8, yPos, ticketWidth - 16, 14, 2, 2, 'F');
+      doc.setDrawColor(...HARVARD_COLORS.silver);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(8, yPos, ticketWidth - 16, 14, 2, 2, 'D');
+      
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7);
+      doc.setTextColor(...HARVARD_COLORS.charcoal);
+      doc.text('Horario de Atención', centerX, yPos + 4, { align: 'center' });
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...HARVARD_COLORS.graphite);
+      doc.text('Lunes a Viernes: 7:00 - 14:00 hrs', centerX, yPos + 9, { align: 'center' });
+      doc.text('Sábados: 8:00 - 12:00 hrs', centerX, yPos + 12, { align: 'center' });
+      yPos += 20;
+      
+      // ===== FOOTER ELEGANTE =====
+      doc.setDrawColor(...HARVARD_COLORS.wroughtIron);
+      doc.setLineWidth(0.5);
+      doc.line(8, yPos, ticketWidth - 8, yPos);
+      yPos += 5;
+      
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(6);
+      doc.setTextColor(...HARVARD_COLORS.silver);
+      doc.text('Conservá este ticket hasta completar el pago', centerX, yPos, { align: 'center' });
+      yPos += 3;
+      doc.text('Cemi - Centro de Enseñanza de Múltiples Idiomas', centerX, yPos, { align: 'center' });
+      
+      // Descargar PDF
+      doc.save(`Ticket-Pago-Efectivo-${numeroTicket}.pdf`);
+      
+      console.log('Ticket PDF generado correctamente');
+      
+      // Mostrar notificación
+      Swal.fire({
+        icon: 'success',
+        title: 'Ticket Descargado',
+        text: 'Tu ticket se ha descargado correctamente',
+        timer: 2000,
+        showConfirmButton: false
+      });
+      
+    } catch (error) {
+      console.error('Error al generar ticket PDF:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo generar el ticket PDF'
+      });
+    }
+  };
+
+  window.formatearNumeroTarjeta = function(input) {
+    let valor = input.value.replace(/\s/g, '');
+    valor = valor.replace(/[^0-9]/g, '');
+    let formateado = valor.match(/.{1,4}/g)?.join(' ') || valor;
+    input.value = formateado;
+  };
+
+  window.formatearVencimiento = function(input) {
+    let valor = input.value.replace(/\//g, '');
+    valor = valor.replace(/[^0-9]/g, '');
+    if (valor.length >= 2) {
+      valor = valor.substring(0, 2) + '/' + valor.substring(2, 4);
+    }
+    input.value = valor;
+  };
+
+  window.procesarPago = async function(periodo, monto) {
+    if (!medioPagoSeleccionado) {
+      showNotification('Por favor selecciona un medio de pago', 'error');
+      return;
+    }
+
+    // Validar datos de tarjeta si es necesario
+    if (medioPagoSeleccionado.includes('Tarjeta')) {
+      const numeroTarjeta = document.getElementById('numeroTarjeta').value;
+      const titular = document.getElementById('titularTarjeta').value;
+      const vencimiento = document.getElementById('vencimientoTarjeta').value;
+      const cvv = document.getElementById('cvvTarjeta').value;
+
+      if (!numeroTarjeta || !titular || !vencimiento || !cvv) {
+        showNotification('Por favor completa todos los datos de la tarjeta', 'error');
+        return;
+      }
+
+      if (numeroTarjeta.replace(/\s/g, '').length < 15) {
+        showNotification('Número de tarjeta inválido', 'error');
+        return;
+      }
+
+      if (cvv.length < 3) {
+        showNotification('CVV inválido', 'error');
+        return;
+      }
+    }
+
+    try {
+      loader.classList.remove('hidden');
+      
+      // Obtener datos del pago actual (id_curso y mes_cuota)
+      const datosPago = window.datosPagoActual || {};
+      
+      const response = await fetch(`${API_URL}/pagos/realizar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_alumno: id_alumno,
+          id_curso: datosPago.id_curso,
+          mes_cuota: datosPago.mes_cuota || periodo,
+          monto: monto,
+          medio_pago: medioPagoSeleccionado,
+          datos_tarjeta: medioPagoSeleccionado.includes('Tarjeta') ? {
+            numero: document.getElementById('numeroTarjeta')?.value,
+            titular: document.getElementById('titularTarjeta')?.value,
+            vencimiento: document.getElementById('vencimientoTarjeta')?.value
+          } : null
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        loader.classList.add('hidden');
+        cerrarModalPago();
+        
+        // Limpiar datos temporales
+        window.datosPagoActual = null;
+        
+        // Mostrar comprobante
+        mostrarComprobante(data.comprobante);
+        
+        // Recargar la sección de pagos
+        setTimeout(() => {
+          document.getElementById('btnPagos').click();
+        }, 3000);
+      } else {
+        throw new Error(data.message || 'Error al procesar el pago');
+      }
+    } catch (error) {
+      console.error('Error al procesar pago:', error);
+      loader.classList.add('hidden');
+      showNotification(error.message || 'Error al procesar el pago', 'error');
+    }
+  };
+
+  window.mostrarComprobante = function(comprobante) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-pago-overlay active';
+    modal.id = 'modalComprobante';
+    
+    modal.innerHTML = `
+      <div class="modal-comprobante-content">
+        <div class="comprobante-header">
+          <div class="check-icon">
+            <i data-lucide="check-circle"></i>
+          </div>
+          <h2>¡Pago Exitoso!</h2>
+          <p>Tu pago ha sido procesado correctamente</p>
+        </div>
+        
+        <div class="comprobante-body">
+          <div class="comprobante-detalle">
+            <div class="detalle-row">
+              <span>Comprobante N°:</span>
+              <strong>${comprobante.numero}</strong>
+            </div>
+            <div class="detalle-row">
+              <span>Fecha:</span>
+              <strong>${new Date(comprobante.fecha).toLocaleDateString('es-ES')}</strong>
+            </div>
+            <div class="detalle-row">
+              <span>Período:</span>
+              <strong>${new Date(comprobante.periodo + '-01').toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</strong>
+            </div>
+            <div class="detalle-row total">
+              <span>Monto Pagado:</span>
+              <strong>$${parseFloat(comprobante.monto).toLocaleString('es-AR', {minimumFractionDigits: 2})}</strong>
+            </div>
+          </div>
+        </div>
+        
+        <button class="btn-cerrar-comprobante" onclick="cerrarComprobante()">
+          <i data-lucide="x"></i>
+          Cerrar
+        </button>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    lucide.createIcons();
+  };
+
+  window.cerrarComprobante = function() {
+    const modal = document.getElementById('modalComprobante');
+    if (modal) modal.remove();
+  };
+
+  // Navegación SPA con logout
+  document.querySelectorAll(".sidebar-menu button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (btn.id === "logoutBtn") {
+        localStorage.clear();
+        window.location.href = "login.html";
+        return;
+      }
+
+      document.querySelectorAll(".sidebar-menu button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      loader.classList.remove("hidden");
+      mainContent.classList.remove("active");
+
+      setTimeout(() => {
+        sections[btn.id]?.();
+      }, 250);
+    });
+  });
+
+  // Cargar "Mis Cursos" por defecto al iniciar
+  document.addEventListener("DOMContentLoaded", () => {
+    const btnCursos = document.getElementById("btnCursos");
+    if (btnCursos) {
+      btnCursos.classList.add("active");
+      btnCursos.click();
+    }
+  });
+</script>
+
+<div id="paymentMethodModal" onclick="if(event.target === this) this.classList.remove('active')" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 10000;">
+  <div style="background: #ffffff; border-radius: 20px; width: 100%; max-width: 480px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.15);">
+    <div style="background: #4a5259; padding: 24px; display: flex; align-items: center; justify-content: space-between;">
+      <h2 style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 12px;">
+        <i data-lucide="wallet" style="width: 22px; height: 22px;"></i>
+        Seleccionar Método de Pago
+      </h2>
+      <button onclick="document.getElementById('paymentMethodModal').classList.remove('active')" style="background: rgba(255,255,255,0.15); border: none; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s;" onmouseenter="this.style.background='rgba(255,255,255,0.25)'" onmouseleave="this.style.background='rgba(255,255,255,0.15)'">
+        <i data-lucide="x" style="width: 20px; height: 20px; color: #ffffff;"></i>
+      </button>
+    </div>
+
+    <div style="padding: 24px; border-bottom: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+        <span style="color: #6b7280; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Concepto:</span>
+        <span style="color: #1e1e1e; font-size: 14px; font-weight: 500;" id="methodPaymentConcepto">Cuota Mensual</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6;">
+        <span style="color: #6b7280; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Período:</span>
+        <span style="color: #1e1e1e; font-size: 14px; font-weight: 500;" id="methodPaymentPeriodo">-</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 0;">
+        <span style="color: #6b7280; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Monto a Pagar:</span>
+        <span style="color: #16a34a; font-size: 22px; font-weight: 700;" id="methodPaymentAmount">$0.00</span>
+      </div>
+    </div>
+
+    <div style="padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+      <button id="btnCardPayment" style="background: #ffffff; border: 2px solid #e5e7eb; border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.2s; text-align: left;" onmouseenter="this.style.borderColor='#4a5259'; this.style.background='#f9fafb'" onmouseleave="this.style.borderColor='#e5e7eb'; this.style.background='#ffffff'">
+        <div style="background: rgba(74, 82, 89, 0.1); border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <i data-lucide="credit-card" style="width: 24px; height: 24px; color: #4a5259;"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 15px; font-weight: 600;">Tarjeta de Crédito/Débito</h3>
+          <p style="margin: 0; color: #6b7280; font-size: 13px;">Pago instantáneo con tarjeta</p>
+        </div>
+      </button>
+
+      <button id="btnTransferPayment" onclick="document.getElementById('paymentMethodModal').classList.remove('active'); document.getElementById('transferModal').classList.add('active'); if(typeof lucide !== 'undefined') lucide.createIcons();" style="background: #ffffff; border: 2px solid #e5e7eb; border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.2s; text-align: left;" onmouseenter="this.style.borderColor='#4a5259'; this.style.background='#f9fafb'" onmouseleave="this.style.borderColor='#e5e7eb'; this.style.background='#ffffff'">
+        <div style="background: rgba(74, 82, 89, 0.1); border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <i data-lucide="landmark" style="width: 24px; height: 24px; color: #4a5259;"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 15px; font-weight: 600;">Transferencia Bancaria</h3>
+          <p style="margin: 0; color: #6b7280; font-size: 13px;">Transferir desde tu banco</p>
+        </div>
+      </button>
+
+      <button id="btnCashPayment" style="background: #ffffff; border: 2px solid #e5e7eb; border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.2s; text-align: left;" onmouseenter="this.style.borderColor='#4a5259'; this.style.background='#f9fafb'" onmouseleave="this.style.borderColor='#e5e7eb'; this.style.background='#ffffff'">
+        <div style="background: rgba(74, 82, 89, 0.1); border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <i data-lucide="banknote" style="width: 24px; height: 24px; color: #4a5259;"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 15px; font-weight: 600;">Efectivo</h3>
+          <p style="margin: 0; color: #6b7280; font-size: 13px;">Pagar en la institución</p>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<style>
+  #paymentMethodModal.active { display: flex !important; }
+</style>
+
+<div class="credit-card-modal-overlay" id="creditCardModal">
+  <div class="credit-card-modal">
+    <div class="modal-header">
+      <h2>Pago con Tarjeta</h2>
+      <div class="modal-actions">
+        <button class="back-button" id="backToMethods">←</button>
+        <button class="close-button" id="closePaymentModal">×</button>
+      </div>
+    </div>
+
+    <input type="hidden" id="paymentIdPago" value="">
+    <input type="hidden" id="paymentConcepto" value="">
+    <input type="hidden" id="paymentPeriodo" value="">
+    <input type="hidden" id="paymentAmount" data-amount="0">
+
+    <div class="payment-content-wrapper">
+      <div class="container preload">
+        <div class="creditcard">
+          <div class="front">
+            <div id="ccsingle"></div>
+            <svg version="1.1" id="cardfront" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" viewBox="0 0 750 471" style="enable-background:new 0 0 750 471;" xml:space="preserve">
+                <g id="Front">
+                    <g id="CardBackground">
+                        <g id="Page-1_1_">
+                            <g id="amex_1_">
+                                <path id="Rectangle-1_1_" class="lightcolor grey" d="M40,0h670c22.1,0,40,17.9,40,40v391c0,22.1-17.9,40-40,40H40c-22.1,0-40-17.9-40-40V40
+                        C0,17.9,17.9,0,40,0z" />
+                            </g>
+                        </g>
+                        <path class="darkcolor greydark" d="M750,431V193.2c-217.6-57.5-556.4-13.5-750,24.9V431c0,22.1,17.9,40,40,40h670C732.1,471,750,453.1,750,431z" />
+                    </g>
+                    <text transform="matrix(1 0 0 1 60.106 295.0121)" id="svgnumber" class="st2 st3 st4">0123 4567 8910 1112</text>
+                    <text transform="matrix(1 0 0 1 54.1064 428.1723)" id="svgname" class="st2 st5 st6">JUAN PÉREZ</text>
+                    <text transform="matrix(1 0 0 1 54.1074 389.8793)" class="st7 st5 st8">nombre del titular</text>
+                    <text transform="matrix(1 0 0 1 479.7754 388.8793)" class="st7 st5 st8">vencimiento</text>
+                    <text transform="matrix(1 0 0 1 65.1054 241.5)" class="st7 st5 st8">número de tarjeta</text>
+                    <g>
+                        <text transform="matrix(1 0 0 1 574.4219 433.8095)" id="svgexpire" class="st2 st5 st9">01/23</text>
+                        <text transform="matrix(1 0 0 1 479.3848 417.0097)" class="st2 st10 st11">VÁLIDO</text>
+                        <text transform="matrix(1 0 0 1 479.3848 435.6762)" class="st2 st10 st11">HASTA</text>
+                        <polygon class="st2" points="554.5,421 540.4,414.2 540.4,427.9 		" />
+                    </g>
+                    <g id="cchip">
+                        <g>
+                            <path class="st2" d="M168.1,143.6H82.9c-10.2,0-18.5-8.3-18.5-18.5V74.9c0-10.2,8.3-18.5,18.5-18.5h85.3
+                    c10.2,0,18.5,8.3,18.5,18.5v50.2C186.6,135.3,178.3,143.6,168.1,143.6z" />
+                        </g>
+                        <g>
+                            <g>
+                                <rect x="82" y="70" class="st12" width="1.5" height="60" />
+                            </g>
+                            <g>
+                                <rect x="167.4" y="70" class="st12" width="1.5" height="60" />
+                            </g>
+                            <g>
+                                <path class="st12" d="M125.5,130.8c-10.2,0-18.5-8.3-18.5-18.5c0-4.6,1.7-8.9,4.7-12.3c-3-3.4-4.7-7.7-4.7-12.3
+                        c0-10.2,8.3-18.5,18.5-18.5s18.5,8.3,18.5,18.5c0,4.6-1.7,8.9-4.7,12.3c3,3.4,4.7,7.7,4.7,12.3
+                        C143.9,122.5,135.7,130.8,125.5,130.8z M125.5,70.8c-9.3,0-16.9,7.6-16.9,16.9c0,4.4,1.7,8.6,4.8,11.8l0.5,0.5l-0.5,0.5
+                        c-3.1,3.2-4.8,7.4-4.8,11.8c0,9.3,7.6,16.9,16.9,16.9s16.9-7.6,16.9-16.9c0-4.4-1.7-8.6-4.8-11.8l-0.5-0.5l0.5-0.5
+                        c3.1-3.2,4.8-7.4,4.8-11.8C142.4,78.4,134.8,70.8,125.5,70.8z" />
+                            </g>
+                            <g>
+                                <rect x="82.8" y="82.1" class="st12" width="25.8" height="1.5" />
+                            </g>
+                            <g>
+                                <rect x="82.8" y="117.9" class="st12" width="26.1" height="1.5" />
+                            </g>
+                            <g>
+                                <rect x="142.4" y="82.1" class="st12" width="25.8" height="1.5" />
+                            </g>
+                            <g>
+                                <rect x="142" y="117.9" class="st12" width="26.2" height="1.5" />
+                            </g>
+                        </g>
+                    </g>
+                </g>
+                <g id="Back">
+                </g>
+            </svg>
+          </div>
+          <div class="back">
+            <svg version="1.1" id="cardback" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" viewBox="0 0 750 471" style="enable-background:new 0 0 750 471;" xml:space="preserve">
+                <g id="Front">
+                    <line class="st0" x1="35.3" y1="10.4" x2="36.7" y2="11" />
+                </g>
+                <g id="Back">
+                    <g id="Page-1_2_">
+                        <g id="amex_2_">
+                            <path id="Rectangle-1_2_" class="darkcolor greydark" d="M40,0h670c22.1,0,40,17.9,40,40v391c0,22.1-17.9,40-40,40H40c-22.1,0-40-17.9-40-40V40
+                    C0,17.9,17.9,0,40,0z" />
+                        </g>
+                    </g>
+                    <rect y="61.6" class="st2" width="750" height="78" />
+                    <g>
+                        <path class="st3" d="M701.1,249.1H48.9c-3.3,0-6-2.7-6-6v-52.5c0-3.3,2.7-6,6-6h652.1c3.3,0,6,2.7,6,6v52.5
+                C707.1,246.4,704.4,249.1,701.1,249.1z" />
+                        <rect x="42.9" y="198.6" class="st4" width="664.1" height="10.5" />
+                        <rect x="42.9" y="224.5" class="st4" width="664.1" height="10.5" />
+                        <path class="st5" d="M701.1,184.6H618h-8h-10v64.5h10h8h83.1c3.3,0,6-2.7,6-6v-52.5C707.1,187.3,704.4,184.6,701.1,184.6z" />
+                    </g>
+                    <text transform="matrix(1 0 0 1 621.999 227.2734)" id="svgsecurity" class="st6 st7">985</text>
+                    <g class="st8">
+                        <text transform="matrix(1 0 0 1 518.083 280.0879)" class="st9 st6 st10">código de seguridad</text>
+                    </g>
+                    <rect x="58.1" y="378.6" class="st11" width="375.5" height="13.5" />
+                    <rect x="58.1" y="405.6" class="st11" width="421.7" height="13.5" />
+                    <text transform="matrix(1 0 0 1 59.5073 228.6099)" id="svgnameback" class="st12 st13">Juan Pérez</text>
+                </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <form class="form-container" id="creditCardForm">
+        <div class="field-container">
+          <label for="name">Nombre del Titular</label>
+          <input id="name" maxlength="20" type="text" placeholder="JUAN PÉREZ">
+        </div>
+        <div class="field-container">
+          <label for="cardnumber">Número de Tarjeta</label><span id="generatecard">generar aleatorio</span>
+          <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric" placeholder="1234 5678 9012 3456">
+          <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink">
+          </svg>
+        </div>
+        <div class="field-container">
+          <label for="expirationdate">Vencimiento (mm/aa)</label>
+          <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric" placeholder="01/25">
+        </div>
+        <div class="field-container">
+          <label for="securitycode">Código de Seguridad</label>
+          <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" placeholder="123">
+        </div>
+      </form>
+    </div> <!-- cierre payment-content-wrapper -->
+  </div> <!-- cierre credit-card-modal -->
+</div> <!-- cierre credit-card-modal-overlay -->
+
+<div id="transferModal" onclick="if(event.target === this) this.classList.remove('active')" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 10000;">
+  <div style="background: #ffffff; border-radius: 20px; width: 100%; max-width: 440px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.15);">
+    <div style="background: #4a5259; padding: 24px; display: flex; align-items: center; justify-content: space-between;">
+      <h2 style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 12px;">
+        <i data-lucide="landmark" style="width: 22px; height: 22px;"></i>
+        Datos para Transferencia
+      </h2>
+      <button onclick="document.getElementById('transferModal').classList.remove('active')" style="background: rgba(255,255,255,0.15); border: none; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s;" onmouseenter="this.style.background='rgba(255,255,255,0.25)'" onmouseleave="this.style.background='rgba(255,255,255,0.15)'">
+        <i data-lucide="x" style="width: 20px; height: 20px; color: #ffffff;"></i>
+      </button>
+    </div>
+    <div style="padding: 28px;">
+      <div style="background: #f9fafb; border-radius: 14px; padding: 20px; margin-bottom: 20px; border: 1px solid #e5e7eb;">
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">Alias</label>
+          <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 2px solid #e5e7eb; border-radius: 10px; padding: 14px 16px;">
+            <span style="color: #1e1e1e; font-size: 15px; font-weight: 600; font-family: monospace;">educacion.cemi</span>
+            <button onclick="copyToClipboard('educacion.cemi', this)" style="background: #4a5259; border: none; border-radius: 8px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s;" onmouseenter="this.style.background='#3d444a'" onmouseleave="this.style.background='#4a5259'">
+              <i data-lucide="copy" style="width: 18px; height: 18px; color: #ffffff;"></i>
+            </button>
+          </div>
+        </div>
+        <div>
+          <label style="display: block; color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">CBU</label>
+          <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 2px solid #e5e7eb; border-radius: 10px; padding: 14px 16px;">
+            <span style="color: #1e1e1e; font-size: 15px; font-weight: 600; font-family: monospace;">0008466199055723490</span>
+            <button onclick="copyToClipboard('0008466199055723490', this)" style="background: #4a5259; border: none; border-radius: 8px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s;" onmouseenter="this.style.background='#3d444a'" onmouseleave="this.style.background='#4a5259'">
+              <i data-lucide="copy" style="width: 18px; height: 18px; color: #ffffff;"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div style="background: rgba(74, 82, 89, 0.06); border-radius: 10px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px;">
+        <i data-lucide="info" style="width: 18px; height: 18px; color: #4a5259; flex-shrink: 0; margin-top: 2px;"></i>
+        <p style="margin: 0; color: #4a5259; font-size: 13px; line-height: 1.5;">Realiza la transferencia y envía el comprobante por correo o WhatsApp.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  #transferModal.active { display: flex !important; }
+</style>
+
+<script src="https://unpkg.com/imask"></script>
+<script src="assets/js/credit-card.js"></script>
+
+<style>
+  .user-chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 160px);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+
+  .user-chat-header {
+    background: #4a5259;
+    color: white;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .user-chat-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .user-chat-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    opacity: 0.9;
+    margin-top: 4px;
+  }
+
+  .user-chat-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    animation: pulse 2s infinite;
+  }
+
+  .user-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .user-chat-message {
+    display: flex;
+    gap: 10px;
+    animation: messageSlideIn 0.3s ease-out;
+  }
+
+  .user-chat-message.sent {
+    flex-direction: row-reverse;
+  }
+
+  .user-chat-message-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .user-chat-message.sent .user-chat-message-avatar {
+    background: #4a5259;
+  }
+
+  .user-chat-message.received .user-chat-message-avatar {
+    background: #6b7280;
+  }
+
+  .user-chat-message-content {
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .user-chat-message-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+
+  .user-chat-message.sent .user-chat-message-bubble {
+    background: #4a5259;
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+
+  .user-chat-message.received .user-chat-message-bubble {
+    background: white;
+    color: #333;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .user-chat-message-time {
+    font-size: 11px;
+    color: #999;
+    padding: 0 4px;
+  }
+
+  .user-chat-message.sent .user-chat-message-time {
+    text-align: right;
+  }
+
+  .user-chat-input-area {
+    padding: 16px 20px;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .user-chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 24px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+
+  .user-chat-input:focus {
+    border-color: #4a5259;
+    box-shadow: 0 0 0 3px rgba(74, 82, 89, 0.1);
+  }
+
+  .user-chat-send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #4a5259;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .user-chat-send-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(74, 82, 89, 0.4);
+  }
+
+  .user-chat-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: scale(1);
+  }
+
+  .user-chat-typing {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(74, 82, 89, 0.1);
+    border-radius: 16px;
+    font-size: 13px;
+    color: #4a5259;
+    align-self: flex-start;
+  }
+
+  .user-chat-typing-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .user-chat-typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4a5259;
+    animation: typingBounce 1.4s infinite;
+  }
+
+  .user-chat-typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .user-chat-typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  .user-chat-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+    gap: 12px;
+  }
+
+  .user-chat-empty i {
+    width: 64px;
+    height: 64px;
+    opacity: 0.5;
+  }
+
+  @keyframes messageSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes typingBounce {
+    0%, 60%, 100% {
+      transform: translateY(0);
+    }
+    30% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+</style>
+
+  <script>
+    // Funcionalidad del menú mobile
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const dashboardMain = document.querySelector('.dashboard-main');
+      
+      // Solo colapsar sidebar en móviles (<=768px)
+      if (window.innerWidth <= 768) {
+        sidebar.classList.add('collapsed');
+      }    if (mobileMenuToggle && sidebar && sidebarOverlay) {
+      // Abrir/cerrar sidebar
+      mobileMenuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('collapsed');
+        sidebarOverlay.classList.toggle('active');
+        if (dashboardMain) {
+          dashboardMain.classList.toggle('sidebar-open');
+        }
+        
+        // Cambiar icono
+        const icon = this.querySelector('i');
+        if (!sidebar.classList.contains('collapsed')) {
+          icon.setAttribute('data-lucide', 'x');
+        } else {
+          icon.setAttribute('data-lucide', 'menu');
+        }
+        lucide.createIcons();
+      });
+      
+      // Cerrar sidebar al hacer clic en overlay
+      sidebarOverlay.addEventListener('click', function() {
+        sidebar.classList.add('collapsed');
+        sidebarOverlay.classList.remove('active');
+        if (dashboardMain) {
+          dashboardMain.classList.remove('sidebar-open');
+        }
+        
+        const icon = mobileMenuToggle.querySelector('i');
+        icon.setAttribute('data-lucide', 'menu');
+        lucide.createIcons();
+      });
+    }
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+async function generarComprobantePago(idPago) {
+  try {
+    const { jsPDF } = window.jspdf;
+    
+    // Harvard Color Palette
+    const HARVARD_COLORS = {
+      charcoal: [30, 30, 30],
+      wroughtIron: [74, 74, 74],
+      graphite: [101, 111, 119],
+      silver: [160, 160, 160],
+      lightGray: [245, 245, 245],
+      success: [16, 185, 129],
+      white: [255, 255, 255]
+    };
+    
+    // Obtener datos del pago
+    const response = await fetch(`${API_URL}/pagos/${idPago}`);
+    const pago = await response.json();
+    
+    if (!pago || !pago.id_pago) {
+      throw new Error('No se encontró el pago');
+    }
+    
+    // Crear PDF en formato ticket elegante
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: [80, 210] // Ticket térmico elegante
+    });
+    
+    const ticketWidth = 80;
+    const centerX = ticketWidth / 2;
+    
+    // ===== HEADER HARVARD ELEGANTE =====
+    doc.setFillColor(...HARVARD_COLORS.charcoal);
+    doc.rect(0, 0, ticketWidth, 45, 'F');
+    
+    // Logo
+    let yPos = 8;
+    const img = new Image();
+    img.src = '/images/logo.png';
+    await new Promise((resolve) => {
+      img.onload = () => {
+        try {
+          doc.setFillColor(...HARVARD_COLORS.white);
+          doc.roundedRect(centerX - 12, yPos, 24, 24, 2, 2, 'F');
+          doc.addImage(img, 'PNG', centerX - 10, yPos + 2, 20, 20);
+        } catch (e) {}
+        resolve();
+      };
+      img.onerror = resolve;
+    });
+    
+    yPos += 28;
+    
+    // Título CEMI
+    doc.setTextColor(...HARVARD_COLORS.white);
+    doc.setFont('times', 'bold');
+    doc.setFontSize(14);
+    doc.text('CEMI', centerX, yPos, { align: 'center' });
+    yPos += 4;
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...HARVARD_COLORS.silver);
+    doc.text('Centro de Enseñanza de Múltiples Idiomas', centerX, yPos, { align: 'center' });
+    
+    // Líneas decorativas Harvard
+    yPos = 47;
+    doc.setDrawColor(...HARVARD_COLORS.wroughtIron);
+    doc.setLineWidth(1.5);
+    doc.line(8, yPos, ticketWidth - 8, yPos);
+    doc.setDrawColor(...HARVARD_COLORS.graphite);
+    doc.setLineWidth(0.5);
+    doc.line(8, yPos + 2, ticketWidth - 8, yPos + 2);
+    
+    yPos += 10;
+    
+    // ===== TÍTULO DEL COMPROBANTE =====
+    doc.setFont('times', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(...HARVARD_COLORS.charcoal);
+    doc.text('COMPROBANTE DE PAGO', centerX, yPos, { align: 'center' });
+    yPos += 8;
+    
+    // ===== NÚMERO DE COMPROBANTE DESTACADO =====
+    doc.setFillColor(...HARVARD_COLORS.charcoal);
+    doc.roundedRect(8, yPos, ticketWidth - 16, 18, 3, 3, 'F');
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...HARVARD_COLORS.silver);
+    doc.text('N° Comprobante', centerX, yPos + 5, { align: 'center' });
+    
+    doc.setFont('times', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...HARVARD_COLORS.white);
+    doc.text(`#${String(pago.id_pago).padStart(6, '0')}`, centerX, yPos + 13, { align: 'center' });
+    yPos += 24;
+    
+    // Fecha del comprobante
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...HARVARD_COLORS.graphite);
+    doc.text(`Fecha: ${new Date(pago.fecha_pago).toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    })}`, centerX, yPos, { align: 'center' });
+    yPos += 8;
+    
+    // ===== SECCIÓN DATOS DEL ALUMNO =====
+    doc.setDrawColor(...HARVARD_COLORS.silver);
+    doc.setLineWidth(0.3);
+    doc.line(8, yPos, ticketWidth - 8, yPos);
+    yPos += 5;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...HARVARD_COLORS.charcoal);
+    doc.text('DATOS DEL ALUMNO', centerX, yPos, { align: 'center' });
+    yPos += 5;
+    
+    // Datos alineados
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...HARVARD_COLORS.graphite);
+    doc.text('Alumno:', 10, yPos);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...HARVARD_COLORS.charcoal);
+    const nombreLines = doc.splitTextToSize(pago.alumno || '-', 40);
+    doc.text(nombreLines, 70, yPos, { align: 'right' });
+    yPos += nombreLines.length * 3.5 + 1;
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...HARVARD_COLORS.graphite);
+    doc.text('Legajo:', 10, yPos);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...HARVARD_COLORS.charcoal);
+    doc.text(pago.legajo || '-', 70, yPos, { align: 'right' });
+    yPos += 4;
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...HARVARD_COLORS.graphite);
+    doc.text('DNI:', 10, yPos);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...HARVARD_COLORS.charcoal);
+    doc.text(String(pago.dni) || '-', 70, yPos, { align: 'right' });
+    yPos += 6;
+    
+    // ===== SECCIÓN DETALLES DEL PAGO =====
+    doc.setDrawColor(...HARVARD_COLORS.silver);
+    doc.line(8, yPos, ticketWidth - 8, yPos);
+    yPos += 5;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...HARVARD_COLORS.charcoal);
+    doc.text('DETALLES DEL PAGO', centerX, yPos, { align: 'center' });
+    yPos += 5;
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(...HARVARD_COLORS.graphite);
+    doc.text('Concepto:', 10, yPos);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...HARVARD_COLORS.charcoal);
+    doc.text(pago.concepto || '-', 70, yPos, { align: 'right' });
+    yPos += 4;
+    
+    if (pago.mes_cuota) {
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...HARVARD_COLORS.graphite);
+      doc.text('Cuota:', 10, yPos);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...HARVARD_COLORS.charcoal);
+      doc.text(pago.mes_cuota, 70, yPos, { align: 'right' });
+      yPos += 4;
+    }
+    
+    if (pago.periodo) {
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...HARVARD_COLORS.graphite);
+      doc.text('Período:', 10, yPos);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...HARVARD_COLORS.charcoal);
+      doc.text(pago.periodo, 70, yPos, { align: 'right' });
+      yPos += 4;
+    }
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...HARVARD_COLORS.graphite);
+    doc.text('Medio de Pago:', 10, yPos);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...HARVARD_COLORS.charcoal);
+    doc.text(pago.medio_pago || '-', 70, yPos, { align: 'right' });
+    yPos += 8;
+    
+    // ===== MONTO TOTAL DESTACADO =====
+    doc.setFillColor(...HARVARD_COLORS.charcoal);
+    doc.roundedRect(8, yPos, ticketWidth - 16, 14, 2, 2, 'F');
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...HARVARD_COLORS.silver);
+    doc.text('TOTAL PAGADO', 14, yPos + 5);
+    
+    doc.setFont('times', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(...HARVARD_COLORS.white);
+    doc.text(`$${parseFloat(pago.monto).toLocaleString('es-AR', {minimumFractionDigits: 2})}`, 66, yPos + 9.5, { align: 'right' });
+    yPos += 20;
+    
+    // ===== ESTADO CONFIRMADO =====
+    doc.setFillColor(...HARVARD_COLORS.success);
+    doc.roundedRect(18, yPos, ticketWidth - 36, 8, 2, 2, 'F');
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...HARVARD_COLORS.white);
+    doc.text('PAGO CONFIRMADO', centerX, yPos + 5.5, { align: 'center' });
+    yPos += 14;
+    
+    // ===== FOOTER ELEGANTE =====
+    doc.setDrawColor(...HARVARD_COLORS.wroughtIron);
+    doc.setLineWidth(0.5);
+    doc.line(8, yPos, ticketWidth - 8, yPos);
+    yPos += 5;
+    
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(6);
+    doc.setTextColor(...HARVARD_COLORS.silver);
+    doc.text('Cemi - Centro de Enseñanza de Múltiples Idiomas', centerX, yPos, { align: 'center' });
+    yPos += 3;
+    doc.text(`Generado: ${new Date().toLocaleDateString('es-ES')} - ${new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`, centerX, yPos, { align: 'center' });
+    yPos += 3;
+    doc.text('Este documento es un comprobante válido de pago', centerX, yPos, { align: 'center' });
+    
+    // Descargar
+    const nombreArchivo = `Comprobante_${String(pago.id_pago).padStart(6, '0')}_${pago.alumno.replace(/\s+/g, '_')}.pdf`;
+    doc.save(nombreArchivo);
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Comprobante generado',
+      text: 'Tu comprobante se ha descargado correctamente',
+      timer: 2000,
+      showConfirmButton: false
+    });
+  } catch (error) {
+    console.error('Error al generar comprobante:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo generar el comprobante'
+    });
+  }
+}
+</script>
+
+
+</body>
+</html>

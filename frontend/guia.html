@@ -1,0 +1,741 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Guía de Uso - Cemi</title>
+  <link rel="stylesheet" href="assets/css/guia.css">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  
+  <section class="hero-guia">
+    <div class="hero-background">
+      <div class="floating-icon icon-1"><i data-lucide="book-open"></i></div>
+      <div class="floating-icon icon-2"><i data-lucide="graduation-cap"></i></div>
+      <div class="floating-icon icon-3"><i data-lucide="users"></i></div>
+      <div class="floating-icon icon-4"><i data-lucide="award"></i></div>
+    </div>
+    
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i data-lucide="compass"></i>
+        <span>Guía Interactiva</span>
+      </div>
+      <h1 class="hero-title">Descubre cómo usar <span class="text-gradient">Cemi</span></h1>
+      <p class="hero-subtitle">Aprende a aprovechar al máximo nuestra plataforma educativa integral</p>
+      
+      <button class="back-home" onclick="window.location.href='index.html'">
+        <i data-lucide="arrow-left"></i>
+        <span>Volver al inicio</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="role-selector">
+    <div class="container">
+      <h2 class="section-title">Selecciona tu rol</h2>
+      <p class="section-subtitle">Elige cómo usas Cemi para ver una guía personalizada</p>
+      
+      <div class="role-cards">
+        <div class="role-card" data-role="alumno" onclick="selectRole('alumno')">
+          <div class="role-card-icon">
+            <i data-lucide="user"></i>
+          </div>
+          <h3>Soy Alumno</h3>
+          <p>Accede a tus cursos, tareas y calificaciones</p>
+          <ul class="role-features">
+            <li><i data-lucide="check"></i> Gestión de tareas</li>
+            <li><i data-lucide="check"></i> Seguimiento académico</li>
+            <li><i data-lucide="check"></i> Recursos educativos</li>
+          </ul>
+          <div class="role-arrow">
+            <i data-lucide="arrow-right"></i>
+          </div>
+        </div>
+
+        <div class="role-card" data-role="profesor" onclick="selectRole('profesor')">
+          <div class="role-card-icon">
+            <i data-lucide="graduation-cap"></i>
+          </div>
+          <h3>Soy Profesor</h3>
+          <p>Administra cursos, alumnos y evaluaciones</p>
+          <ul class="role-features">
+            <li><i data-lucide="check"></i> Gestión de cursos</li>
+            <li><i data-lucide="check"></i> Evaluación de alumnos</li>
+            <li><i data-lucide="check"></i> Reportes detallados</li>
+          </ul>
+          <div class="role-arrow">
+            <i data-lucide="arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="guide-section alumno-guide" id="alumno-guide" style="display: none;">
+    <div class="container">
+      <div class="guide-header">
+        <div class="guide-icon">
+          <i data-lucide="user"></i>
+        </div>
+        <h2>Guía para Alumnos</h2>
+        <p>Aprende a usar Cemi Classroom paso a paso</p>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item" data-step="1">
+          <div class="timeline-marker">
+            <div class="marker-number">1</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="log-in"></i> Accede a Cemi Classroom</h3>
+            <p>Ingresa con tus credenciales desde el login de Classroom</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="user-check"></i>
+                <div>
+                  <h4>Usuario</h4>
+                  <p>Tu legajo o email asignado por la institución</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="key"></i>
+                <div>
+                  <h4>Contraseña</h4>
+                  <p>La clave proporcionada en tu inscripción</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="home"></i>
+                <div>
+                  <h4>Vista Inicio</h4>
+                  <p>Feed de actividades y anuncios recientes</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="2">
+          <div class="timeline-marker">
+            <div class="marker-number">2</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="book-open"></i> Explora tus Clases</h3>
+            <p>Accede a "Mis Clases" para ver todos tus cursos inscritos</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="graduation-cap"></i>
+                <div>
+                  <h4>Cursos Inscritos</h4>
+                  <p>Lista completa con nivel, idioma y profesor</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="layout-grid"></i>
+                <div>
+                  <h4>Vista de Cards</h4>
+                  <p>Cada curso en tarjeta con información resumida</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="mouse-pointer"></i>
+                <div>
+                  <h4>Click para Detalle</h4>
+                  <p>Presiona un curso para ver su contenido completo</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="3">
+          <div class="timeline-marker">
+            <div class="marker-number">3</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="clipboard-list"></i> Visualiza tus Tareas</h3>
+            <p>Sección "Tareas" muestra todas las asignaciones con estado</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="alert-circle"></i>
+                <div>
+                  <h4>Estado: Pendiente</h4>
+                  <p>Tareas sin entregar antes de la fecha límite</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="check-circle"></i>
+                <div>
+                  <h4>Estado: Entregada</h4>
+                  <p>Trabajos ya subidos, esperando calificación</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="x-circle"></i>
+                <div>
+                  <h4>Estado: Vencida</h4>
+                  <p>Tareas que excedieron la fecha de entrega</p>
+                </div>
+              </div>
+            </div>
+            <div class="step-tip">
+              <i data-lucide="lightbulb"></i>
+              <p><strong>Tip:</strong> Las tareas muestran puntos asignados y fecha límite claramente visible</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="4">
+          <div class="timeline-marker">
+            <div class="marker-number">4</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="upload"></i> Entrega tus Trabajos</h3>
+            <p>Haz clic en "Entregar" en cualquier tarea pendiente</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="message-square"></i>
+                <div>
+                  <h4>Comentario (Opcional)</h4>
+                  <p>Agrega observaciones sobre tu entrega</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="paperclip"></i>
+                <div>
+                  <h4>Archivo Adjunto</h4>
+                  <p>Sube tu trabajo en PDF, DOC, JPG o PNG</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="send"></i>
+                <div>
+                  <h4>Enviar Entrega</h4>
+                  <p>El profesor recibe notificación inmediata</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="5">
+          <div class="timeline-marker">
+            <div class="marker-number">5</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="star"></i> Revisa tus Calificaciones</h3>
+            <p>Las tareas calificadas muestran nota y comentarios del profesor</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="award"></i>
+                <div>
+                  <h4>Nota Numérica</h4>
+                  <p>Calificación sobre los puntos de la tarea</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="message-circle"></i>
+                <div>
+                  <h4>Feedback del Profesor</h4>
+                  <p>Comentarios y observaciones personalizadas</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="bell"></i>
+                <div>
+                  <h4>Notificación</h4>
+                  <p>Recibes alerta cuando hay nueva calificación</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="6">
+          <div class="timeline-marker">
+            <div class="marker-number">6</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="calendar"></i> Usa el Calendario</h3>
+            <p>Visualiza fechas importantes y eventos del curso</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="calendar-days"></i>
+                <div>
+                  <h4>Vista Mensual</h4>
+                  <p>Calendario con fechas límite destacadas</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="clock"></i>
+                <div>
+                  <h4>Próximas Entregas</h4>
+                  <p>Listado de tareas ordenadas por fecha</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="filter"></i>
+                <div>
+                  <h4>Filtrar por Curso</h4>
+                  <p>Selector para ver tareas de curso específico</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="7">
+          <div class="timeline-marker">
+            <div class="marker-number">7</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="message-circle"></i> Chat de Soporte</h3>
+            <p>Desde tu Dashboard puedes contactar con soporte técnico</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="headphones"></i>
+                <div>
+                  <h4>Soporte en Tiempo Real</h4>
+                  <p>Chat directo con administradores del sistema</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="bell-ring"></i>
+                <div>
+                  <h4>Notificaciones</h4>
+                  <p>Badge indica mensajes nuevos sin leer</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="help-circle"></i>
+                <div>
+                  <h4>Ayuda Técnica</h4>
+                  <p>Resuelve dudas sobre el uso del sistema</p>
+                </div>
+              </div>
+            </div>
+            <div class="step-tip">
+              <i data-lucide="lightbulb"></i>
+              <p><strong>Tip:</strong> Accede al chat desde el menú lateral del Dashboard Alumno</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-cta">
+        <h3>¿Listo para comenzar?</h3>
+        <p>Accede ahora a Cemi Classroom y empieza tu experiencia de aprendizaje</p>
+        <button class="cta-button" onclick="window.location.href='classroom-login.html'">
+          <i data-lucide="log-in"></i>
+          <span>Ingresar a Classroom</span>
+          <i data-lucide="arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="guide-section profesor-guide" id="profesor-guide" style="display: none;">
+    <div class="container">
+      <div class="guide-header">
+        <div class="guide-icon">
+          <i data-lucide="graduation-cap"></i>
+        </div>
+        <h2>Guía para Profesores</h2>
+        <p>Administra tu aula virtual de forma eficiente</p>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item" data-step="1">
+          <div class="timeline-marker">
+            <div class="marker-number">1</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="log-in"></i> Accede a Cemi Classroom</h3>
+            <p>Inicia sesión con tus credenciales de profesor</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="shield-check"></i>
+                <div>
+                  <h4>Credenciales</h4>
+                  <p>Email institucional y contraseña asignada</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="layout-dashboard"></i>
+                <div>
+                  <h4>Panel Profesor</h4>
+                  <p>Vista completa de cursos y estadísticas</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="home"></i>
+                <div>
+                  <h4>Feed de Actividad</h4>
+                  <p>Anuncios y entregas recientes</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="2">
+          <div class="timeline-marker">
+            <div class="marker-number">2</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="book-open"></i> Visualiza tus Cursos</h3>
+            <p>Sección "Mis Cursos" muestra todos los asignados</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="users"></i>
+                <div>
+                  <h4>Listado de Alumnos</h4>
+                  <p>Cantidad total de inscriptos por curso</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="calendar-days"></i>
+                <div>
+                  <h4>Información del Curso</h4>
+                  <p>Nivel, idioma, horarios y duración</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="mouse-pointer"></i>
+                <div>
+                  <h4>Click para Detalle</h4>
+                  <p>Accede al panel completo del curso</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="3">
+          <div class="timeline-marker">
+            <div class="marker-number">3</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="plus-circle"></i> Crea Tareas</h3>
+            <p>Botón "Crear Tarea" en vista de Classroom</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="edit"></i>
+                <div>
+                  <h4>Título y Descripción</h4>
+                  <p>Nombre y consigna detallada de la tarea</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="calendar-check"></i>
+                <div>
+                  <h4>Fecha Límite</h4>
+                  <p>Establece día y hora de entrega</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="award"></i>
+                <div>
+                  <h4>Puntos</h4>
+                  <p>Asigna puntaje máximo para la tarea</p>
+                </div>
+              </div>
+            </div>
+            <div class="step-tip">
+              <i data-lucide="lightbulb"></i>
+              <p><strong>Tip:</strong> Puedes adjuntar archivos y links de referencia en cada tarea</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="4">
+          <div class="timeline-marker">
+            <div class="marker-number">4</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="clipboard-list"></i> Gestiona Entregas</h3>
+            <p>Revisa trabajos enviados por los alumnos</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="eye"></i>
+                <div>
+                  <h4>Ver Entregas</h4>
+                  <p>Click en tarea para ver todas las entregas</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="download"></i>
+                <div>
+                  <h4>Descargar Archivos</h4>
+                  <p>Accede al trabajo de cada estudiante</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="bar-chart"></i>
+                <div>
+                  <h4>Estadística</h4>
+                  <p>Contador de entregas sobre total de alumnos</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="5">
+          <div class="timeline-marker">
+            <div class="marker-number">5</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="star"></i> Califica Trabajos</h3>
+            <p>Asigna notas y comentarios a cada entrega</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="hash"></i>
+                <div>
+                  <h4>Nota Numérica</h4>
+                  <p>Califica sobre los puntos de la tarea</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="message-square"></i>
+                <div>
+                  <h4>Comentario Profesor</h4>
+                  <p>Feedback personalizado para el alumno</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="bell"></i>
+                <div>
+                  <h4>Notificación Automática</h4>
+                  <p>El alumno recibe alerta de calificación</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="6">
+          <div class="timeline-marker">
+            <div class="marker-number">6</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="megaphone"></i> Publica Anuncios</h3>
+            <p>Comunica información importante a tus alumnos</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="pen"></i>
+                <div>
+                  <h4>Crear Anuncio</h4>
+                  <p>Redacta mensaje con título y contenido</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="users"></i>
+                <div>
+                  <h4>Para Todo el Curso</h4>
+                  <p>Visible en el feed de todos los inscriptos</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="bell-ring"></i>
+                <div>
+                  <h4>Notificación</h4>
+                  <p>Los alumnos reciben alerta instantánea</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="7">
+          <div class="timeline-marker">
+            <div class="marker-number">7</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="clipboard-check"></i> Gestiona Calificaciones</h3>
+            <p>Dashboard Profesor - Sección "Calificaciones"</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="edit-3"></i>
+                <div>
+                  <h4>Cargar Notas</h4>
+                  <p>Parcial 1, Parcial 2 y Final por alumno</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="list"></i>
+                <div>
+                  <h4>Listado Completo</h4>
+                  <p>Tabla con todos los alumnos del curso</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="check"></i>
+                <div>
+                  <h4>Guardar</h4>
+                  <p>Actualiza calificaciones en el sistema</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="8">
+          <div class="timeline-marker">
+            <div class="marker-number">8</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="calendar"></i> Registra Asistencias</h3>
+            <p>Dashboard Profesor - Sección "Asistencias"</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="calendar-days"></i>
+                <div>
+                  <h4>Seleccionar Fecha</h4>
+                  <p>Elige el día de la clase</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="user-check"></i>
+                <div>
+                  <h4>Marcar Presente/Ausente</h4>
+                  <p>Checkbox por cada alumno inscripto</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="save"></i>
+                <div>
+                  <h4>Guardar Asistencia</h4>
+                  <p>Registra la lista del día seleccionado</p>
+                </div>
+              </div>
+            </div>
+            <div class="step-tip">
+              <i data-lucide="lightbulb"></i>
+              <p><strong>Tip:</strong> Puedes editar asistencias de fechas anteriores si cometiste un error</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-step="9">
+          <div class="timeline-marker">
+            <div class="marker-number">9</div>
+          </div>
+          <div class="timeline-content">
+            <h3><i data-lucide="message-circle"></i> Chat de Soporte</h3>
+            <p>Contacto directo con administración del sistema</p>
+            <div class="step-details">
+              <div class="detail-card">
+                <i data-lucide="headphones"></i>
+                <div>
+                  <h4>Soporte Técnico</h4>
+                  <p>Chat en tiempo real con admins</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="bell"></i>
+                <div>
+                  <h4>Notificaciones</h4>
+                  <p>Badge rojo indica mensajes sin leer</p>
+                </div>
+              </div>
+              <div class="detail-card">
+                <i data-lucide="help-circle"></i>
+                <div>
+                  <h4>Ayuda</h4>
+                  <p>Resuelve problemas técnicos o consultas</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-cta">
+        <h3>¿Listo para gestionar tus cursos?</h3>
+        <p>Accede al Dashboard y empieza a crear tu aula virtual perfecta</p>
+        <button class="cta-button" onclick="window.location.href='login.html'">
+          <i data-lucide="log-in"></i>
+          <span>Ingresar al Dashboard</span>
+          <i data-lucide="arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    lucide.createIcons();
+
+    // Selección de rol
+    function selectRole(role) {
+      const alumnoGuide = document.getElementById('alumno-guide');
+      const profesorGuide = document.getElementById('profesor-guide');
+      const roleCards = document.querySelectorAll('.role-card');
+      
+      // Remover selección anterior
+      roleCards.forEach(card => card.classList.remove('selected'));
+      
+      // Seleccionar nueva card
+      const selectedCard = document.querySelector(`[data-role="${role}"]`);
+      selectedCard.classList.add('selected');
+      
+      // Mostrar guía correspondiente con animación
+      if (role === 'alumno') {
+        profesorGuide.style.display = 'none';
+        alumnoGuide.style.display = 'block';
+        setTimeout(() => {
+          alumnoGuide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } else {
+        alumnoGuide.style.display = 'none';
+        profesorGuide.style.display = 'block';
+        setTimeout(() => {
+          profesorGuide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+      
+      // Reinicializar iconos de Lucide
+      setTimeout(() => lucide.createIcons(), 200);
+      
+      // Activar animaciones de scroll
+      setTimeout(() => observeTimelineItems(), 300);
+    }
+
+    // Intersection Observer para animaciones al scroll
+    function observeTimelineItems() {
+      const timelineItems = document.querySelectorAll('.timeline-item');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -100px 0px'
+      });
+      
+      timelineItems.forEach(item => {
+        observer.observe(item);
+      });
+    }
+
+    // Animación de íconos flotantes
+    document.addEventListener('DOMContentLoaded', () => {
+      const floatingIcons = document.querySelectorAll('.floating-icon');
+      floatingIcons.forEach((icon, index) => {
+        icon.style.animationDelay = `${index * 0.5}s`;
+      });
+    });
+  </script>
+
+</body>
+</html>
+
+
+

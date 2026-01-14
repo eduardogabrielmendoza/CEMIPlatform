@@ -1,0 +1,617 @@
+
+
+.cursado-container {
+  padding: 20px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.section-divider {
+  border: none;
+  border-top: 2px solid #e2e8f0;
+  margin: 30px 0;
+}
+
+
+.mis-cursos-actuales {
+  margin-bottom: 30px;
+}
+
+.mis-cursos-actuales h3 {
+  font-size: 1.3rem;
+  color: #2d3748;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mis-cursos-actuales h3 i {
+  color: #4a5259;
+}
+
+
+.cursos-grid,
+.mis-cursos-grid,
+#catalogo-cursos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+  width: 100%;
+}
+
+
+.curso-card {
+  background: white;
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.curso-card::before {
+  content: none;
+}
+
+.curso-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.curso-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 0;
+  background: #4a5259;
+  padding: 20px;
+  border-radius: 16px 16px 0 0;
+}
+
+.curso-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.curso-card-title {
+  flex: 1;
+}
+
+.curso-card-title h3 {
+  margin: 0 0 4px 0;
+  font-size: 17px;
+  color: #ffffff;
+  font-weight: 500;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.curso-card-title .idioma {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.curso-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e1e1e;
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+  box-shadow: none;
+}
+
+.curso-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 0;
+  padding: 20px 20px 16px 20px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.info-row i {
+  width: 20px;
+  height: 20px;
+  color: #a0aec0;
+  flex-shrink: 0;
+}
+
+.curso-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  gap: 12px;
+  min-height: 72px;
+}
+
+.curso-card-footer .card-actions,
+.curso-card-footer > div:last-child {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cupos-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.cupos-text {
+  font-size: 13px;
+  color: #718096;
+  font-weight: 500;
+}
+
+.cupos-bar {
+  width: 160px;
+  height: 6px;
+  background: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.cupos-bar-fill {
+  height: 100%;
+  background: #166534;
+  transition: width 0.3s ease;
+}
+
+.cupos-bar-fill.warning {
+  background: #92400e;
+}
+
+.cupos-bar-fill.danger {
+  background: #991b1b;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+  transform: translateY(-2px);
+}
+
+
+.filtros-section {
+  background: #f7fafc;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.filtros-section h3 {
+  font-size: 1.2rem;
+  color: #2d3748;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filtros-section h3 i {
+  color: #4a5259;
+}
+
+.filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  align-items: end;
+}
+
+.filtros-grid .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filtros-grid label {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin-bottom: 6px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filtros-grid label i {
+  width: 16px;
+  height: 16px;
+  color: #4a5259;
+}
+
+.filtros-grid .form-control {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.filtros-grid .form-control:focus {
+  outline: none;
+  border-color: #4a5259;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge-success {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.badge-warning {
+  background: #feebc8;
+  color: #744210;
+}
+
+.badge-danger {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.badge i {
+  font-size: 1rem;
+}
+
+
+.alert {
+  padding: 16px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+}
+
+.alert-info {
+  background: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #91d5ff;
+}
+
+.alert-warning {
+  background: #fff7e6;
+  color: #fa8c16;
+  border: 1px solid #ffd591;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 16px;
+}
+
+.spinner-border {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #4a5259;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+@media (max-width: 768px) {
+  .cursos-grid,
+  .mis-cursos-grid,
+  #catalogo-cursos-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .filtros-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cupos-bar {
+    width: 120px;
+  }
+}
+
+
+.mis-cursos-actuales-mini {
+  margin-bottom: 32px;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(66, 99, 140, 0.08);
+}
+
+.mis-cursos-actuales-mini h3 {
+  color: #2d3748;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mis-cursos-actuales-mini h3 i {
+  color: #547194;
+}
+
+.mis-cursos-mini-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.curso-mini-badge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  border: 1.5px solid rgba(66, 99, 140, 0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.curso-mini-badge:hover {
+  border-color: #547194;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 4px 12px rgba(84, 113, 148, 0.15);
+  transform: translateY(-2px);
+}
+
+.mini-badge-icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #547194 0%, #7a9bbd 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.mini-badge-icon i {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.5;
+}
+
+.mini-badge-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.mini-badge-content h4 {
+  color: #2d3748;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-badge-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+}
+
+.mini-idioma,
+.mini-nivel {
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.3px;
+}
+
+.mini-idioma {
+  background: rgba(74, 82, 89, 0.1);
+  color: #4a5259;
+  border: 1px solid rgba(74, 82, 89, 0.2);
+}
+
+.mini-nivel {
+  background: rgba(74, 82, 89, 0.08);
+  color: #4a5259;
+  border: 1px solid rgba(74, 82, 89, 0.15);
+}
+
+.mini-horario {
+  color: #718096;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+}
+
+.mini-horario i {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+.mini-badge-action {
+  flex-shrink: 0;
+  color: #94a3b8;
+  transition: all 0.3s ease;
+}
+
+.mini-badge-action i {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
+}
+
+.curso-mini-badge:hover .mini-badge-action {
+  color: #547194;
+  transform: translateX(4px);
+}
+
+@media (max-width: 768px) {
+  .curso-mini-badge {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .mini-badge-content h4 {
+    white-space: normal;
+  }
+  
+  .mini-badge-action {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .mis-cursos-actuales-mini {
+    padding: 0;
+    margin: 0 0 20px 0;
+  }
+
+  .mis-cursos-actuales-mini h3 {
+    font-size: 1.05rem;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .mis-cursos-mini-grid {
+    gap: 10px;
+  }
+
+  .curso-mini-badge {
+    padding: 14px 16px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+
+  .mini-badge-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+  }
+
+  .mini-badge-icon i {
+    width: 20px;
+    height: 20px;
+  }
+
+  .mini-badge-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mini-badge-content h4 {
+    font-size: 0.92rem;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .mini-badge-meta {
+    gap: 8px;
+    font-size: 0.78rem;
+  }
+
+  .mini-idioma,
+  .mini-nivel {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+  }
+
+  .mini-horario {
+    font-size: 0.75rem;
+  }
+
+  .mini-horario i {
+    width: 13px;
+    height: 13px;
+  }
+}

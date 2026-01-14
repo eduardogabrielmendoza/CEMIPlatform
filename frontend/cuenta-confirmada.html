@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <meta name="theme-color" content="#1e1e1e">
+  <title>Cuenta Confirmada - Cemi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .confirmation-container {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      max-width: 600px;
+      width: 100%;
+      overflow: hidden;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header-section {
+      background: #1e1e1e;
+      padding: 35px 30px;
+      text-align: center;
+      position: relative;
+    }
+
+    .header-section img.logo {
+      height: 50px;
+      width: auto;
+    }
+
+    .header-accent {
+      height: 4px;
+      background: #4a4a4a;
+    }
+
+    .header-section h1 {
+      color: #ffffff;
+      font-size: 26px;
+      font-weight: 600;
+      margin: 20px 0 8px 0;
+      position: relative;
+      z-index: 1;
+      font-family: 'Times New Roman', Georgia, serif;
+      letter-spacing: 0.5px;
+    }
+
+    .header-section p {
+      color: #a0a0a0;
+      font-size: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content-section {
+      padding: 40px 35px;
+      text-align: center;
+      background: #fcfcfc;
+    }
+
+    .success-animation {
+      margin-bottom: 30px;
+    }
+
+    .success-animation img {
+      width: 180px;
+      height: 180px;
+      border-radius: 12px;
+    }
+
+    .content-section h2 {
+      color: #1e1e1e;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-family: 'Times New Roman', Georgia, serif;
+    }
+
+    .content-section .subtitle {
+      color: #4a4a4a;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 30px;
+    }
+
+    .info-card {
+      background: #f5f5f5;
+      border: 1px solid #e5e5e5;
+      border-left: 4px solid #1e1e1e;
+      border-radius: 0 8px 8px 0;
+      padding: 25px;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+
+    .info-card h3 {
+      color: #1e1e1e;
+      font-size: 16px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Times New Roman', Georgia, serif;
+    }
+
+    .info-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .info-card li {
+      color: #4a4a4a;
+      font-size: 14px;
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .info-card li:last-child {
+      border-bottom: none;
+    }
+
+    .info-card li svg {
+      width: 18px;
+      height: 18px;
+      color: #1e1e1e;
+      flex-shrink: 0;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #1e1e1e;
+      color: #ffffff;
+      padding: 16px 40px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: #4a4a4a;
+      transform: translateY(-2px);
+    }
+
+    .btn-primary svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .footer-section {
+      background: #f5f5f5;
+      padding: 25px;
+      text-align: center;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .footer-section p {
+      color: #656f77;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .footer-section a {
+      color: #1e1e1e;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-section a:hover {
+      text-decoration: underline;
+    }
+
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #1e1e1e;
+      animation: confetti-fall 3s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .confirmation-container {
+        border-radius: 8px;
+      }
+
+      .header-section {
+        padding: 30px 20px;
+      }
+
+      .header-section h1 {
+        font-size: 22px;
+      }
+
+      .content-section {
+        padding: 30px 20px;
+      }
+
+      .content-section h2 {
+        font-size: 20px;
+      }
+
+      .btn-primary {
+        width: 100%;
+        padding: 14px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="confetti" id="confetti"></div>
+
+  <div class="confirmation-container">
+    <div class="header-section">
+      <img src="images/logolong.png" alt="CEMI" class="logo">
+      <h1>Felicitaciones</h1>
+      <p>Tu cuenta ha sido verificada exitosamente</p>
+    </div>
+    <div class="header-accent"></div>
+
+    <div class="content-section">
+      <div class="success-animation">
+        <img src="images/32.gif" alt="Celebracion">
+      </div>
+
+      <h2>Tu cuenta esta activa</h2>
+      <p class="subtitle">
+        Ya sos parte oficial de la comunidad del <strong>Centro Educativo Multilingue Integral</strong>. 
+        Ahora tenes acceso completo a todas las funcionalidades del sistema.
+      </p>
+
+      <div class="info-card">
+        <h3>
+          <i data-lucide="sparkles"></i>
+          Que podes hacer ahora?
+        </h3>
+        <ul>
+          <li>
+            <i data-lucide="book-open"></i>
+            <span>Explorar los cursos disponibles e inscribirte</span>
+          </li>
+          <li>
+            <i data-lucide="calendar"></i>
+            <span>Consultar tus horarios y calendario academico</span>
+          </li>
+          <li>
+            <i data-lucide="bar-chart-2"></i>
+            <span>Ver tu progreso y calificaciones</span>
+          </li>
+          <li>
+            <i data-lucide="credit-card"></i>
+            <span>Gestionar tus pagos y cuotas</span>
+          </li>
+          <li>
+            <i data-lucide="user"></i>
+            <span>Personalizar tu perfil con foto y datos</span>
+          </li>
+        </ul>
+      </div>
+
+      <a href="login.html" class="btn-primary">
+        <i data-lucide="log-in"></i>
+        Iniciar Sesion
+      </a>
+    </div>
+
+    <div class="footer-section">
+      <p>Tenes alguna pregunta?</p>
+      <p><a href="ayuda.html">Visita nuestro Centro de Ayuda</a> | <a href="mailto:soporte@Cemiedu">Contactar Soporte</a></p>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function createConfetti() {
+      const confettiContainer = document.getElementById('confetti');
+      const colors = ['#1e1e1e', '#4a4a4a', '#656f77', '#10b981', '#a0a0a0'];
+      
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 2 + 's';
+        piece.style.width = (Math.random() * 10 + 5) + 'px';
+        piece.style.height = (Math.random() * 10 + 5) + 'px';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        confettiContainer.appendChild(piece);
+      }
+
+      setTimeout(() => {
+        confettiContainer.innerHTML = '';
+      }, 5000);
+    }
+
+    createConfetti();
+  </script>
+</body>
+</html>
+
+
+

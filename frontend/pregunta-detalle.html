@@ -1,0 +1,479 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/mobile-responsive-master.css">
+  <title>Pregunta - Comunidad Cemi</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="assets/js/console-manager.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root { --hw-charcoal: #1e1e1e; --hw-graphite: #656f77; --hw-light-gray: #8c939a; --hw-silver: #b8bdc2; --hw-off-white: #f8f9fa; --hw-cream: #f5f5f7; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--hw-off-white); color: var(--hw-charcoal); line-height: 1.6; }
+
+    .help-header { background: var(--hw-light-gray); position: sticky; top: 0; z-index: 100; }
+    .header-top { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; }
+    .header-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+    .header-logo img { width: 52px; height: 52px; border-radius: 10px; }
+    .header-logo span { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 500; }
+    .header-nav { display: flex; gap: 8px; }
+    .header-nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 10px 18px; border-radius: 10px; font-size: 14px; font-weight: 500; transition: all 0.3s ease; position: relative; }
+    .header-nav a::after { content: ''; position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: var(--hw-silver); transition: width 0.3s ease; }
+    .header-nav a:hover::after, .header-nav a.active::after { width: 30px; }
+    .header-nav a:hover, .header-nav a.active { color: white; }
+
+    .main-content { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+    .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--hw-charcoal); text-decoration: none; font-size: 14px; font-weight: 500; margin-bottom: 24px; transition: all 0.3s ease; }
+    .back-link:hover { color: #93a1ad; }
+    .back-link i { width: 18px; height: 18px; }
+
+    .question-card { background: white; border-radius: 18px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 24px; border: 1px solid rgba(101, 111, 119, 0.08); transition: all 0.3s ease; }
+    .question-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+    .question-header { display: flex; gap: 16px; margin-bottom: 20px; }
+    .author-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--hw-charcoal); }
+    .author-info { flex: 1; }
+    .author-name { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 500; color: var(--hw-charcoal); }
+    .author-role { display: inline-block; font-size: 11px; padding: 2px 8px; background: var(--hw-charcoal); color: white; border-radius: 10px; margin-left: 8px; }
+    .question-date { font-size: 13px; color: var(--hw-light-gray); margin-top: 2px; }
+    
+    .question-badges { margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .badge i { width: 14px; height: 14px; }
+    .badge.category { background: var(--hw-cream); color: var(--hw-graphite); }
+    .badge.resolved { background: #d1fae5; color: #065f46; }
+    .badge.closed { background: #fee2e2; color: #991b1b; }
+    .badge.announcement { background: var(--hw-charcoal); color: white; }
+    .badge.featured { background: rgba(147, 161, 173, 0.1); color: #93a1ad; }
+
+    .question-title { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; color: var(--hw-charcoal); margin-bottom: 16px; line-height: 1.3; }
+    .question-content { font-size: 15px; color: var(--hw-graphite); line-height: 1.8; white-space: pre-wrap; }
+
+    .question-actions { display: flex; gap: 16px; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(101, 111, 119, 0.08); }
+    .action-btn { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border: 1px solid rgba(101, 111, 119, 0.15); background: white; border-radius: 10px; font-size: 14px; color: var(--hw-graphite); cursor: pointer; transition: all 0.3s ease; }
+    .action-btn:hover { border-color: rgba(147, 161, 173, 0.4); color: #93a1ad; }
+    .action-btn.voted { background: var(--hw-light-gray); color: white; border-color: var(--hw-light-gray); }
+    .action-btn i { width: 18px; height: 18px; }
+
+    .answers-section { margin-top: 32px; }
+    .section-title { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; color: var(--hw-charcoal); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .section-title i { width: 22px; height: 22px; color: var(--hw-graphite); }
+
+    .answer-card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.03); border: 1px solid rgba(101, 111, 119, 0.08); margin-bottom: 16px; transition: all 0.3s ease; }
+    .answer-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
+    .answer-card.recommended { border-left: 4px solid #059669; background: linear-gradient(to right, rgba(5,150,105,0.03), white); }
+    .recommended-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: #d1fae5; color: #065f46; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+    .recommended-badge i { width: 14px; height: 14px; }
+
+    .answer-header { display: flex; gap: 12px; margin-bottom: 16px; }
+    .answer-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .answer-author-name { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--hw-charcoal); }
+    .answer-date { font-size: 12px; color: var(--hw-light-gray); }
+    .answer-content { font-size: 14px; color: var(--hw-graphite); line-height: 1.7; white-space: pre-wrap; }
+
+    .answer-actions { display: flex; gap: 12px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(101, 111, 119, 0.06); }
+    .answer-action { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: none; border: none; font-size: 13px; color: var(--hw-graphite); cursor: pointer; border-radius: 8px; transition: all 0.3s ease; }
+    .answer-action:hover { background: var(--hw-cream); color: #93a1ad; }
+    .answer-action.voted { color: #93a1ad; font-weight: 600; }
+    .answer-action i { width: 16px; height: 16px; }
+
+    .reply-form { background: white; border-radius: 18px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-top: 24px; border: 1px solid rgba(101, 111, 119, 0.08); }
+    .reply-form h3 { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 500; color: var(--hw-charcoal); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .reply-form h3 i { width: 20px; height: 20px; color: var(--hw-graphite); }
+    .reply-textarea { width: 100%; min-height: 120px; padding: 16px; border: 1px solid rgba(101, 111, 119, 0.15); border-radius: 12px; font-size: 14px; font-family: 'Inter', sans-serif; resize: vertical; transition: all 0.3s ease; background: var(--hw-off-white); }
+    .reply-textarea:focus { outline: none; border-color: #93a1ad; box-shadow: 0 0 0 4px rgba(147, 161, 173, 0.1); background: white; }
+    .reply-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
+    .btn { padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; border: none; }
+    .btn-primary { background: var(--hw-light-gray); color: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(147, 161, 173, 0.35); background: #93a1ad; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+
+    .login-prompt { background: var(--hw-cream); border: 1px dashed rgba(101, 111, 119, 0.2); border-radius: 14px; padding: 24px; text-align: center; }
+    .login-prompt p { color: var(--hw-charcoal); margin-bottom: 12px; }
+    .login-prompt a { color: #93a1ad; font-weight: 600; text-decoration: none; }
+
+    .empty-answers { text-align: center; padding: 40px; color: var(--hw-graphite); }
+    .empty-answers i { width: 48px; height: 48px; color: var(--hw-silver); margin-bottom: 12px; }
+    .empty-answers h4 { color: var(--hw-charcoal); margin-bottom: 8px; }
+
+    .loading { text-align: center; padding: 60px; color: var(--hw-graphite); }
+    .loading i { animation: spin 1s linear infinite; width: 32px; height: 32px; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .error-state { text-align: center; padding: 60px; }
+    .error-state i { width: 64px; height: 64px; color: #f87171; margin-bottom: 16px; }
+    .error-state h3 { color: #991b1b; margin-bottom: 8px; }
+    .error-state p { color: var(--hw-graphite); margin-bottom: 20px; }
+
+    @media (max-width: 768px) {
+      .header-top { padding: 12px 20px; }
+      .header-nav { display: none; }
+      .main-content { padding: 20px; }
+      .question-card { padding: 20px; }
+      .question-title { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="help-header">
+    <div class="header-top">
+      <a href="classroom.html" class="header-logo">
+        <img src="images/logo.png" alt="Cemi">
+        <span>Comunidad Cemi</span>
+      </a>
+      <nav class="header-nav">
+        <a href="ayuda-classroom.html">Centro de Ayuda</a>
+        <a href="comunidad-ayuda.html">Comunidad</a>
+        <a href="novedades-cemi.html">Novedades</a>
+        <a href="classroom.html">Volver a Classroom</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <a href="comunidad-ayuda.html" class="back-link"><i data-lucide="arrow-left"></i>Volver a la comunidad</a>
+    
+    <div id="contentContainer">
+      <div class="loading"><i data-lucide="loader"></i><p>Cargando pregunta...</p></div>
+    </div>
+  </main>
+
+  <script>
+    let currentUser = null;
+    let pregunta = null;
+    let respuestas = [];
+    const preguntaId = new URLSearchParams(window.location.search).get('id');
+
+    function checkSession() {
+      // Leer datos de sesión del localStorage (formato usado por classroom-login.js)
+      const nombre = localStorage.getItem('nombre');
+      const rol = localStorage.getItem('rol');
+      const avatar = localStorage.getItem('avatar');
+      const idProfesor = localStorage.getItem('id_profesor');
+      const idAlumno = localStorage.getItem('id_alumno');
+      const idUsuario = localStorage.getItem('id_usuario');
+
+      if (nombre && rol) {
+        let tipo = 'alumno';
+        let id = idAlumno || idUsuario;
+        let rolDisplay = 'Alumno';
+
+        if (rol === 'profesor' || idProfesor) {
+          tipo = 'profesor';
+          id = idProfesor || idUsuario;
+          rolDisplay = 'Profesor';
+        } else if (rol === 'admin' || rol === 'administrador') {
+          tipo = 'admin';
+          id = idUsuario;
+          rolDisplay = 'Administrador';
+        }
+
+        currentUser = { tipo, id, nombre, avatar, rol: rolDisplay };
+      }
+    }
+
+    async function loadPregunta() {
+      if (!preguntaId) {
+        showError('No se especifico una pregunta');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/comunidad/preguntas/${preguntaId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          pregunta = data.pregunta;
+          respuestas = data.respuestas || [];
+          document.title = `${pregunta.titulo} - Comunidad Cemi`;
+          renderContent();
+        } else {
+          showError(data.error || 'Pregunta no encontrada');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showError('Error al cargar la pregunta');
+      }
+    }
+
+    function showError(message) {
+      document.getElementById('contentContainer').innerHTML = `
+        <div class="error-state">
+          <i data-lucide="alert-circle"></i>
+          <h3>Error</h3>
+          <p>${message}</p>
+          <a href="comunidad-ayuda.html" class="btn btn-primary">Volver a la comunidad</a>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function renderContent() {
+      const fecha = new Date(pregunta.fechaCreacion).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      const votanteKey = currentUser ? `${currentUser.tipo}_${currentUser.id}` : null;
+      const hasVoted = votanteKey && pregunta.votantes && pregunta.votantes.includes(votanteKey);
+
+      const avatarUrl = pregunta.autorAvatar 
+        ? (pregunta.autorAvatar.startsWith('http') ? pregunta.autorAvatar : `/uploads/avatars/${pregunta.autorAvatar}`)
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(pregunta.autorNombre)}&background=667eea&color=fff`;
+
+      let badges = '';
+      const categoryNames = {
+        'primeros-pasos': 'Primeros Pasos',
+        'tareas': 'Tareas y Entregas',
+        'comunicacion': 'Comunicacion',
+        'recursos': 'Recursos',
+        'cuenta': 'Mi Cuenta',
+        'otro': 'Otro'
+      };
+      badges += `<span class="badge category"><i data-lucide="tag"></i>${categoryNames[pregunta.categoria] || pregunta.categoria}</span>`;
+      if (pregunta.esAnuncio) badges += '<span class="badge announcement"><i data-lucide="megaphone"></i>Anuncio</span>';
+      if (pregunta.destacado) badges += '<span class="badge featured"><i data-lucide="pin"></i>Destacado</span>';
+      if (pregunta.estado === 'resuelta') badges += '<span class="badge resolved"><i data-lucide="check-circle"></i>Resuelta</span>';
+      if (pregunta.estado === 'cerrada') badges += '<span class="badge closed"><i data-lucide="lock"></i>Cerrada</span>';
+
+      const authorRole = pregunta.autorTipo === 'profesor' ? '<span class="author-role">Profesor</span>' : 
+                         pregunta.autorTipo === 'admin' ? '<span class="author-role">Admin</span>' : '';
+
+      let html = `
+        <div class="question-card">
+          <div class="question-header">
+            <img src="${avatarUrl}" alt="" class="author-avatar">
+            <div class="author-info">
+              <div class="author-name">${escapeHtml(pregunta.autorNombre)}${authorRole}</div>
+              <div class="question-date">${fecha}</div>
+            </div>
+          </div>
+          <div class="question-badges">${badges}</div>
+          <h1 class="question-title">${escapeHtml(pregunta.titulo)}</h1>
+          <div class="question-content">${escapeHtml(pregunta.descripcion)}</div>
+          <div class="question-actions">
+            <button class="action-btn ${hasVoted ? 'voted' : ''}" onclick="votarPregunta()">
+              <i data-lucide="thumbs-up"></i>
+              <span id="voteCount">${pregunta.votos}</span> votos
+            </button>
+          </div>
+        </div>
+
+        <div class="answers-section">
+          <h2 class="section-title"><i data-lucide="message-circle"></i>Respuestas (${respuestas.length})</h2>
+          ${renderRespuestas()}
+        </div>
+
+        ${renderReplyForm()}
+      `;
+
+      document.getElementById('contentContainer').innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function renderRespuestas() {
+      if (respuestas.length === 0) {
+        return `
+          <div class="empty-answers">
+            <i data-lucide="message-circle"></i>
+            <h4>Aun no hay respuestas</h4>
+            <p>Se el primero en responder a esta pregunta</p>
+          </div>
+        `;
+      }
+
+      return respuestas.map(r => {
+        const fecha = new Date(r.fechaCreacion).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const votanteKey = currentUser ? `${currentUser.tipo}_${currentUser.id}` : null;
+        const hasVoted = votanteKey && r.votantes && r.votantes.includes(votanteKey);
+        
+        const avatarUrl = r.autorAvatar 
+          ? (r.autorAvatar.startsWith('http') ? r.autorAvatar : `/uploads/avatars/${r.autorAvatar}`)
+          : `https://ui-avatars.com/api/?name=${encodeURIComponent(r.autorNombre)}&background=667eea&color=fff`;
+
+        const authorRole = r.autorRol ? `<span class="author-role">${r.autorRol}</span>` : '';
+
+        return `
+          <div class="answer-card ${r.esRecomendada ? 'recommended' : ''}" data-id="${r.id}">
+            ${r.esRecomendada ? '<div class="recommended-badge"><i data-lucide="award"></i>Respuesta recomendada</div>' : ''}
+            <div class="answer-header">
+              <img src="${avatarUrl}" alt="" class="answer-avatar">
+              <div>
+                <div class="answer-author-name">${escapeHtml(r.autorNombre)}${authorRole}</div>
+                <div class="answer-date">${fecha}</div>
+              </div>
+            </div>
+            <div class="answer-content">${escapeHtml(r.contenido)}</div>
+            <div class="answer-actions">
+              <button class="answer-action ${hasVoted ? 'voted' : ''}" onclick="votarRespuesta('${r.id}')">
+                <i data-lucide="thumbs-up"></i>
+                <span id="respVotes-${r.id}">${r.votos}</span> votos
+              </button>
+              ${(currentUser && (currentUser.tipo === 'profesor' || currentUser.tipo === 'admin')) ? `
+                <button class="answer-action" onclick="toggleRecomendar('${r.id}', ${!r.esRecomendada})">
+                  <i data-lucide="${r.esRecomendada ? 'x' : 'award'}"></i>
+                  ${r.esRecomendada ? 'Quitar recomendacion' : 'Recomendar'}
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderReplyForm() {
+      if (pregunta.estado === 'cerrada') {
+        return `
+          <div class="login-prompt">
+            <i data-lucide="lock" style="width: 32px; height: 32px; color: #94a3b8; margin-bottom: 12px;"></i>
+            <p>Esta pregunta esta cerrada y no acepta mas respuestas.</p>
+          </div>
+        `;
+      }
+
+      if (!currentUser) {
+        return `
+          <div class="login-prompt">
+            <p>Inicia sesion para responder a esta pregunta</p>
+            <a href="login-selector.html">Iniciar sesion</a>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="reply-form">
+          <h3><i data-lucide="edit-3"></i>Tu respuesta</h3>
+          <textarea class="reply-textarea" id="replyContent" placeholder="Escribe tu respuesta aqui..." maxlength="5000"></textarea>
+          <div class="reply-actions">
+            <button class="btn btn-primary" onclick="submitReply()" id="submitReplyBtn">
+              <i data-lucide="send"></i>Publicar respuesta
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function votarPregunta() {
+      if (!currentUser) { alert('Debes iniciar sesion para votar'); return; }
+      try {
+        const response = await fetch(`/api/comunidad/preguntas/${preguntaId}/votar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ votanteTipo: currentUser.tipo, votanteId: currentUser.id })
+        });
+        const data = await response.json();
+        if (data.success) {
+          pregunta.votos = data.votos;
+          const votanteKey = `${currentUser.tipo}_${currentUser.id}`;
+          if (data.action === 'added') {
+            if (!pregunta.votantes) pregunta.votantes = [];
+            pregunta.votantes.push(votanteKey);
+          } else {
+            pregunta.votantes = pregunta.votantes.filter(v => v !== votanteKey);
+          }
+          document.getElementById('voteCount').textContent = data.votos;
+          const btn = document.querySelector('.action-btn');
+          btn.classList.toggle('voted', data.action === 'added');
+        }
+      } catch (error) { console.error('Error:', error); }
+    }
+
+    async function votarRespuesta(respuestaId) {
+      if (!currentUser) { alert('Debes iniciar sesion para votar'); return; }
+      try {
+        const response = await fetch(`/api/comunidad/preguntas/${preguntaId}/respuestas/${respuestaId}/votar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ votanteTipo: currentUser.tipo, votanteId: currentUser.id })
+        });
+        const data = await response.json();
+        if (data.success) {
+          const resp = respuestas.find(r => r.id === respuestaId);
+          if (resp) {
+            resp.votos = data.votos;
+            const votanteKey = `${currentUser.tipo}_${currentUser.id}`;
+            if (data.action === 'added') {
+              if (!resp.votantes) resp.votantes = [];
+              resp.votantes.push(votanteKey);
+            } else {
+              resp.votantes = resp.votantes.filter(v => v !== votanteKey);
+            }
+          }
+          document.getElementById(`respVotes-${respuestaId}`).textContent = data.votos;
+          const btn = document.querySelector(`[data-id="${respuestaId}"] .answer-action`);
+          if (btn) btn.classList.toggle('voted', data.action === 'added');
+        }
+      } catch (error) { console.error('Error:', error); }
+    }
+
+    async function toggleRecomendar(respuestaId, recomendar) {
+      try {
+        const response = await fetch(`/api/comunidad/preguntas/${preguntaId}/respuestas/${respuestaId}/recomendar`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ recomendar })
+        });
+        const data = await response.json();
+        if (data.success) {
+          const resp = respuestas.find(r => r.id === respuestaId);
+          if (resp) resp.esRecomendada = recomendar;
+          renderContent();
+        }
+      } catch (error) { console.error('Error:', error); }
+    }
+
+    async function submitReply() {
+      const content = document.getElementById('replyContent').value.trim();
+      if (!content) { alert('Escribe tu respuesta'); return; }
+
+      const btn = document.getElementById('submitReplyBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader"></i>Publicando...';
+      lucide.createIcons();
+
+      try {
+        const response = await fetch(`/api/comunidad/preguntas/${preguntaId}/respuestas`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contenido: content,
+            autorTipo: currentUser.tipo,
+            autorId: currentUser.id,
+            autorNombre: currentUser.nombre,
+            autorAvatar: currentUser.avatar
+          })
+        });
+        const data = await response.json();
+        if (data.success) {
+          respuestas.push(data.respuesta);
+          document.getElementById('replyContent').value = '';
+          renderContent();
+        } else {
+          alert(data.error || 'Error al publicar respuesta');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error al publicar respuesta');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="send"></i>Publicar respuesta';
+        lucide.createIcons();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+      checkSession();
+      loadPregunta();
+    });
+  </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,227 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../assets/css/mobile-responsive-master.css">
+    <title>CEMI - Diagrama de Gantt | Proyecto Final 2025</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="images/favicon.png" type="image/png">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: #1e1e1e;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            border-radius: 0;
+        }
+        .back-link:hover {
+            background: #4a4a4a;
+            transform: translateX(-3px);
+        }
+    </style>
+</head>
+<body>
+    <a href="../../documentacion.html" class="back-link">← Volver a Documentación</a>
+    <div class="container">
+        <header>
+            <div class="logo-section">
+                <div class="logo-img">
+                    <img src="images/logo.png" alt="Logo CEMI" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'logo-fallback\'>C</span>';">
+                </div>
+                <div class="logo-text">
+                    <h1>CEMI Sistema Gestor</h1>
+                    <p>Diagrama de Gantt - Práctica Supervisada 2025</p>
+                </div>
+            </div>
+            <p class="institution">
+                <i class="fas fa-university"></i>
+                UTN - Tecnicatura Universitaria en Programación - Bella Vista
+            </p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">95h</div>
+                    <div class="stat-label">Horas Totales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Integrantes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">7</div>
+                    <div class="stat-label">Fases</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Semanas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value complete">100%</div>
+                    <div class="stat-label">Completado</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="team-section">
+            <div class="team-card">
+                <div class="team-avatar" style="background: linear-gradient(135deg, #1e3c72, #2a5298);">MG</div>
+                <div class="team-info">
+                    <h4>Gómez Micaela</h4>
+                    <p>Frontend / UI Design</p>
+                </div>
+                <div class="team-hours">~24h</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar" style="background: linear-gradient(135deg, #2a5298, #3498db);">CL</div>
+                <div class="team-info">
+                    <h4>Lucena Carlos</h4>
+                    <p>Backend / Base de Datos</p>
+                </div>
+                <div class="team-hours">~24h</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">ER</div>
+                <div class="team-info">
+                    <h4>Ruiz Mendoza Eduardo</h4>
+                    <p>Backend / DevOps</p>
+                </div>
+                <div class="team-hours">~24h</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar" style="background: linear-gradient(135deg, #f1c40f, #e67e22);">SB</div>
+                <div class="team-info">
+                    <h4>Sergio Bautista Bareiro</h4>
+                    <p>Frontend / QA Testing</p>
+                </div>
+                <div class="team-hours">~23h</div>
+            </div>
+        </section>
+
+        <section class="gantt-section">
+            <div class="gantt-header">
+                <h2 class="gantt-title">
+                    <i class="fas fa-chart-gantt"></i>
+                    Cronograma del Proyecto
+                </h2>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color fase0"></div>Fase 0</div>
+                    <div class="legend-item"><div class="legend-color fase1"></div>Fase 1</div>
+                    <div class="legend-item"><div class="legend-color fase2"></div>Fase 2</div>
+                    <div class="legend-item"><div class="legend-color fase3"></div>Fase 3</div>
+                    <div class="legend-item"><div class="legend-color fase4"></div>Fase 4</div>
+                    <div class="legend-item"><div class="legend-color fase5"></div>Fase 5</div>
+                    <div class="legend-item"><div class="legend-color fase6"></div>Fase 6</div>
+                    <div class="legend-item"><div class="legend-color milestone"></div>Hito</div>
+                </div>
+            </div>
+
+            <div class="timeline-wrapper">
+                <table class="timeline-table" id="ganttTable">
+                    <thead>
+                        <tr>
+                            <th class="task-header">Tarea / Actividad</th>
+                            <th>23-29 Sep</th>
+                            <th>30 Sep-6 Oct</th>
+                            <th>7-13 Oct</th>
+                            <th>14-20 Oct</th>
+                            <th>21-27 Oct</th>
+                            <th>28 Oct-3 Nov</th>
+                            <th>4-10 Nov</th>
+                            <th>11-17 Nov</th>
+                            <th>18-20 Nov</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ganttBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="hours-summary">
+            <h3><i class="fas fa-clock"></i> Distribución de Horas por Fase</h3>
+            <div class="hours-grid">
+                <div class="hour-item">
+                    <span class="hour-label">Fase 0: Inicio</span>
+                    <div class="hour-bar"><div class="hour-fill" style="width: 10.5%; background: var(--fase0);"></div></div>
+                    <span class="hour-value">10h</span>
+                </div>
+                <div class="hour-item">
+                    <span class="hour-label">Fase 1: Arquitectura</span>
+                    <div class="hour-bar"><div class="hour-fill" style="width: 17.9%; background: var(--fase1);"></div></div>
+                    <span class="hour-value">17h</span>
+                </div>
+                <div class="hour-item">
+                    <span class="hour-label">Fase 2: Autenticación</span>
+                    <div class="hour-bar"><div class="hour-fill" style="width: 9.5%; background: var(--fase2);"></div></div>
+                    <span class="hour-value">9h</span>
+                </div>
+                <div class="hour-item">
+                    <span class="hour-label">Fase 3: Dashboard</span>
+                    <div class="hour-bar"><div class="hour-fill" style="width: 9.5%; background: var(--fase3);"></div></div>
+                    <span class="hour-value">9h</span>
+                </div>
+                <div class="hour-item">
+                    <span class="hour-label">Fase 4: CRUD</span>
+                    <div class="hour-bar"><div class="hour-fill" style="width: 23.2%; background: var(--fase4);"></div></div>
+                    <span class="hour-value">22h</span>
+                </div>
+                <div class="hour-item">
+                    <span class="hour-label">Fase 5: Pagos/Classroom</span>
+                    <div class="hour-bar"><div class="hour-fill" style="width: 18.9%; background: var(--fase5);"></div></div>
+                    <span class="hour-value">18h</span>
+                </div>
+                <div class="hour-item">
+                    <span class="hour-label">Fase 6: Despliegue</span>
+                    <div class="hour-bar"><div class="hour-fill" style="width: 10.5%; background: var(--fase6);"></div></div>
+                    <span class="hour-value">10h</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="progress-section">
+            <h3 class="progress-title">
+                <i class="fas fa-tasks"></i>
+                Progreso Total del Proyecto
+            </h3>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar">100% Completado</div>
+            </div>
+        </section>
+
+        <footer>
+            <p><strong>Proyecto Final</strong> - CEMI Sistema de Gestión Académica</p>
+            <p>Septiembre - Noviembre 2025 | <a href="https://cemi.up.railway.app" target="_blank">Ver Sistema en Producción <i class="fas fa-external-link-alt"></i></a></p>
+            <p class="footer-team">Desarrollado por: Gómez M., Lucena C., Ruiz Mendoza E., Bautista Bareiro S.</p>
+        </footer>
+    </div>
+
+    <div class="tooltip" id="tooltip">
+        <div class="tooltip-content">
+            <h4 id="tooltipTitle"></h4>
+            <p><i class="fas fa-calendar-alt"></i> <span id="tooltipStart"></span></p>
+            <p><i class="fas fa-calendar-check"></i> <span id="tooltipEnd"></span></p>
+            <p><i class="fas fa-clock"></i> <span id="tooltipHours"></span></p>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/gantt.js"></script>
+</body>
+</html>
