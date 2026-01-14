@@ -1,21 +1,21 @@
-# Sistema Gestor CEMI
+# CEMI Management System
 
-Sistema de gestión educativa con funcionalidades de administración de alumnos, profesores, cursos, pagos y classroom virtual con chat en tiempo real.
+Educational management system with features for managing students, teachers, courses, payments, and a virtual classroom with real-time chat.
 
-## Especificaciones
+## Specifications
 
 - **Backend**: Node.js + Express
-- **Base de Datos**: MySQL
+- **Database**: MySQL
 - **WebSockets**: Socket.IO
-- **Autenticación**: JWT
+- **Authentication**: JWT
 - **Storage**: Cloudinary
 - **Email**: SendGrid/Nodemailer
 
-## Enlaces
+## Links
 
-- **Repositorio**: https://github.com/eduardogabrielmendozaprogram/cemi-sistema-educativo
+- **Repository**: https://github.com/eduardogabrielmendozaprogram/cemi-sistema-educativo
 - **Railway**: https://cemi.up.railway.app/
 
-## 📝 Licencia
+## 📝 License
 
 ISC
