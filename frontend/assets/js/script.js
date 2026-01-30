@@ -6222,7 +6222,7 @@ async function initProfesorDashboard() {
           </div>
         `;
 
-        document.getElementById('selectCurso').addEventListener('change', async (e) => {
+        document.getElementById('selectCurso')?.addEventListener('change', async (e) => {
           const cursoId = e.target.value;
           if (!cursoId) {
             document.getElementById('calificacionesBody').innerHTML = `
@@ -7114,17 +7114,18 @@ function ensureEditarProfesorModal() {
   document.body.insertAdjacentHTML('beforeend', modalHtml);
 
   const modal = document.getElementById('modalEditarProfesor');
+  if (!modal) return;
   
   modal.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', () => modal.classList.remove('active')));
   modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
 
   const btnCredenciales = document.getElementById('btnEditarCredencialesProfesor');
-  btnCredenciales.addEventListener('click', () => {
+  btnCredenciales?.addEventListener('click', () => {
     const idProfesor = document.getElementById('editProfesorId').value;
     abrirModalCredencialesProfesor(idProfesor);
   });
 
-  document.getElementById('formEditarProfesor').addEventListener('submit', async (e) => {
+  document.getElementById('formEditarProfesor')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const idProfesor = document.getElementById('editProfesorId').value;

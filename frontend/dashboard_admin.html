@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -29,7 +29,7 @@
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   
-  <!-- Sistema de gestión de consola -->
+  <!-- Sistema de gesti�n de consola -->
   <script src="assets/js/console-manager.js"></script>
   <script src="assets/js/config.js"></script>
   
@@ -269,7 +269,7 @@
       text-align: center;
     }
     
-    /* Panel Derecho - Conversación Activa */
+    /* Panel Derecho - Conversaci�n Activa */
     .chat-messages-panel {
       flex: 1;
       display: flex;
@@ -587,20 +587,20 @@
       <button id="btnPagos" class="stagger-item hover-lift"><i data-lucide="credit-card"></i> Pagos</button>
       <button id="btnAulas" class="stagger-item hover-lift"><i data-lucide="door-open"></i> Aulas</button>
       <button id="btnIdiomas" class="stagger-item hover-lift"><i data-lucide="languages"></i> Idiomas</button>
-      <button id="btnInvestigacion" class="stagger-item hover-lift"><i data-lucide="flask-conical"></i> Investigación</button>
+      <button id="btnInvestigacion" class="stagger-item hover-lift"><i data-lucide="flask-conical"></i> Investigaci�n</button>
       <button id="btnChatSoporte" class="stagger-item hover-lift" style="position: relative;">
         <i data-lucide="message-circle"></i> Chat Soporte
         <span id="chatNotificationBadge" class="notification-badge" style="display: none;"></span>
       </button>
       <button id="btnStatus" class="stagger-item hover-lift"><i data-lucide="activity"></i> Status del Sistema</button>
       <button id="btnAyuda" class="stagger-item hover-lift"><i data-lucide="help-circle"></i> Ayuda</button>
-      <button id="logoutBtn" class="logout stagger-item hover-lift"><i data-lucide="log-out"></i> Cerrar sesión</button>
+      <button id="logoutBtn" class="logout stagger-item hover-lift"><i data-lucide="log-out"></i> Cerrar sesi�n</button>
     </nav>
   </aside>
 
   <main class="dashboard-main">
     <header class="dashboard-header entrance-header">
-      <h1 class="animate-fadeInDown">Panel de Administración</h1>
+      <h1 class="animate-fadeInDown">Panel de Administraci�n</h1>
       <div class="user-info animate-fadeInRight">
         <i data-lucide="user"></i> <span id="welcomeMessage">Administrador</span>
       </div>
@@ -628,16 +628,16 @@
     // Crear instancia global del admin chat manager
     const adminChatManager = new AdminChatManager();
     
-    // Inicializar WebSocket automáticamente
-    console.log(' Inicializando admin chat manager automáticamente...');
+    // Inicializar WebSocket autom�ticamente
+    console.log(' Inicializando admin chat manager autom�ticamente...');
     adminChatManager.init();
     
-    // Solicitar permisos de notificación
+    // Solicitar permisos de notificaci�n
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
     
-    // REMOVER TODO EL CÓDIGO ANTIGUO DEL ADMINCHATMANAGER - AHORA ESTÁ EN admin-chat-manager.js
+    // REMOVER TODO EL C�DIGO ANTIGUO DEL ADMINCHATMANAGER - AHORA EST� EN admin-chat-manager.js
     /* OLD CODE REMOVED - class AdminChatManager {
       constructor() {
         this.ws = null;
@@ -739,7 +739,7 @@
       updateNotificationBadge(count) {
         const badge = document.getElementById('chatNotificationBadge');
         if (!badge) {
-          console.error(' No se encontró el elemento chatNotificationBadge');
+          console.error(' No se encontr� el elemento chatNotificationBadge');
           return;
         }
         
@@ -837,31 +837,31 @@
       }
       
       handleNewMessage(data) {
-        console.log(' Admin recibió mensaje:', data);
+        console.log(' Admin recibi� mensaje:', data);
         
         // Verificar si es mensaje propio del admin
         const esMensajePropio = data.tipo_remitente === 'admin';
         
         if (esMensajePropio) {
-          console.log('️ Es mi propio mensaje (admin), ignorando notificación');
+          console.log('? Es mi propio mensaje (admin), ignorando notificaci�n');
           return;
         }
         
-        // Verificar si el chat está visible
+        // Verificar si el chat est� visible
         const chatContainer = document.getElementById('chatContainer');
         const isChatVisible = chatContainer && chatContainer.offsetParent !== null;
         
-        console.log('️ Chat visible:', isChatVisible);
+        console.log('? Chat visible:', isChatVisible);
         
-        // Si el chat está visible Y es la conversación activa
+        // Si el chat est� visible Y es la conversaci�n activa
         if (isChatVisible && this.activeConversation && this.activeConversation.id_conversacion === data.id_conversacion) {
-          console.log(' Agregando mensaje a conversación activa');
+          console.log(' Agregando mensaje a conversaci�n activa');
           this.addMessageToUI(data);
           this.scrollToBottom();
           this.markAsRead(data.id_conversacion);
         } else {
-          // Chat NO visible o conversación diferente: notificar
-          console.log(' Mostrando notificación y actualizando badge');
+          // Chat NO visible o conversaci�n diferente: notificar
+          console.log(' Mostrando notificaci�n y actualizando badge');
           this.playMessageSound();
           const nombreRemitente = data.nombre_remitente || data.nombre_usuario || 'Usuario';
           this.showNotification(`Nuevo mensaje de ${nombreRemitente}`, data.mensaje);
@@ -870,7 +870,7 @@
       }
       
       handleNewMessageNotification(data) {
-        // Esta función ya no es necesaria, handleNewMessage lo maneja todo
+        // Esta funci�n ya no es necesaria, handleNewMessage lo maneja todo
         this.handleNewMessage(data);
       }
       
@@ -889,18 +889,18 @@
           if (result.success) {
             this.conversations = result.data;
             
-            // Calcular total de mensajes no leídos por el admin
+            // Calcular total de mensajes no le�dos por el admin
             const totalNoLeidos = this.conversations.reduce((sum, conv) => {
               return sum + (conv.mensajes_no_leidos_admin || 0);
             }, 0);
             
-            console.log(' Total mensajes no leídos por admin:', totalNoLeidos);
+            console.log(' Total mensajes no le�dos por admin:', totalNoLeidos);
             this.updateNotificationBadge(totalNoLeidos);
             
-            // Unirse a TODAS las conversaciones automáticamente para recibir notificaciones
+            // Unirse a TODAS las conversaciones autom�ticamente para recibir notificaciones
             if (this.ws && this.ws.readyState === WebSocket.OPEN) {
               this.conversations.forEach(conv => {
-                console.log(' Admin uniéndose a conversación:', conv.id_conversacion);
+                console.log(' Admin uni�ndose a conversaci�n:', conv.id_conversacion);
                 this.ws.send(JSON.stringify({
                   type: 'join_conversation',
                   data: { id_conversacion: conv.id_conversacion }
@@ -1003,16 +1003,16 @@
             this.renderConversationMessages(result.data.mensajes);
             this.renderConversationsList(); // Re-render para actualizar activo
             
-            // Tomar la conversación si está pendiente
+            // Tomar la conversaci�n si est� pendiente
             if (this.activeConversation.estado === 'pendiente') {
               await this.takeConversation(id);
             }
             
-            // Marcar como leído
+            // Marcar como le�do
             await this.markAsRead(id);
           }
         } catch (error) {
-          console.error('Error al cargar conversación:', error);
+          console.error('Error al cargar conversaci�n:', error);
         }
       }
       
@@ -1036,7 +1036,7 @@
           </div>
           <div class="chat-messages-header-text">
             <h4>${this.escapeHtml(nombre)}</h4>
-            <p>${this.activeConversation.tipo_usuario} • ${this.activeConversation.estado}</p>
+            <p>${this.activeConversation.tipo_usuario} � ${this.activeConversation.estado}</p>
           </div>
         `;
         
@@ -1102,7 +1102,7 @@
           
           this.loadConversations();
         } catch (error) {
-          console.error('Error al tomar conversación:', error);
+          console.error('Error al tomar conversaci�n:', error);
         }
       }
       
@@ -1110,11 +1110,11 @@
         if (!this.activeConversation) return;
         
         const result = await Swal.fire({
-          title: '¿Cerrar conversación?',
-          text: 'La conversación se marcará como cerrada',
+          title: '�Cerrar conversaci�n?',
+          text: 'La conversaci�n se marcar� como cerrada',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonText: 'Sí, cerrar',
+          confirmButtonText: 'S�, cerrar',
           cancelButtonText: 'Cancelar',
           confirmButtonColor: '#ef4444'
         });
@@ -1127,13 +1127,13 @@
             method: 'PUT'
           });
           
-          Swal.fire('Cerrada', 'La conversación ha sido cerrada', 'success');
+          Swal.fire('Cerrada', 'La conversaci�n ha sido cerrada', 'success');
           this.activeConversation = null;
           this.loadConversations();
           this.clearMessagesPanel();
         } catch (error) {
-          console.error('Error al cerrar conversación:', error);
-          Swal.fire('Error', 'No se pudo cerrar la conversación', 'error');
+          console.error('Error al cerrar conversaci�n:', error);
+          Swal.fire('Error', 'No se pudo cerrar la conversaci�n', 'error');
         }
       }
       
@@ -1148,7 +1148,7 @@
           
           // Recargar conversaciones para actualizar badge desde BD
           await this.loadConversations();
-          console.log(' Mensajes marcados como leídos, badge actualizado desde BD');
+          console.log(' Mensajes marcados como le�dos, badge actualizado desde BD');
           
           if (this.ws && this.ws.readyState === WebSocket.OPEN) {
             this.ws.send(JSON.stringify({
@@ -1157,7 +1157,7 @@
             }));
           }
         } catch (error) {
-          console.error('Error al marcar como leído:', error);
+          console.error('Error al marcar como le�do:', error);
         }
       }
       
@@ -1203,7 +1203,7 @@
         const indicator = document.createElement('div');
         indicator.className = 'chat-typing-indicator-admin';
         indicator.innerHTML = `
-          <span>${nombre} está escribiendo</span>
+          <span>${nombre} est� escribiendo</span>
           <div class="chat-typing-dots">
             <div></div>
             <div></div>
@@ -1258,14 +1258,14 @@
   </script>
   
   <script>
-    // Funcionalidad del menú mobile
+    // Funcionalidad del men� mobile
     document.addEventListener('DOMContentLoaded', function() {
       const mobileMenuToggle = document.getElementById('mobileMenuToggle');
       const sidebar = document.getElementById('sidebar');
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       const dashboardMain = document.querySelector('.dashboard-main');
       
-      // Solo colapsar sidebar en móviles (<=768px)
+      // Solo colapsar sidebar en m�viles (<=768px)
       if (window.innerWidth <= 768) {
         sidebar.classList.add('collapsed');
       }
@@ -1306,5 +1306,6 @@
   </script>
   
   <script>lucide.createIcons();</script>
+  <script src="assets/js/mobile-handler.js" defer></script>
 </body>
 </html>

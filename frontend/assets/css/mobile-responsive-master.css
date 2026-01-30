@@ -1,0 +1,841 @@
+/* ========================================
+   MOBILE-FIRST RESPONSIVE SYSTEM
+   CEMI Platform - Production
+   ========================================
+   
+   ARCHITECTURE:
+   - All styles encapsulated in @media (max-width: 768px)
+   - Desktop version remains completely untouched
+   - Z-index hierarchy for proper stacking
+   - Touch-optimized interactions (44px minimum)
+   
+   ======================================== */
+
+/* ========================================
+   MOBILE STYLES - 768px and below
+   ======================================== */
+@media (max-width: 768px) {
+  
+  /* ========================================
+     CSS CUSTOM PROPERTIES - Z-INDEX HIERARCHY
+     ======================================== */
+  :root {
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-fixed: 300;
+    --z-sidebar: 500;
+    --z-header: 600;
+    --z-overlay: 800;
+    --z-modal-backdrop: 900;
+    --z-modal: 1000;
+    --z-toast: 1100;
+    --z-tooltip: 1200;
+    
+    /* Touch target minimum */
+    --touch-target-min: 44px;
+    
+    /* Safe area for notched devices */
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  
+  /* ========================================
+     BODY SCROLL LOCK
+     Applied via JS when modals/sidebars open
+     ======================================== */
+  body.modal-open,
+  body.sidebar-open,
+  body.menu-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  
+  /* ========================================
+     PREVENT HORIZONTAL OVERFLOW
+     ======================================== */
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  .dashboard-body,
+  .classroom-container,
+  .dashboard-main,
+  .classroom-main,
+  #mainContent {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  /* ========================================
+     HEADER - FIXED MOBILE HEADER
+     ======================================== */
+  .dashboard-header,
+  .classroom-header,
+  header {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-header);
+    padding-top: var(--safe-area-top);
+  }
+  
+  /* ========================================
+     SIDEBAR - OVERLAY MODE
+     ======================================== */
+  .dashboard-sidebar,
+  .sidebar,
+  .classroom-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 85vw !important;
+    max-width: 320px;
+    height: 100vh;
+    height: 100dvh;
+    z-index: var(--z-sidebar);
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--safe-area-bottom);
+    background: #1a1a2e;
+  }
+  
+  .dashboard-sidebar.active,
+  .sidebar.active,
+  .classroom-sidebar.active,
+  .dashboard-sidebar.open,
+  .sidebar.open,
+  .classroom-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  /* Sidebar Overlay Backdrop */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: calc(var(--z-sidebar) - 1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+  
+  .sidebar-overlay.active,
+  .sidebar-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Sidebar Close Button */
+  .sidebar-close,
+  .btn-close-sidebar {
+    display: flex !important;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.2s ease;
+  }
+  
+  .sidebar-close:hover,
+  .btn-close-sidebar:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* ========================================
+     MAIN CONTENT - ADJUST FOR FIXED HEADER
+     ======================================== */
+  .dashboard-main,
+  .classroom-main,
+  main,
+  #mainContent {
+    margin-left: 0 !important;
+    margin-top: 60px;
+    padding: 16px;
+    min-height: calc(100vh - 60px);
+    width: 100%;
+  }
+  
+  /* ========================================
+     MODAL SYSTEM - UNIVERSAL RESPONSIVE
+     ======================================== */
+  .modal,
+  .modal-overlay,
+  [class*="modal"] {
+    z-index: var(--z-modal);
+  }
+  
+  .modal-backdrop,
+  .modal-overlay {
+    z-index: var(--z-modal-backdrop);
+  }
+  
+  .modal-content,
+  .modal-body,
+  [class*="modal-content"] {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 92vw !important;
+    max-width: 92vw !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px !important;
+    margin: 0 !important;
+  }
+  
+  /* Modal Close Button - High Visibility */
+  .modal .close-modal,
+  .modal-close,
+  .btn-close-modal,
+  [class*="modal"] .close,
+  [class*="modal"] [class*="close"] {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    width: var(--touch-target-min) !important;
+    height: var(--touch-target-min) !important;
+    min-width: var(--touch-target-min) !important;
+    min-height: var(--touch-target-min) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0, 0, 0, 0.08) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    z-index: 10 !important;
+    font-size: 20px !important;
+    transition: background 0.2s ease !important;
+  }
+  
+  .modal .close-modal:hover,
+  .modal-close:hover,
+  .btn-close-modal:hover {
+    background: rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* SweetAlert2 Modals */
+  .swal2-popup {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    padding: 20px !important;
+    font-size: 14px !important;
+  }
+  
+  .swal2-title {
+    font-size: 18px !important;
+  }
+  
+  .swal2-html-container {
+    font-size: 14px !important;
+  }
+  
+  /* ========================================
+     ACCORDION NAVIGATION - MOBILE MENU
+     ======================================== */
+  .accordion-nav,
+  .nav-accordion {
+    width: 100%;
+  }
+  
+  .accordion-header,
+  .nav-accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .accordion-header:hover,
+  .nav-accordion-header:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .accordion-chevron,
+  .nav-accordion-chevron {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .accordion-header.active .accordion-chevron,
+  .nav-accordion-header.active .nav-accordion-chevron,
+  .accordion-header[aria-expanded="true"] .accordion-chevron {
+    transform: rotate(180deg);
+  }
+  
+  .accordion-content,
+  .nav-accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .accordion-content.open,
+  .nav-accordion-content.open,
+  .accordion-header.active + .accordion-content {
+    max-height: 500px;
+  }
+  
+  .accordion-content a,
+  .nav-accordion-content a {
+    display: block;
+    padding: 12px 16px 12px 40px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  
+  .accordion-content a:hover,
+  .nav-accordion-content a:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+  
+  /* ========================================
+     TOUCH TARGETS - MINIMUM 44px
+     ======================================== */
+  button,
+  .btn,
+  [role="button"],
+  a.btn,
+  input[type="submit"],
+  input[type="button"],
+  .clickable {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+  }
+  
+  /* Icon Buttons - Circular with proper sizing */
+  .icon-btn,
+  .btn-icon,
+  [class*="icon-btn"],
+  .action-btn {
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+  }
+  
+  .icon-btn svg,
+  .btn-icon svg,
+  .action-btn svg,
+  .icon-btn i,
+  .btn-icon i,
+  .action-btn i {
+    width: 65%;
+    height: 65%;
+  }
+  
+  /* ========================================
+     STATS GRID - MOBILE STACK
+     ======================================== */
+  .stats-grid,
+  .pagos-stats-grid,
+  .alumno-pagos-stats {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 0 4px;
+  }
+  
+  .stat-card,
+  .stat-pago-card {
+    padding: 16px !important;
+  }
+  
+  .stat-card h3,
+  .stat-pago-card h3 {
+    font-size: 1.5rem !important;
+  }
+  
+  /* ========================================
+     TABLES TO CARDS - STACKED LAYOUT
+     ======================================== */
+  .table-container {
+    overflow-x: hidden !important;
+  }
+  
+  table.mobile-cards,
+  .table-responsive table,
+  .data-table {
+    display: block;
+    width: 100%;
+  }
+  
+  table.mobile-cards thead,
+  .table-responsive thead,
+  .data-table thead {
+    display: none;
+  }
+  
+  table.mobile-cards tbody,
+  .table-responsive tbody,
+  .data-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  table.mobile-cards tr,
+  .table-responsive tr,
+  .data-table tr {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    gap: 8px;
+  }
+  
+  table.mobile-cards td,
+  .table-responsive td,
+  .data-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  table.mobile-cards td:last-child,
+  .table-responsive td:last-child,
+  .data-table td:last-child {
+    border-bottom: none;
+  }
+  
+  table.mobile-cards td::before,
+  .table-responsive td::before,
+  .data-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #374151;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  
+  /* Action buttons in table cards */
+  .table-actions,
+  td .actions,
+  td .btn-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  /* ========================================
+     USER CARDS - ALUMNOS/PROFESORES
+     ======================================== */
+  .alumno-card,
+  .profesor-card,
+  .user-card {
+    padding: 16px !important;
+  }
+  
+  .alumno-card .card-content,
+  .profesor-card .card-content,
+  .user-card .card-content {
+    gap: 12px;
+  }
+  
+  .alumno-card .card-actions,
+  .profesor-card .card-actions,
+  .user-card .card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  .alumno-card .card-actions button,
+  .profesor-card .card-actions button,
+  .user-card .card-actions button {
+    flex: 1;
+    min-width: 100px;
+  }
+  
+  /* ========================================
+     CHAT SUPPORT - FULLSCREEN MOBILE
+     ======================================== */
+  .chat-container,
+  .admin-chat-container,
+  .chat-panel {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-width: none !important;
+    border-radius: 0 !important;
+    z-index: var(--z-modal) !important;
+  }
+  
+  .chat-conversations-panel {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .chat-main-panel {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .chat-main-panel.active {
+    transform: translateX(0);
+  }
+  
+  .chat-input-container {
+    padding: 12px !important;
+    padding-bottom: calc(12px + var(--safe-area-bottom)) !important;
+  }
+  
+  /* ========================================
+     STATUS PAGE - VERTICAL LAYOUT
+     ======================================== */
+  .status-grid,
+  .service-grid,
+  .nodes-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  .status-card,
+  .service-card,
+  .node-card {
+    width: 100% !important;
+  }
+  
+  /* ========================================
+     FORMS - MOBILE OPTIMIZED
+     ======================================== */
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px; /* Prevents iOS zoom */
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+  }
+  
+  .form-row,
+  .form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  /* ========================================
+     BUTTONS - MOBILE SIZING
+     ======================================== */
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .btn-success {
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+  
+  .btn-group,
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .btn-group .btn,
+  .button-group .btn {
+    width: 100%;
+  }
+  
+  /* ========================================
+     CLASSROOM SPECIFIC
+     ======================================== */
+  .classroom-header {
+    padding: 12px 16px !important;
+  }
+  
+  .classroom-header .header-content {
+    gap: 8px;
+  }
+  
+  .classroom-header .logo-section h1 {
+    font-size: 16px;
+  }
+  
+  #courseSelectorContainer {
+    display: none !important;
+  }
+  
+  .classroom-sidebar {
+    padding-top: 60px;
+  }
+  
+  .classroom-main {
+    padding: 16px !important;
+  }
+  
+  /* Course tabs - horizontal scroll */
+  .course-tabs,
+  .tab-container {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+  
+  .course-tabs::-webkit-scrollbar,
+  .tab-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .course-tab,
+  .tab-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 10px 16px;
+  }
+  
+  /* Task cards */
+  .task-card,
+  .assignment-card {
+    padding: 16px !important;
+  }
+  
+  .task-card .task-header,
+  .assignment-card .assignment-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  /* ========================================
+     DASHBOARD SPECIFIC
+     ======================================== */
+  .dashboard-header {
+    padding: 12px 16px !important;
+  }
+  
+  .dashboard-header .header-content {
+    gap: 8px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 16px;
+  }
+  
+  .dashboard-sidebar {
+    padding-top: 60px;
+  }
+  
+  /* Section headers */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .section-header .actions {
+    width: 100%;
+  }
+  
+  .section-header .actions button {
+    width: 100%;
+  }
+  
+  /* ========================================
+     LOGIN PAGE SPECIFIC
+     ======================================== */
+  .login-container {
+    padding: 20px !important;
+  }
+  
+  .login-box,
+  .login-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 24px !important;
+    margin: 0 !important;
+  }
+  
+  .login-logo {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  
+  .login-logo img,
+  .login-logo svg {
+    width: 65% !important;
+    height: 65% !important;
+  }
+  
+  /* ========================================
+     DROPDOWN MENUS
+     ======================================== */
+  .dropdown-menu,
+  .user-dropdown,
+  .notifications-dropdown {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    max-height: 70vh !important;
+    border-radius: 16px 16px 0 0 !important;
+    z-index: var(--z-dropdown);
+    animation: slideUpDropdown 0.3s ease;
+  }
+  
+  @keyframes slideUpDropdown {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* ========================================
+     UTILITY CLASSES
+     ======================================== */
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  .show-mobile {
+    display: block !important;
+  }
+  
+  .flex-mobile {
+    display: flex !important;
+  }
+  
+  .text-center-mobile {
+    text-align: center !important;
+  }
+  
+  .full-width-mobile {
+    width: 100% !important;
+  }
+  
+  /* ========================================
+     SPACING ADJUSTMENTS
+     ======================================== */
+  .p-mobile-0 { padding: 0 !important; }
+  .p-mobile-1 { padding: 4px !important; }
+  .p-mobile-2 { padding: 8px !important; }
+  .p-mobile-3 { padding: 12px !important; }
+  .p-mobile-4 { padding: 16px !important; }
+  
+  .m-mobile-0 { margin: 0 !important; }
+  .m-mobile-1 { margin: 4px !important; }
+  .m-mobile-2 { margin: 8px !important; }
+  .m-mobile-3 { margin: 12px !important; }
+  .m-mobile-4 { margin: 16px !important; }
+  
+  /* ========================================
+     ANIMATIONS - REDUCED MOTION
+     ======================================== */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+}
+
+/* ========================================
+   TABLET BREAKPOINT (769px - 1024px)
+   ======================================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  
+  .stats-grid,
+  .pagos-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .modal-content {
+    width: 80vw;
+    max-width: 600px;
+  }
+  
+}
