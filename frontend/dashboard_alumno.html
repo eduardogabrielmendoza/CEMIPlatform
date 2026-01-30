@@ -3343,57 +3343,47 @@
       const dashboardMain = document.querySelector('.dashboard-main');
       
       // Solo colapsar sidebar en móviles (<=768px)
-      if (window.innerWidth <= 768) {
+      if (sidebar && window.innerWidth <= 768) {
         sidebar.classList.add('collapsed');
       }
-    }
-    
-    if (mobileMenuToggle && sidebar && sidebarOverlay) {
-      // Abrir/cerrar sidebar
-      mobileMenuToggle.addEventListener('click', function() {
-        sidebar.classList.toggle('collapsed');
-        sidebarOverlay.classList.toggle('active');
-        if (dashboardMain) {
-          dashboardMain.classList.toggle('sidebar-open');
-        }
-        
-        // Cambiar icono
-        const icon = this.querySelector('i');
-        if (icon) {
-          if (!sidebar.classList.contains('collapsed')) {
-            icon.setAttribute('data-lucide', 'x');
-          } else {
-            icon.setAttribute('data-lucide', 'menu');
-          }
-          lucide.createIcons();
-        }
-      });
       
-      // Cerrar sidebar al hacer clic en overlay
-      sidebarOverlay.addEventListener('click', function() {
-        sidebar.classList.add('collapsed');
-        sidebarOverlay.classList.remove('active');
-        if (dashboardMain) {
-          dashboardMain.classList.remove('sidebar-open');
-        }
+      if (mobileMenuToggle && sidebar && sidebarOverlay) {
+        // Abrir/cerrar sidebar
+        mobileMenuToggle.addEventListener('click', function() {
+          sidebar.classList.toggle('collapsed');
+          sidebarOverlay.classList.toggle('active');
+          if (dashboardMain) {
+            dashboardMain.classList.toggle('sidebar-open');
+          }
+          
+          // Cambiar icono
+          const icon = this.querySelector('i');
+          if (icon) {
+            if (!sidebar.classList.contains('collapsed')) {
+              icon.setAttribute('data-lucide', 'x');
+            } else {
+              icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+          }
+        });
         
-        const icon = mobileMenuToggle.querySelector('i');
-        if (icon) {
-          icon.setAttribute('data-lucide', 'menu');
-          lucide.createIcons();
-        }
-      });
-    }
-  });
-</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-
-<script>
-async function generarComprobantePago(idPago) {
-  try {
-    const { jsPDF } = window.jspdf;
+        // Cerrar sidebar al hacer clic en overlay
+        sidebarOverlay.addEventListener('click', function() {
+          sidebar.classList.add('collapsed');
+          sidebarOverlay.classList.remove('active');
+          if (dashboardMain) {
+            dashboardMain.classList.remove('sidebar-open');
+          }
+          
+          const icon = mobileMenuToggle.querySelector('i');
+          if (icon) {
+            icon.setAttribute('data-lucide', 'menu');
+            lucide.createIcons();
+          }
+        });
+      }
+    });
     
     // Harvard Color Palette
     const HARVARD_COLORS = {
