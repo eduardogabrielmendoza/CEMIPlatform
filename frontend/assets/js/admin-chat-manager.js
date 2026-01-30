@@ -1093,5 +1093,7 @@
       `;
       lucide.createIcons();
     }
+  }
+}
 
 
