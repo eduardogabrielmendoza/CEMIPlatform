@@ -490,18 +490,35 @@
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    padding: 16px !important;
+    padding: 12px 16px !important;
     background: #1e1e1e !important;
     border-top: 1px solid rgba(255,255,255,0.1) !important;
   }
   
-  .mega-footer-links {
+  .mega-footer-inner {
+    display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  
+  .mega-footer-label {
+    font-size: 12px !important;
+    color: rgba(255,255,255,0.6) !important;
+  }
+  
+  .mega-footer-links {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    gap: 16px !important;
   }
   
   .mega-footer-link {
-    font-size: 14px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+    color: rgba(255,255,255,0.8) !important;
   }
 
   /* ========================================
@@ -524,14 +541,37 @@
   }
   
   /* OCULTAR BANNERS DE BIENVENIDA EN LOGIN MÓVIL */
-  .login-side-panel {
-    display: none !important;
-  }
-  
+  .login-side-panel,
+  .login-side-panel::before,
+  .login-side-panel::after,
   .side-panel-icon,
   .side-panel-content,
-  .login-features {
+  .login-features,
+  .login-left-panel {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Links centrados en login */
+  .login-actions,
+  .login-links,
+  .login-footer-links {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+  
+  .login-actions a,
+  .login-links a,
+  .login-footer-links a {
+    text-align: center !important;
   }
   
   .login-box {
@@ -902,6 +942,352 @@
   }
   
   /* ========================================
+     PANEL LATERAL (CURSO/ALUMNO/PROFESOR)
+     Fix botón X y layout fullscreen
+     ======================================== */
+  
+  /* Panel overlay */
+  .curso-panel-overlay,
+  .alumno-panel-overlay,
+  .profesor-panel-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    z-index: 1000 !important;
+  }
+  
+  /* Panel fullscreen en móvil */
+  .curso-panel,
+  .alumno-panel,
+  .profesor-panel {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    z-index: 1001 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .curso-panel.active,
+  .alumno-panel.active,
+  .profesor-panel.active {
+    transform: none !important;
+  }
+  
+  /* Header del panel */
+  .curso-panel-header,
+  .alumno-panel-header,
+  .profesor-panel-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    padding: 16px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .curso-panel-header h2,
+  .alumno-panel-header h2,
+  .profesor-panel-header h2 {
+    font-size: 1.2rem !important;
+    margin: 0 !important;
+    padding-right: 50px !important;
+  }
+  
+  /* BOTÓN X - Fix crítico para que sea clickeable */
+  .close-panel {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    border-radius: 50% !important;
+    background: rgba(255,255,255,0.2) !important;
+    border: none !important;
+    color: #fff !important;
+    font-size: 24px !important;
+    font-weight: 300 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 100 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: rgba(255,255,255,0.3) !important;
+  }
+  
+  .close-panel:hover,
+  .close-panel:active {
+    background: rgba(255,255,255,0.35) !important;
+    transform: scale(1.05) !important;
+  }
+  
+  /* Contenido del panel */
+  .curso-panel-content,
+  .alumno-panel-content,
+  .profesor-panel-content {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 16px !important;
+  }
+  
+  /* Acciones del panel */
+  .panel-actions {
+    position: sticky !important;
+    bottom: 0 !important;
+    padding: 12px 16px !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    background: #fff !important;
+    border-top: 1px solid #e5e7eb !important;
+    display: flex !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .panel-actions .panel-btn {
+    flex: 1 !important;
+    padding: 12px 8px !important;
+    font-size: 12px !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Stats grid en panel */
+  .curso-stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  
+  .curso-stats-grid .stat-item {
+    padding: 12px !important;
+    border-radius: 10px !important;
+  }
+  
+  /* ========================================
+     CHAT SOPORTE REORGANIZADO
+     Vista de lista -> Vista de chat con botón volver
+     ======================================== */
+  
+  /* Container principal del chat admin */
+  .admin-chat-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #fff !important;
+  }
+  
+  /* Panel de conversaciones - Vista principal */
+  .chat-conversations-panel {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #f9fafb !important;
+    z-index: 1 !important;
+    transition: transform 0.3s ease !important;
+  }
+  
+  /* Cuando hay chat activo, ocultar lista */
+  .chat-conversations-panel.chat-active {
+    transform: translateX(-100%) !important;
+  }
+  
+  /* Header de conversaciones */
+  .chat-panel-header {
+    padding: 16px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .chat-panel-header h3 {
+    font-size: 18px !important;
+    margin: 0 !important;
+  }
+  
+  /* Lista de conversaciones scrolleable */
+  .chat-conversations-list {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Item de conversación */
+  .chat-conversation-item {
+    padding: 14px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+  }
+  
+  .chat-conversation-item:active {
+    background: #f3f4f6 !important;
+  }
+  
+  /* Panel principal del chat - fullscreen sobre lista */
+  .chat-main-panel {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #fff !important;
+    z-index: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transform: translateX(100%) !important;
+    transition: transform 0.3s ease !important;
+  }
+  
+  .chat-main-panel.active {
+    transform: translateX(0) !important;
+  }
+  
+  /* Header del chat activo con botón volver */
+  .chat-active-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 16px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* Botón volver en chat */
+  .chat-back-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255,255,255,0.2) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    color: #fff !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .chat-back-btn:active {
+    background: rgba(255,255,255,0.3) !important;
+  }
+  
+  /* Info del usuario en header del chat */
+  .chat-user-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+  
+  .chat-user-info h4 {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    margin: 0 0 2px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  .chat-user-info span {
+    font-size: 12px !important;
+    opacity: 0.9 !important;
+  }
+  
+  /* Área de mensajes */
+  .chat-messages-area {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 12px 16px !important;
+    background: #f9fafb !important;
+  }
+  
+  /* Mensajes */
+  .admin-chat-message {
+    max-width: 80% !important;
+    margin-bottom: 12px !important;
+    padding: 10px 14px !important;
+    border-radius: 16px !important;
+  }
+  
+  .admin-chat-message.sent {
+    margin-left: auto !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+    border-bottom-right-radius: 4px !important;
+  }
+  
+  .admin-chat-message.received {
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-bottom-left-radius: 4px !important;
+  }
+  
+  /* Input de mensaje */
+  .chat-messages-input {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px 16px !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    background: #fff !important;
+    border-top: 1px solid #e5e7eb !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .chat-input-wrapper-admin {
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    background: #f3f4f6 !important;
+    border-radius: 24px !important;
+    padding: 8px 16px !important;
+  }
+  
+  .chat-input-wrapper-admin input {
+    flex: 1 !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 16px !important;
+    outline: none !important;
+  }
+  
+  .chat-send-btn-admin {
+    width: 44px !important;
+    height: 44px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* ========================================
      TASK 9: CLASSROOM - FIX DOBLE HAMBURGUESA
      ======================================== */
   
@@ -1050,15 +1436,31 @@
     display: none !important;
   }
   
-  /* Solo mostrar acciones principales */
+  /* MOSTRAR TODOS los botones de cards - son esenciales */
   .card-actions .btn-edit,
-  .card-actions .btn-delete {
-    display: none !important;
+  .card-actions .btn-delete,
+  .card-actions .btn-view,
+  .card-actions .btn-primary,
+  .btn-icon-success,
+  .btn-icon-primary,
+  .btn-icon-edit,
+  .btn-icon-danger {
+    display: inline-flex !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    padding: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
   }
   
-  .card-actions .btn-view,
-  .card-actions .btn-primary {
-    display: inline-flex !important;
+  .btn-icon-success i,
+  .btn-icon-primary i,
+  .btn-icon-edit i,
+  .btn-icon-danger i {
+    width: 16px !important;
+    height: 16px !important;
   }
   
   /* Classroom - simplificar menú profesor/admin en móvil */
@@ -1100,6 +1502,7 @@
     font-size: 1.1rem !important;
     margin: 0 !important;
     order: 1 !important;
+    color: #ffffff !important;
   }
   
   .dashboard-header .user-info {
@@ -1109,11 +1512,17 @@
     border-radius: 20px !important;
     order: 2 !important;
     gap: 6px !important;
+    color: #ffffff !important;
   }
   
   .dashboard-header .user-info i {
     width: 14px !important;
     height: 14px !important;
+    color: #ffffff !important;
+  }
+  
+  .dashboard-header .user-info span {
+    color: #ffffff !important;
   }
   
   /* ----- SECCIÓN CURSOS OPTIMIZADA ----- */

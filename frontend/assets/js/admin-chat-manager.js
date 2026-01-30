@@ -409,11 +409,17 @@
     this.activeConversation = conv;
     this.renderConversationsList();
     
+    // Activar panel principal en móvil
+    const mainPanel = document.getElementById('adminChatMainPanel');
+    if (mainPanel) {
+      mainPanel.classList.add('active');
+    }
+    
     const header = document.getElementById('adminChatHeader');
     const inputArea = document.getElementById('adminChatInputArea');
     if (header) {
       header.style.display = 'flex';
-      const headerTitle = header.querySelector('h3');
+      const headerTitle = header.querySelector('h4') || header.querySelector('h3');
       if (headerTitle) {
         headerTitle.textContent = conv.nombre_completo_usuario || conv.nombre_invitado || 'Usuario';
       }
@@ -980,48 +986,51 @@
   renderChatView() {
     const container = document.getElementById('adminChatContainer');
     container.innerHTML = `
-      <div class="user-chat-full-container">
-        <div class="user-chat-conversations-panel">
-          <div class="user-chat-conversations-header">
+      <div class="user-chat-full-container admin-chat-container">
+        <div class="user-chat-conversations-panel chat-conversations-panel" id="adminConversationsPanel">
+          <div class="user-chat-conversations-header chat-panel-header">
             <h3>
               <i data-lucide="message-circle"></i>
               Todas las Conversaciones
             </h3>
           </div>
-          <div class="user-chat-conversations-list" id="adminChatConversationsList">
+          <div class="user-chat-conversations-list chat-conversations-list" id="adminChatConversationsList">
             <div style="padding: 40px 20px; text-align: center; color: #9ca3af;">
               <p>Cargando...</p>
             </div>
           </div>
         </div>
         
-        <div class="user-chat-messages-panel">
-          <div class="user-chat-header" style="display: none;" id="adminChatHeader">
-            <i data-lucide="message-square" style="width: 24px; height: 24px;"></i>
-            <div style="flex: 1;">
-              <h3>${this.activeConversation ? (this.activeConversation.nombre_completo_usuario || this.activeConversation.nombre_invitado || 'Usuario') : 'Chat de Soporte'}</h3>
-              <div class="user-chat-status">
-                <div class="user-chat-status-dot"></div>
-                <span>En línea</span>
-              </div>
+        <div class="user-chat-messages-panel chat-main-panel" id="adminChatMainPanel">
+          <div class="user-chat-header chat-active-header" style="display: none;" id="adminChatHeader">
+            <button class="chat-back-btn" onclick="adminChatManager.goBackToList()" title="Volver a conversaciones">
+              <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+            </button>
+            <div class="chat-user-info" style="flex: 1;">
+              <h4>${this.activeConversation ? (this.activeConversation.nombre_completo_usuario || this.activeConversation.nombre_invitado || 'Usuario') : 'Chat de Soporte'}</h4>
+              <span class="user-chat-status">
+                <span class="user-chat-status-dot" style="display:inline-block; width:8px; height:8px; background:#22c55e; border-radius:50%; margin-right:4px;"></span>
+                En línea
+              </span>
             </div>
             <button 
               class="chat-close-conversation-btn" 
               onclick="adminChatManager.closeConversation()" 
-              title="Cerrar y eliminar conversación">
-              <i data-lucide="x-circle" style="width: 18px; height: 18px;"></i>
-              <span>Cerrar Conversación</span>
+              title="Cerrar y eliminar conversación"
+              style="background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:12px; display:flex; align-items:center; gap:6px;">
+              <i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>
+              <span class="hide-mobile-text">Cerrar</span>
             </button>
           </div>
           
-          <div class="user-chat-messages" id="adminChatMessagesContainer">
+          <div class="user-chat-messages chat-messages-area" id="adminChatMessagesContainer">
             <div class="user-chat-empty">
               <i data-lucide="message-square" style="width: 64px; height: 64px;"></i>
               <p>Selecciona una conversación</p>
             </div>
           </div>
           
-          <div class="user-chat-input-area" style="display: none;" id="adminChatInputArea">
+          <div class="user-chat-input-area chat-messages-input" style="display: none;" id="adminChatInputArea">
             <input 
               type="file" 
               id="adminChatFileInput" 
@@ -1032,15 +1041,18 @@
             <button class="user-chat-attach-btn" onclick="document.getElementById('adminChatFileInput').click()" title="Adjuntar archivo">
               <i data-lucide="paperclip" style="width: 20px; height: 20px;"></i>
             </button>
-            <input 
-              type="text" 
-              id="adminChatMessageInput" 
-              class="user-chat-input" 
-              placeholder="Escribe tu mensaje..."
-              onkeypress="if(event.key === 'Enter') adminChatManager.sendMessage()"
-              maxlength="1000"
-            >
-            <button class="user-chat-send-btn" onclick="adminChatManager.sendMessage()">
+            <div class="chat-input-wrapper-admin" style="flex:1; display:flex; align-items:center; background:#f3f4f6; border-radius:24px; padding:8px 16px;">
+              <input 
+                type="text" 
+                id="adminChatMessageInput" 
+                class="user-chat-input" 
+                placeholder="Escribe tu mensaje..."
+                onkeypress="if(event.key === 'Enter') adminChatManager.sendMessage()"
+                maxlength="1000"
+                style="flex:1; border:none; background:transparent; font-size:16px; outline:none;"
+              >
+            </div>
+            <button class="user-chat-send-btn chat-send-btn-admin" onclick="adminChatManager.sendMessage()">
               <i data-lucide="send" style="width: 20px; height: 20px;"></i>
             </button>
           </div>
@@ -1051,7 +1063,35 @@
     
     this.loadConversations();
   }
-}
-
+  
+  // Función para volver a la lista de conversaciones (mobile)
+  goBackToList() {
+    const mainPanel = document.getElementById('adminChatMainPanel');
+    const header = document.getElementById('adminChatHeader');
+    const inputArea = document.getElementById('adminChatInputArea');
+    
+    if (mainPanel) {
+      mainPanel.classList.remove('active');
+    }
+    
+    // Resetear conversación activa
+    this.activeConversation = null;
+    this.renderConversationsList();
+    
+    // Ocultar header e input
+    if (header) header.style.display = 'none';
+    if (inputArea) inputArea.style.display = 'none';
+    
+    // Mostrar mensaje vacío
+    const messagesContainer = document.getElementById('adminChatMessagesContainer');
+    if (messagesContainer) {
+      messagesContainer.innerHTML = `
+        <div class="user-chat-empty">
+          <i data-lucide="message-square" style="width: 64px; height: 64px;"></i>
+          <p>Selecciona una conversación</p>
+        </div>
+      `;
+      lucide.createIcons();
+    }
 
 

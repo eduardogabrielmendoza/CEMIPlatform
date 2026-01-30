@@ -150,40 +150,24 @@
         border-radius: 0 !important;
         flex-direction: column !important;
       }
-      .login-side-panel {
-        display: block !important;
-        min-height: auto !important;
-        max-height: none !important;
-        height: auto !important;
-        padding: 32px 24px 24px !important;
-        border-radius: 0 !important;
-      }
-      .login-side-panel::before {
-        border-radius: 0 !important;
-      }
-      .side-panel-icon {
-        width: 60px !important;
-        height: 60px !important;
-        margin-bottom: 12px !important;
-      }
-      .side-panel-icon i,
-      .side-panel-icon svg {
-        width: 32px !important;
-        height: 32px !important;
-      }
-      .side-panel-content h2 {
-        font-size: 1.5rem !important;
-        margin-bottom: 6px !important;
-      }
-      .side-panel-content > p {
-        font-size: 0.95rem !important;
-        margin-bottom: 0 !important;
+      /* Ocultar completamente el panel lateral en móvil */
+      .login-side-panel,
+      .login-side-panel::before,
+      .login-side-panel::after {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
       .login-features {
         display: none !important;
       }
       .login-box {
-        min-height: auto !important;
+        min-height: 100vh !important;
         max-height: none !important;
         height: auto !important;
         overflow-y: auto !important;
@@ -191,6 +175,9 @@
         width: 100% !important;
         max-width: 100% !important;
         border-radius: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
       }
       .login-header {
         text-align: center !important;
@@ -201,27 +188,28 @@
         width: 70px !important;
         height: 70px !important;
       }
+      /* Centrar enlaces */
+      .login-actions,
+      .login-links,
+      .login-footer-links,
+      .login-options {
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+      }
+      .login-actions a,
+      .login-links a,
+      .login-options a {
+        text-align: center !important;
+      }
     }
 
     @media (max-width: 480px) {
+      /* Ya oculto en 768px, mantener oculto */
       .login-side-panel {
-        padding: 28px 20px 20px !important;
-      }
-      .side-panel-icon {
-        width: 52px !important;
-        height: 52px !important;
-        margin-bottom: 10px !important;
-      }
-      .side-panel-icon i,
-      .side-panel-icon svg {
-        width: 28px !important;
-        height: 28px !important;
-      }
-      .side-panel-content h2 {
-        font-size: 1.35rem !important;
-      }
-      .side-panel-content > p {
-        font-size: 0.9rem !important;
+        display: none !important;
       }
       .login-box {
         padding: 32px 20px 40px !important;
