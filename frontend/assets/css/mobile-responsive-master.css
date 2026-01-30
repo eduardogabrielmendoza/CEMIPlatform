@@ -146,21 +146,6 @@
     color: #ffffff;
   }
   
-  /* Chevron para items expandibles */
-  .mega-nav-item::after {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-right: 2px solid rgba(255, 255, 255, 0.6);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
-    transform: rotate(-45deg);
-    transition: transform 0.3s ease;
-  }
-  
-  .mega-nav-item.active::after {
-    transform: rotate(45deg);
-  }
-  
   /* Panel secundario - acordeón */
   .mega-nav-secondary {
     max-height: 0;
@@ -443,8 +428,8 @@
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    max-height: 2000px !important;
-    padding: 16px 0 !important;
+    max-height: 800px !important;
+    padding: 8px 0 !important;
   }
   
   /* Títulos y descripciones en paneles secundarios */
@@ -466,8 +451,8 @@
   .mega-nav-secondary .mega-sub-link {
     display: flex !important;
     align-items: center !important;
-    padding: 14px 20px !important;
-    font-size: 15px !important;
+    padding: 10px 16px !important;
+    font-size: 14px !important;
     font-weight: 500 !important;
     color: rgba(255,255,255,0.9) !important;
     text-decoration: none !important;
@@ -480,7 +465,7 @@
   .mega-nav-secondary .mega-sub-link:hover {
     background: rgba(255,255,255,0.08) !important;
     border-left-color: rgba(255, 255, 255, 0.6) !important;
-    padding-left: 24px !important;
+    padding-left: 20px !important;
   }
   
   .mega-nav-secondary .mega-sub-link + .mega-sub-link {
@@ -514,8 +499,8 @@
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    max-height: 1500px !important;
-    padding: 12px 0 !important;
+    max-height: 600px !important;
+    padding: 8px 0 !important;
   }
   
   .mega-nav-tertiary .mega-tertiary-item {
@@ -525,7 +510,7 @@
   .mega-nav-tertiary .mega-tertiary-link,
   .mega-nav-tertiary .mega-tertiary-action {
     display: block !important;
-    padding: 12px 20px 12px 40px !important;
+    padding: 9px 16px 9px 32px !important;
     color: rgba(255,255,255,0.8) !important;
     text-decoration: none !important;
     font-size: 13px !important;
@@ -537,7 +522,7 @@
   .mega-nav-tertiary .mega-tertiary-action:hover {
     background: rgba(255,255,255,0.06) !important;
     border-left-color: rgba(255, 255, 255, 0.5) !important;
-    padding-left: 44px !important;
+    padding-left: 36px !important;
   }
   
   /* Sub-link con children debe mostrar chevron */
