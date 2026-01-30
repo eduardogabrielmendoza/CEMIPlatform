@@ -2102,6 +2102,162 @@
   }
   
   /* ========================================
+     USER CHAT (PROFESOR/ALUMNO) - RESPONSIVE
+     ======================================== */
+  
+  /* Container principal del chat */
+  .user-chat-full-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #fff !important;
+    border-radius: 0 !important;
+  }
+  
+  /* Panel de conversaciones */
+  .user-chat-conversations-panel {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #ffffff !important;
+    z-index: 1 !important;
+    transition: transform 0.3s ease !important;
+  }
+  
+  .user-chat-conversations-panel.chat-active {
+    transform: translateX(-100%) !important;
+  }
+  
+  /* Header de conversaciones */
+  .user-chat-conversations-header {
+    padding: 16px !important;
+    background: #4a5259 !important;
+    color: white !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .user-chat-conversations-header h3 {
+    font-size: 18px !important;
+    margin: 0 !important;
+  }
+  
+  /* Lista de conversaciones */
+  .user-chat-conversations-list {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+  
+  /* Items de conversación */
+  .user-chat-conversation-item {
+    padding: 14px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    border-bottom: none !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+    background: #ffffff !important;
+  }
+  
+  .user-chat-conversation-item:active {
+    background: #f3f4f6 !important;
+  }
+  
+  /* Panel de mensajes */
+  .user-chat-messages-panel {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #fff !important;
+    z-index: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transform: translateX(100%) !important;
+    transition: transform 0.3s ease !important;
+  }
+  
+  .user-chat-messages-panel.active {
+    transform: translateX(0) !important;
+  }
+  
+  /* Header del chat activo */
+  .user-chat-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 16px !important;
+    background: #1e1e1e !important;
+    color: #fff !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* Área de mensajes */
+  .user-chat-messages {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 12px 16px !important;
+    background: #f9fafb !important;
+  }
+  
+  /* Mensajes */
+  .user-chat-message {
+    max-width: 80% !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .user-chat-message.sent .user-chat-message-bubble {
+    background: #1e1e1e !important;
+    color: #fff !important;
+  }
+  
+  /* Input de mensaje */
+  .user-chat-input-area {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px 16px !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    background: #fff !important;
+    border-top: 1px solid #e5e7eb !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .user-chat-input {
+    flex: 1 !important;
+    padding: 10px 16px !important;
+    font-size: 16px !important;
+  }
+  
+  .user-chat-send-btn {
+    width: 44px !important;
+    height: 44px !important;
+    background: #1e1e1e !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .user-chat-send-btn:active {
+    background: #2d2d2d !important;
+  }
+  
+  /* ========================================
      ANIMATIONS - REDUCED MOTION
      ======================================== */
   @media (prefers-reduced-motion: reduce) {
