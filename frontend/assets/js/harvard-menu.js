@@ -285,7 +285,9 @@ document.addEventListener('DOMContentLoaded', function() {
       
       const targetTertiary = this.dataset.tertiary;
       const targetImage = this.dataset.image;
+      const tertiaryPanel = document.getElementById(targetTertiary);
       
+      // Toggle: si ya está activo, cerrar
       if (this.classList.contains('active')) {
         this.classList.remove('active');
         hideTertiaryPanel(targetTertiary);
@@ -295,16 +297,27 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
+      // Desactivar otros sub-links
       document.querySelectorAll('.mega-sub-link').forEach(l => l.classList.remove('active'));
       
       document.querySelectorAll('.mega-tertiary-item.active').forEach(item => {
         item.classList.remove('active');
       });
       
+      // Activar este sub-link
       this.classList.add('active');
       activeSubLink = this;
       
       activeSubLinkImage = targetImage || null;
+      
+      // En móvil, mover el panel terciario justo después del sub-link clickeado
+      if (isMobile() && tertiaryPanel) {
+        // Insertar el panel después del elemento li padre del link
+        const parentLi = this.closest('.mega-sub-item');
+        if (parentLi && parentLi.parentNode) {
+          parentLi.parentNode.insertBefore(tertiaryPanel, parentLi.nextSibling);
+        }
+      }
       
       showTertiaryPanel(targetTertiary);
       

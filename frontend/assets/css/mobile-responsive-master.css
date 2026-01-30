@@ -396,8 +396,8 @@
   
   /* Agregar chevron indicador */
   .mega-nav-item::after {
-    content: '›' !important;
-    font-size: 28px !important;
+    content: '>' !important;
+    font-size: 20px !important;
     color: rgba(255,255,255,0.5) !important;
     transition: transform 0.3s ease !important;
   }
@@ -428,9 +428,9 @@
     width: 100% !important;
     padding: 0 !important;
     background: rgba(0, 0, 0, 0.5) !important;
-    border-left: 3px solid rgba(102, 126, 234, 0.6) !important;
-    margin: 0 0 8px 32px !important;
-    border-radius: 0 8px 8px 0 !important;
+    border-left: 3px solid rgba(255, 255, 255, 0.3) !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
     overflow: hidden !important;
     max-height: 0 !important;
     opacity: 0 !important;
@@ -479,7 +479,7 @@
   
   .mega-nav-secondary .mega-sub-link:hover {
     background: rgba(255,255,255,0.08) !important;
-    border-left-color: rgba(102, 126, 234, 0.8) !important;
+    border-left-color: rgba(255, 255, 255, 0.6) !important;
     padding-left: 24px !important;
   }
   
@@ -493,35 +493,69 @@
     display: none !important;
   }
   
+  /* Panel terciario - similar al secundario pero con más indentación */
   .mega-nav-tertiary {
     display: none !important;
     position: static !important;
     width: 100% !important;
-    background: rgba(0, 0, 0, 0.2) !important;
+    padding: 0 !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-left: 2px solid rgba(255, 255, 255, 0.2) !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    max-height: 0 !important;
+    opacity: 0 !important;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease,
+                padding 0.3s ease !important;
   }
   
   .mega-nav-tertiary.visible {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    padding: 8px 0 !important;
+    max-height: 1500px !important;
+    padding: 12px 0 !important;
   }
   
   .mega-nav-tertiary .mega-tertiary-item {
-    padding: 12px 20px 12px 48px !important;
+    padding: 0 !important;
   }
   
-  .mega-nav-tertiary .mega-tertiary-link {
-    font-size: 14px !important;
-    color: rgba(255,255,255,0.8) !important;
-  }
-  
+  .mega-nav-tertiary .mega-tertiary-link,
   .mega-nav-tertiary .mega-tertiary-action {
     display: block !important;
-    padding: 10px 20px 10px 48px !important;
-    color: rgba(255,255,255,0.7) !important;
+    padding: 12px 20px 12px 40px !important;
+    color: rgba(255,255,255,0.8) !important;
     text-decoration: none !important;
     font-size: 13px !important;
+    border-left: 2px solid transparent !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .mega-nav-tertiary .mega-tertiary-link:hover,
+  .mega-nav-tertiary .mega-tertiary-action:hover {
+    background: rgba(255,255,255,0.06) !important;
+    border-left-color: rgba(255, 255, 255, 0.5) !important;
+    padding-left: 44px !important;
+  }
+  
+  /* Sub-link con children debe mostrar chevron */
+  .mega-sub-link.has-children {
+    position: relative !important;
+  }
+  
+  .mega-sub-link.has-children::after {
+    content: '>' !important;
+    position: absolute !important;
+    right: 20px !important;
+    font-size: 16px !important;
+    color: rgba(255,255,255,0.5) !important;
+    transition: transform 0.3s ease !important;
+  }
+  
+  .mega-sub-link.has-children.active::after {
+    transform: rotate(90deg) !important;
   }
   
   /* Footer del mega menu */
