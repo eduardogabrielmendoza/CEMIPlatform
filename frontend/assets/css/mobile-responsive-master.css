@@ -1429,10 +1429,11 @@
     width: 280px !important;
     height: 100vh !important;
     height: 100dvh !important;
-    z-index: var(--z-sidebar) !important;
+    z-index: 9998 !important;
     transform: translateX(-100%) !important;
     transition: transform 0.3s ease !important;
     padding-top: 0 !important;
+    background: #ffffff !important;
   }
   
   .classroom-sidebar.show {
@@ -1446,7 +1447,7 @@
     right: 0 !important;
     bottom: 0 !important;
     background: rgba(0, 0, 0, 0.5) !important;
-    z-index: calc(var(--z-sidebar) - 1) !important;
+    z-index: 9997 !important;
     opacity: 0 !important;
     visibility: hidden !important;
     transition: opacity 0.3s ease, visibility 0.3s ease !important;
@@ -1455,6 +1456,50 @@
   .sidebar-overlay-classroom.active {
     opacity: 1 !important;
     visibility: visible !important;
+  }
+  
+  /* Ocultar banner animado en mobile */
+  .welcome-video,
+  .welcome-banner,
+  .video-container {
+    display: none !important;
+  }
+  
+  /* Research banner responsive */
+  .research-banner {
+    flex-direction: column !important;
+    padding: 16px !important;
+    gap: 12px !important;
+    margin: 12px !important;
+    border-radius: 12px !important;
+  }
+  
+  .research-banner-content {
+    text-align: center !important;
+  }
+  
+  .research-banner-content h3 {
+    font-size: 15px !important;
+  }
+  
+  .research-banner-content p {
+    font-size: 13px !important;
+    display: none !important;
+  }
+  
+  .research-banner-icon {
+    display: none !important;
+  }
+  
+  .research-banner-action {
+    width: 100% !important;
+  }
+  
+  .btn-research {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 10px 16px !important;
+    font-size: 13px !important;
   }
   
   /* Classroom main */
@@ -2310,6 +2355,292 @@
   
   .user-chat-header .chat-back-btn:active {
     background: rgba(255,255,255,0.3) !important;
+  }
+  
+  /* ========================================
+     HELP WIDGET - VISIBLE EN MÓVIL
+     ======================================== */
+  .cemi-help-widget {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 99999 !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #656f77 0%, #4a5259 100%) !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
+    pointer-events: auto !important;
+  }
+  
+  .cemi-help-widget i,
+  .cemi-help-widget svg {
+    color: #fff !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  /* ========================================
+     COMUNIDAD CEMI - MOBILE FIRST LAYOUT
+     ======================================== */
+  
+  /* Hero Section */
+  .community-hero {
+    min-height: 60vh !important;
+    padding: 60px 20px !important;
+  }
+  
+  .community-hero-content {
+    padding: 0 16px !important;
+  }
+  
+  .community-hero h1 {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .community-hero p {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+  }
+  
+  .community-hero-badge {
+    font-size: 0.75rem !important;
+    padding: 6px 16px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  /* Quote Section */
+  .community-quote {
+    padding: 50px 20px !important;
+  }
+  
+  .community-quote blockquote {
+    font-size: 1.2rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  .community-quote blockquote::before {
+    font-size: 3rem !important;
+    top: -15px !important;
+  }
+  
+  /* Values Section */
+  .community-values {
+    padding: 50px 16px !important;
+  }
+  
+  .community-values-header {
+    margin-bottom: 32px !important;
+  }
+  
+  .community-values-header h2 {
+    font-size: 1.6rem !important;
+  }
+  
+  .community-values-header p {
+    font-size: 1rem !important;
+  }
+  
+  .values-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    padding: 0 4px !important;
+  }
+  
+  .value-card {
+    padding: 28px 20px !important;
+    border-radius: 12px !important;
+  }
+  
+  .value-card:hover {
+    transform: none !important;
+  }
+  
+  .value-icon {
+    width: 56px !important;
+    height: 56px !important;
+    margin-bottom: 20px !important;
+    border-radius: 14px !important;
+  }
+  
+  .value-icon i {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  
+  .value-card h3 {
+    font-size: 1.2rem !important;
+  }
+  
+  .value-card p {
+    font-size: 0.95rem !important;
+  }
+  
+  /* Gallery Section */
+  .community-gallery {
+    padding: 50px 16px !important;
+  }
+  
+  .gallery-header {
+    margin-bottom: 32px !important;
+  }
+  
+  .gallery-header h2 {
+    font-size: 1.6rem !important;
+  }
+  
+  .gallery-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  
+  .gallery-item {
+    border-radius: 12px !important;
+    aspect-ratio: 16/10 !important;
+  }
+  
+  .gallery-overlay {
+    padding: 20px !important;
+  }
+  
+  .gallery-overlay h3 {
+    font-size: 1.1rem !important;
+  }
+  
+  .gallery-overlay p {
+    font-size: 0.85rem !important;
+  }
+  
+  /* Activities Section */
+  .community-activities {
+    padding: 50px 16px !important;
+  }
+  
+  .activities-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
+  }
+  
+  .activities-content {
+    order: 1 !important;
+  }
+  
+  .activities-image {
+    order: 2 !important;
+    border-radius: 12px !important;
+  }
+  
+  .activities-content h2 {
+    font-size: 1.6rem !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .activities-content p {
+    font-size: 1rem !important;
+    margin-bottom: 24px !important;
+  }
+  
+  .activity-list li {
+    font-size: 0.95rem !important;
+    padding: 12px 0 !important;
+    gap: 12px !important;
+  }
+  
+  .activity-list i {
+    width: 20px !important;
+    height: 20px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .activities-image img {
+    height: 280px !important;
+    border-radius: 12px !important;
+  }
+  
+  /* Testimonials Section */
+  .community-testimonials {
+    padding: 50px 16px !important;
+  }
+  
+  .testimonials-header {
+    margin-bottom: 32px !important;
+  }
+  
+  .testimonials-header h2 {
+    font-size: 1.6rem !important;
+  }
+  
+  .testimonials-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  
+  .testimonial-card {
+    padding: 28px 20px !important;
+    border-radius: 12px !important;
+  }
+  
+  .testimonial-card:hover {
+    transform: none !important;
+  }
+  
+  .testimonial-text {
+    font-size: 0.95rem !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .author-avatar {
+    width: 42px !important;
+    height: 42px !important;
+    font-size: 1rem !important;
+  }
+  
+  .author-info h4 {
+    font-size: 0.9rem !important;
+  }
+  
+  .author-info p {
+    font-size: 0.8rem !important;
+  }
+  
+  /* CTA Section */
+  .community-cta {
+    padding: 60px 20px !important;
+  }
+  
+  .community-cta h2 {
+    font-size: 1.6rem !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .community-cta p {
+    font-size: 1rem !important;
+    margin-bottom: 28px !important;
+  }
+  
+  .community-cta-btn {
+    padding: 14px 32px !important;
+    font-size: 1rem !important;
+    width: 100% !important;
+    max-width: 280px !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Scroll reveal - desactivar animaciones móvil para mejor rendimiento */
+  .scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
   
   /* ========================================
