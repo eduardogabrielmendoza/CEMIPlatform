@@ -1239,7 +1239,7 @@
     align-items: center !important;
     gap: 12px !important;
     padding: 12px 16px !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background: #1e1e1e !important;
     color: #fff !important;
     flex-shrink: 0 !important;
   }
@@ -1267,11 +1267,39 @@
   .chat-panel-header {
     background: #1e1e1e !important;
     border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    color: white !important;
   }
   
   .chat-panel-header h3 {
     font-size: 18px !important;
     font-weight: 500 !important;
+  }
+  
+  /* Botón volver a bandeja en header del chat */
+  .chat-return-to-list-btn {
+    background: rgba(255,255,255,0.2) !important;
+    border: none !important;
+    color: white !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  
+  .chat-return-to-list-btn:active {
+    background: rgba(255,255,255,0.3) !important;
+  }
+  
+  /* Mostrar/ocultar elementos según dispositivo */
+  .show-mobile-only {
+    display: flex !important;
+  }
+  
+  .hide-mobile-text {
+    display: none !important;
   }
   
   /* Info del usuario en header del chat */
@@ -1313,7 +1341,7 @@
   
   .admin-chat-message.sent {
     margin-left: auto !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background: #1e1e1e !important;
     color: #fff !important;
     border-bottom-right-radius: 4px !important;
   }
@@ -1356,7 +1384,19 @@
   .chat-send-btn-admin {
     width: 44px !important;
     height: 44px !important;
+    background: #1e1e1e !important;
+    border: none !important;
+    border-radius: 50% !important;
+    color: white !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     flex-shrink: 0 !important;
+  }
+  
+  .chat-send-btn-admin:active {
+    background: #2d2d2d !important;
   }
   
   /* ========================================

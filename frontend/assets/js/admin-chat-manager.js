@@ -1014,6 +1014,13 @@
               </span>
             </div>
             <button 
+              class="chat-return-to-list-btn show-mobile-only" 
+              onclick="adminChatManager.goBackToList()" 
+              title="Volver a la bandeja">
+              <i data-lucide="inbox" style="width: 16px; height: 16px;"></i>
+              <span>Bandeja</span>
+            </button>
+            <button 
               class="chat-close-conversation-btn" 
               onclick="adminChatManager.closeConversation()" 
               title="Cerrar y eliminar conversación"
