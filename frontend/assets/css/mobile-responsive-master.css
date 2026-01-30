@@ -1497,11 +1497,13 @@
     display: none !important;
   }
   
-  /* MOSTRAR botones de editar y eliminar - OCULTAR botón de view */
+  /* MOSTRAR TODOS los botones de cards - incluyendo view/ojo */
   .card-actions .btn-edit,
   .card-actions .btn-delete,
+  .card-actions .btn-view,
   .card-actions .btn-primary,
   .btn-icon-success,
+  .btn-icon-primary,
   .btn-icon-edit,
   .btn-icon-danger {
     display: inline-flex !important;
@@ -1512,12 +1514,6 @@
     align-items: center !important;
     justify-content: center !important;
     border-radius: 50% !important;
-  }
-  
-  /* Ocultar botón de view/ojo */
-  .card-actions .btn-view,
-  .btn-icon-primary {
-    display: none !important;
   }
   
   .btn-icon-success i,
