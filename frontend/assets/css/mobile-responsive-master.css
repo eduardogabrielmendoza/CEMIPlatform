@@ -180,21 +180,6 @@
     border-left-color: rgba(255, 255, 255, 0.5);
   }
   
-  .mega-sub-link.has-children::after {
-    content: '';
-    margin-left: auto;
-    width: 6px;
-    height: 6px;
-    border-right: 2px solid rgba(255, 255, 255, 0.5);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-    transform: rotate(-45deg);
-    transition: transform 0.3s ease;
-  }
-  
-  .mega-sub-link.active::after {
-    transform: rotate(45deg);
-  }
-  
   /* Panel terciario */
   .mega-nav-tertiary {
     max-height: 0;
@@ -523,6 +508,16 @@
     background: rgba(255,255,255,0.06) !important;
     border-left-color: rgba(255, 255, 255, 0.5) !important;
     padding-left: 36px !important;
+  }
+  
+  /* Ocultar item Nosotros en móvil */
+  .mega-nav-item[data-panel="panel-nosotros"] {
+    display: none !important;
+  }
+  
+  /* Ocultar chevrones inline del HTML en sub-links */
+  .mega-sub-link.has-children .chevron {
+    display: none !important;
   }
   
   /* Sub-link con children debe mostrar chevron */

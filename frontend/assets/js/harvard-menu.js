@@ -312,10 +312,10 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // En móvil, mover el panel terciario justo después del sub-link clickeado
       if (isMobile() && tertiaryPanel) {
-        // Insertar el panel después del elemento li padre del link
-        const parentLi = this.closest('.mega-sub-item');
-        if (parentLi && parentLi.parentNode) {
-          parentLi.parentNode.insertBefore(tertiaryPanel, parentLi.nextSibling);
+        // Insertar el panel después del contenedor de sub-links
+        const subLinksContainer = this.closest('.mega-sub-links');
+        if (subLinksContainer && subLinksContainer.parentNode) {
+          subLinksContainer.parentNode.insertBefore(tertiaryPanel, subLinksContainer.nextSibling);
         }
       }
       
