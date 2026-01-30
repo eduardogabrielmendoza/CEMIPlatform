@@ -2117,7 +2117,8 @@
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: 100vw !important;
+    width: 100% !important;
+    max-width: 100vw !important;
     height: 100vh !important;
     height: 100dvh !important;
     z-index: 999 !important;
@@ -2127,6 +2128,9 @@
     border-radius: 0 !important;
     box-shadow: none !important;
     overflow: hidden !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   
   /* Panel de conversaciones */
@@ -2201,6 +2205,7 @@
     transform: translateX(100%) !important;
     transition: transform 0.3s ease !important;
     overflow: hidden !important;
+    box-sizing: border-box !important;
   }
   
   .user-chat-messages-panel.active {
@@ -2234,12 +2239,17 @@
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
-    padding: 10px 12px !important;
-    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 8px 10px !important;
+    padding-right: 14px !important;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
     background: #fff !important;
     border-top: 1px solid #e5e7eb !important;
     flex-shrink: 0 !important;
-    min-height: 56px !important;
+    min-height: 52px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
   }
   
   /* Mensajes */
