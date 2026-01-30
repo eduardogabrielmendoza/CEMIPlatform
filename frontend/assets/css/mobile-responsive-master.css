@@ -1497,13 +1497,11 @@
     display: none !important;
   }
   
-  /* MOSTRAR TODOS los botones de cards - son esenciales */
+  /* MOSTRAR botones de editar y eliminar - OCULTAR botón de view */
   .card-actions .btn-edit,
   .card-actions .btn-delete,
-  .card-actions .btn-view,
   .card-actions .btn-primary,
   .btn-icon-success,
-  .btn-icon-primary,
   .btn-icon-edit,
   .btn-icon-danger {
     display: inline-flex !important;
@@ -1514,6 +1512,12 @@
     align-items: center !important;
     justify-content: center !important;
     border-radius: 50% !important;
+  }
+  
+  /* Ocultar botón de view/ojo */
+  .card-actions .btn-view,
+  .btn-icon-primary {
+    display: none !important;
   }
   
   .btn-icon-success i,
@@ -1554,36 +1558,43 @@
     gap: 8px !important;
     padding: 12px 16px !important;
     text-align: center !important;
-    background: linear-gradient(135deg, #4a5259 0%, #3d444a 100%) !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
     margin: -12px -12px 16px !important;
     border-radius: 0 !important;
+    border-bottom: 2px solid #dee2e6 !important;
   }
   
   .dashboard-header h1 {
     font-size: 1.1rem !important;
     margin: 0 !important;
     order: 1 !important;
-    color: #ffffff !important;
+    color: #2c3e50 !important;
   }
   
   .dashboard-header .user-info {
     font-size: 12px !important;
     padding: 6px 14px !important;
-    background: rgba(255,255,255,0.15) !important;
+    background: rgba(44, 62, 80, 0.08) !important;
     border-radius: 20px !important;
     order: 2 !important;
     gap: 6px !important;
-    color: #ffffff !important;
+    color: #495057 !important;
   }
   
   .dashboard-header .user-info i {
     width: 14px !important;
     height: 14px !important;
-    color: #ffffff !important;
+    color: #495057 !important;
   }
   
   .dashboard-header .user-info span {
-    color: #ffffff !important;
+    color: #495057 !important;
+  }
+  
+  /* Ocultar items Investigación y Status del Sistema en móvil */
+  #btnInvestigacion,
+  #btnStatus {
+    display: none !important;
   }
   
   /* ----- SECCIÓN CURSOS OPTIMIZADA ----- */
