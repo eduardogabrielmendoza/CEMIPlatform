@@ -3379,10 +3379,19 @@
         });
       }
     });
-    
-    // Harvard Color Palette
-    const HARVARD_COLORS = {
-      charcoal: [30, 30, 30],
+  </script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+  <script>
+    async function generarComprobantePago(idPago) {
+      try {
+        const { jsPDF } = window.jspdf;
+        
+        // Harvard Color Palette
+        const HARVARD_COLORS = {
+          charcoal: [30, 30, 30],
       wroughtIron: [74, 74, 74],
       graphite: [101, 111, 119],
       silver: [160, 160, 160],

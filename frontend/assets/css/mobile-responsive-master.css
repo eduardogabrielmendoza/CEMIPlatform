@@ -2150,14 +2150,15 @@
   
   /* Header de conversaciones */
   .user-chat-conversations-header {
-    padding: 16px !important;
+    padding: 12px 16px !important;
     background: #4a5259 !important;
     color: white !important;
     flex-shrink: 0 !important;
+    min-height: 50px !important;
   }
   
   .user-chat-conversations-header h3 {
-    font-size: 18px !important;
+    font-size: 16px !important;
     margin: 0 !important;
   }
   
@@ -2172,10 +2173,10 @@
   
   /* Items de conversación */
   .user-chat-conversation-item {
-    padding: 14px 16px !important;
+    padding: 10px 14px !important;
     display: flex !important;
     align-items: center !important;
-    gap: 12px !important;
+    gap: 10px !important;
     border-bottom: none !important;
     cursor: pointer !important;
     transition: background 0.2s !important;
@@ -2210,12 +2211,12 @@
   .user-chat-header {
     display: flex !important;
     align-items: center !important;
-    gap: 12px !important;
-    padding: 12px 16px !important;
+    gap: 10px !important;
+    padding: 10px 14px !important;
     background: #1e1e1e !important;
     color: #fff !important;
     flex-shrink: 0 !important;
-    min-height: 60px !important;
+    min-height: 50px !important;
   }
   
   /* Área de mensajes */
@@ -2223,7 +2224,7 @@
     flex: 1 !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    padding: 12px 16px !important;
+    padding: 10px 12px !important;
     background: #f9fafb !important;
     min-height: 0 !important;
   }
@@ -2232,13 +2233,13 @@
   .user-chat-input-area {
     display: flex !important;
     align-items: center !important;
-    gap: 10px !important;
-    padding: 12px 16px !important;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
     background: #fff !important;
     border-top: 1px solid #e5e7eb !important;
     flex-shrink: 0 !important;
-    min-height: 68px !important;
+    min-height: 56px !important;
   }
   
   /* Mensajes */
