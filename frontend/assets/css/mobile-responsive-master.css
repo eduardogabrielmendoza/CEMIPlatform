@@ -1,0 +1,1115 @@
+/* ========================================
+   MOBILE-FIRST RESPONSIVE SYSTEM
+   CEMI Platform - Production
+   ========================================
+   
+   ARCHITECTURE:
+   - All styles encapsulated in @media (max-width: 768px)
+   - Desktop version remains completely untouched
+   - Z-index hierarchy for proper stacking
+   - Touch-optimized interactions (44px minimum)
+   - Simplified UI for mobile experience
+   
+   ======================================== */
+
+/* ========================================
+   MOBILE STYLES - 768px and below
+   ======================================== */
+@media (max-width: 768px) {
+  
+  /* ========================================
+     CSS CUSTOM PROPERTIES - Z-INDEX HIERARCHY
+     ======================================== */
+  :root {
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-fixed: 300;
+    --z-sidebar: 500;
+    --z-header: 600;
+    --z-overlay: 800;
+    --z-modal-backdrop: 900;
+    --z-modal: 1000;
+    --z-mega-menu: 1001;
+    --z-toast: 1100;
+    --z-tooltip: 1200;
+    
+    /* Touch target minimum */
+    --touch-target-min: 44px;
+    
+    /* Safe area for notched devices */
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  
+  /* ========================================
+     BODY SCROLL LOCK
+     Applied via JS when modals/sidebars open
+     ======================================== */
+  body.modal-open,
+  body.sidebar-open,
+  body.menu-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  
+  /* ========================================
+     PREVENT HORIZONTAL OVERFLOW
+     ======================================== */
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  .dashboard-body,
+  .classroom-container,
+  .dashboard-main,
+  .classroom-main,
+  #mainContent {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  /* ========================================
+     TASK 1: BOTÓN "VOLVER" ESTILIZADO
+     Rediseño del botón volver en mega-menu
+     ======================================== */
+  .mobile-back-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    color: #ffffff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .mobile-back-btn:hover,
+  .mobile-back-btn:active {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+  
+  .mobile-back-btn .back-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+  
+  .mobile-back-btn:hover .back-arrow {
+    transform: translateX(-3px);
+  }
+  
+  /* ========================================
+     TASK 2: ACORDEÓN NAVEGACIÓN
+     Paneles expandibles en mega-menu móvil
+     ======================================== */
+  
+  /* Estilos para items de navegación con hijos */
+  .mega-nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .mega-nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .mega-nav-item.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+  
+  /* Chevron para items expandibles */
+  .mega-nav-item::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+    transform: rotate(-45deg);
+    transition: transform 0.3s ease;
+  }
+  
+  .mega-nav-item.active::after {
+    transform: rotate(45deg);
+  }
+  
+  /* Panel secundario - acordeón */
+  .mega-nav-secondary {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s ease;
+    background: rgba(0, 0, 0, 0.2);
+  }
+  
+  .mega-nav-secondary.visible {
+    max-height: 1000px;
+    opacity: 1;
+    padding: 8px 0;
+  }
+  
+  /* Links dentro del acordeón */
+  .mega-sub-link {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px 14px 40px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+  }
+  
+  .mega-sub-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    border-left-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .mega-sub-link.has-children::after {
+    content: '';
+    margin-left: auto;
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    transform: rotate(-45deg);
+    transition: transform 0.3s ease;
+  }
+  
+  .mega-sub-link.active::after {
+    transform: rotate(45deg);
+  }
+  
+  /* Panel terciario */
+  .mega-nav-tertiary {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    background: rgba(0, 0, 0, 0.15);
+  }
+  
+  .mega-nav-tertiary.visible {
+    max-height: 500px;
+    opacity: 1;
+    padding: 8px 0;
+  }
+  
+  .mega-tertiary-item {
+    padding: 12px 20px 12px 56px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+  }
+  
+  .mega-tertiary-item a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .mega-tertiary-item a:hover {
+    color: #ffffff;
+  }
+  
+  /* ========================================
+     TASK 3: BOTÓN X CERRAR MENÚ
+     ======================================== */
+  .mega-menu-close-mobile {
+    display: flex !important;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+  }
+  
+  .mega-menu-close-mobile:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+  
+  .mega-menu-close-mobile svg,
+  .mega-menu-close-mobile i {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Asegurar que el botón existente sea visible */
+  #megaMenuClose {
+    display: flex !important;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #ffffff;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+  }
+  
+  #megaMenuClose:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Ocultar texto "Cerrar" en móvil, solo mostrar X */
+  #megaMenuClose > span:first-child {
+    display: none !important;
+  }
+  
+  #megaMenuClose .close-icon-circle {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+  }
+  
+  /* ========================================
+     MEGA-MENU MOBILE OVERRIDES
+     Asegurar comportamiento acordeón
+     ======================================== */
+  
+  /* Mega menu container */
+  .harvard-mega-menu {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .harvard-mega-menu.active {
+    display: block !important;
+  }
+  
+  /* Header del mega menu */
+  .mega-menu-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 60px !important;
+    padding: 0 16px !important;
+    background: #1e1e1e !important;
+    z-index: 10 !important;
+  }
+  
+  /* Logo más pequeño en móvil */
+  .mega-menu-logo .mega-logo-long {
+    height: 36px !important;
+    max-width: 180px !important;
+  }
+  
+  /* Contenido del mega menu */
+  .mega-menu-content {
+    padding-top: 70px !important;
+    padding-bottom: 80px !important;
+    height: auto !important;
+    min-height: calc(100vh - 70px) !important;
+  }
+  
+  /* Navegación primaria - asegurar display correcto */
+  .mega-nav-primary {
+    padding: 16px !important;
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  
+  /* Items de navegación - tamaño móvil */
+  .mega-nav-item {
+    font-size: 22px !important;
+    padding: 18px 16px !important;
+    margin-top: 0 !important;
+  }
+  
+  .mega-nav-item + .mega-nav-item {
+    margin-top: 0 !important;
+  }
+  
+  /* Ocultar el texto interior y mostrar en display flex */
+  .mega-nav-item .mega-nav-item-text {
+    flex: 1 !important;
+  }
+  
+  /* Paneles secundarios - comportamiento acordeón inline */
+  .mega-nav-secondary-container {
+    display: none !important;
+  }
+  
+  /* Los paneles secundarios aparecen inline después de su nav-item */
+  .mega-nav-secondary {
+    display: none !important;
+    position: static !important;
+    width: 100% !important;
+    padding: 0 !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  .mega-nav-secondary.visible {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 12px 0 !important;
+  }
+  
+  /* Sub-links estilo móvil */
+  .mega-nav-secondary .mega-sub-title {
+    display: none !important;
+  }
+  
+  .mega-nav-secondary .mega-sub-description {
+    display: none !important;
+  }
+  
+  .mega-nav-secondary .mega-sub-links {
+    padding: 0 !important;
+  }
+  
+  .mega-nav-secondary .mega-sub-link {
+    display: flex !important;
+    padding: 14px 20px 14px 32px !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  .mega-nav-secondary .mega-sub-link + .mega-sub-link {
+    margin-top: 0 !important;
+  }
+  
+  /* Paneles terciarios inline */
+  .mega-nav-tertiary-container {
+    display: none !important;
+  }
+  
+  .mega-nav-tertiary {
+    display: none !important;
+    position: static !important;
+    width: 100% !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  .mega-nav-tertiary.visible {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 8px 0 !important;
+  }
+  
+  .mega-nav-tertiary .mega-tertiary-item {
+    padding: 12px 20px 12px 48px !important;
+  }
+  
+  .mega-nav-tertiary .mega-tertiary-link {
+    font-size: 14px !important;
+    color: rgba(255,255,255,0.8) !important;
+  }
+  
+  .mega-nav-tertiary .mega-tertiary-action {
+    display: block !important;
+    padding: 10px 20px 10px 48px !important;
+    color: rgba(255,255,255,0.7) !important;
+    text-decoration: none !important;
+    font-size: 13px !important;
+  }
+  
+  /* Footer del mega menu */
+  .mega-menu-footer {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 16px !important;
+    background: #1e1e1e !important;
+    border-top: 1px solid rgba(255,255,255,0.1) !important;
+  }
+  
+  .mega-footer-links {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  .mega-footer-link {
+    font-size: 14px !important;
+  }
+
+  /* ========================================
+     TASK 4: LOGIN UNIFICADO
+     Estilo consistente con classroom-login
+     ======================================== */
+  
+  /* Login Dashboard y Admin */
+  .login-wrapper {
+    min-width: auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    max-height: none !important;
+    height: auto !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    flex-direction: column !important;
+    box-shadow: none !important;
+  }
+  
+  .login-side-panel {
+    display: block !important;
+    min-height: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    padding: 24px 20px 20px !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+  }
+  
+  .side-panel-icon {
+    width: 56px !important;
+    height: 56px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .side-panel-icon i,
+  .side-panel-icon svg {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .side-panel-content h2 {
+    font-size: 1.35rem !important;
+    margin-bottom: 6px !important;
+  }
+  
+  .side-panel-content > p {
+    font-size: 0.9rem !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .login-features {
+    display: none !important;
+  }
+  
+  .login-box {
+    min-height: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    padding: 32px 20px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+  
+  .login-header {
+    text-align: center !important;
+    margin-bottom: 24px !important;
+  }
+  
+  .login-logo {
+    width: 72px !important;
+    height: 72px !important;
+    margin: 0 auto 12px !important;
+  }
+  
+  .login-logo i,
+  .login-logo svg {
+    width: 65% !important;
+    height: 65% !important;
+  }
+  
+  .login-header h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  .form-group {
+    margin-bottom: 16px !important;
+  }
+  
+  .form-group input {
+    font-size: 16px !important; /* Evita zoom en iOS */
+    padding: 14px 16px !important;
+  }
+  
+  .login-submit {
+    padding: 14px !important;
+    font-size: 15px !important;
+  }
+  
+  /* Classroom Login - ya está bien, solo ajustes menores */
+  .classroom-login-container {
+    flex-direction: column !important;
+  }
+  
+  .login-left-panel {
+    display: none !important;
+  }
+  
+  .login-right-panel {
+    width: 100% !important;
+    min-height: 100vh !important;
+    padding: 24px 20px !important;
+  }
+  
+  .login-form-container {
+    max-width: 100% !important;
+  }
+  
+  .welcome-header .login-logo {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  
+  /* ========================================
+     TASK 6: CARDS Y PANELES COMPACTOS
+     ======================================== */
+  
+  /* Stats Grid - columna única */
+  .stats-grid,
+  .pagos-stats-grid,
+  .alumno-pagos-stats {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    padding: 0 !important;
+  }
+  
+  .stat-card,
+  .stat-pago-card {
+    padding: 14px 16px !important;
+    border-radius: 10px !important;
+  }
+  
+  .stat-card h3,
+  .stat-pago-card h3 {
+    font-size: 1.4rem !important;
+  }
+  
+  .stat-card p,
+  .stat-pago-card p {
+    font-size: 0.8rem !important;
+  }
+  
+  .stat-card .stat-icon,
+  .stat-pago-card .stat-icon {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .stat-card .stat-icon i,
+  .stat-pago-card .stat-icon i {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  /* Section Headers compactos */
+  .section-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 12px 0 !important;
+  }
+  
+  .section-header h2 {
+    font-size: 1.25rem !important;
+  }
+  
+  .section-header .actions,
+  .section-header .btn-group {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .section-header .actions button,
+  .section-header .btn-group button {
+    width: 100% !important;
+  }
+  
+  /* Cards de usuarios compactas */
+  .alumno-card,
+  .profesor-card,
+  .user-card,
+  .curso-card {
+    padding: 14px !important;
+    border-radius: 10px !important;
+  }
+  
+  .alumno-card .card-header,
+  .profesor-card .card-header {
+    gap: 10px !important;
+  }
+  
+  .alumno-card .avatar,
+  .profesor-card .avatar {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 14px !important;
+  }
+  
+  .alumno-card .card-actions,
+  .profesor-card .card-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 10px !important;
+    padding-top: 10px !important;
+    border-top: 1px solid rgba(0,0,0,0.06) !important;
+  }
+  
+  .alumno-card .card-actions button,
+  .profesor-card .card-actions button {
+    flex: 1 !important;
+    min-width: 70px !important;
+    padding: 8px 10px !important;
+    font-size: 11px !important;
+  }
+  
+  /* Tablas responsivas */
+  .table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin: 0 -16px !important;
+    padding: 0 16px !important;
+  }
+  
+  table {
+    font-size: 12px !important;
+  }
+  
+  table th,
+  table td {
+    padding: 10px 8px !important;
+    white-space: nowrap !important;
+  }
+  
+  /* Main content padding reducido */
+  #mainContent {
+    padding: 12px !important;
+  }
+  
+  .dashboard-main {
+    margin-left: 0 !important;
+    padding: 12px !important;
+  }
+  
+  /* ========================================
+     TASK 7: SIDEBAR BEHAVIOR FIX
+     ======================================== */
+  
+  /* Sidebar overlay */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-overlay);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+  
+  .sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Sidebar móvil */
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 280px !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: var(--z-sidebar) !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .sidebar:not(.collapsed),
+  .sidebar.open,
+  .sidebar.active {
+    transform: translateX(0) !important;
+  }
+  
+  .sidebar.collapsed {
+    transform: translateX(-100%) !important;
+  }
+  
+  /* Dashboard main cuando sidebar está abierto */
+  .dashboard-main.sidebar-open {
+    /* No aplicar blur - solo oscurecer con overlay */
+  }
+  
+  /* Toggle button */
+  .mobile-menu-toggle,
+  .sidebar-toggle {
+    display: flex !important;
+    position: fixed !important;
+    top: 12px !important;
+    left: 12px !important;
+    z-index: calc(var(--z-sidebar) + 1) !important;
+    width: 44px !important;
+    height: 44px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    cursor: pointer !important;
+  }
+  
+  /* ========================================
+     TASK 8: CHAT SOPORTE LAYOUT
+     ======================================== */
+  .admin-chat-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    flex-direction: column !important;
+    z-index: var(--z-modal) !important;
+  }
+  
+  .chat-conversations-panel {
+    width: 100% !important;
+    height: 100% !important;
+    border-right: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .chat-conversations-panel.hidden {
+    display: none !important;
+  }
+  
+  .chat-main-panel {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform: translateX(100%) !important;
+    transition: transform 0.3s ease !important;
+    background: #fff !important;
+  }
+  
+  .chat-main-panel.active {
+    transform: translateX(0) !important;
+  }
+  
+  .chat-panel-header {
+    padding: 16px !important;
+  }
+  
+  .chat-panel-header h3 {
+    font-size: 18px !important;
+  }
+  
+  .chat-messages-container {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 12px !important;
+  }
+  
+  .chat-input-container {
+    padding: 12px !important;
+    padding-bottom: calc(12px + var(--safe-area-bottom)) !important;
+    border-top: 1px solid #e5e7eb !important;
+  }
+  
+  .chat-input-container input,
+  .chat-input-container textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Back button for chat */
+  .chat-back-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 14px !important;
+    margin-bottom: 12px !important;
+    background: rgba(255,255,255,0.2) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    color: white !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+  }
+  
+  .chat-conversation-item {
+    padding: 14px 16px !important;
+  }
+  
+  /* ========================================
+     TASK 9: CLASSROOM - FIX DOBLE HAMBURGUESA
+     ======================================== */
+  
+  /* Ocultar el segundo botón hamburguesa */
+  .classroom-container .mobile-sidebar-toggle {
+    display: none !important;
+  }
+  
+  /* Solo mostrar el del header */
+  .classroom-header #menuToggle {
+    display: flex !important;
+  }
+  
+  /* Sidebar classroom */
+  .classroom-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 280px !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: var(--z-sidebar) !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s ease !important;
+    padding-top: 0 !important;
+  }
+  
+  .classroom-sidebar.show {
+    transform: translateX(0) !important;
+  }
+  
+  .sidebar-overlay-classroom {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    z-index: calc(var(--z-sidebar) - 1) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  }
+  
+  .sidebar-overlay-classroom.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Classroom main */
+  .classroom-main {
+    margin-left: 0 !important;
+    padding: 12px !important;
+    padding-top: 70px !important;
+  }
+  
+  /* Classroom header */
+  .classroom-header {
+    padding: 10px 16px !important;
+  }
+  
+  .classroom-header .header-content {
+    gap: 10px !important;
+  }
+  
+  .classroom-header .logo-section h1 {
+    font-size: 14px !important;
+  }
+  
+  .classroom-header .logo-icon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  /* Ocultar selector de curso en móvil */
+  #courseSelectorContainer {
+    display: none !important;
+  }
+  
+  /* ========================================
+     TASK 10: COMUNIDAD LAYOUT
+     ======================================== */
+  .community-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 16px !important;
+  }
+  
+  .community-actions {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .community-actions button {
+    width: 100% !important;
+    padding: 12px 16px !important;
+  }
+  
+  .question-card {
+    padding: 14px !important;
+    margin-bottom: 10px !important;
+  }
+  
+  .question-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  
+  .question-meta {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  
+  .question-stats {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    margin-top: 10px !important;
+    padding-top: 10px !important;
+    border-top: 1px solid rgba(0,0,0,0.06) !important;
+  }
+  
+  /* ========================================
+     TASK 11: SIMPLIFICACIÓN MOBILE
+     Ocultar elementos no esenciales
+     ======================================== */
+  
+  /* Ocultar acciones secundarias en dashboards */
+  .hide-mobile,
+  .desktop-only {
+    display: none !important;
+  }
+  
+  /* Ocultar botones de edición masiva */
+  .bulk-actions,
+  .export-btn,
+  .import-btn {
+    display: none !important;
+  }
+  
+  /* Simplificar headers de sección */
+  .section-actions .btn-secondary {
+    display: none !important;
+  }
+  
+  /* Solo mostrar acciones principales */
+  .card-actions .btn-edit,
+  .card-actions .btn-delete {
+    display: none !important;
+  }
+  
+  .card-actions .btn-view,
+  .card-actions .btn-primary {
+    display: inline-flex !important;
+  }
+  
+  /* Classroom - simplificar menú profesor/admin en móvil */
+  #profesorMenu,
+  #adminMenu {
+    display: none !important;
+  }
+  
+  /* Mensaje indicando funciones limitadas */
+  .mobile-notice {
+    display: block !important;
+    padding: 12px 16px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    color: #856404;
+    font-size: 13px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  
+  /* ========================================
+     UTILITY CLASSES
+     ======================================== */
+  .show-mobile {
+    display: block !important;
+  }
+  
+  .flex-mobile {
+    display: flex !important;
+  }
+  
+  .text-center-mobile {
+    text-align: center !important;
+  }
+  
+  .full-width-mobile {
+    width: 100% !important;
+  }
+  
+  /* ========================================
+     ANIMATIONS - REDUCED MOTION
+     ======================================== */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+}
+
+/* ========================================
+   END OF MOBILE STYLES
+   ======================================== */
