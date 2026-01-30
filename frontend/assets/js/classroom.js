@@ -421,7 +421,33 @@ function setupEventListeners() {
   menuToggle.addEventListener('click', () => {
     sidebar.classList.toggle('show');
     sidebar.classList.toggle('collapsed');
+    // Activar overlay cuando sidebar está abierto
+    const overlay = document.getElementById('sidebarOverlayClassroom');
+    if (overlay) {
+      overlay.classList.toggle('active', sidebar.classList.contains('show'));
+    }
   });
+
+  // Botón de cierre del sidebar (móvil)
+  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+  if (sidebarCloseBtn) {
+    sidebarCloseBtn.addEventListener('click', () => {
+      sidebar.classList.remove('show');
+      sidebar.classList.add('collapsed');
+      const overlay = document.getElementById('sidebarOverlayClassroom');
+      if (overlay) overlay.classList.remove('active');
+    });
+  }
+
+  // Click en overlay cierra el sidebar
+  const sidebarOverlay = document.getElementById('sidebarOverlayClassroom');
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('show');
+      sidebar.classList.add('collapsed');
+      sidebarOverlay.classList.remove('active');
+    });
+  }
 
   userMenuBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -444,6 +470,9 @@ function setupEventListeners() {
       if (window.innerWidth <= 768) {
         sidebar.classList.add('collapsed');
         sidebar.classList.remove('show');
+        // También cerrar overlay al navegar
+        const overlay = document.getElementById('sidebarOverlayClassroom');
+        if (overlay) overlay.classList.remove('active');
       }
     });
   });

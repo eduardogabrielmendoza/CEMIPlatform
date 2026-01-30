@@ -176,6 +176,42 @@
 
     @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } .sidebar { position: static; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; } .sidebar-card { margin-bottom: 0; } }
     @media (max-width: 768px) { .header-top { padding: 12px 20px; } .header-nav { display: none; } .hero-section { padding: 30px 20px; } .hero-section h1 { font-size: 22px; } .hero-stats { gap: 30px; } .main-content { padding: 24px 16px; } .posts-toolbar { flex-direction: column; align-items: stretch; } }
+    
+    /* Botón flotante para hacer preguntas en móvil */
+    .mobile-ask-fab {
+      display: none !important;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #656f77 0%, #4a5259 100%);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      cursor: pointer;
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .mobile-ask-fab:hover,
+    .mobile-ask-fab:active {
+      transform: scale(1.05);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+    }
+    .mobile-ask-fab i,
+    .mobile-ask-fab svg {
+      width: 24px;
+      height: 24px;
+      color: white;
+    }
+    @media (max-width: 768px) {
+      .mobile-ask-fab.show {
+        display: flex !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -248,10 +284,15 @@
     </div>
   </div>
   <footer class="help-footer"><div class="footer-content"><div class="footer-links"><a href="ayuda-classroom.html">Centro de Ayuda</a><a href="privacidad.html">Política de Privacidad</a><a href="terminos.html">Términos de Servicio</a></div><div class="footer-copy">© 2025 Cemi - Centro Educativo Multilingüe Integral</div></div></footer>
+  
+  <!-- Botón flotante para hacer preguntas en móvil -->
+  <button class="mobile-ask-fab" id="mobileAskFab" onclick="openAskModal()" style="display: none;">
+    <i data-lucide="plus"></i>
+  </button>
   <script>
     let currentUser = null, allPreguntas = [], currentFilter = 'all', currentSort = 'recent', searchQuery = '';
     function checkSession() { const nombre = localStorage.getItem('nombre'), rol = localStorage.getItem('rol'), avatar = localStorage.getItem('avatar'), idProfesor = localStorage.getItem('id_profesor'), idAlumno = localStorage.getItem('id_alumno'), idUsuario = localStorage.getItem('id_usuario'); if (nombre && rol) { let tipo = 'alumno', id = idAlumno || idUsuario, rolDisplay = 'Alumno'; if (rol === 'profesor' || idProfesor) { tipo = 'profesor'; id = idProfesor || idUsuario; rolDisplay = 'Profesor'; } else if (rol === 'admin' || rol === 'administrador') { tipo = 'admin'; id = idUsuario; rolDisplay = 'Administrador'; } currentUser = { tipo, id, nombre, avatar, rol: rolDisplay }; } updateUserUI(); }
-    function updateUserUI() { const userCard = document.getElementById('userInfoCard'), loginCard = document.getElementById('loginPromptCard'); if (currentUser) { userCard.style.display = 'block'; loginCard.style.display = 'none'; document.getElementById('userName').textContent = currentUser.nombre; document.getElementById('userRole').textContent = currentUser.rol; const avatar = document.getElementById('userAvatar'); avatar.src = currentUser.avatar ? (currentUser.avatar.startsWith('http') ? currentUser.avatar : `/uploads/avatars/${currentUser.avatar}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.nombre)}&background=1e1e1e&color=fff`; } else { userCard.style.display = 'none'; loginCard.style.display = 'block'; } }
+    function updateUserUI() { const userCard = document.getElementById('userInfoCard'), loginCard = document.getElementById('loginPromptCard'), mobileFab = document.getElementById('mobileAskFab'); if (currentUser) { userCard.style.display = 'block'; loginCard.style.display = 'none'; document.getElementById('userName').textContent = currentUser.nombre; document.getElementById('userRole').textContent = currentUser.rol; const avatar = document.getElementById('userAvatar'); avatar.src = currentUser.avatar ? (currentUser.avatar.startsWith('http') ? currentUser.avatar : `/uploads/avatars/${currentUser.avatar}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.nombre)}&background=1e1e1e&color=fff`; if (mobileFab) mobileFab.classList.add('show'); } else { userCard.style.display = 'none'; loginCard.style.display = 'block'; if (mobileFab) mobileFab.classList.remove('show'); } }
     function animateCounter(el, target) { const duration = 600, start = performance.now(); function update(now) { const p = Math.min((now - start) / duration, 1); el.textContent = Math.floor(p * target); if (p < 1) requestAnimationFrame(update); } requestAnimationFrame(update); }
     async function loadPreguntas() { try { const res = await fetch('/api/comunidad/preguntas'), data = await res.json(); if (data.success) { allPreguntas = data.preguntas; animateCounter(document.getElementById('statPreguntas'), data.stats.preguntas); animateCounter(document.getElementById('statRespuestas'), data.stats.respuestas); animateCounter(document.getElementById('statParticipantes'), data.stats.participantes); updateCategoryCounts(); renderPreguntas(); } } catch (e) { console.error('Error:', e); showEmptyState('Error al cargar', 'Intenta recargar la página'); } }
     function updateCategoryCounts() { document.getElementById('countAll').textContent = allPreguntas.length; const c = { 'primeros-pasos': 0, 'tareas': 0, 'comunicacion': 0, 'recursos': 0, 'cuenta': 0, 'otro': 0 }; allPreguntas.forEach(p => { if (c[p.categoria] !== undefined) c[p.categoria]++; }); document.getElementById('countPrimeros').textContent = c['primeros-pasos']; document.getElementById('countTareas').textContent = c['tareas']; document.getElementById('countComunicacion').textContent = c['comunicacion']; document.getElementById('countRecursos').textContent = c['recursos']; document.getElementById('countCuenta').textContent = c['cuenta']; document.getElementById('countOtro').textContent = c['otro']; }
@@ -276,5 +317,6 @@
     window.addEventListener('scroll', function() { heroSection.classList.toggle('hidden', window.scrollY > 80); }, { passive: true });
     document.addEventListener('DOMContentLoaded', function() { lucide.createIcons(); checkSession(); loadPreguntas(); });
   </script>
+  <script src="assets/js/help-widget.js"></script>
 </body>
 </html>

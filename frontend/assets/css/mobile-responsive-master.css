@@ -13,6 +13,13 @@
    ======================================== */
 
 /* ========================================
+   DESKTOP DEFAULTS - Hidden mobile-only elements
+   ======================================== */
+.sidebar-close-btn {
+  display: none;
+}
+
+/* ========================================
    MOBILE STYLES - 768px and below
    ======================================== */
 @media (max-width: 768px) {
@@ -1459,10 +1466,46 @@
   }
   
   /* Ocultar banner animado en mobile */
+  .welcome-section,
   .welcome-video,
   .welcome-banner,
   .video-container {
     display: none !important;
+  }
+  
+  /* Botón cerrar sidebar - visible solo en móvil */
+  .sidebar-close-btn {
+    display: flex !important;
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: #f1f1f1 !important;
+    border: none !important;
+    border-radius: 50% !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    z-index: 10 !important;
+    transition: background 0.2s ease !important;
+  }
+  
+  .sidebar-close-btn:hover,
+  .sidebar-close-btn:active {
+    background: #e0e0e0 !important;
+  }
+  
+  .sidebar-close-btn i,
+  .sidebar-close-btn svg {
+    width: 20px !important;
+    height: 20px !important;
+    color: #333 !important;
+  }
+  
+  /* Ajustar padding del sidebar para el botón de cierre */
+  .classroom-sidebar .sidebar-nav {
+    padding-top: 60px !important;
   }
   
   /* Research banner responsive */
