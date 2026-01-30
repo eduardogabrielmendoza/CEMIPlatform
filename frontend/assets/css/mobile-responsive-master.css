@@ -510,10 +510,11 @@
     padding-left: 36px !important;
   }
   
-  /* Ocultar items Nosotros, Soporte y Recursos en móvil */
+  /* Ocultar items Nosotros, Soporte, Recursos y Seguridad en móvil */
   .mega-nav-item[data-panel="panel-nosotros"],
   .mega-nav-item[data-panel="panel-soporte"],
-  .mega-nav-item[data-panel="panel-recursos"] {
+  .mega-nav-item[data-panel="panel-recursos"],
+  .mega-nav-item[data-panel="panel-seguridad"] {
     display: none !important;
   }
   
