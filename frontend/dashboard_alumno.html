@@ -3342,15 +3342,10 @@
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       const dashboardMain = document.querySelector('.dashboard-main');
       
-      // Solo colapsar sidebar en móviles (<=768px)
-      if (sidebar && window.innerWidth <= 768) {
-        sidebar.classList.add('collapsed');
-      }
-      
       if (mobileMenuToggle && sidebar && sidebarOverlay) {
         // Abrir/cerrar sidebar
         mobileMenuToggle.addEventListener('click', function() {
-          sidebar.classList.toggle('collapsed');
+          sidebar.classList.toggle('open');
           sidebarOverlay.classList.toggle('active');
           if (dashboardMain) {
             dashboardMain.classList.toggle('sidebar-open');
@@ -3359,7 +3354,7 @@
           // Cambiar icono
           const icon = this.querySelector('i');
           if (icon) {
-            if (!sidebar.classList.contains('collapsed')) {
+            if (sidebar.classList.contains('open')) {
               icon.setAttribute('data-lucide', 'x');
             } else {
               icon.setAttribute('data-lucide', 'menu');
@@ -3370,7 +3365,7 @@
         
         // Cerrar sidebar al hacer clic en overlay
         sidebarOverlay.addEventListener('click', function() {
-          sidebar.classList.add('collapsed');
+          sidebar.classList.remove('open');
           sidebarOverlay.classList.remove('active');
           if (dashboardMain) {
             dashboardMain.classList.remove('sidebar-open');

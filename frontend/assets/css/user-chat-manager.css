@@ -326,6 +326,15 @@
   cursor: not-allowed;
 }
 
+/* Ocultar botón volver en desktop */
+.user-chat-header .chat-back-btn {
+  display: none;
+}
+
+.show-mobile-only {
+  display: none;
+}
+
 .user-chat-typing {
   display: flex;
   align-items: center;

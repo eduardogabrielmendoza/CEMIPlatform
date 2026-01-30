@@ -506,6 +506,12 @@
     if (header) header.style.display = 'flex';
     if (inputArea) inputArea.style.display = 'flex';
     
+    // Activar panel de mensajes en móvil
+    const messagesPanel = document.querySelector('.user-chat-messages-panel');
+    const conversationsPanel = document.querySelector('.user-chat-conversations-panel');
+    if (messagesPanel) messagesPanel.classList.add('active');
+    if (conversationsPanel) conversationsPanel.classList.add('chat-active');
+    
     const emptyMessage = document.getElementById('userChatEmptyMessage');
     if (emptyMessage) {
       emptyMessage.querySelector('p').textContent = 'Selecciona una conversación para comenzar a chatear';
@@ -1014,8 +1020,11 @@
         <!-- Panel Derecho: Chat Activo -->
         <div class="user-chat-messages-panel">
           <div class="user-chat-header" style="display: none;" id="userChatHeader">
+            <button class="chat-back-btn show-mobile-only" onclick="userChatManager.goBackToList()" title="Volver a conversaciones">
+              <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+            </button>
             <i data-lucide="message-square" style="width: 24px; height: 24px;"></i>
-            <div>
+            <div style="flex: 1;">
               <h3>Soporte CEMI</h3>
               <div class="user-chat-status">
                 <div class="user-chat-status-dot"></div>
@@ -1061,6 +1070,18 @@
     lucide.createIcons();
     
     this.loadConversations();
+  }
+  
+  goBackToList() {
+    // Desactivar panel de mensajes en móvil
+    const messagesPanel = document.querySelector('.user-chat-messages-panel');
+    const conversationsPanel = document.querySelector('.user-chat-conversations-panel');
+    if (messagesPanel) messagesPanel.classList.remove('active');
+    if (conversationsPanel) conversationsPanel.classList.remove('chat-active');
+    
+    // Opcional: limpiar conversación activa
+    this.activeConversation = null;
+    this.renderConversationsList();
   }
 }
 

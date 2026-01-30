@@ -73,6 +73,15 @@
     max-width: 100vw;
   }
   
+  /* Cuando el chat está activo, permitir scroll y altura completa */
+  #mainContent:has(.user-chat-full-container),
+  #mainContent:has(.admin-chat-container) {
+    overflow: visible !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    padding: 0 !important;
+  }
+  
   /* ========================================
      TASK 1: BOTÓN "VOLVER" ESTILIZADO
      Rediseño del botón volver en mega-menu
@@ -879,14 +888,9 @@
     -webkit-overflow-scrolling: touch !important;
   }
   
-  .sidebar:not(.collapsed),
-  .sidebar.open,
-  .sidebar.active {
+  /* Sidebar visible cuando tiene clase 'open' o cuando NO tiene 'collapsed' Y el toggle fue clickeado */
+  .sidebar.open {
     transform: translateX(0) !important;
-  }
-  
-  .sidebar.collapsed {
-    transform: translateX(-100%) !important;
   }
   
   /* Dashboard main cuando sidebar está abierto */
@@ -2255,6 +2259,25 @@
   
   .user-chat-send-btn:active {
     background: #2d2d2d !important;
+  }
+  
+  /* Botón volver en user chat - visible solo en móvil */
+  .user-chat-header .chat-back-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255,255,255,0.2) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    color: #fff !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .user-chat-header .chat-back-btn:active {
+    background: rgba(255,255,255,0.3) !important;
   }
   
   /* ========================================
