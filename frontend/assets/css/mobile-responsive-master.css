@@ -306,6 +306,16 @@
     width: 100% !important;
     height: 100% !important;
     border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  #megaMenuClose .close-icon-circle svg {
+    width: 22px !important;
+    height: 22px !important;
+    stroke: #ffffff !important;
+    stroke-width: 2 !important;
   }
   
   /* ========================================
@@ -374,16 +384,23 @@
   
   /* Paneles secundarios - comportamiento acordeón inline */
   .mega-nav-secondary-container {
-    display: none !important;
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    padding: 0 !important;
+    flex: none !important;
+    background: transparent !important;
   }
   
-  /* Los paneles secundarios aparecen inline después de su nav-item */
+  /* Los paneles secundarios aparecen como acordeón */
   .mega-nav-secondary {
     display: none !important;
     position: static !important;
     width: 100% !important;
     padding: 0 !important;
-    background: rgba(0, 0, 0, 0.3) !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    border-left: 3px solid rgba(255,255,255,0.2) !important;
+    margin-left: 16px !important;
   }
   
   .mega-nav-secondary.visible {
@@ -391,6 +408,18 @@
     visibility: visible !important;
     opacity: 1 !important;
     padding: 12px 0 !important;
+    animation: accordionOpen 0.3s ease !important;
+  }
+  
+  @keyframes accordionOpen {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
   /* Sub-links estilo móvil */
@@ -494,38 +523,13 @@
     box-shadow: none !important;
   }
   
+  /* OCULTAR BANNERS DE BIENVENIDA EN LOGIN MÓVIL */
   .login-side-panel {
-    display: block !important;
-    min-height: auto !important;
-    max-height: none !important;
-    height: auto !important;
-    padding: 24px 20px 20px !important;
-    border-radius: 0 !important;
-    width: 100% !important;
+    display: none !important;
   }
   
-  .side-panel-icon {
-    width: 56px !important;
-    height: 56px !important;
-    margin-bottom: 12px !important;
-  }
-  
-  .side-panel-icon i,
-  .side-panel-icon svg {
-    width: 32px !important;
-    height: 32px !important;
-  }
-  
-  .side-panel-content h2 {
-    font-size: 1.35rem !important;
-    margin-bottom: 6px !important;
-  }
-  
-  .side-panel-content > p {
-    font-size: 0.9rem !important;
-    margin-bottom: 0 !important;
-  }
-  
+  .side-panel-icon,
+  .side-panel-content,
   .login-features {
     display: none !important;
   }
@@ -786,7 +790,7 @@
   
   /* Dashboard main cuando sidebar está abierto */
   .dashboard-main.sidebar-open {
-    /* No aplicar blur - solo oscurecer con overlay */
+    pointer-events: none;
   }
   
   /* Toggle button */
@@ -1076,6 +1080,484 @@
     text-align: center;
   }
   
+  /* ========================================
+     DASHBOARD MOBILE OPTIMIZATION
+     Optimización completa de todas las secciones
+     ======================================== */
+  
+  /* ----- DASHBOARD HEADER COMPACTO ----- */
+  .dashboard-header {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 12px 16px !important;
+    text-align: center !important;
+    background: linear-gradient(135deg, #4a5259 0%, #3d444a 100%) !important;
+    margin: -12px -12px 16px !important;
+    border-radius: 0 !important;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 1.1rem !important;
+    margin: 0 !important;
+    order: 1 !important;
+  }
+  
+  .dashboard-header .user-info {
+    font-size: 12px !important;
+    padding: 6px 14px !important;
+    background: rgba(255,255,255,0.15) !important;
+    border-radius: 20px !important;
+    order: 2 !important;
+    gap: 6px !important;
+  }
+  
+  .dashboard-header .user-info i {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  /* ----- SECCIÓN CURSOS OPTIMIZADA ----- */
+  .cursos-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .cursos-header > div:first-child {
+    text-align: center !important;
+  }
+  
+  .cursos-header h2 {
+    font-size: 1.2rem !important;
+    margin: 0 0 4px !important;
+  }
+  
+  .cursos-header p {
+    font-size: 12px !important;
+    margin: 0 !important;
+  }
+  
+  /* Ocultar barra de búsqueda en móvil */
+  .cursos-header > div[style*="position: relative"][style*="flex: 1"],
+  .cursos-header input[type="text"],
+  #cursosSearch {
+    display: none !important;
+  }
+  
+  /* Botón Nuevo Curso compacto */
+  .cursos-header .btn-primary,
+  .cursos-header button[onclick*="Nuevo"] {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    justify-content: center !important;
+  }
+  
+  /* Grid de cursos - una columna */
+  .cursos-grid,
+  #cursosGrid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  /* Cards de cursos compactas */
+  .curso-card-new {
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
+  
+  .curso-card-new > div[style*="display: flex"][style*="gap: 16px"] {
+    gap: 12px !important;
+  }
+  
+  .curso-card-new div[style*="width: 56px"] {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+  }
+  
+  .curso-card-new div[style*="width: 56px"] i {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  
+  .curso-card-new h3 {
+    font-size: 15px !important;
+    padding-right: 50px !important;
+  }
+  
+  /* Nivel badge más pequeño */
+  .curso-card-new > div[style*="position: absolute"][style*="top: 12px"] {
+    font-size: 10px !important;
+    padding: 3px 8px !important;
+  }
+  
+  /* Acciones de curso - solo 2 principales */
+  .curso-card-new div[style*="display: flex"][style*="justify-content: flex-end"] {
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+  
+  .curso-card-new .btn-icon-edit,
+  .curso-card-new .btn-icon-danger,
+  .curso-card-new button[title="Editar"],
+  .curso-card-new button[title="Eliminar"] {
+    display: none !important;
+  }
+  
+  /* ----- SECCIÓN ALUMNOS OPTIMIZADA ----- */
+  .alumnos-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .alumnos-header > div:first-child {
+    text-align: center !important;
+  }
+  
+  .alumnos-header h2 {
+    font-size: 1.2rem !important;
+  }
+  
+  /* Ocultar búsqueda y filtros en móvil */
+  .alumnos-search-filter {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  .alumnos-search-filter > div[style*="position: relative"],
+  .alumnos-search-filter input,
+  #alumnosSearch {
+    display: none !important;
+  }
+  
+  /* Solo mostrar botón principal */
+  .alumnos-search-filter .btn-secondary,
+  .alumnos-header .btn-secondary {
+    display: none !important;
+  }
+  
+  .alumnos-header .btn-primary {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  
+  /* Grid de alumnos */
+  .alumnos-grid,
+  #alumnosGrid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  /* Cards de alumnos compactas */
+  .alumno-card-premium,
+  .alumno-card {
+    padding: 14px !important;
+    border-radius: 12px !important;
+  }
+  
+  .alumno-card-premium .alumno-avatar,
+  .alumno-card .alumno-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 14px !important;
+  }
+  
+  .alumno-card-premium .alumno-info h3,
+  .alumno-card .alumno-info h3 {
+    font-size: 14px !important;
+  }
+  
+  .alumno-card-premium .alumno-info p,
+  .alumno-card .alumno-info p {
+    font-size: 11px !important;
+  }
+  
+  /* Acciones de alumno simplificadas */
+  .alumno-card-premium .alumno-actions,
+  .alumno-card .alumno-actions {
+    gap: 6px !important;
+  }
+  
+  .alumno-card-premium .alumno-actions button,
+  .alumno-card .alumno-actions button {
+    padding: 8px !important;
+    min-width: 36px !important;
+  }
+  
+  .alumno-card-premium .alumno-actions button span,
+  .alumno-card .alumno-actions button span,
+  .alumno-card-premium .alumno-actions button:not(:first-child),
+  .alumno-card .alumno-actions button:not(:first-child):not(:nth-child(2)) {
+    display: none !important;
+  }
+  
+  /* ----- SECCIÓN PROFESORES OPTIMIZADA ----- */
+  .profesores-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  
+  .profesores-header h2 {
+    font-size: 1.2rem !important;
+    text-align: center !important;
+  }
+  
+  .profesores-search-filter {
+    display: none !important;
+  }
+  
+  .profesores-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  .profesor-card-new,
+  .profesor-card {
+    padding: 14px !important;
+  }
+  
+  /* ----- SECCIÓN PAGOS OPTIMIZADA ----- */
+  .pagos-section-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    text-align: center !important;
+  }
+  
+  .pagos-section-header h2 {
+    font-size: 1.2rem !important;
+  }
+  
+  .pagos-filters {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .pagos-filters select,
+  .pagos-filters input {
+    width: 100% !important;
+    font-size: 14px !important;
+  }
+  
+  .pagos-filters .btn-secondary {
+    display: none !important;
+  }
+  
+  /* Stats de pagos compactos */
+  .pagos-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  
+  .stat-pago-card {
+    padding: 12px !important;
+  }
+  
+  .stat-pago-card h3 {
+    font-size: 1.1rem !important;
+  }
+  
+  .stat-pago-card p {
+    font-size: 10px !important;
+  }
+  
+  /* ----- SECCIÓN AULAS OPTIMIZADA ----- */
+  .aulas-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    text-align: center !important;
+  }
+  
+  .aulas-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  
+  .aula-card {
+    padding: 14px !important;
+  }
+  
+  /* ----- SECCIÓN IDIOMAS OPTIMIZADA ----- */
+  .idiomas-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    text-align: center !important;
+  }
+  
+  .idiomas-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  
+  /* ----- SECCIÓN ADMINISTRADORES OPTIMIZADA ----- */
+  .admins-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    text-align: center !important;
+  }
+  
+  .admins-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  /* ----- STATUS SECTION OPTIMIZADA ----- */
+  .status-admin-container {
+    padding: 0 !important;
+  }
+  
+  .status-hero {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 20px !important;
+    gap: 16px !important;
+  }
+  
+  .status-hero-info h2 {
+    font-size: 1.2rem !important;
+    justify-content: center !important;
+  }
+  
+  .status-hero-actions {
+    width: 100% !important;
+    flex-direction: column !important;
+  }
+  
+  .status-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  
+  .status-services-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  
+  /* ----- INVESTIGACIÓN OPTIMIZADA ----- */
+  .investigacion-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    text-align: center !important;
+  }
+  
+  .investigacion-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* ----- MODALES OPTIMIZADOS ----- */
+  .modal-content,
+  .swal2-popup {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 10px !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
+  
+  .modal-header {
+    padding: 12px 16px !important;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.1rem !important;
+  }
+  
+  .modal-body {
+    padding: 16px !important;
+  }
+  
+  .form-group {
+    margin-bottom: 12px !important;
+  }
+  
+  .form-group label {
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 12px !important;
+    font-size: 16px !important; /* Evita zoom iOS */
+    border-radius: 8px !important;
+  }
+  
+  .modal-footer {
+    padding: 12px 16px !important;
+    gap: 8px !important;
+    flex-direction: column-reverse !important;
+  }
+  
+  .modal-footer button {
+    width: 100% !important;
+    padding: 12px !important;
+  }
+  
+  /* ----- BOTONES GLOBALES MÓVIL ----- */
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+  }
+  
+  .btn-icon-primary,
+  .btn-icon-edit,
+  .btn-icon-danger,
+  .btn-icon-success {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+  }
+  
+  .btn-icon-primary i,
+  .btn-icon-edit i,
+  .btn-icon-danger i,
+  .btn-icon-success i {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  /* ----- PANEL LATERAL DE DETALLES ----- */
+  .detail-panel,
+  .slide-panel,
+  .curso-detail-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    right: 0 !important;
+    border-radius: 0 !important;
+  }
+  
+  .panel-header {
+    padding: 16px !important;
+  }
+  
+  .panel-body {
+    padding: 16px !important;
+  }
+  
+  /* ----- TABS OPTIMIZADOS ----- */
+  .tabs-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .tab-btn {
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
   /* ========================================
      UTILITY CLASSES
      ======================================== */
