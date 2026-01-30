@@ -1672,17 +1672,10 @@
     padding: 3px 8px !important;
   }
   
-  /* Acciones de curso - solo 2 principales */
+  /* Acciones de curso - mostrar todos los botones */
   .curso-card-new div[style*="display: flex"][style*="justify-content: flex-end"] {
     justify-content: center !important;
     gap: 10px !important;
-  }
-  
-  .curso-card-new .btn-icon-edit,
-  .curso-card-new .btn-icon-danger,
-  .curso-card-new button[title="Editar"],
-  .curso-card-new button[title="Eliminar"] {
-    display: none !important;
   }
   
   /* ----- SECCIÓN ALUMNOS OPTIMIZADA ----- */
