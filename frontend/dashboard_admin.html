@@ -57,14 +57,23 @@
     
     .chat-panel-header {
       padding: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #1e1e1e;
       color: white;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     
     .chat-panel-header h3 {
-      margin: 0 0 8px 0;
-      font-size: 20px;
-      font-weight: 600;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* Ocultar botón volver en desktop */
+    .chat-back-btn {
+      display: none;
     }
     
     .chat-panel-header p {

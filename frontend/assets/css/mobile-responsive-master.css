@@ -1244,7 +1244,7 @@
     flex-shrink: 0 !important;
   }
   
-  /* Botón volver en chat */
+  /* Botón volver en chat - SOLO VISIBLE EN MÓVIL */
   .chat-back-btn {
     display: flex !important;
     align-items: center !important;
@@ -1261,6 +1261,17 @@
   
   .chat-back-btn:active {
     background: rgba(255,255,255,0.3) !important;
+  }
+  
+  /* Mejorar header de conversaciones en móvil */
+  .chat-panel-header {
+    background: #1e1e1e !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+  }
+  
+  .chat-panel-header h3 {
+    font-size: 18px !important;
+    font-weight: 500 !important;
   }
   
   /* Info del usuario en header del chat */
