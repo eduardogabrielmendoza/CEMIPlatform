@@ -202,12 +202,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const navPrimary = document.querySelector('.mega-nav-primary');
   
+  // Función para verificar si estamos en móvil
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+  
   navItems.forEach(item => {
     item.addEventListener('click', function(e) {
       e.preventDefault();
       
       const targetPanel = this.dataset.panel;
+      const panel = document.getElementById(targetPanel);
       
+      // Toggle: si ya está activo, cerrar
       if (this.classList.contains('active')) {
         this.classList.remove('active');
         navPrimary?.classList.remove('has-active');
@@ -216,11 +223,19 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
+      // Desactivar otros items
       navItems.forEach(nav => nav.classList.remove('active'));
       
+      // Activar este item
       this.classList.add('active');
       navPrimary?.classList.add('has-active');
       activeNavItem = this;
+      
+      // En móvil, mover el panel justo después del item clickeado
+      if (isMobile() && panel) {
+        // Insertar el panel después del item actual
+        this.parentNode.insertBefore(panel, this.nextSibling);
+      }
       
       showSecondaryPanel(targetPanel);
     });

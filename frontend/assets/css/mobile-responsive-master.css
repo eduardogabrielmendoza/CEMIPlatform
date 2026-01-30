@@ -364,6 +364,8 @@
     padding: 16px !important;
     width: 100% !important;
     min-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   
   /* Items de navegación - tamaño móvil */
@@ -371,10 +373,37 @@
     font-size: 22px !important;
     padding: 18px 16px !important;
     margin-top: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    color: rgba(255,255,255,0.9) !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .mega-nav-item:hover {
+    background: rgba(255,255,255,0.05) !important;
+  }
+  
+  .mega-nav-item.active {
+    background: rgba(255,255,255,0.1) !important;
+    color: #ffffff !important;
   }
   
   .mega-nav-item + .mega-nav-item {
     margin-top: 0 !important;
+  }
+  
+  /* Agregar chevron indicador */
+  .mega-nav-item::after {
+    content: '›' !important;
+    font-size: 28px !important;
+    color: rgba(255,255,255,0.5) !important;
+    transition: transform 0.3s ease !important;
+  }
+  
+  .mega-nav-item.active::after {
+    transform: rotate(90deg) !important;
   }
   
   /* Ocultar el texto interior y mostrar en display flex */
@@ -392,37 +421,33 @@
     background: transparent !important;
   }
   
-  /* Los paneles secundarios aparecen como acordeón */
+  /* Los paneles secundarios aparecen como acordeón justo después del item */
   .mega-nav-secondary {
     display: none !important;
     position: static !important;
     width: 100% !important;
     padding: 0 !important;
-    background: rgba(0, 0, 0, 0.4) !important;
-    border-left: 3px solid rgba(255,255,255,0.2) !important;
-    margin-left: 16px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-left: 3px solid rgba(102, 126, 234, 0.6) !important;
+    margin: 0 0 8px 32px !important;
+    border-radius: 0 8px 8px 0 !important;
+    overflow: hidden !important;
+    max-height: 0 !important;
+    opacity: 0 !important;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease,
+                padding 0.3s ease !important;
   }
   
   .mega-nav-secondary.visible {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    padding: 12px 0 !important;
-    animation: accordionOpen 0.3s ease !important;
+    max-height: 2000px !important;
+    padding: 16px 0 !important;
   }
   
-  @keyframes accordionOpen {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  /* Sub-links estilo móvil */
+  /* Títulos y descripciones en paneles secundarios */
   .mega-nav-secondary .mega-sub-title {
     display: none !important;
   }
@@ -433,19 +458,34 @@
   
   .mega-nav-secondary .mega-sub-links {
     padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   
+  /* Sub-links estilo móvil */
   .mega-nav-secondary .mega-sub-link {
     display: flex !important;
-    padding: 14px 20px 14px 32px !important;
+    align-items: center !important;
+    padding: 14px 20px !important;
     font-size: 15px !important;
     font-weight: 500 !important;
+    color: rgba(255,255,255,0.9) !important;
+    text-decoration: none !important;
+    border-left: 2px solid transparent !important;
+    transition: all 0.2s ease !important;
     opacity: 1 !important;
     transform: none !important;
   }
   
+  .mega-nav-secondary .mega-sub-link:hover {
+    background: rgba(255,255,255,0.08) !important;
+    border-left-color: rgba(102, 126, 234, 0.8) !important;
+    padding-left: 24px !important;
+  }
+  
   .mega-nav-secondary .mega-sub-link + .mega-sub-link {
     margin-top: 0 !important;
+    border-top: 1px solid rgba(255,255,255,0.05) !important;
   }
   
   /* Paneles terciarios inline */
