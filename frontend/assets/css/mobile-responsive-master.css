@@ -823,6 +823,494 @@
   
 }
 
+  /* ========================================
+     TAREA 1: BOTÓN VOLVER - ESTILO MODERNO
+     ======================================== */
+  .mobile-back-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .mobile-back-btn:hover,
+  .mobile-back-btn:active {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateX(-2px);
+  }
+  
+  .mobile-back-btn .back-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background 0.2s ease;
+  }
+  
+  .mobile-back-btn:hover .back-arrow {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* ========================================
+     TAREA 2: ACORDEÓN - MENÚ ACCESO PÚBLICO
+     ======================================== */
+  .mega-nav-item[data-panel] {
+    position: relative;
+  }
+  
+  .mega-nav-item[data-panel]::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-50%) rotate(-45deg);
+    transition: transform 0.3s ease;
+    opacity: 0.7;
+  }
+  
+  .mega-nav-item[data-panel].active::after {
+    transform: translateY(-50%) rotate(45deg);
+  }
+  
+  .mega-nav-secondary,
+  .mega-nav-tertiary {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    padding: 0 !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 8px;
+    margin: 8px 0;
+  }
+  
+  .mega-nav-secondary.visible,
+  .mega-nav-tertiary.visible {
+    max-height: 500px;
+    padding: 12px !important;
+    overflow-y: auto;
+  }
+  
+  .mega-sub-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+  }
+  
+  .mega-sub-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .mega-sub-link.has-children::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.3s ease;
+    opacity: 0.6;
+  }
+  
+  .mega-sub-link.has-children.active::after {
+    transform: rotate(45deg);
+  }
+  
+  /* ========================================
+     TAREA 3: BOTÓN X EN MENÚ HAMBURGUESA
+     ======================================== */
+  .mega-menu-close {
+    display: flex !important;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    z-index: 100;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  
+  .mega-menu-close:hover,
+  .mega-menu-close:active {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+  
+  .mega-menu-close svg,
+  .mega-menu-close i {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .mega-menu-close > span {
+    display: none !important;
+  }
+  
+  /* ========================================
+     TAREA 4: ICONOS LOGIN ADMIN/DASHBOARD
+     ======================================== */
+  .login-icon-container,
+  .login-header .icon-wrapper,
+  .login-box .logo-container,
+  .dashboard-login-icon {
+    width: 72px !important;
+    height: 72px !important;
+    min-width: 72px !important;
+    min-height: 72px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    margin: 0 auto 16px auto !important;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3) !important;
+  }
+  
+  .login-icon-container svg,
+  .login-icon-container i,
+  .login-header .icon-wrapper svg,
+  .login-header .icon-wrapper i,
+  .login-box .logo-container svg,
+  .login-box .logo-container i,
+  .dashboard-login-icon svg,
+  .dashboard-login-icon i {
+    width: 36px !important;
+    height: 36px !important;
+    color: white !important;
+  }
+  
+  .login-header img.login-logo,
+  .login-box img.logo {
+    width: 72px !important;
+    height: 72px !important;
+    object-fit: contain;
+  }
+  
+  /* ========================================
+     TAREA 5: DASHBOARD CARDS COMPACTAS
+     ======================================== */
+  .stat-card,
+  .stat-pago-card,
+  .dashboard-card {
+    padding: 14px !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+    max-width: 100% !important;
+  }
+  
+  .stat-card h3,
+  .stat-pago-card h3 {
+    font-size: 1.25rem !important;
+    margin: 0 0 4px 0 !important;
+  }
+  
+  .stat-card p,
+  .stat-pago-card p {
+    font-size: 12px !important;
+    margin: 0 !important;
+  }
+  
+  .stat-card .stat-icon,
+  .stat-pago-card .stat-icon {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .stats-grid,
+  .pagos-stats-grid {
+    gap: 10px !important;
+    padding: 0 !important;
+  }
+  
+  #mainContent {
+    padding: 12px !important;
+  }
+  
+  .section-title,
+  .content-header h2 {
+    font-size: 18px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  /* Fix encoding - forzar UTF-8 rendering */
+  * {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* ========================================
+     TAREA 6: PANEL LATERAL - BACKDROP CIERRE
+     ======================================== */
+  .sidebar-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    z-index: calc(var(--z-sidebar) - 1) !important;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .sidebar-overlay.active,
+  .sidebar-overlay.visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Prevenir blur errático */
+  .sidebar,
+  .dashboard-sidebar,
+  .classroom-sidebar {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  
+  .sidebar.active,
+  .sidebar.open,
+  .dashboard-sidebar.active,
+  .dashboard-sidebar:not(.collapsed),
+  .classroom-sidebar.active,
+  .classroom-sidebar.show {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+  
+  /* ========================================
+     TAREA 7: CHAT SOPORTE - UI MEJORADA
+     ======================================== */
+  .admin-chat-container,
+  .chat-container {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .chat-panel-header {
+    padding: 16px !important;
+    flex-shrink: 0;
+  }
+  
+  .chat-panel-header h3 {
+    font-size: 16px !important;
+    margin: 0 0 4px 0 !important;
+  }
+  
+  .chat-conversations-panel {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .conversation-item,
+  .chat-conversation {
+    padding: 14px 16px !important;
+    border-radius: 12px;
+    margin: 4px 8px;
+    transition: background 0.2s ease;
+  }
+  
+  .conversation-item:active,
+  .chat-conversation:active {
+    background: rgba(102, 126, 234, 0.1);
+  }
+  
+  .chat-messages {
+    padding: 16px !important;
+    gap: 12px;
+  }
+  
+  .chat-message {
+    padding: 12px 16px !important;
+    border-radius: 16px !important;
+    max-width: 85% !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+  }
+  
+  .chat-message.sent {
+    border-bottom-right-radius: 4px !important;
+  }
+  
+  .chat-message.received {
+    border-bottom-left-radius: 4px !important;
+  }
+  
+  .chat-input-container {
+    padding: 12px 16px !important;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    gap: 10px !important;
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .chat-input-container input,
+  .chat-input-container textarea {
+    padding: 12px 16px !important;
+    border-radius: 24px !important;
+    font-size: 15px !important;
+    border: 1px solid #e0e0e0 !important;
+    background: white !important;
+  }
+  
+  .chat-input-container button {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    flex-shrink: 0;
+  }
+  
+  /* ========================================
+     TAREA 8: CLASSROOM - UN SOLO HAMBURGUESA
+     ======================================== */
+  .classroom-header .menu-toggle:not(:first-of-type),
+  .classroom-header #menuToggle ~ .menu-toggle,
+  .classroom-sidebar .mobile-menu-toggle {
+    display: none !important;
+  }
+  
+  /* Cierre automático al navegar - handled by JS */
+  .classroom-sidebar .nav-item {
+    cursor: pointer;
+  }
+  
+  /* ========================================
+     TAREA 9: COMUNIDAD - LAYOUT ORGANIZADO
+     ======================================== */
+  .community-section,
+  .comunidad-container {
+    padding: 12px !important;
+  }
+  
+  .community-header,
+  .comunidad-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+  }
+  
+  .community-actions,
+  .comunidad-actions,
+  .community-toolbar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  
+  .community-actions button,
+  .comunidad-actions button,
+  .btn-crear-pregunta,
+  .btn-new-question {
+    width: 100% !important;
+    padding: 14px 20px !important;
+    font-size: 14px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+  
+  .community-filters,
+  .comunidad-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .community-filters button,
+  .comunidad-filters button {
+    flex: 1;
+    min-width: calc(50% - 4px);
+    padding: 10px 12px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+  
+  .question-card,
+  .pregunta-card {
+    padding: 16px !important;
+    border-radius: 12px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .question-card .question-header,
+  .pregunta-card .pregunta-header {
+    flex-direction: column !important;
+    gap: 8px !important;
+    align-items: flex-start !important;
+  }
+  
+  .question-card .question-meta,
+  .pregunta-card .pregunta-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+  }
+  
+  .question-card .question-actions,
+  .pregunta-card .pregunta-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  .question-card .question-actions button,
+  .pregunta-card .pregunta-actions button {
+    flex: 1;
+    padding: 10px;
+    font-size: 13px;
+  }
+  
+}
+
 /* ========================================
    TABLET BREAKPOINT (769px - 1024px)
    ======================================== */

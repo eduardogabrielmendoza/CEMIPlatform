@@ -332,6 +332,154 @@
   }
   
   // ========================================
+  // TAREA 8: CLASSROOM AUTO-CLOSE SIDEBAR
+  // ========================================
+  
+  function initClassroomAutoClose() {
+    if (window.innerWidth > 768) return;
+    
+    const classroomSidebar = $('.classroom-sidebar');
+    const sidebarOverlay = $('.sidebar-overlay');
+    
+    if (!classroomSidebar) return;
+    
+    // Auto-close when clicking nav items
+    $$('.nav-item, .classroom-nav-item, .sidebar-nav a, .sidebar-nav button', classroomSidebar).forEach(item => {
+      safeAddListener(item, 'click', () => {
+        if (window.innerWidth <= 768) {
+          setTimeout(() => {
+            classroomSidebar.classList.remove('active', 'open', 'show');
+            sidebarOverlay?.classList.remove('active', 'visible');
+            document.body.classList.remove('sidebar-open', 'menu-open');
+            scrollLock.disable();
+          }, 150);
+        }
+      });
+    });
+  }
+  
+  // ========================================
+  // TAREA 6: FIX BLUR Y BACKDROP
+  // ========================================
+  
+  function initBackdropFix() {
+    if (window.innerWidth > 768) return;
+    
+    const overlay = $('.sidebar-overlay');
+    const sidebar = $('.sidebar') || $('.dashboard-sidebar') || $('.classroom-sidebar');
+    const menuBtn = $('#mobileMenuToggle') || $('.mobile-menu-toggle') || $('#menuToggle');
+    
+    if (!overlay || !sidebar) return;
+    
+    // Ensure proper tap handling on overlay
+    safeAddListener(overlay, 'touchstart', (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+    
+    safeAddListener(overlay, 'click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Close sidebar
+      sidebar.classList.remove('active', 'open', 'show');
+      sidebar.classList.add('collapsed');
+      overlay.classList.remove('active', 'visible');
+      document.body.classList.remove('sidebar-open', 'menu-open');
+      scrollLock.disable();
+      
+      // Reset hamburger icon
+      if (menuBtn) {
+        const icon = menuBtn.querySelector('i');
+        if (icon) {
+          icon.setAttribute('data-lucide', 'menu');
+          if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+          }
+        }
+      }
+    });
+    
+    // Prevent blur issues with hamburger button
+    if (menuBtn) {
+      let isToggling = false;
+      
+      safeAddListener(menuBtn, 'click', (e) => {
+        if (isToggling) return;
+        isToggling = true;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const isOpen = sidebar.classList.contains('active') || 
+                       sidebar.classList.contains('open') ||
+                       !sidebar.classList.contains('collapsed');
+        
+        if (isOpen) {
+          sidebar.classList.remove('active', 'open', 'show');
+          sidebar.classList.add('collapsed');
+          overlay.classList.remove('active', 'visible');
+          document.body.classList.remove('sidebar-open', 'menu-open');
+          scrollLock.disable();
+        } else {
+          sidebar.classList.add('active', 'open');
+          sidebar.classList.remove('collapsed');
+          overlay.classList.add('active', 'visible');
+          document.body.classList.add('sidebar-open');
+          scrollLock.enable();
+        }
+        
+        // Update icon
+        const icon = menuBtn.querySelector('i');
+        if (icon) {
+          icon.setAttribute('data-lucide', isOpen ? 'menu' : 'x');
+          if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+          }
+        }
+        
+        setTimeout(() => { isToggling = false; }, 300);
+      });
+    }
+  }
+  
+  // ========================================
+  // MEGA MENU ACCORDION FIX
+  // ========================================
+  
+  function initMegaMenuAccordion() {
+    if (window.innerWidth > 768) return;
+    
+    // Make accordion work for mega menu items
+    $$('.mega-nav-item[data-panel]').forEach(item => {
+      // Remove any duplicate click handlers
+      const newItem = item.cloneNode(true);
+      item.parentNode.replaceChild(newItem, item);
+      
+      safeAddListener(newItem, 'click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const panelId = newItem.dataset.panel;
+        const panel = $(`#${panelId}`);
+        const isActive = newItem.classList.contains('active');
+        
+        // Close all other panels
+        $$('.mega-nav-item[data-panel]').forEach(otherItem => {
+          if (otherItem !== newItem) {
+            otherItem.classList.remove('active');
+            const otherId = otherItem.dataset.panel;
+            $(`#${otherId}`)?.classList.remove('visible');
+          }
+        });
+        
+        // Toggle current
+        newItem.classList.toggle('active', !isActive);
+        panel?.classList.toggle('visible', !isActive);
+      });
+    });
+  }
+  
+  // ========================================
   // INITIALIZATION
   // ========================================
   
@@ -358,6 +506,9 @@
     initAccordionNav();
     transformTablesToCards();
     initChatMobile();
+    initClassroomAutoClose();
+    initBackdropFix();
+    initMegaMenuAccordion();
     
     console.log('[MobileHandler] Mobile optimizations complete.');
   }
