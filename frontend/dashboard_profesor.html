@@ -3021,12 +3021,14 @@
           
           // Cambiar icono
           const icon = this.querySelector('i');
-          if (!sidebar.classList.contains('collapsed')) {
-            icon.setAttribute('data-lucide', 'x');
-          } else {
-            icon.setAttribute('data-lucide', 'menu');
+          if (icon) {
+            if (!sidebar.classList.contains('collapsed')) {
+              icon.setAttribute('data-lucide', 'x');
+            } else {
+              icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
           }
-          lucide.createIcons();
         });
         
         // Cerrar sidebar al hacer clic en overlay
@@ -3038,8 +3040,10 @@
           }
           
           const icon = mobileMenuToggle.querySelector('i');
-          icon.setAttribute('data-lucide', 'menu');
-          lucide.createIcons();
+          if (icon) {
+            icon.setAttribute('data-lucide', 'menu');
+            lucide.createIcons();
+          }
         });
       }
     });

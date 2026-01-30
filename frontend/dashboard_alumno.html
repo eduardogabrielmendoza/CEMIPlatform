@@ -3345,7 +3345,10 @@
       // Solo colapsar sidebar en móviles (<=768px)
       if (window.innerWidth <= 768) {
         sidebar.classList.add('collapsed');
-      }    if (mobileMenuToggle && sidebar && sidebarOverlay) {
+      }
+    }
+    
+    if (mobileMenuToggle && sidebar && sidebarOverlay) {
       // Abrir/cerrar sidebar
       mobileMenuToggle.addEventListener('click', function() {
         sidebar.classList.toggle('collapsed');
@@ -3356,12 +3359,14 @@
         
         // Cambiar icono
         const icon = this.querySelector('i');
-        if (!sidebar.classList.contains('collapsed')) {
-          icon.setAttribute('data-lucide', 'x');
-        } else {
-          icon.setAttribute('data-lucide', 'menu');
+        if (icon) {
+          if (!sidebar.classList.contains('collapsed')) {
+            icon.setAttribute('data-lucide', 'x');
+          } else {
+            icon.setAttribute('data-lucide', 'menu');
+          }
+          lucide.createIcons();
         }
-        lucide.createIcons();
       });
       
       // Cerrar sidebar al hacer clic en overlay
@@ -3373,8 +3378,10 @@
         }
         
         const icon = mobileMenuToggle.querySelector('i');
-        icon.setAttribute('data-lucide', 'menu');
-        lucide.createIcons();
+        if (icon) {
+          icon.setAttribute('data-lucide', 'menu');
+          lucide.createIcons();
+        }
       });
     }
   });
