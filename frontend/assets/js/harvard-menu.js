@@ -286,6 +286,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.querySelectorAll('.mega-sub-link.has-children').forEach(link => {
     link.addEventListener('click', function(e) {
+      // En móvil, si tiene la clase mobile-direct-link, permitir navegación normal
+      if (isMobile() && this.classList.contains('mobile-direct-link')) {
+        return; // No prevenir default, permitir que el link funcione
+      }
+      
       e.preventDefault();
       
       const targetTertiary = this.dataset.tertiary;

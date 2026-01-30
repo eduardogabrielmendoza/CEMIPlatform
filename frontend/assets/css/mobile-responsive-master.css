@@ -510,16 +510,20 @@
     padding-left: 36px !important;
   }
   
-  /* Ocultar items Nosotros, Soporte, Recursos y Seguridad en móvil */
+  /* Ocultar items Nosotros, Soporte y Recursos en móvil */
   .mega-nav-item[data-panel="panel-nosotros"],
   .mega-nav-item[data-panel="panel-soporte"],
-  .mega-nav-item[data-panel="panel-recursos"],
-  .mega-nav-item[data-panel="panel-seguridad"] {
+  .mega-nav-item[data-panel="panel-recursos"] {
     display: none !important;
   }
   
   /* Ocultar chevrones inline del HTML en sub-links */
   .mega-sub-link.has-children .chevron {
+    display: none !important;
+  }
+  
+  /* Para links directos en móvil, no mostrar chevron CSS tampoco */
+  .mega-sub-link.mobile-direct-link::after {
     display: none !important;
   }
   
