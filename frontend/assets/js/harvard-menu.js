@@ -235,6 +235,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if (isMobile() && panel) {
         // Insertar el panel después del item actual
         this.parentNode.insertBefore(panel, this.nextSibling);
+        
+        // Hacer scroll suave al item clickeado después de un pequeño delay
+        setTimeout(() => {
+          this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
       }
       
       showSecondaryPanel(targetPanel);
@@ -317,6 +322,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (subLinksContainer && subLinksContainer.parentNode) {
           subLinksContainer.parentNode.insertBefore(tertiaryPanel, subLinksContainer.nextSibling);
         }
+        
+        // Hacer scroll al panel secundario padre para mostrar desde arriba
+        setTimeout(() => {
+          const secondaryPanel = this.closest('.mega-nav-secondary');
+          if (secondaryPanel) {
+            secondaryPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 50);
       }
       
       showTertiaryPanel(targetTertiary);
