@@ -343,7 +343,7 @@
     font-size: 22px !important;
     padding: 18px 16px !important;
     margin-top: 0 !important;
-    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    border-bottom: none !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -413,7 +413,7 @@
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    max-height: 800px !important;
+    max-height: 1200px !important;
     padding: 8px 0 !important;
   }
   
@@ -455,7 +455,7 @@
   
   .mega-nav-secondary .mega-sub-link + .mega-sub-link {
     margin-top: 0 !important;
-    border-top: 1px solid rgba(255,255,255,0.05) !important;
+    border-top: none !important;
   }
   
   /* Paneles terciarios inline */
@@ -484,7 +484,7 @@
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    max-height: 600px !important;
+    max-height: 900px !important;
     padding: 8px 0 !important;
   }
   
