@@ -608,6 +608,11 @@
         <span id="chatNotificationBadge" class="notification-badge" style="display: none;"></span>
       </button>
       <button id="btnStatus" class="stagger-item hover-lift"><i data-lucide="activity"></i> Status del Sistema</button>
+      <button id="btnRecuperacion" class="stagger-item hover-lift" style="position: relative;">
+        <i data-lucide="key-round"></i> Recuperación
+        <span id="recuperacionBadge" class="notification-badge" style="display: none;"></span>
+      </button>
+      <button id="btnCodigosCemi" class="stagger-item hover-lift"><i data-lucide="ticket"></i> Códigos CEMI</button>
       <button id="btnAyuda" class="stagger-item hover-lift"><i data-lucide="help-circle"></i> Ayuda</button>
       <button id="logoutBtn" class="logout stagger-item hover-lift"><i data-lucide="log-out"></i> Cerrar sesion</button>
     </nav>
@@ -616,8 +621,12 @@
   <main class="dashboard-main">
     <header class="dashboard-header entrance-header">
       <h1 class="animate-fadeInDown">Panel de Administracion</h1>
-      <div class="user-info animate-fadeInRight">
-        <i data-lucide="user"></i> <span id="welcomeMessage">Administrador</span>
+      <div class="user-info animate-fadeInRight" style="display: flex; align-items: center; gap: 16px;">
+        <button id="btnNotificacionesBell" title="Notificaciones" style="background: none; border: none; cursor: pointer; position: relative; padding: 6px;">
+          <i data-lucide="bell" style="width: 22px; height: 22px; color: #374151;"></i>
+          <span id="notifBellBadge" style="display: none; position: absolute; top: 0; right: 0; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;"></span>
+        </button>
+        <div><i data-lucide="user"></i> <span id="welcomeMessage">Administrador</span></div>
       </div>
     </header>
 

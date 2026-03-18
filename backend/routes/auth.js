@@ -397,6 +397,10 @@ router.post("/register",
       .optional()
       .trim()
       .matches(/^[0-9+\-\s()]*$/).withMessage('Teléfono contiene caracteres inválidos'),
+    body('codigo_cemi')
+      .trim()
+      .notEmpty().withMessage('El código CEMI es requerido')
+      .isLength({ min: 6, max: 20 }).withMessage('Código CEMI inválido'),
     body('dni')
       .optional()
       .trim()
@@ -412,9 +416,25 @@ router.post("/register",
       });
     }
 
-    const { username, email, password, nombre, apellido, telefono, dni } = req.body;
+    const { username, email, password, nombre, apellido, telefono, dni, codigo_cemi } = req.body;
 
     try {
+      // Validar código CEMI
+      const [codigosValidos] = await pool.query(
+        `SELECT * FROM codigos_cemi WHERE codigo = ? AND estado = 'activo'`,
+        [codigo_cemi.trim().toUpperCase()]
+      );
+
+      if (codigosValidos.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Código CEMI inválido o ya utilizado"
+        });
+      }
+
+      const codigoCemi = codigosValidos[0];
+      const rolAsignado = codigoCemi.rol; // 'alumno' o 'profesor'
+
       const [existingUser] = await pool.query(
         "SELECT id_usuario FROM usuarios WHERE username = ?",
         [username.trim()]
@@ -442,18 +462,7 @@ router.post("/register",
       const salt = bcrypt.genSaltSync(10);
       const passwordHash = bcrypt.hashSync(password.trim(), salt);
 
-      const [perfiles] = await pool.query(
-        "SELECT id_perfil FROM perfiles WHERE nombre_perfil = 'alumno'"
-      );
-
-      if (perfiles.length === 0) {
-        return res.status(500).json({
-          success: false,
-          message: "Error: perfil 'alumno' no encontrado"
-        });
-      }
-
-      const id_perfil_alumno = perfiles[0].id_perfil;
+      const id_perfil_rol = rolAsignado === 'alumno' ? 3 : 2; // 3=alumno, 2=profesor
 
       const connection = await pool.getConnection();
       await connection.beginTransaction();
@@ -470,60 +479,58 @@ router.post("/register",
         const [usuarioResult] = await connection.query(
           `INSERT INTO usuarios (id_persona, id_perfil, username, password_hash, password_plain, fecha_creacion)
            VALUES (?, ?, ?, ?, ?, NOW())`,
-          [id_persona, id_perfil_alumno, username.trim(), passwordHash, password.trim()]
+          [id_persona, id_perfil_rol, username.trim(), passwordHash, password.trim()]
         );
         
         const id_usuario = usuarioResult.insertId;
 
-        const [ultimoLegajo] = await connection.query(
-          `SELECT legajo FROM alumnos WHERE legajo LIKE 'A%' ORDER BY legajo DESC LIMIT 1`
-        );
-        
-        let nuevoLegajo = 'A001';
-        if (ultimoLegajo.length > 0 && ultimoLegajo[0].legajo) {
-          const numeroActual = parseInt(ultimoLegajo[0].legajo.substring(1));
-          const nuevoNumero = numeroActual + 1;
-          nuevoLegajo = 'A' + String(nuevoNumero).padStart(3, '0');
-        }
-
         // Generar CemiKey única automáticamente
         const cemiKey = await generateUniqueCemiKey();
+        let nuevoLegajo = null;
 
-        const [alumnoResult] = await connection.query(
-          `INSERT INTO alumnos (id_alumno, id_persona, legajo, fecha_registro, estado, access_key)
-           VALUES (?, ?, ?, NOW(), 'activo', ?)`,
-          [id_persona, id_persona, nuevoLegajo, cemiKey]
+        if (rolAsignado === 'alumno') {
+          const [ultimoLegajo] = await connection.query(
+            `SELECT legajo FROM alumnos WHERE legajo LIKE 'A%' ORDER BY legajo DESC LIMIT 1`
+          );
+          
+          nuevoLegajo = 'A001';
+          if (ultimoLegajo.length > 0 && ultimoLegajo[0].legajo) {
+            const numeroActual = parseInt(ultimoLegajo[0].legajo.substring(1));
+            const nuevoNumero = numeroActual + 1;
+            nuevoLegajo = 'A' + String(nuevoNumero).padStart(3, '0');
+          }
+
+          await connection.query(
+            `INSERT INTO alumnos (id_alumno, id_persona, legajo, fecha_registro, estado, access_key)
+             VALUES (?, ?, ?, NOW(), 'activo', ?)`,
+            [id_persona, id_persona, nuevoLegajo, cemiKey]
+          );
+        } else {
+          // Profesor
+          await connection.query(
+            `INSERT INTO profesores (id_profesor, id_persona, especialidad, fecha_ingreso, estado, access_key)
+             VALUES (?, ?, ?, NOW(), 'activo', ?)`,
+            [id_persona, id_persona, 'Por asignar', cemiKey]
+          );
+        }
+
+        // Marcar código CEMI como usado
+        await connection.query(
+          `UPDATE codigos_cemi SET estado = 'usado', id_persona_registrada = ?, fecha_uso = NOW()
+           WHERE id_codigo = ?`,
+          [id_persona, codigoCemi.id_codigo]
         );
-        
-        const id_alumno = alumnoResult.insertId;
 
         await connection.commit();
         connection.release();
-
-        try {
-          const emailHtml = bienvenidaAlumnoTemplate({
-            nombre: nombre.trim(),
-            apellido: apellido.trim(),
-            username: username.trim(),
-            legajo: nuevoLegajo,
-            cemiKey: cemiKey
-          });
-          await sendEmail(
-            email.trim(),
-            "¡Bienvenido/a a CEMI! - Tu registro fue exitoso",
-            emailHtml
-          );
-          console.log(`Email de bienvenida enviado a: ${email.trim()}`);
-        } catch (emailError) {
-          console.error("Error al enviar email de bienvenida:", emailError.message);
-        }
 
         // Log del evento de registro
         eventLogger.auth.register(`${nombre.trim()} ${apellido.trim()}`, email.trim());
 
         return res.status(201).json({
           success: true,
-          message: "¡Registro exitoso! Ya podés iniciar sesión.",
+          message: `¡Registro exitoso como ${rolAsignado}! Ya podés iniciar sesión.`,
+          rol: rolAsignado,
           legajo: nuevoLegajo,
           username: username.trim()
         });

@@ -31,6 +31,8 @@ import comunidadRoutes from "./backend/routes/comunidad-db.js";
 import statusRoutes from "./backend/routes/status.js";
 import gdprRoutes from "./backend/routes/gdpr.js";
 import codigosRecuperacionRoutes from "./backend/routes/codigosRecuperacion.js";
+import codigosCemiRoutes from "./backend/routes/codigos-cemi.js";
+import recuperacionRoutes from "./backend/routes/recuperacion.js";
 import ChatServer from "./backend/utils/chat-server.js";
 import http from "http";
 import { verificarToken } from "./backend/utils/authMiddleware.js";
@@ -152,6 +154,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/status", statusRoutes);
 app.use("/api/config", configRoutes);
+app.use("/api/recuperacion", recuperacionRoutes);
 
 app.use("/api/alumnos", verificarToken, alumnosRoutes);
 app.use("/api/profesores", verificarToken, profesoresRoutes);
@@ -174,6 +177,7 @@ app.use("/api/investigacion", verificarToken, investigacionRoutes);
 app.use("/api/comunidad", comunidadRoutes);
 app.use("/api/gdpr", verificarToken, gdprRoutes);
 app.use("/api/codigos-recuperacion", verificarToken, codigosRecuperacionRoutes);
+app.use("/api/codigos-cemi", verificarToken, codigosCemiRoutes);
 
 app.get("/", (req, res) => {
   res.sendFile("index.html", { root: "frontend" });

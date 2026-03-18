@@ -63,6 +63,7 @@ async function handleLogin(e) {
         localStorage.setItem("id_usuario", data.id_usuario);
         localStorage.setItem("nombre", data.nombre);
         localStorage.setItem("username", data.username);
+        if (data.id_persona) localStorage.setItem("id_persona", data.id_persona);
         if (data.id_profesor) localStorage.setItem("id_profesor", data.id_profesor);
         if (data.id_alumno) localStorage.setItem("id_alumno", data.id_alumno);
         if (data.id_administrador) localStorage.setItem("id_administrador", data.id_administrador);
@@ -220,6 +221,18 @@ function initAdminSPA() {
           mainContent.classList.add("active");
           lucide.createIcons();
           await initStatusInteractivity();
+          return;
+        case "recuperacion":
+          loader.classList.add("hidden");
+          mainContent.innerHTML = await renderRecuperacionSection();
+          mainContent.classList.add("active");
+          lucide.createIcons();
+          return;
+        case "codigoscemi":
+          loader.classList.add("hidden");
+          mainContent.innerHTML = await renderCodigosCemiSection();
+          mainContent.classList.add("active");
+          lucide.createIcons();
           return;
         default:
           endpoint = "";
@@ -8972,49 +8985,31 @@ async function eliminarInscripcion(id, alumno, curso) {
 
 async function openNuevoAlumnoModal() {
   const { value: formValues } = await Swal.fire({
-    title: 'Nuevo Alumno',
+    title: 'Generar Código CEMI - Alumno',
     html: `
       <div style="text-align: left;">
+        <p style="margin-bottom: 16px; color: #666; font-size: 14px;">
+          Se generará un código único para que un nuevo alumno pueda registrarse en el sistema.
+        </p>
         <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Nombre</label>
+          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Nombre del alumno (referencia)</label>
           <input id="nombre" class="swal2-input" placeholder="Nombre" style="width: 100%; margin: 0;">
         </div>
         <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Apellido</label>
+          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Apellido del alumno (referencia)</label>
           <input id="apellido" class="swal2-input" placeholder="Apellido" style="width: 100%; margin: 0;">
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">DNI</label>
-          <input id="dni" class="swal2-input" placeholder="Ej: 12345678" maxlength="8" oninput="this.value=this.value.replace(/[^0-9]/g,'')" pattern="[0-9]*" inputmode="numeric" style="width: 100%; margin: 0;">
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Email</label>
-          <input id="mail" type="email" class="swal2-input" placeholder="email@ejemplo.com" style="width: 100%; margin: 0;">
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Legajo</label>
-          <input id="legajo" class="swal2-input" placeholder="Ej: A0001" oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase()" pattern="[A-Z0-9]*" style="width: 100%; margin: 0;">
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Teléfono</label>
-          <input id="telefono" type="tel" class="swal2-input" placeholder="Ej: 1234567890" oninput="this.value=this.value.replace(/[^0-9]/g,'')" pattern="[0-9]*" inputmode="numeric" style="width: 100%; margin: 0;">
         </div>
       </div>
     `,
     width: '500px',
     focusConfirm: false,
     showCancelButton: true,
-    confirmButtonText: 'Crear',
+    confirmButtonText: 'Generar Código',
     cancelButtonText: 'Cancelar',
     confirmButtonColor: '#4a5259',
     preConfirm: () => {
-      const nombre = document.getElementById('nombre').value;
-      const apellido = document.getElementById('apellido').value;
-      const dni = document.getElementById('dni').value;
-      const mail = document.getElementById('mail').value;
-      const legajo = document.getElementById('legajo').value;
-      const telefono = document.getElementById('telefono').value;
-      
+      const nombre = document.getElementById('nombre').value.trim();
+      const apellido = document.getElementById('apellido').value.trim();
       if (!nombre) {
         Swal.showValidationMessage('El nombre es obligatorio');
         return false;
@@ -9023,53 +9018,55 @@ async function openNuevoAlumnoModal() {
         Swal.showValidationMessage('El apellido es obligatorio');
         return false;
       }
-      if (!dni) {
-        Swal.showValidationMessage('El DNI es obligatorio');
-        return false;
-      }
-      if (!mail) {
-        Swal.showValidationMessage('El email es obligatorio');
-        return false;
-      }
-      if (!legajo) {
-        Swal.showValidationMessage('El legajo es obligatorio');
-        return false;
-      }
-      if (!telefono) {
-        Swal.showValidationMessage('El teléfono es obligatorio');
-        return false;
-      }
-      return { nombre, apellido, dni, mail, legajo, telefono };
+      return { nombre, apellido };
     }
   });
 
   if (formValues) {
     try {
-      const res = await fetch(`${API_URL}/alumnos`, {
+      Swal.fire({ title: 'Generando código...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      
+      const res = await fetch(`${API_URL}/codigos-cemi/generar`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formValues)
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ 
+          rol: 'alumno',
+          nombre_destinatario: `${formValues.nombre} ${formValues.apellido}`
+        })
       });
       
       const data = await res.json();
       
       if (res.ok && data.success) {
-        const idAlumno = data.id_alumno;
-        const nombreCompleto = `${formValues.nombre} ${formValues.apellido}`;
-        
         await Swal.fire({
           icon: 'success',
-          title: '¡Alumno creado!',
-          text: `${nombreCompleto} ha sido registrado exitosamente`,
-          timer: 1500,
-          showConfirmButton: false
+          title: 'Código CEMI generado',
+          html: `
+            <div style="text-align: center;">
+              <p style="margin-bottom: 12px; color: #555;">Código para <strong>${formValues.nombre} ${formValues.apellido}</strong></p>
+              <div style="background: #f0f4f8; padding: 20px; border-radius: 12px; margin: 16px 0;">
+                <span id="codigoCemiGenerado" style="font-family: monospace; font-size: 24px; font-weight: 700; color: #0A2540; letter-spacing: 2px;">${data.codigo}</span>
+              </div>
+              <button onclick="navigator.clipboard.writeText('${data.codigo}').then(() => { this.textContent = '✓ Copiado!'; this.style.background = '#22c55e'; })" 
+                      style="background: #0A2540; color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.3s;">
+                Copiar código
+              </button>
+              <p style="margin-top: 16px; color: #888; font-size: 13px;">
+                El alumno debe usar este código al registrarse en el sistema.
+              </p>
+            </div>
+          `,
+          confirmButtonColor: '#4a5259',
+          confirmButtonText: 'Cerrar'
         });
-
-        await crearCredencialesAlumno(idAlumno, nombreCompleto);
         
-        document.getElementById('btnAlumnos').click();
+        // Refrescar la vista de alumnos si está activa
+        const btnAlumnos = document.getElementById('btnAlumnos');
+        if (btnAlumnos && btnAlumnos.classList.contains('active')) {
+          btnAlumnos.click();
+        }
       } else {
-        Swal.fire('Error', data.message || 'Error al crear alumno', 'error');
+        Swal.fire('Error', data.message || 'Error al generar código', 'error');
       }
     } catch (error) {
       console.error(error);
@@ -9681,78 +9678,31 @@ async function cambiarPasswordAlumnoClassroom(idAlumno) {
 
 async function openNuevoProfesorModal() {
   const { value: formValues } = await Swal.fire({
-    title: 'Nuevo Profesor',
+    title: 'Generar Código CEMI - Profesor',
     html: `
       <div style="text-align: left;">
+        <p style="margin-bottom: 16px; color: #666; font-size: 14px;">
+          Se generará un código único para que un nuevo profesor pueda registrarse en el sistema.
+        </p>
         <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Nombre</label>
+          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Nombre del profesor (referencia)</label>
           <input id="nombre" class="swal2-input" placeholder="Nombre" style="width: 100%; margin: 0;">
         </div>
         <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Apellido</label>
+          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Apellido del profesor (referencia)</label>
           <input id="apellido" class="swal2-input" placeholder="Apellido" style="width: 100%; margin: 0;">
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">DNI</label>
-          <input id="dni" class="swal2-input" placeholder="Ej: 12345678" maxlength="8" oninput="this.value=this.value.replace(/[^0-9]/g,'')" pattern="[0-9]*" inputmode="numeric" style="width: 100%; margin: 0;">
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Email</label>
-          <input id="mail" type="email" class="swal2-input" placeholder="email@ejemplo.com" style="width: 100%; margin: 0;">
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Especialidad</label>
-          <input id="especialidad" class="swal2-input" placeholder="Ej: Inglés Avanzado" style="width: 100%; margin: 0;">
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Teléfono</label>
-          <input id="telefono" type="tel" class="swal2-input" placeholder="Ej: 1234567890" oninput="this.value=this.value.replace(/[^0-9]/g,'')" pattern="[0-9]*" inputmode="numeric" style="width: 100%; margin: 0;">
-        </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 400; padding-bottom: 10px; text-align: left;">Idiomas que enseña</label>
-          <div id="idiomasContainerNuevo" style="border: 1px solid #d0d5dd; border-radius: 8px; padding: 12px; max-height: 150px; overflow-y: auto; background: #f9fafb;">
-            <div style="color: #666; font-size: 13px; text-align: center;">Cargando idiomas...</div>
-          </div>
         </div>
       </div>
     `,
     width: '500px',
     focusConfirm: false,
     showCancelButton: true,
-    confirmButtonText: 'Crear',
+    confirmButtonText: 'Generar Código',
     cancelButtonText: 'Cancelar',
     confirmButtonColor: '#4a5259',
-    didOpen: async () => {
-      try {
-        const resp = await fetch(`${API_URL}/idiomas`);
-        const idiomas = await resp.json();
-        
-        const container = document.getElementById('idiomasContainerNuevo');
-        container.innerHTML = idiomas.map(idioma => `
-          <label style="display: flex; align-items: center; padding: 8px; cursor: pointer; border-radius: 4px; transition: background 0.2s;" 
-                 onmouseover="this.style.background='#e5e7eb'" 
-                 onmouseout="this.style.background='transparent'">
-            <input type="checkbox" value="${idioma.id_idioma}" class="idioma-checkbox" 
-                   style="margin-right: 8px; cursor: pointer; width: 16px; height: 16px;">
-            <span style="font-size: 14px; color: #374151;">${idioma.nombre_idioma}</span>
-          </label>
-        `).join('');
-      } catch (error) {
-        console.error('Error al cargar idiomas:', error);
-        document.getElementById('idiomasContainerNuevo').innerHTML = '<div style="color: #ef4444; font-size: 13px; text-align: center;">Error al cargar idiomas</div>';
-      }
-    },
     preConfirm: () => {
-      const nombre = document.getElementById('nombre').value;
-      const apellido = document.getElementById('apellido').value;
-      const dni = document.getElementById('dni').value;
-      const mail = document.getElementById('mail').value;
-      const especialidad = document.getElementById('especialidad').value;
-      const telefono = document.getElementById('telefono').value;
-      
-      const idiomasSeleccionados = Array.from(document.querySelectorAll('.idioma-checkbox:checked'))
-        .map(cb => parseInt(cb.value));
-      
+      const nombre = document.getElementById('nombre').value.trim();
+      const apellido = document.getElementById('apellido').value.trim();
       if (!nombre) {
         Swal.showValidationMessage('El nombre es obligatorio');
         return false;
@@ -9761,60 +9711,57 @@ async function openNuevoProfesorModal() {
         Swal.showValidationMessage('El apellido es obligatorio');
         return false;
       }
-      if (!dni) {
-        Swal.showValidationMessage('El DNI es obligatorio');
-        return false;
-      }
-      if (!mail) {
-        Swal.showValidationMessage('El email es obligatorio');
-        return false;
-      }
-      if (!especialidad) {
-        Swal.showValidationMessage('La especialidad es obligatoria');
-        return false;
-      }
-      if (!telefono) {
-        Swal.showValidationMessage('El teléfono es obligatorio');
-        return false;
-      }
-      return { nombre, apellido, dni, mail, especialidad, telefono, idiomas: idiomasSeleccionados };
+      return { nombre, apellido };
     }
   });
 
   if (formValues) {
     try {
-      console.log('Enviando datos de profesor:', formValues);
-      const res = await fetch(`${API_URL}/profesores`, {
+      Swal.fire({ title: 'Generando código...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      
+      const res = await fetch(`${API_URL}/codigos-cemi/generar`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formValues)
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ 
+          rol: 'profesor',
+          nombre_destinatario: `${formValues.nombre} ${formValues.apellido}`
+        })
       });
       
-      console.log('Respuesta del servidor:', res.status, res.statusText);
       const data = await res.json();
-      console.log('Datos recibidos:', data);
       
       if (res.ok && data.success) {
-        const idProfesor = data.id_profesor;
-        const nombreCompleto = `${formValues.nombre} ${formValues.apellido}`;
-        
         await Swal.fire({
           icon: 'success',
-          title: '¡Profesor creado!',
-          text: `${nombreCompleto} ha sido registrado exitosamente`,
-          timer: 1500,
-          showConfirmButton: false
+          title: 'Código CEMI generado',
+          html: `
+            <div style="text-align: center;">
+              <p style="margin-bottom: 12px; color: #555;">Código para <strong>${formValues.nombre} ${formValues.apellido}</strong></p>
+              <div style="background: #f0f4f8; padding: 20px; border-radius: 12px; margin: 16px 0;">
+                <span style="font-family: monospace; font-size: 24px; font-weight: 700; color: #0A2540; letter-spacing: 2px;">${data.codigo}</span>
+              </div>
+              <button onclick="navigator.clipboard.writeText('${data.codigo}').then(() => { this.textContent = '✓ Copiado!'; this.style.background = '#22c55e'; })" 
+                      style="background: #0A2540; color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.3s;">
+                Copiar código
+              </button>
+              <p style="margin-top: 16px; color: #888; font-size: 13px;">
+                El profesor debe usar este código al registrarse en el sistema.
+              </p>
+            </div>
+          `,
+          confirmButtonColor: '#4a5259',
+          confirmButtonText: 'Cerrar'
         });
-
-        await crearCredencialesProfesor(idProfesor, nombreCompleto);
         
-        document.getElementById('btnProfesores').click();
+        const btnProfesores = document.getElementById('btnProfesores');
+        if (btnProfesores && btnProfesores.classList.contains('active')) {
+          btnProfesores.click();
+        }
       } else {
-        console.error('Error del servidor:', data);
-        Swal.fire('Error', data.message || 'Error al crear profesor', 'error');
+        Swal.fire('Error', data.message || 'Error al generar código', 'error');
       }
     } catch (error) {
-      console.error('Error de conexión:', error);
+      console.error(error);
       Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
     }
   }
@@ -12910,4 +12857,388 @@ document.addEventListener('keydown', (e) => {
     cerrarPDFViewer();
   }
 });
+
+// =============================================
+// SECCIÓN: Recuperación de Contraseñas (Admin)
+// =============================================
+
+async function renderRecuperacionSection() {
+  try {
+    const res = await fetch(`${API_URL}/recuperacion/pendientes`, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+    const solicitudes = await res.json();
+    
+    const pendientes = Array.isArray(solicitudes) ? solicitudes.filter(s => s.estado === 'pendiente') : [];
+    const procesadas = Array.isArray(solicitudes) ? solicitudes.filter(s => s.estado !== 'pendiente') : [];
+
+    return `
+      <div style="padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h2 style="margin: 0;"><i data-lucide="key-round"></i> Recuperación de Contraseñas</h2>
+          <span style="background: ${pendientes.length > 0 ? '#fef3c7' : '#d1fae5'}; color: ${pendientes.length > 0 ? '#92400e' : '#065f46'}; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+            ${pendientes.length} pendiente${pendientes.length !== 1 ? 's' : ''}
+          </span>
+        </div>
+        
+        ${pendientes.length > 0 ? `
+          <h3 style="margin-bottom: 12px; color: #92400e;">Solicitudes Pendientes</h3>
+          <div style="display: grid; gap: 12px; margin-bottom: 32px;">
+            ${pendientes.map(s => `
+              <div style="background: white; border: 1px solid #e5e7eb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                  <p style="font-weight: 600; margin: 0 0 4px 0;">${s.nombre || ''} ${s.apellido || ''}</p>
+                  <p style="color: #666; font-size: 13px; margin: 0;">Email: ${s.email || ''} | DNI: ${s.dni || 'N/A'}</p>
+                  <p style="color: #999; font-size: 12px; margin: 4px 0 0 0;">Solicitado: ${s.fecha_solicitud ? new Date(s.fecha_solicitud).toLocaleString('es-AR') : 'N/A'}</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button onclick="aprobarSolicitud(${s.id_solicitud})" style="background: #22c55e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">
+                    Aprobar
+                  </button>
+                  <button onclick="rechazarSolicitud(${s.id_solicitud})" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">
+                    Rechazar
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : `
+          <div style="text-align: center; padding: 40px; color: #888;">
+            <i data-lucide="check-circle" style="width: 48px; height: 48px; margin-bottom: 12px;"></i>
+            <p>No hay solicitudes pendientes</p>
+          </div>
+        `}
+        
+        ${procesadas.length > 0 ? `
+          <h3 style="margin-bottom: 12px; color: #374151;">Historial</h3>
+          <div style="display: grid; gap: 8px;">
+            ${procesadas.slice(0, 20).map(s => `
+              <div style="background: white; border: 1px solid #e5e7eb; border-left: 4px solid ${s.estado === 'aprobada' ? '#22c55e' : '#ef4444'}; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <p style="font-weight: 500; margin: 0; font-size: 14px;">${s.nombre || ''} ${s.apellido || ''} - ${s.email || ''}</p>
+                  <p style="color: #999; font-size: 12px; margin: 2px 0 0 0;">${s.fecha_solicitud ? new Date(s.fecha_solicitud).toLocaleString('es-AR') : ''}</p>
+                </div>
+                <span style="background: ${s.estado === 'aprobada' ? '#d1fae5' : '#fee2e2'}; color: ${s.estado === 'aprobada' ? '#065f46' : '#991b1b'}; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: capitalize;">
+                  ${s.estado}
+                </span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  } catch (error) {
+    console.error('Error cargando solicitudes:', error);
+    return '<div style="padding: 40px; text-align: center; color: #ef4444;">Error al cargar solicitudes de recuperación</div>';
+  }
+}
+
+async function aprobarSolicitud(id) {
+  const result = await Swal.fire({
+    title: '¿Aprobar solicitud?',
+    text: 'El usuario podrá establecer una nueva contraseña.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Aprobar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#22c55e'
+  });
+  
+  if (result.isConfirmed) {
+    try {
+      const res = await fetch(`${API_URL}/recuperacion/${id}/aprobar`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ id_admin: localStorage.getItem('id_persona') })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        Swal.fire('¡Aprobada!', 'La solicitud fue aprobada.', 'success');
+        document.getElementById('btnRecuperacion').click();
+        actualizarBadgeRecuperacion();
+      } else {
+        Swal.fire('Error', data.message || 'Error al aprobar', 'error');
+      }
+    } catch (error) {
+      Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+    }
+  }
+}
+
+async function rechazarSolicitud(id) {
+  const result = await Swal.fire({
+    title: '¿Rechazar solicitud?',
+    text: 'El usuario será informado del rechazo.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Rechazar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#ef4444'
+  });
+  
+  if (result.isConfirmed) {
+    try {
+      const res = await fetch(`${API_URL}/recuperacion/${id}/rechazar`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ id_admin: localStorage.getItem('id_persona') })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        Swal.fire('Rechazada', 'La solicitud fue rechazada.', 'success');
+        document.getElementById('btnRecuperacion').click();
+        actualizarBadgeRecuperacion();
+      } else {
+        Swal.fire('Error', data.message || 'Error al rechazar', 'error');
+      }
+    } catch (error) {
+      Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+    }
+  }
+}
+
+// =============================================
+// SECCIÓN: Códigos CEMI (Admin)
+// =============================================
+
+async function renderCodigosCemiSection() {
+  try {
+    const res = await fetch(`${API_URL}/codigos-cemi`, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+    const codigos = await res.json();
+    
+    const activos = Array.isArray(codigos) ? codigos.filter(c => c.estado === 'activo') : [];
+    const usados = Array.isArray(codigos) ? codigos.filter(c => c.estado === 'usado') : [];
+
+    return `
+      <div style="padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+          <h2 style="margin: 0;"><i data-lucide="ticket"></i> Códigos CEMI</h2>
+          <div style="display: flex; gap: 8px;">
+            <button onclick="openNuevoAlumnoModal()" style="background: #0A2540; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500;">
+              <i data-lucide="user-plus" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;"></i> Código Alumno
+            </button>
+            <button onclick="openNuevoProfesorModal()" style="background: #1A3A5C; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500;">
+              <i data-lucide="user-plus" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;"></i> Código Profesor
+            </button>
+          </div>
+        </div>
+        
+        ${activos.length > 0 ? `
+          <h3 style="margin-bottom: 12px; color: #065f46;">Códigos Activos (sin usar)</h3>
+          <div style="display: grid; gap: 10px; margin-bottom: 32px;">
+            ${activos.map(c => `
+              <div style="background: white; border: 1px solid #e5e7eb; border-left: 4px solid #22c55e; border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <span style="font-family: monospace; font-size: 18px; font-weight: 700; color: #0A2540; letter-spacing: 1px;">${c.codigo}</span>
+                  <p style="color: #666; font-size: 13px; margin: 4px 0 0 0;">
+                    Para: ${c.nombre_destinatario || 'Sin asignar'} | Rol: <b style="text-transform: capitalize;">${c.rol}</b>
+                  </p>
+                  <p style="color: #999; font-size: 12px; margin: 2px 0 0 0;">Generado: ${c.fecha_generacion ? new Date(c.fecha_generacion).toLocaleString('es-AR') : 'N/A'}</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button onclick="navigator.clipboard.writeText('${c.codigo}').then(() => this.textContent = '✓ Copiado')" 
+                          style="background: #f0f4f8; color: #0A2540; border: 1px solid #d1d5db; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                    Copiar
+                  </button>
+                  <button onclick="eliminarCodigoCemi(${c.id_codigo})" 
+                          style="background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : `
+          <div style="text-align: center; padding: 30px; color: #888; margin-bottom: 24px;">
+            <i data-lucide="ticket" style="width: 40px; height: 40px; margin-bottom: 8px;"></i>
+            <p>No hay códigos activos. Generá uno nuevo para registrar alumnos o profesores.</p>
+          </div>
+        `}
+        
+        ${usados.length > 0 ? `
+          <h3 style="margin-bottom: 12px; color: #374151;">Códigos Usados</h3>
+          <div style="display: grid; gap: 6px;">
+            ${usados.slice(0, 20).map(c => `
+              <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; opacity: 0.7;">
+                <div>
+                  <span style="font-family: monospace; font-size: 14px; color: #666; text-decoration: line-through;">${c.codigo}</span>
+                  <span style="font-size: 13px; color: #888; margin-left: 12px;">${c.nombre_destinatario || ''} (${c.rol})</span>
+                </div>
+                <span style="font-size: 12px; color: #999;">${c.fecha_uso ? new Date(c.fecha_uso).toLocaleDateString('es-AR') : 'N/A'}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  } catch (error) {
+    console.error('Error cargando códigos CEMI:', error);
+    return '<div style="padding: 40px; text-align: center; color: #ef4444;">Error al cargar códigos CEMI</div>';
+  }
+}
+
+async function eliminarCodigoCemi(id) {
+  const result = await Swal.fire({
+    title: '¿Eliminar código?',
+    text: 'El código ya no podrá ser usado para registrarse.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#ef4444'
+  });
+  
+  if (result.isConfirmed) {
+    try {
+      const res = await fetch(`${API_URL}/codigos-cemi/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        Swal.fire('Eliminado', 'El código fue eliminado.', 'success');
+        document.getElementById('btnCodigosCemi').click();
+      } else {
+        Swal.fire('Error', data.message || 'Error al eliminar', 'error');
+      }
+    } catch (error) {
+      Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+    }
+  }
+}
+
+// =============================================
+// SECCIÓN: Notificaciones del Sistema (Admin Bell)
+// =============================================
+
+async function actualizarBadgeRecuperacion() {
+  try {
+    const res = await fetch(`${API_URL}/recuperacion/pendientes`, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    });
+    const solicitudes = await res.json();
+    const pendientes = Array.isArray(solicitudes) ? solicitudes.filter(s => s.estado === 'pendiente').length : 0;
+    
+    const badge = document.getElementById('recuperacionBadge');
+    const bellBadge = document.getElementById('notifBellBadge');
+    
+    if (badge) {
+      if (pendientes > 0) {
+        badge.textContent = pendientes;
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+    
+    if (bellBadge) {
+      if (pendientes > 0) {
+        bellBadge.textContent = pendientes;
+        bellBadge.style.display = 'inline-block';
+      } else {
+        bellBadge.style.display = 'none';
+      }
+    }
+  } catch (error) {
+    console.error('Error actualizando badge:', error);
+  }
+}
+
+// Inicializar badge de recuperación al cargar el dashboard admin
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.body.classList.contains('admin')) {
+    actualizarBadgeRecuperacion();
+    // Actualizar cada 30 segundos
+    setInterval(actualizarBadgeRecuperacion, 30000);
+    
+    // Bell click → ir a recuperación
+    const bellBtn = document.getElementById('btnNotificacionesBell');
+    if (bellBtn) {
+      bellBtn.addEventListener('click', () => {
+        const btnRecup = document.getElementById('btnRecuperacion');
+        if (btnRecup) btnRecup.click();
+      });
+    }
+  }
+  
+  // Para alumno y profesor: cargar notificaciones del sistema
+  if (document.body.classList.contains('alumno') || document.body.classList.contains('profesor')) {
+    cargarNotificacionesSistema();
+    setInterval(cargarNotificacionesSistema, 60000);
+  }
+});
+
+// =============================================
+// Notificaciones del Sistema (Alumno/Profesor)
+// =============================================
+
+async function cargarNotificacionesSistema() {
+  try {
+    const idUsuario = localStorage.getItem('id_usuario');
+    if (!idUsuario) return;
+    
+    const res = await fetch(`${API_URL}/recuperacion/notificaciones/${idUsuario}`);
+    if (!res.ok) return;
+    const notifs = await res.json();
+    
+    const noLeidas = Array.isArray(notifs) ? notifs.filter(n => !n.leida).length : 0;
+    const badge = document.getElementById('notifBellBadge');
+    if (badge) {
+      if (noLeidas > 0) {
+        badge.textContent = noLeidas;
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  } catch (error) {
+    // Silently fail
+  }
+}
+
+async function mostrarNotificacionesSistema() {
+  try {
+    const idUsuario = localStorage.getItem('id_usuario');
+    if (!idUsuario) return;
+    
+    const res = await fetch(`${API_URL}/recuperacion/notificaciones/${idUsuario}`);
+    const notifs = await res.json();
+    
+    if (!Array.isArray(notifs) || notifs.length === 0) {
+      Swal.fire({
+        title: 'Notificaciones',
+        html: '<p style="color: #888; text-align: center; padding: 20px;">No tenés notificaciones.</p>',
+        confirmButtonColor: '#0A2540'
+      });
+      return;
+    }
+    
+    const html = notifs.map(n => `
+      <div style="padding: 12px; border-bottom: 1px solid #eee; text-align: left; ${!n.leida ? 'background: #f0f7ff;' : ''}">
+        <p style="font-size: 14px; color: #333; margin: 0 0 4px 0;">${n.mensaje || 'Notificación del sistema'}</p>
+        <p style="font-size: 11px; color: #999; margin: 0;">${n.fecha_creacion ? new Date(n.fecha_creacion).toLocaleString('es-AR') : ''}</p>
+      </div>
+    `).join('');
+    
+    Swal.fire({
+      title: 'Notificaciones',
+      html: `<div style="max-height: 400px; overflow-y: auto;">${html}</div>`,
+      confirmButtonColor: '#0A2540',
+      confirmButtonText: 'Cerrar',
+      width: '450px'
+    });
+    
+    // Marcar como leídas
+    for (const n of notifs.filter(x => !x.leida)) {
+      try {
+        await fetch(`${API_URL}/recuperacion/notificaciones/${n.id_notificacion}/leer`, { method: 'PUT' });
+      } catch (e) { /* ignore */ }
+    }
+    
+    // Actualizar badge
+    const badge = document.getElementById('notifBellBadge');
+    if (badge) badge.style.display = 'none';
+  } catch (error) {
+    console.error('Error cargando notificaciones:', error);
+  }
+}
 

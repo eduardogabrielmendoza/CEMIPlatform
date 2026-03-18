@@ -144,6 +144,7 @@
               <span class="checkmark"></span>
               Recordarme
             </label>
+            <a href="#" onclick="showForgotPasswordClassroom(event)" style="font-size: 13px; color: #0A2540; text-decoration: none; font-weight: 500;">¿Olvidaste tu contraseña?</a>
           </div>
 
           <div id="loginMessage" class="login-message"></div>
@@ -198,6 +199,176 @@
   <script src="assets/js/classroom-login.js"></script>
   <script>
     lucide.createIcons();
+
+    function showForgotPasswordClassroom(e) {
+      e.preventDefault();
+      const API_URL = window.API_URL || "http://localhost:3000/api";
+      
+      Swal.fire({
+        title: 'Recuperar Contraseña',
+        html: `
+          <div style="text-align: left;">
+            <p style="margin-bottom: 16px; color: #555; font-size: 14px;">
+              Ingresá tu email y DNI para solicitar la recuperación de tu contraseña. Un administrador revisará tu solicitud.
+            </p>
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px;">Correo electrónico</label>
+              <input type="email" id="emailRecuperacion" placeholder="tu@email.com" 
+                     style="width: 100%; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px;">DNI</label>
+              <input type="text" id="dniRecuperacion" placeholder="12345678" maxlength="8"
+                     oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                     style="width: 100%; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+            </div>
+          </div>
+        `,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Enviar solicitud',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#0A2540',
+        showLoaderOnConfirm: true,
+        preConfirm: async () => {
+          const email = document.getElementById('emailRecuperacion').value.trim();
+          const dni = document.getElementById('dniRecuperacion').value.trim();
+          if (!email) { Swal.showValidationMessage('Ingresá tu email'); return false; }
+          if (!dni) { Swal.showValidationMessage('Ingresá tu DNI'); return false; }
+          try {
+            const response = await fetch(`${API_URL}/recuperacion/solicitar`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, dni })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Error al procesar');
+            return data;
+          } catch (error) {
+            Swal.showValidationMessage(error.message);
+            return false;
+          }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          const emailUsado = document.getElementById('emailRecuperacion')?.value?.trim() || '';
+          Swal.fire({
+            title: '¡Solicitud Enviada!',
+            html: `
+              <div style="text-align: center;">
+                <p style="color: #555; margin-bottom: 16px;">Tu solicitud fue enviada. Un administrador la revisará pronto.</p>
+                <div style="background: #f0f4f8; padding: 16px; border-radius: 10px; margin: 16px 0;">
+                  <p style="color: #0A2540; font-weight: 600; margin-bottom: 4px;">ID de Solicitud</p>
+                  <span style="font-family: monospace; font-size: 18px; color: #333;">#${result.value.id_solicitud || ''}</span>
+                </div>
+                <p style="color: #888; font-size: 13px;">Usá "Verificar solicitud" para consultar el estado.</p>
+              </div>
+            `,
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Verificar ahora',
+            cancelButtonText: 'Cerrar',
+            confirmButtonColor: '#0A2540'
+          }).then((res2) => {
+            if (res2.isConfirmed) verificarSolicitudClassroom(emailUsado);
+          });
+        }
+      });
+    }
+
+    function verificarSolicitudClassroom(emailPrecargado) {
+      const API_URL = window.API_URL || "http://localhost:3000/api";
+      Swal.fire({
+        title: 'Verificar Solicitud',
+        html: `
+          <div style="text-align: left;">
+            <p style="margin-bottom: 16px; color: #555; font-size: 14px;">Ingresá tu email para consultar el estado.</p>
+            <input type="email" id="emailVerificar" placeholder="tu@email.com" value="${emailPrecargado || ''}"
+                   style="width: 100%; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+          </div>
+        `,
+        confirmButtonText: 'Verificar',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#0A2540',
+        showLoaderOnConfirm: true,
+        preConfirm: async () => {
+          const email = document.getElementById('emailVerificar').value.trim();
+          if (!email) { Swal.showValidationMessage('Ingresá tu email'); return false; }
+          try {
+            const response = await fetch(`${API_URL}/recuperacion/verificar`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Error');
+            return { ...data, email };
+          } catch (error) { Swal.showValidationMessage(error.message); return false; }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          const { estado, email, tiene_solicitud } = result.value;
+          if (tiene_solicitud === false) {
+            Swal.fire({ icon: 'warning', title: 'Sin solicitud activa', html: '<p>No tenés una solicitud activa. Primero enviá una desde "¿Olvidaste tu contraseña?".</p>', confirmButtonColor: '#0A2540' });
+          } else if (estado === 'aprobada') {
+            cambiarPasswordClassroom(email);
+          } else if (estado === 'pendiente') {
+            Swal.fire({ icon: 'info', title: 'Solicitud Pendiente', html: '<p>Tu solicitud aún está siendo revisada. Intentá más tarde.</p>', confirmButtonColor: '#0A2540' });
+          } else if (estado === 'rechazada') {
+            Swal.fire({ icon: 'error', title: 'Solicitud Rechazada', html: '<p>Tu solicitud fue rechazada. Contactá a la administración.</p>', confirmButtonColor: '#0A2540' });
+          }
+        }
+      });
+    }
+
+    function cambiarPasswordClassroom(email) {
+      const API_URL = window.API_URL || "http://localhost:3000/api";
+      Swal.fire({
+        title: 'Nueva Contraseña',
+        html: `
+          <div style="text-align: left;">
+            <p style="margin-bottom: 16px; color: #22c55e; font-weight: 600;">✓ Tu solicitud fue aprobada. Creá tu nueva contraseña.</p>
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px;">Nueva contraseña</label>
+              <input type="password" id="nuevaPass" placeholder="Mínimo 6 caracteres"
+                     style="width: 100%; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 8px;">Confirmar contraseña</label>
+              <input type="password" id="confirmarPass" placeholder="Repetí la contraseña"
+                     style="width: 100%; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+            </div>
+          </div>
+        `,
+        confirmButtonText: 'Cambiar contraseña',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#0A2540',
+        showLoaderOnConfirm: true,
+        preConfirm: async () => {
+          const nueva = document.getElementById('nuevaPass').value;
+          const confirmar = document.getElementById('confirmarPass').value;
+          if (!nueva || nueva.length < 6) { Swal.showValidationMessage('Mínimo 6 caracteres'); return false; }
+          if (nueva !== confirmar) { Swal.showValidationMessage('Las contraseñas no coinciden'); return false; }
+          try {
+            const response = await fetch(`${API_URL}/recuperacion/cambiar-password`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, nueva_password: nueva })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Error');
+            return data;
+          } catch (error) { Swal.showValidationMessage(error.message); return false; }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({ icon: 'success', title: '¡Contraseña actualizada!', html: '<p>Ya podés iniciar sesión con tu nueva contraseña.</p>', confirmButtonColor: '#0A2540' });
+        }
+      });
+    }
   </script>
 </body>
 </html>
