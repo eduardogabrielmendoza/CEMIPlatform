@@ -2837,6 +2837,59 @@
       btnCursos.click();
     }
   });
+
+  // =============================================
+  // Notificaciones del Sistema
+  // =============================================
+  async function cargarNotificacionesSistema() {
+    try {
+      const idUsuario = localStorage.getItem('id_usuario');
+      if (!idUsuario) return;
+      const res = await fetch(`${API_URL}/recuperacion/notificaciones/${idUsuario}`);
+      if (!res.ok) return;
+      const notifs = await res.json();
+      const noLeidas = Array.isArray(notifs) ? notifs.filter(n => !n.leida).length : 0;
+      const badge = document.getElementById('notifBellBadge');
+      if (badge) {
+        if (noLeidas > 0) {
+          badge.textContent = noLeidas;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    } catch (error) { /* silent */ }
+  }
+
+  async function mostrarNotificacionesSistema() {
+    try {
+      const idUsuario = localStorage.getItem('id_usuario');
+      if (!idUsuario) return;
+      const res = await fetch(`${API_URL}/recuperacion/notificaciones/${idUsuario}`);
+      const notifs = await res.json();
+      if (!Array.isArray(notifs) || notifs.length === 0) {
+        Swal.fire({ title: 'Notificaciones', html: '<p style="color: #888; text-align: center; padding: 20px;">No tenés notificaciones.</p>', confirmButtonColor: '#0A2540' });
+        return;
+      }
+      const html = notifs.map(n => `
+        <div style="padding: 12px; border-bottom: 1px solid #eee; text-align: left; ${!n.leida ? 'background: #f0f7ff;' : ''}">
+          <p style="font-weight: 600; font-size: 14px; color: #0A2540; margin: 0 0 4px 0;">${n.titulo || 'Notificación'}</p>
+          <p style="font-size: 13px; color: #333; margin: 0 0 4px 0;">${n.mensaje || ''}</p>
+          <p style="font-size: 11px; color: #999; margin: 0;">${n.fecha_creacion ? new Date(n.fecha_creacion).toLocaleString('es-AR') : ''}</p>
+        </div>
+      `).join('');
+      Swal.fire({ title: 'Notificaciones', html: `<div style="max-height: 400px; overflow-y: auto;">${html}</div>`, confirmButtonColor: '#0A2540', confirmButtonText: 'Cerrar', width: '450px' });
+      for (const n of notifs.filter(x => !x.leida)) {
+        try { await fetch(`${API_URL}/recuperacion/notificaciones/${n.id_notificacion}/leer`, { method: 'PUT' }); } catch(e) {}
+      }
+      const badge = document.getElementById('notifBellBadge');
+      if (badge) badge.style.display = 'none';
+    } catch (error) { console.error('Error cargando notificaciones:', error); }
+  }
+
+  // Inicializar notificaciones
+  cargarNotificacionesSistema();
+  setInterval(cargarNotificacionesSistema, 60000);
 </script>
 
 <div id="paymentMethodModal" onclick="if(event.target === this) this.classList.remove('active')" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 10000;">
