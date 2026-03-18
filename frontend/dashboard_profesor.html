@@ -36,7 +36,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="dashboard-body">
+<body class="dashboard-body profesor">
 
   <button class="mobile-menu-toggle" id="mobileMenuToggle">
     <i data-lucide="menu"></i>
@@ -1596,7 +1596,9 @@
     document.querySelectorAll(".sidebar-menu button").forEach(btn => {
       btn.addEventListener("click", () => {
         if (btn.id === "logoutBtn") {
+          const cp = localStorage.getItem('cemi_cookies_accepted');
           localStorage.clear();
+          if (cp) localStorage.setItem('cemi_cookies_accepted', cp);
           window.location.href = "login.html";
           return;
         }

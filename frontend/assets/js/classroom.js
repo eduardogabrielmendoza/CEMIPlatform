@@ -1158,7 +1158,9 @@ function handleLogout() {
     cancelButtonText: 'Cancelar'
   }).then((result) => {
     if (result.isConfirmed) {
+      const cp = localStorage.getItem('cemi_cookies_accepted');
       localStorage.clear();
+      if (cp) localStorage.setItem('cemi_cookies_accepted', cp);
       window.location.href = 'index.html';
     }
   });

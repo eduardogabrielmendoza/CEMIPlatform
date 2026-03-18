@@ -252,7 +252,33 @@
         allowOutsideClick: () => !Swal.isLoading()
       }).then((result) => {
         if (result.isConfirmed && result.value) {
+          const data = result.value;
           const emailUsado = document.getElementById('emailRecuperacion')?.value?.trim() || '';
+          
+          if (data.estado === 'aprobada') {
+            cambiarPasswordClassroom(emailUsado);
+            return;
+          }
+          
+          if (data.estado === 'pendiente' && data.id_solicitud) {
+            Swal.fire({
+              icon: 'info',
+              title: 'Solicitud en revisión',
+              html: `
+                <div style="text-align: center;">
+                  <p style="color: #555; margin-bottom: 16px;">Ya tenés una solicitud pendiente. Un administrador la revisará pronto.</p>
+                  <div style="background: #f0f4f8; padding: 16px; border-radius: 10px; margin: 16px 0;">
+                    <p style="color: #0A2540; font-weight: 600; margin-bottom: 4px;">ID de Solicitud</p>
+                    <span style="font-family: monospace; font-size: 18px; color: #333;">#${data.id_solicitud}</span>
+                  </div>
+                  <p style="color: #888; font-size: 13px;">Volvé más tarde para verificar si fue aprobada.</p>
+                </div>
+              `,
+              confirmButtonColor: '#0A2540'
+            });
+            return;
+          }
+          
           Swal.fire({
             title: '¡Solicitud Enviada!',
             html: `
@@ -260,18 +286,14 @@
                 <p style="color: #555; margin-bottom: 16px;">Tu solicitud fue enviada. Un administrador la revisará pronto.</p>
                 <div style="background: #f0f4f8; padding: 16px; border-radius: 10px; margin: 16px 0;">
                   <p style="color: #0A2540; font-weight: 600; margin-bottom: 4px;">ID de Solicitud</p>
-                  <span style="font-family: monospace; font-size: 18px; color: #333;">#${result.value.id_solicitud || ''}</span>
+                  <span style="font-family: monospace; font-size: 18px; color: #333;">#${data.id_solicitud || ''}</span>
                 </div>
-                <p style="color: #888; font-size: 13px;">Usá "Verificar solicitud" para consultar el estado.</p>
+                <p style="color: #888; font-size: 13px;">Volvé a esta pantalla cuando un administrador apruebe tu solicitud.</p>
               </div>
             `,
             icon: 'success',
-            showCancelButton: true,
-            confirmButtonText: 'Verificar ahora',
-            cancelButtonText: 'Cerrar',
+            confirmButtonText: 'Entendido',
             confirmButtonColor: '#0A2540'
-          }).then((res2) => {
-            if (res2.isConfirmed) verificarSolicitudClassroom(emailUsado);
           });
         }
       });

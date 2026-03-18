@@ -43,7 +43,9 @@ function verificarSesionActiva() {
       if (result.isConfirmed) {
         window.location.href = 'classroom.html';
       } else if (result.isDismissed) {
+        const cp = localStorage.getItem('cemi_cookies_accepted');
         localStorage.clear();
+        if (cp) localStorage.setItem('cemi_cookies_accepted', cp);
         showMessage('Sesión cerrada', 'success');
       }
     });

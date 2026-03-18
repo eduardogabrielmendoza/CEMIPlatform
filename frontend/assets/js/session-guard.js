@@ -12,12 +12,16 @@
     const now = Math.floor(Date.now() / 1000);
     
     if (payload.exp <= now) {
+      const cp = localStorage.getItem('cemi_cookies_accepted');
       localStorage.clear();
+      if (cp) localStorage.setItem('cemi_cookies_accepted', cp);
       window.location.replace('index.html');
       return;
     }
   } catch (e) {
+    const cp = localStorage.getItem('cemi_cookies_accepted');
     localStorage.clear();
+    if (cp) localStorage.setItem('cemi_cookies_accepted', cp);
     window.location.replace('index.html');
     return;
   }

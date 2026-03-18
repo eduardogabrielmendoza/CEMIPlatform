@@ -518,9 +518,39 @@
         allowOutsideClick: () => !Swal.isLoading()
       }).then((result) => {
         if (result.isConfirmed && result.value) {
-          // Guardar email para verificar después
+          const data = result.value;
           const emailUsado = document.getElementById('emailRecuperacion')?.value?.trim() || '';
           
+          // Si ya existe una solicitud pendiente o aprobada, mostrar directo
+          if (data.estado === 'aprobada') {
+            mostrarCambioPassword(emailUsado);
+            return;
+          }
+          
+          if (data.estado === 'pendiente' && data.id_solicitud) {
+            Swal.fire({
+              icon: 'info',
+              title: 'Solicitud en revisión',
+              html: `
+                <div style="text-align: center;">
+                  <p style="color: #555; margin-bottom: 16px;">
+                    Ya tenés una solicitud pendiente. Un administrador la revisará pronto.
+                  </p>
+                  <div style="background: #f0f4f8; padding: 16px; border-radius: 10px; margin: 16px 0;">
+                    <p style="color: #0A2540; font-weight: 600; margin-bottom: 4px;">ID de Solicitud</p>
+                    <span style="font-family: monospace; font-size: 18px; color: #333;">#${data.id_solicitud}</span>
+                  </div>
+                  <p style="color: #888; font-size: 13px;">
+                    Volvé más tarde para verificar si fue aprobada.
+                  </p>
+                </div>
+              `,
+              confirmButtonColor: '#0A2540'
+            });
+            return;
+          }
+          
+          // Nueva solicitud creada
           Swal.fire({
             title: '¡Solicitud Enviada!',
             html: `
@@ -530,22 +560,16 @@
                 </p>
                 <div style="background: #f0f4f8; padding: 16px; border-radius: 10px; margin: 16px 0;">
                   <p style="color: #0A2540; font-weight: 600; margin-bottom: 4px;">ID de Solicitud</p>
-                  <span style="font-family: monospace; font-size: 18px; color: #333;">#${result.value.id_solicitud || ''}</span>
+                  <span style="font-family: monospace; font-size: 18px; color: #333;">#${data.id_solicitud || ''}</span>
                 </div>
                 <p style="color: #888; font-size: 13px; margin-top: 12px;">
-                  Volvé a esta pantalla y usá "Verificar solicitud" para consultar el estado.
+                  Volvé a esta pantalla cuando un administrador apruebe tu solicitud.
                 </p>
               </div>
             `,
             icon: 'success',
-            showCancelButton: true,
-            confirmButtonText: 'Verificar ahora',
-            cancelButtonText: 'Cerrar',
+            confirmButtonText: 'Entendido',
             confirmButtonColor: '#0A2540'
-          }).then((res2) => {
-            if (res2.isConfirmed) {
-              verificarSolicitudRecuperacion(emailUsado);
-            }
           });
         }
       });

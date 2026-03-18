@@ -54,7 +54,9 @@
       try {
         const data = await clonedResponse.json();
         if (data.expired) {
+          const cookiePref = localStorage.getItem('cemi_cookies_accepted');
           localStorage.clear();
+          if (cookiePref) localStorage.setItem('cemi_cookies_accepted', cookiePref);
           window.location.href = '/login.html?session=expired';
           return response;
         }

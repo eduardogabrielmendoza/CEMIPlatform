@@ -116,7 +116,9 @@ async function handleLogin(e) {
 }
 
 function handleLogout() {
+  const cookiePref = localStorage.getItem('cemi_cookies_accepted');
   localStorage.clear();
+  if (cookiePref) localStorage.setItem('cemi_cookies_accepted', cookiePref);
   window.location.href = "index.html";
 }
 
