@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
     let baseWhere = "(p.nombre_perfil = 'admin' OR p.nombre_perfil = 'administrador')";
     if (where.length > 0) baseWhere += ' AND ' + where.join(' AND ');
 
-    const orderClause = orden === 'nombre' ? 'ORDER BY per.nombre ASC' : orden === 'apellido' ? 'ORDER BY per.apellido ASC' : 'ORDER BY per.id_persona DESC';
+    const orderClause = orden === 'nombre' ? 'ORDER BY per.nombre ASC' : orden === 'apellido' ? 'ORDER BY per.apellido ASC' : 'ORDER BY per.nombre ASC, per.apellido ASC';
 
     const [countResult] = await pool.query(`SELECT COUNT(*) as total FROM personas per JOIN usuarios u ON per.id_persona = u.id_persona JOIN perfiles p ON u.id_perfil = p.id_perfil WHERE ${baseWhere}`, params);
     const total = countResult[0].total;

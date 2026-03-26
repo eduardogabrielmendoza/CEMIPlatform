@@ -3,6 +3,17 @@ import pool from "../utils/db.js";
 
 const router = express.Router();
 
+// Get distinct ciclo_lectivo values
+router.get("/ciclos-lectivos", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT DISTINCT ciclo_lectivo FROM cursos WHERE ciclo_lectivo IS NOT NULL ORDER BY ciclo_lectivo DESC");
+    res.json(rows.map(r => r.ciclo_lectivo));
+  } catch (error) {
+    console.error("Error fetching ciclos lectivos:", error);
+    res.status(500).json({ message: "Error al obtener ciclos lectivos" });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const { id_profesor, limit, offset, idioma, nivel, ciclo_lectivo, busqueda } = req.query;
@@ -56,7 +67,7 @@ router.get("/", async (req, res) => {
       LEFT JOIN personas per ON p.id_profesor = per.id_persona
       LEFT JOIN aulas a ON c.id_aula = a.id_aula
       ${whereClause}
-      ORDER BY c.id_curso DESC
+      ORDER BY c.nombre_curso ASC
       ${limitClause}
     `;
 

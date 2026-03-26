@@ -176,7 +176,7 @@ function initAdminSPA() {
     try {
       let html = "";
       let endpoint = "";
-      const PAGE_SIZE = 10;
+      const PAGE_SIZE = 5;
 
       switch (section) {
         case "cursos":
@@ -293,6 +293,7 @@ function initAdminSPA() {
         if (section === 'alumnos') {
           lucide.createIcons();
           setupAlumnoFilters();
+          populateCiclosLectivos();
         }
         if (section === 'profesores') {
           lucide.createIcons();
@@ -334,7 +335,9 @@ async function loadMoreRows(section) {
   if (btn) { btn.textContent = 'Cargando...'; btn.disabled = true; }
 
   try {
-    const res = await fetch(`${API_URL}/${section}?limit=${state.pageSize}&offset=${state.offset}`);
+    let url = `${API_URL}/${section}?limit=${state.pageSize}&offset=${state.offset}`;
+    if (section === 'alumnos' && state.ciclo) url += `&ciclo_lectivo=${encodeURIComponent(state.ciclo)}`;
+    const res = await fetch(url);
     const responseData = await res.json();
     const newRows = responseData.data || [];
 
@@ -4928,6 +4931,11 @@ function generateTable(section, data, total) {
               <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
               <input type="text" id="alumnosSearch" placeholder="Buscar por nombre, legajo o email..." style="width: 100%;">
             </div>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAlumnoActivo" checked onchange="filterTableRows('alumnos')"> Activos</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAlumnoInactivo" onchange="filterTableRows('alumnos')"> Inactivos</label>
+            <select id="filterCicloLectivo" onchange="filtrarAlumnosPorCiclo()" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#555;">
+              <option value="">Todos los ciclos</option>
+            </select>
             <button class="btn-secondary" onclick="descargarPDFAlumnos()" style="display: flex; align-items: center; gap: 8px;">
               <i data-lucide="download"></i>
               Descargar PDF
@@ -4937,10 +4945,6 @@ function generateTable(section, data, total) {
               Nuevo Alumno
             </button>
           </div>
-        </div>
-        <div class="filter-panel">
-          <label><input type="checkbox" id="filterAlumnoActivo" checked onchange="filterTableRows('alumnos')"> Activos</label>
-          <label><input type="checkbox" id="filterAlumnoInactivo" onchange="filterTableRows('alumnos')"> Inactivos</label>
         </div>
         <table class="admin-table" id="alumnosTable">
           <thead>
@@ -4975,16 +4979,14 @@ function generateTable(section, data, total) {
               <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
               <input type="text" id="profesoresSearch" placeholder="Buscar por nombre, especialidad o idioma..." style="width: 100%;">
             </div>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterProfesorActivo" checked onchange="filterTableRows('profesores')"> Activos</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterProfesorInactivo" onchange="filterTableRows('profesores')"> Inactivos</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterProfesorLicencia" onchange="filterTableRows('profesores')"> Licencia</label>
             <button class="btn-primary" onclick="openNuevoProfesorModal()">
               <i data-lucide="user-plus"></i>
               Nuevo Profesor
             </button>
           </div>
-        </div>
-        <div class="filter-panel">
-          <label><input type="checkbox" id="filterProfesorActivo" checked onchange="filterTableRows('profesores')"> Activos</label>
-          <label><input type="checkbox" id="filterProfesorInactivo" onchange="filterTableRows('profesores')"> Inactivos</label>
-          <label><input type="checkbox" id="filterProfesorLicencia" onchange="filterTableRows('profesores')"> De licencia</label>
         </div>
         <table class="admin-table" id="profesoresTable">
           <thead>
@@ -5018,15 +5020,13 @@ function generateTable(section, data, total) {
               <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
               <input type="text" id="administradoresSearch" placeholder="Buscar por nombre, email o DNI..." style="width: 100%;">
             </div>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAdminActivo" checked onchange="filterTableRows('administradores')"> Activos</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAdminInactivo" onchange="filterTableRows('administradores')"> Inactivos</label>
             <button class="btn-primary" onclick="openNuevoAdministradorModal()">
               <i data-lucide="user-plus"></i>
               Nuevo Administrador
             </button>
           </div>
-        </div>
-        <div class="filter-panel">
-          <label><input type="checkbox" id="filterAdminActivo" checked onchange="filterTableRows('administradores')"> Activos</label>
-          <label><input type="checkbox" id="filterAdminInactivo" onchange="filterTableRows('administradores')"> Inactivos</label>
         </div>
         <table class="admin-table" id="administradoresTable">
           <thead>
@@ -5242,9 +5242,19 @@ case "pagos":
     
     case "idiomas":
       const idiomaFlags = {
-        'Inglés': '🇬🇧', 'Francés': '🇫🇷', 'Alemán': '🇩🇪', 'Italiano': '🇮🇹',
-        'Portugués': '🇧🇷', 'Japonés': '🇯🇵', 'Chino': '🇨🇳', 'Coreano': '🇰🇷',
-        'Ruso': '🇷🇺', 'Árabe': '🇸🇦', 'Hindi': '🇮🇳', 'Turco': '🇹🇷'
+        'inglés': '🇬🇧', 'ingles': '🇬🇧', 'english': '🇬🇧',
+        'francés': '🇫🇷', 'frances': '🇫🇷', 'french': '🇫🇷',
+        'alemán': '🇩🇪', 'aleman': '🇩🇪', 'german': '🇩🇪',
+        'italiano': '🇮🇹', 'italian': '🇮🇹',
+        'portugués': '🇧🇷', 'portugues': '🇧🇷', 'portuguese': '🇧🇷',
+        'japonés': '🇯🇵', 'japones': '🇯🇵', 'japanese': '🇯🇵',
+        'chino': '🇨🇳', 'chinese': '🇨🇳', 'mandarín': '🇨🇳', 'mandarin': '🇨🇳',
+        'coreano': '🇰🇷', 'korean': '🇰🇷',
+        'ruso': '🇷🇺', 'russian': '🇷🇺',
+        'árabe': '🇸🇦', 'arabe': '🇸🇦', 'arabic': '🇸🇦',
+        'hindi': '🇮🇳',
+        'turco': '🇹🇷', 'turkish': '🇹🇷',
+        'español': '🇪🇸', 'espanol': '🇪🇸', 'spanish': '🇪🇸'
       };
       
       return `
@@ -5264,7 +5274,7 @@ case "pagos":
         </div>
         <div class="idiomas-grid" id="idiomasGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
           ${data.length > 0 ? data.map(idioma => {
-            const flag = idiomaFlags[idioma.nombre_idioma] || '🌐';
+            const flag = idiomaFlags[(idioma.nombre_idioma || '').toLowerCase().trim()] || '🌐';
             const estado = idioma.estado || 'activo';
             
             return `
@@ -5345,10 +5355,10 @@ function generateTableRow(section, item) {
         <td>${a.telefono || '-'}</td>
         <td>${cursos}</td>
         <td>
-          <label class="estado-switch" title="Cambiar estado">
-            <input type="checkbox" ${estado === 'activo' ? 'checked' : ''} onchange="toggleEstado('alumnos', ${a.id_alumno}, this.checked ? 'activo' : 'inactivo', this)">
-            <span class="slider"></span>
-          </label>
+          <select onchange="toggleEstado('alumnos', ${a.id_alumno}, this.value, this)" style="padding:4px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;background:${estado === 'activo' ? '#dcfce7' : '#fee2e2'};color:${estado === 'activo' ? '#16a34a' : '#dc2626'};">
+            <option value="activo" ${estado === 'activo' ? 'selected' : ''}>Activo</option>
+            <option value="inactivo" ${estado === 'inactivo' ? 'selected' : ''}>Inactivo</option>
+          </select>
         </td>
         <td style="text-align:center;">
           <div style="display:flex;gap:4px;justify-content:center;">
@@ -5410,10 +5420,10 @@ function generateTableRow(section, item) {
         <td>${admin.dni || '-'}</td>
         <td>@${admin.username || 'Sin usuario'}</td>
         <td>
-          <label class="estado-switch" title="Cambiar estado">
-            <input type="checkbox" ${estado === 'activo' ? 'checked' : ''} onchange="toggleEstado('administradores', ${admin.id_persona}, this.checked ? 'activo' : 'inactivo', this)">
-            <span class="slider"></span>
-          </label>
+          <select onchange="toggleEstado('administradores', ${admin.id_persona}, this.value, this)" style="padding:4px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;background:${estado === 'activo' ? '#dcfce7' : '#fee2e2'};color:${estado === 'activo' ? '#16a34a' : '#dc2626'};">
+            <option value="activo" ${estado === 'activo' ? 'selected' : ''}>Activo</option>
+            <option value="inactivo" ${estado === 'inactivo' ? 'selected' : ''}>Inactivo</option>
+          </select>
         </td>
         <td style="text-align:center;">
           <div style="display:flex;gap:4px;justify-content:center;">
@@ -5524,6 +5534,63 @@ function filterTableRows(section) {
     const matchesSearch = !searchTerm || text.includes(searchTerm);
     row.style.display = (showByEstado && matchesSearch) ? '' : 'none';
   });
+}
+
+// Populate ciclo lectivo dropdown
+async function populateCiclosLectivos() {
+  try {
+    const res = await fetch(`${API_URL}/cursos/ciclos-lectivos`);
+    const ciclos = await res.json();
+    const select = document.getElementById('filterCicloLectivo');
+    if (select && ciclos.length > 0) {
+      ciclos.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = `Ciclo ${c}`;
+        select.appendChild(opt);
+      });
+    }
+  } catch (error) {
+    console.error('Error loading ciclos lectivos:', error);
+  }
+}
+
+// Filter alumnos by ciclo lectivo (reloads from server)
+async function filtrarAlumnosPorCiclo() {
+  const ciclo = document.getElementById('filterCicloLectivo')?.value || '';
+  const PAGE_SIZE = 5;
+  let url = `${API_URL}/alumnos?limit=${PAGE_SIZE}&offset=0`;
+  if (ciclo) url += `&ciclo_lectivo=${encodeURIComponent(ciclo)}`;
+
+  try {
+    const res = await fetch(url);
+    const responseData = await res.json();
+    const alumnos = responseData.data || [];
+    const total = responseData.total || alumnos.length;
+
+    const tbody = document.getElementById('alumnosTableBody');
+    if (tbody) {
+      tbody.innerHTML = alumnos.map(a => generateTableRow('alumnos', a)).join('');
+      lucide.createIcons();
+    }
+
+    window._adminPagination['alumnos'] = { offset: alumnos.length, total, pageSize: PAGE_SIZE, ciclo };
+
+    // Update or remove load more button
+    const existingBtn = document.querySelector('.btn-load-more');
+    if (existingBtn) existingBtn.remove();
+    if (alumnos.length < total) {
+      const table = document.getElementById('alumnosTable');
+      if (table) {
+        table.insertAdjacentHTML('afterend', `<button class="btn-load-more" onclick="loadMoreRows('alumnos')">Cargar más (${alumnos.length} de ${total})</button>`);
+      }
+    }
+
+    filterTableRows('alumnos');
+  } catch (error) {
+    console.error('Error filtering by ciclo lectivo:', error);
+    showToast('Error al filtrar por ciclo lectivo', 'error');
+  }
 }
 
 async function generateDashboardHome() {
@@ -11625,7 +11692,10 @@ async function descargarPDFAlumnos() {
       error: [239, 68, 68]
     };
     
-    const responseAlumnos = await fetch(`${API_URL}/alumnos`);
+    const cicloSeleccionado = document.getElementById('filterCicloLectivo')?.value || '';
+    let alumnosUrl = `${API_URL}/alumnos`;
+    if (cicloSeleccionado) alumnosUrl += `?ciclo_lectivo=${encodeURIComponent(cicloSeleccionado)}`;
+    const responseAlumnos = await fetch(alumnosUrl);
     const alumnosResp = await responseAlumnos.json();
     const alumnos = alumnosResp.data || alumnosResp;
     
@@ -11687,7 +11757,7 @@ async function descargarPDFAlumnos() {
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...COLORS.white);
-    doc.text('Listado de Alumnos', pageWidth - 15, 14, { align: 'right' });
+    doc.text(cicloSeleccionado ? `Alumnos - Ciclo ${cicloSeleccionado}` : 'Listado de Alumnos', pageWidth - 15, 14, { align: 'right' });
     
     // Fecha de generación
     doc.setFontSize(8);
@@ -11818,7 +11888,7 @@ async function descargarPDFAlumnos() {
       );
     }
     
-    doc.save(`CEMI_Alumnos_${new Date().toISOString().split('T')[0]}.pdf`);
+    doc.save(`CEMI_Alumnos${cicloSeleccionado ? '_Ciclo' + cicloSeleccionado : ''}_${new Date().toISOString().split('T')[0]}.pdf`);
     
     showToast('PDF descargado exitosamente', 'success');
   } catch (error) {

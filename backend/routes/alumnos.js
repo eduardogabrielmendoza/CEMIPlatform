@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
     }
 
     const whereClause = where.length > 0 ? 'WHERE ' + where.join(' AND ') : '';
-    const orderClause = orden === 'nombre' ? 'ORDER BY p.nombre ASC' : orden === 'apellido' ? 'ORDER BY p.apellido ASC' : 'ORDER BY a.id_alumno DESC';
+    const orderClause = orden === 'nombre' ? 'ORDER BY p.nombre ASC' : orden === 'apellido' ? 'ORDER BY p.apellido ASC' : 'ORDER BY p.nombre ASC, p.apellido ASC';
 
     // Count total
     const [countResult] = await pool.query(`SELECT COUNT(*) as total FROM alumnos a JOIN personas p ON a.id_alumno = p.id_persona ${whereClause}`, params);

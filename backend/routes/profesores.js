@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
     }
 
     const whereClause = where.length > 0 ? 'WHERE ' + where.join(' AND ') : '';
-    const orderClause = orden === 'nombre' ? 'ORDER BY per.nombre ASC' : orden === 'apellido' ? 'ORDER BY per.apellido ASC' : 'ORDER BY p.id_profesor DESC';
+    const orderClause = orden === 'nombre' ? 'ORDER BY per.nombre ASC' : orden === 'apellido' ? 'ORDER BY per.apellido ASC' : 'ORDER BY per.nombre ASC, per.apellido ASC';
 
     const [countResult] = await pool.query(`SELECT COUNT(*) as total FROM profesores p JOIN personas per ON p.id_profesor = per.id_persona ${whereClause}`, params);
     const total = countResult[0].total;
