@@ -199,6 +199,13 @@ setChatServer(chatServer);
       console.log('[migration] Added bandera column to idiomas');
     }
 
+    // Add estado column to idiomas if not exists
+    const [idiomasEstadoCols] = await pool.query("SHOW COLUMNS FROM idiomas LIKE 'estado'");
+    if (idiomasEstadoCols.length === 0) {
+      await pool.query("ALTER TABLE idiomas ADD COLUMN estado ENUM('activo','inactivo') DEFAULT 'activo' AFTER bandera");
+      console.log('[migration] Added estado column to idiomas');
+    }
+
     // Populate bandera with 2-letter ISO codes for known idiomas (only when NULL)
     const banderaMap = [
       ['gb', '%ingl%'], ['fr', '%franc%'], ['de', '%alem%'],
