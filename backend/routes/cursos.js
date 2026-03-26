@@ -401,6 +401,50 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Get historical instances of a course (same name or idioma+nivel from other ciclo_lectivos)
+router.get("/:id/historial", async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Get the current course info
+    const [cursoRows] = await pool.query("SELECT nombre_curso, id_idioma, id_nivel, ciclo_lectivo FROM cursos WHERE id_curso = ?", [id]);
+    if (cursoRows.length === 0) return res.status(404).json({ message: "Curso no encontrado" });
+    const curso = cursoRows[0];
+
+    // Find similar courses from other ciclo_lectivos
+    const [historicos] = await pool.query(`
+      SELECT c.id_curso, c.nombre_curso, c.ciclo_lectivo, c.estado,
+             i.nombre_idioma, n.descripcion AS nivel,
+             CONCAT(per.nombre, ' ', per.apellido) AS profesor
+      FROM cursos c
+      LEFT JOIN idiomas i ON c.id_idioma = i.id_idioma
+      LEFT JOIN niveles n ON c.id_nivel = n.id_nivel
+      LEFT JOIN profesores p ON c.id_profesor = p.id_profesor
+      LEFT JOIN personas per ON p.id_persona = per.id_persona
+      WHERE c.id_curso != ? AND (c.id_idioma = ? AND c.id_nivel = ?)
+      ORDER BY c.ciclo_lectivo DESC
+    `, [id, curso.id_idioma, curso.id_nivel]);
+
+    // For each historical course, get enrolled students
+    for (var h of historicos) {
+      const [alumnos] = await pool.query(`
+        SELECT p.nombre, p.apellido, p.mail,
+               cal.parcial1, cal.parcial2, cal.final
+        FROM inscripciones ins
+        JOIN alumnos a ON ins.id_alumno = a.id_alumno
+        JOIN personas p ON a.id_persona = p.id_persona
+        LEFT JOIN calificaciones cal ON (cal.id_alumno = a.id_alumno AND cal.id_curso = ins.id_curso)
+        WHERE ins.id_curso = ?
+      `, [h.id_curso]);
+      h.alumnos = alumnos;
+    }
+
+    res.json(historicos);
+  } catch (error) {
+    console.error("Error al obtener historial del curso:", error);
+    res.status(500).json({ message: "Error al obtener historial del curso" });
+  }
+});
+
 router.get("/:id/detalles", async (req, res) => {
   try {
     const { id } = req.params;

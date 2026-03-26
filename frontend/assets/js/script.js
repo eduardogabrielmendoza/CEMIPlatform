@@ -5561,6 +5561,50 @@ async function toggleEstadoIdioma(id, nuevoEstado, element) {
   }
 }
 
+// Filter niveles dropdown by selected idioma
+function filterNivelesByIdioma(allNiveles, idiomaId, nivelSelect, selectedNivelId) {
+  if (!nivelSelect) return;
+  nivelSelect.innerHTML = '<option value="">Sin nivel</option>';
+  if (!idiomaId) return;
+  var filtered = allNiveles.filter(function(n) { return String(n.id_idioma) === String(idiomaId); });
+  filtered.forEach(function(n) {
+    var o = document.createElement('option');
+    o.value = n.id_nivel;
+    o.textContent = n.descripcion;
+    if (String(n.id_nivel) === String(selectedNivelId)) o.selected = true;
+    nivelSelect.appendChild(o);
+  });
+}
+
+// Debounce helper
+var _searchTimers = {};
+function debounceSearch(section, fn, delay) {
+  clearTimeout(_searchTimers[section]);
+  _searchTimers[section] = setTimeout(fn, delay);
+}
+
+// Server-side search across all records
+function searchServerSide(section, query) {
+  var url = API_URL + '/' + section + '?busqueda=' + encodeURIComponent(query) + '&limit=100';
+  fetch(url).then(function(res) { return res.json(); }).then(function(data) {
+    var rows = data.data || data;
+    var tbody = document.getElementById(section + 'TableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (rows.length > 0) {
+      rows.forEach(function(item) {
+        tbody.insertAdjacentHTML('beforeend', generateTableRow(section, item));
+      });
+    } else {
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:20px;color:#999;">No se encontraron resultados</td></tr>';
+    }
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    var loadMoreBtn = document.querySelector('.btn-load-more');
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    filterTableRows(section);
+  });
+}
+
 // Toggle filter dropdown visibility
 function toggleFilterDropdown(section) {
   var dropdown = document.getElementById(section + 'FilterDropdown');
@@ -6110,6 +6154,11 @@ function ensureCursoPanel() {
           <h3><i data-lucide="users"></i> Alumnos Inscritos</h3>
           <div id="alumnosInscritos" class="alumnos-inscritos-list"></div>
         </div>
+
+        <div class="panel-section" id="cursoHistorialSection" style="display:none;">
+          <h3><i data-lucide="history"></i> Historial de Ciclos Lectivos</h3>
+          <div id="cursoHistorial" class="curso-historial-list"></div>
+        </div>
       </div>
       
       <div class="panel-actions">
@@ -6152,13 +6201,15 @@ async function openCursoPanel(idCurso) {
   overlay.classList.add('active');
 
   try {
-    const [resCurso, resInscritos] = await Promise.all([
+    const [resCurso, resInscritos, resHistorial] = await Promise.all([
       fetch(`${API_URL}/cursos/${idCurso}`),
-      fetch(`${API_URL}/inscripciones/curso/${idCurso}`)
+      fetch(`${API_URL}/inscripciones/curso/${idCurso}`),
+      fetch(`${API_URL}/cursos/${idCurso}/historial`)
     ]);
 
     const curso = await resCurso.json();
     const inscritos = await resInscritos.json();
+    const historial = await resHistorial.json();
 
     document.getElementById('cursoPanelTitle').textContent = curso.nombre_curso || 'Detalle del Curso';
 
@@ -6210,6 +6261,51 @@ async function openCursoPanel(idCurso) {
             </div>
           </div>`;
       }).join('');
+    }
+
+    // Render historial de ciclos lectivos
+    const historialSection = document.getElementById('cursoHistorialSection');
+    const historialContainer = document.getElementById('cursoHistorial');
+    if (Array.isArray(historial) && historial.length > 0) {
+      historialSection.style.display = '';
+      historialContainer.innerHTML = historial.map(h => {
+        const estadoBadge = h.estado === 'activo'
+          ? '<span class="historial-badge activo">Activo</span>'
+          : '<span class="historial-badge inactivo">Finalizado</span>';
+        const alumnosHtml = (!h.alumnos || h.alumnos.length === 0)
+          ? '<p class="historial-empty">Sin alumnos registrados</p>'
+          : h.alumnos.map(a => {
+              const ini = `${(a.nombre || 'A')[0]}${(a.apellido || 'A')[0]}`.toUpperCase();
+              const notas = [a.parcial1, a.parcial2, a.final].filter(n => n != null);
+              const notasHtml = notas.length > 0
+                ? `<span class="historial-notas">P1: ${a.parcial1 ?? '-'} | P2: ${a.parcial2 ?? '-'} | Final: ${a.final ?? '-'}</span>`
+                : '';
+              return `<div class="alumno-item historial-alumno">
+                <div class="alumno-avatar">${ini}</div>
+                <div class="alumno-info">
+                  <div class="alumno-nombre">${a.nombre} ${a.apellido}</div>
+                  <div class="alumno-email">${a.mail || 'Sin email'}</div>
+                  ${notasHtml}
+                </div>
+              </div>`;
+            }).join('');
+        return `<div class="historial-card">
+          <div class="historial-card-header">
+            <div>
+              <strong>${h.nombre_curso}</strong>
+              ${estadoBadge}
+            </div>
+            <span class="historial-ciclo">${h.ciclo_lectivo}</span>
+          </div>
+          <div class="historial-card-meta">
+            <span><i data-lucide="user"></i> ${h.profesor || 'Sin profesor'}</span>
+            <span><i data-lucide="users"></i> ${h.alumnos ? h.alumnos.length : 0} alumno(s)</span>
+          </div>
+          <div class="historial-alumnos">${alumnosHtml}</div>
+        </div>`;
+      }).join('');
+    } else {
+      historialSection.style.display = 'none';
     }
 
     lucide.createIcons();
@@ -6322,29 +6418,26 @@ async function openEditarCursoModal(curso) {
     const resCursoCompleto = await fetch(`${API_URL}/cursos/${curso.id_curso}`);
     const cursoCompleto = await resCursoCompleto.json();
 
-    const [resIdiomas, resProfesores] = await Promise.all([
+    const [resIdiomas, resProfesores, resNiveles] = await Promise.all([
       fetch(`${API_URL}/idiomas`),
-      fetch(`${API_URL}/profesores`)
+      fetch(`${API_URL}/profesores`),
+      fetch(`${API_URL}/niveles`)
     ]);
 
     const idiomas = await resIdiomas.json();
     const profesoresResp = await resProfesores.json();
     const profesores = profesoresResp.data || profesoresResp;
+    const allNiveles = await resNiveles.json();
 
     document.getElementById('editIdioma').innerHTML = `
       <option value="">Seleccione...</option>
       ${idiomas.map(i => `<option value="${i.id_idioma}" ${i.id_idioma === cursoCompleto.id_idioma ? 'selected' : ''}>${i.nombre_idioma}</option>`).join('')}
     `;
 
-    document.getElementById('editNivel').innerHTML = `
-      <option value="">Seleccione...</option>
-      <option value="1" ${cursoCompleto.id_nivel === 1 ? 'selected' : ''}>A1</option>
-      <option value="2" ${cursoCompleto.id_nivel === 2 ? 'selected' : ''}>A2</option>
-      <option value="3" ${cursoCompleto.id_nivel === 3 ? 'selected' : ''}>B1</option>
-      <option value="4" ${cursoCompleto.id_nivel === 4 ? 'selected' : ''}>B2</option>
-      <option value="5" ${cursoCompleto.id_nivel === 5 ? 'selected' : ''}>C1</option>
-      <option value="6" ${cursoCompleto.id_nivel === 6 ? 'selected' : ''}>C2</option>
-    `;
+    filterNivelesByIdioma(allNiveles, cursoCompleto.id_idioma, document.getElementById('editNivel'), cursoCompleto.id_nivel);
+    document.getElementById('editIdioma').addEventListener('change', function() {
+      filterNivelesByIdioma(allNiveles, this.value, document.getElementById('editNivel'), '');
+    });
 
     document.getElementById('editProfesor').innerHTML = `
       <option value="">Seleccione...</option>
@@ -6868,9 +6961,17 @@ async function openAlumnoPanel(idAlumno) {
 
 function setupAlumnoFilters() {
   const searchInput = document.getElementById('alumnosSearch');
-
   if (searchInput) {
-    searchInput.addEventListener('input', () => filterTableRows('alumnos'));
+    searchInput.addEventListener('input', function() {
+      var query = this.value.trim();
+      if (query.length >= 2) {
+        debounceSearch('alumnos', function() { searchServerSide('alumnos', query); }, 350);
+      } else if (query.length === 0) {
+        debounceSearch('alumnos', function() { document.getElementById('btnAlumnos').click(); }, 350);
+      } else {
+        filterTableRows('alumnos');
+      }
+    });
   }
 }
 
@@ -6881,7 +6982,16 @@ function filterAlumnos() {
 function setupCursoFilters() {
   const searchInput = document.getElementById('cursosSearch');
   if (searchInput) {
-    searchInput.addEventListener('input', () => filterTableRows('cursos'));
+    searchInput.addEventListener('input', function() {
+      var query = this.value.trim();
+      if (query.length >= 2) {
+        debounceSearch('cursos', function() { searchServerSide('cursos', query); }, 350);
+      } else if (query.length === 0) {
+        debounceSearch('cursos', function() { document.getElementById('btnCursos').click(); }, 350);
+      } else {
+        filterTableRows('cursos');
+      }
+    });
   }
   // Populate idioma, nivel, ciclo dropdowns from API
   Promise.all([
@@ -7197,9 +7307,17 @@ async function openProfesorPanel(idProfesor) {
 
 function setupProfesorFilters() {
   const searchInput = document.getElementById('profesoresSearch');
-
   if (searchInput) {
-    searchInput.addEventListener('input', () => filterTableRows('profesores'));
+    searchInput.addEventListener('input', function() {
+      var query = this.value.trim();
+      if (query.length >= 2) {
+        debounceSearch('profesores', function() { searchServerSide('profesores', query); }, 350);
+      } else if (query.length === 0) {
+        debounceSearch('profesores', function() { document.getElementById('btnProfesores').click(); }, 350);
+      } else {
+        filterTableRows('profesores');
+      }
+    });
   }
 }
 
@@ -10307,9 +10425,17 @@ async function eliminarProfesor(id, nombre) {
 
 function setupAdministradorFilters() {
   const searchInput = document.getElementById('administradoresSearch');
-
   if (searchInput) {
-    searchInput.addEventListener('input', () => filterTableRows('administradores'));
+    searchInput.addEventListener('input', function() {
+      var query = this.value.trim();
+      if (query.length >= 2) {
+        debounceSearch('administradores', function() { searchServerSide('administradores', query); }, 350);
+      } else if (query.length === 0) {
+        debounceSearch('administradores', function() { document.getElementById('btnAdministradores').click(); }, 350);
+      } else {
+        filterTableRows('administradores');
+      }
+    });
   }
 }
 
@@ -10899,7 +11025,7 @@ async function openNuevoCursoModal() {
     ]);
 
     const idiomas = await idiomasRes.json();
-    const niveles = await nivelesRes.json();
+    const allNiveles = await nivelesRes.json();
     const profesoresResp = await profesoresRes.json();
     const profesores = profesoresResp.data || profesoresResp;
     const aulas = await aulasRes.json();
@@ -10910,7 +11036,7 @@ async function openNuevoCursoModal() {
         <div style="text-align: left;">
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Nombre del Curso</label>
-            <input id="nombre_curso" class="swal2-input" placeholder="Ej: Inglés Básico A1" style="width: 100%; margin: 0;">
+            <input id="nombre_curso" class="swal2-input" placeholder="Ej: Inglés Básico" style="width: 100%; margin: 0;">
           </div>
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Idioma</label>
@@ -10922,8 +11048,7 @@ async function openNuevoCursoModal() {
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Nivel (opcional)</label>
             <select id="id_nivel" class="swal2-input" style="width: 100%; margin: 0;">
-              <option value="">Sin nivel</option>
-              ${niveles.map(n => `<option value="${n.id_nivel}">${n.descripcion}</option>`).join('')}
+              <option value="">Seleccionar idioma primero</option>
             </select>
           </div>
           <div style="margin-bottom: 15px;">
@@ -10956,6 +11081,12 @@ async function openNuevoCursoModal() {
       confirmButtonText: 'Crear',
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#4a5259',
+      didOpen: function() {
+        var idiomaSelect = document.getElementById('id_idioma');
+        idiomaSelect.addEventListener('change', function() {
+          filterNivelesByIdioma(allNiveles, this.value, document.getElementById('id_nivel'), '');
+        });
+      },
       preConfirm: () => {
         const nombre_curso = document.getElementById('nombre_curso').value;
         const id_idioma = document.getElementById('id_idioma').value;
@@ -11015,7 +11146,7 @@ async function editarCurso(id) {
 
     const curso = await cursoRes.json();
     const idiomas = await idiomasRes.json();
-    const niveles = await nivelesRes.json();
+    const allNiveles = await nivelesRes.json();
     const profesoresResp = await profesoresRes.json();
     const profesores = profesoresResp.data || profesoresResp;
     const aulas = await aulasRes.json();
@@ -11038,7 +11169,6 @@ async function editarCurso(id) {
             <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Nivel</label>
             <select id="id_nivel" class="swal2-input" style="width: 100%; margin: 0;">
               <option value="">Sin nivel</option>
-              ${niveles.map(n => `<option value="${n.id_nivel}" ${curso.id_nivel == n.id_nivel ? 'selected' : ''}>${n.descripcion}</option>`).join('')}
             </select>
           </div>
           <div style="margin-bottom: 15px;">
@@ -11070,6 +11200,13 @@ async function editarCurso(id) {
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#4a5259',
+      didOpen: function() {
+        filterNivelesByIdioma(allNiveles, curso.id_idioma, document.getElementById('id_nivel'), curso.id_nivel);
+        var idiomaSelect = document.getElementById('id_idioma');
+        idiomaSelect.addEventListener('change', function() {
+          filterNivelesByIdioma(allNiveles, this.value, document.getElementById('id_nivel'), '');
+        });
+      },
       preConfirm: () => {
         const nombre_curso = document.getElementById('nombre_curso').value;
         const id_idioma = document.getElementById('id_idioma').value;
