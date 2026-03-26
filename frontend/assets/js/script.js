@@ -4880,21 +4880,42 @@ function generateTable(section, data, total) {
             <p style="color: #666; margin: 0; font-size: 14px;">${cursosTotal} curso${cursosTotal !== 1 ? 's' : ''} disponible${cursosTotal !== 1 ? 's' : ''}</p>
           </div>
           <div class="alumnos-search-filter">
-            <div style="position: relative; flex: 1;">
-              <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
+            <div class="search-filter-wrapper">
+              <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px; pointer-events: none;"></i>
               <input type="text" id="cursosSearch" placeholder="Buscar por nombre, idioma o nivel..." style="width: 100%;">
+              <button type="button" class="filter-toggle-btn" onclick="toggleFilterDropdown('cursos')">
+                <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
+                <span class="filter-badge" id="cursosFilterBadge" style="display:none;"></span>
+              </button>
+              <div class="filter-dropdown" id="cursosFilterDropdown">
+                <div class="filter-dropdown-title">Filtros</div>
+                <div class="filter-dropdown-group">
+                  <div class="filter-dropdown-label">Estado</div>
+                  <div class="filter-dropdown-checkboxes">
+                    <label><input type="checkbox" id="filterCursoActivo" checked onchange="filterTableRows('cursos')"> Activos</label>
+                    <label><input type="checkbox" id="filterCursoInactivo" onchange="filterTableRows('cursos')"> Inactivos</label>
+                  </div>
+                </div>
+                <div class="filter-dropdown-group">
+                  <div class="filter-dropdown-label">Idioma</div>
+                  <select id="cursoFilterIdioma" onchange="filterTableRows('cursos')">
+                    <option value="">Todos los idiomas</option>
+                  </select>
+                </div>
+                <div class="filter-dropdown-group">
+                  <div class="filter-dropdown-label">Nivel</div>
+                  <select id="cursoFilterNivel" onchange="filterTableRows('cursos')">
+                    <option value="">Todos los niveles</option>
+                  </select>
+                </div>
+                <div class="filter-dropdown-group">
+                  <div class="filter-dropdown-label">Ciclo lectivo</div>
+                  <select id="cursoFilterCiclo" onchange="filterTableRows('cursos')">
+                    <option value="">Todos los ciclos</option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterCursoActivo" checked onchange="filterTableRows('cursos')"> Activos</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterCursoInactivo" onchange="filterTableRows('cursos')"> Inactivos</label>
-            <select id="cursoFilterIdioma" onchange="filterTableRows('cursos')" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#555;">
-              <option value="">Todos los idiomas</option>
-            </select>
-            <select id="cursoFilterNivel" onchange="filterTableRows('cursos')" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#555;">
-              <option value="">Todos los niveles</option>
-            </select>
-            <select id="cursoFilterCiclo" onchange="filterTableRows('cursos')" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#555;">
-              <option value="">Todos los ciclos</option>
-            </select>
             <button class="btn-primary" style="margin-left: auto;" onclick="openNuevoCursoModal()">
               <i data-lucide="plus"></i>
               Nuevo Curso
@@ -4930,12 +4951,24 @@ function generateTable(section, data, total) {
             <p style="color: #666; margin: 0; font-size: 14px;">${alumnosTotal} alumno${alumnosTotal !== 1 ? 's' : ''} registrado${alumnosTotal !== 1 ? 's' : ''}</p>
           </div>
           <div class="alumnos-search-filter">
-            <div style="position: relative; flex: 1;">
-              <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
+            <div class="search-filter-wrapper">
+              <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px; pointer-events: none;"></i>
               <input type="text" id="alumnosSearch" placeholder="Buscar por nombre, legajo o email..." style="width: 100%;">
+              <button type="button" class="filter-toggle-btn" onclick="toggleFilterDropdown('alumnos')">
+                <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
+                <span class="filter-badge" id="alumnosFilterBadge" style="display:none;"></span>
+              </button>
+              <div class="filter-dropdown" id="alumnosFilterDropdown">
+                <div class="filter-dropdown-title">Filtros</div>
+                <div class="filter-dropdown-group">
+                  <div class="filter-dropdown-label">Estado</div>
+                  <div class="filter-dropdown-checkboxes">
+                    <label><input type="checkbox" id="filterAlumnoActivo" checked onchange="filterTableRows('alumnos')"> Activos</label>
+                    <label><input type="checkbox" id="filterAlumnoInactivo" onchange="filterTableRows('alumnos')"> Inactivos</label>
+                  </div>
+                </div>
+              </div>
             </div>
-            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAlumnoActivo" checked onchange="filterTableRows('alumnos')"> Activos</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAlumnoInactivo" onchange="filterTableRows('alumnos')"> Inactivos</label>
             <button class="btn-secondary" onclick="descargarPDFAlumnos()" style="display: flex; align-items: center; gap: 8px;">
               <i data-lucide="download"></i>
               Descargar PDF
@@ -4975,13 +5008,25 @@ function generateTable(section, data, total) {
             <p style="color: #666; margin: 0; font-size: 14px;">${profesoresTotal} profesor${profesoresTotal !== 1 ? 'es' : ''} registrado${profesoresTotal !== 1 ? 's' : ''}</p>
           </div>
           <div class="profesores-search-filter">
-            <div style="position: relative; flex: 1;">
-              <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
+            <div class="search-filter-wrapper">
+              <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px; pointer-events: none;"></i>
               <input type="text" id="profesoresSearch" placeholder="Buscar por nombre, especialidad o idioma..." style="width: 100%;">
+              <button type="button" class="filter-toggle-btn" onclick="toggleFilterDropdown('profesores')">
+                <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
+                <span class="filter-badge" id="profesoresFilterBadge" style="display:none;"></span>
+              </button>
+              <div class="filter-dropdown" id="profesoresFilterDropdown">
+                <div class="filter-dropdown-title">Filtros</div>
+                <div class="filter-dropdown-group">
+                  <div class="filter-dropdown-label">Estado</div>
+                  <div class="filter-dropdown-checkboxes">
+                    <label><input type="checkbox" id="filterProfesorActivo" checked onchange="filterTableRows('profesores')"> Activos</label>
+                    <label><input type="checkbox" id="filterProfesorInactivo" onchange="filterTableRows('profesores')"> Inactivos</label>
+                    <label><input type="checkbox" id="filterProfesorLicencia" onchange="filterTableRows('profesores')"> Licencia</label>
+                  </div>
+                </div>
+              </div>
             </div>
-            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterProfesorActivo" checked onchange="filterTableRows('profesores')"> Activos</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterProfesorInactivo" onchange="filterTableRows('profesores')"> Inactivos</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterProfesorLicencia" onchange="filterTableRows('profesores')"> Licencia</label>
             <button class="btn-primary" onclick="openNuevoProfesorModal()">
               <i data-lucide="user-plus"></i>
               Nuevo Profesor
@@ -5016,12 +5061,24 @@ function generateTable(section, data, total) {
             <p style="color: #666; margin: 0; font-size: 14px;">${adminsTotal} administrador${adminsTotal !== 1 ? 'es' : ''} registrado${adminsTotal !== 1 ? 's' : ''}</p>
           </div>
           <div class="profesores-search-filter">
-            <div style="position: relative; flex: 1;">
-              <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
+            <div class="search-filter-wrapper">
+              <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px; pointer-events: none;"></i>
               <input type="text" id="administradoresSearch" placeholder="Buscar por nombre, email o DNI..." style="width: 100%;">
+              <button type="button" class="filter-toggle-btn" onclick="toggleFilterDropdown('administradores')">
+                <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
+                <span class="filter-badge" id="administradoresFilterBadge" style="display:none;"></span>
+              </button>
+              <div class="filter-dropdown" id="administradoresFilterDropdown">
+                <div class="filter-dropdown-title">Filtros</div>
+                <div class="filter-dropdown-group">
+                  <div class="filter-dropdown-label">Estado</div>
+                  <div class="filter-dropdown-checkboxes">
+                    <label><input type="checkbox" id="filterAdminActivo" checked onchange="filterTableRows('administradores')"> Activos</label>
+                    <label><input type="checkbox" id="filterAdminInactivo" onchange="filterTableRows('administradores')"> Inactivos</label>
+                  </div>
+                </div>
+              </div>
             </div>
-            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAdminActivo" checked onchange="filterTableRows('administradores')"> Activos</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAdminInactivo" onchange="filterTableRows('administradores')"> Inactivos</label>
             <button class="btn-primary" onclick="openNuevoAdministradorModal()">
               <i data-lucide="user-plus"></i>
               Nuevo Administrador
@@ -5504,6 +5561,59 @@ async function toggleEstadoIdioma(id, nuevoEstado, element) {
   }
 }
 
+// Toggle filter dropdown visibility
+function toggleFilterDropdown(section) {
+  var dropdown = document.getElementById(section + 'FilterDropdown');
+  if (!dropdown) return;
+  var isOpen = dropdown.classList.contains('show');
+  document.querySelectorAll('.filter-dropdown.show').forEach(function(d) { d.classList.remove('show'); });
+  if (!isOpen) {
+    dropdown.classList.add('show');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+
+function updateFilterBadge(section) {
+  var badge = document.getElementById(section + 'FilterBadge');
+  if (!badge) return;
+  var hasActiveFilters = false;
+  if (section === 'cursos') {
+    var ca = document.getElementById('filterCursoActivo');
+    var ci = document.getElementById('filterCursoInactivo');
+    if (ca && !ca.checked) hasActiveFilters = true;
+    if (ci && ci.checked) hasActiveFilters = true;
+    if (document.getElementById('cursoFilterIdioma')?.value) hasActiveFilters = true;
+    if (document.getElementById('cursoFilterNivel')?.value) hasActiveFilters = true;
+    if (document.getElementById('cursoFilterCiclo')?.value) hasActiveFilters = true;
+  } else if (section === 'alumnos') {
+    var aa = document.getElementById('filterAlumnoActivo');
+    var ai = document.getElementById('filterAlumnoInactivo');
+    if (aa && !aa.checked) hasActiveFilters = true;
+    if (ai && ai.checked) hasActiveFilters = true;
+  } else if (section === 'profesores') {
+    var pa = document.getElementById('filterProfesorActivo');
+    var pi = document.getElementById('filterProfesorInactivo');
+    var pl = document.getElementById('filterProfesorLicencia');
+    if (pa && !pa.checked) hasActiveFilters = true;
+    if (pi && pi.checked) hasActiveFilters = true;
+    if (pl && pl.checked) hasActiveFilters = true;
+  } else if (section === 'administradores') {
+    var da = document.getElementById('filterAdminActivo');
+    var di = document.getElementById('filterAdminInactivo');
+    if (da && !da.checked) hasActiveFilters = true;
+    if (di && di.checked) hasActiveFilters = true;
+  }
+  badge.style.display = hasActiveFilters ? '' : 'none';
+  var btn = badge.parentElement;
+  if (btn) btn.classList.toggle('has-filters', hasActiveFilters);
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.search-filter-wrapper')) {
+    document.querySelectorAll('.filter-dropdown.show').forEach(function(d) { d.classList.remove('show'); });
+  }
+});
+
 // Filter table rows by estado checkboxes + search + cursos-specific filters
 function filterTableRows(section) {
   const rows = document.querySelectorAll(`#${section}TableBody tr`);
@@ -5555,6 +5665,7 @@ function filterTableRows(section) {
     const matchesSearch = !searchTerm || text.includes(searchTerm);
     row.style.display = (showByEstado && showByFilters && matchesSearch) ? '' : 'none';
   });
+  updateFilterBadge(section);
 }
 
 async function generateDashboardHome() {

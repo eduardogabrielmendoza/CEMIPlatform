@@ -2066,28 +2066,134 @@
 
 .alumnos-search-filter {
   display: flex;
-  gap: 50px;
+  gap: 12px;
   flex: 1;
   max-width: 100%;
   align-items: center;
 }
 
-.alumnos-search-filter input {
+.alumnos-search-filter input[type="text"] {
   flex: 1;
-  padding: 12px 16px 12px 44px;
+  padding: 12px 44px 12px 44px;
   border: 2px solid #e9ecef;
   border-radius: 8px;
   font-size: 14px;
   max-width: 600px;
 }
 
-.alumnos-search-filter select {
-  padding: 12px 16px;
-  border: 2px solid #e9ecef;
+.search-filter-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.filter-toggle-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #888;
+  transition: all 0.2s;
+  z-index: 2;
+}
+
+.filter-toggle-btn:hover {
+  background: #f3f4f6;
+  color: #333;
+  border-color: #aaa;
+}
+
+.filter-toggle-btn.has-filters {
+  background: #4a5259;
+  color: white;
+  border-color: #4a5259;
+}
+
+.filter-badge {
+  width: 7px;
+  height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+}
+
+.filter-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  z-index: 100;
+  min-width: 260px;
+}
+
+.filter-dropdown.show {
+  display: block;
+}
+
+.filter-dropdown-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5259;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-dropdown-group {
+  margin-bottom: 12px;
+}
+
+.filter-dropdown-group:last-child {
+  margin-bottom: 0;
+}
+
+.filter-dropdown-label {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-dropdown-checkboxes {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.filter-dropdown-checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filter-dropdown select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
-  font-size: 14px;
-  min-width: 250px;
-  flex-shrink: 0;
+  font-size: 13px;
+  color: #555;
+  background: white;
 }
 
 .alumno-estado-badge {
@@ -2431,28 +2537,19 @@
 
 .profesores-search-filter {
   display: flex;
-  gap: 50px;
+  gap: 12px;
   flex: 1;
   max-width: 100%;
   align-items: center;
 }
 
-.profesores-search-filter input {
+.profesores-search-filter input[type="text"] {
   flex: 1;
-  padding: 12px 16px 12px 44px;
+  padding: 12px 44px 12px 44px;
   border: 2px solid #e9ecef;
   border-radius: 8px;
   font-size: 14px;
   max-width: 500px;
-}
-
-.profesores-search-filter select {
-  padding: 12px 16px;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 14px;
-  min-width: 200px;
-  flex-shrink: 0;
 }
 
 .profesor-estado-badge {
