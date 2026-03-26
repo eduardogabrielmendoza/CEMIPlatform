@@ -37,6 +37,7 @@ router.get("/alumno/:id", async (req, res) => {
         i.fecha_inscripcion,
         i.estado,
         c.nombre_curso,
+        c.ciclo_lectivo,
         idioma.nombre_idioma AS idioma,
         nivel.descripcion AS nivel,
         15000 AS costo_mensual,

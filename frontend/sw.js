@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cemi-v6';
+const CACHE_NAME = 'cemi-v7';
 const urlsToCache = [
   '/',
   '/index.html',

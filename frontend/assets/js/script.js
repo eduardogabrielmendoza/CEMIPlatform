@@ -5117,6 +5117,9 @@ case "pagos":
       <button class="pagos-tab" data-tab="cuotas" onclick="switchPagosTab('cuotas')" style="padding: 12px 24px; background: none; border: none; border-bottom: 3px solid transparent; color: #666; font-weight: 600; cursor: pointer; transition: all 0.3s;">
         <i data-lucide="unlock"></i> Gestionar Cuotas
       </button>
+      <button class="pagos-tab" data-tab="registros" onclick="switchPagosTab('registros')" style="padding: 12px 24px; background: none; border: none; border-bottom: 3px solid transparent; color: #666; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+        <i data-lucide="scroll-text"></i> Registros
+      </button>
     </div>
 
     <div class="pagos-metrics" id="pagosMetrics">
@@ -5195,6 +5198,10 @@ case "pagos":
 
     <div class="cuotas-gestion-container" id="cuotasGestionContainer" style="display: none;">
       <!-- Contenedor para la gestión de cuotas -->
+    </div>
+
+    <div class="registros-pagos-container" id="registrosPagosContainer" style="display: none;">
+      <!-- Contenedor para los registros/auditoría de pagos -->
     </div>
   `;
   
@@ -5329,7 +5336,7 @@ case "pagos":
         </div>
         <div class="idiomas-grid" id="idiomasGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
           ${data.length > 0 ? data.map(idioma => {
-            const flag = idiomaFlags[(idioma.nombre_idioma || '').toLowerCase().trim()] || '🌐';
+            const flag = idioma.bandera || idiomaFlags[(idioma.nombre_idioma || '').toLowerCase().trim()] || '🌐';
             const estado = idioma.estado || 'activo';
             
             return `
@@ -5349,7 +5356,7 @@ case "pagos":
               <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
               
               <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                <button class="btn-icon-edit" onclick="editarIdioma(${idioma.id_idioma}, '${idioma.nombre_idioma}')" title="Editar">
+                <button class="btn-icon-edit" onclick="editarIdioma(${idioma.id_idioma}, '${idioma.nombre_idioma}', '${(flag || '').replace(/'/g, "\\'")}')" title="Editar">
                   <i data-lucide="edit-2"></i>
                 </button>
                 <button class="btn-icon-danger" onclick="eliminarIdioma(${idioma.id_idioma}, '${idioma.nombre_idioma}')" title="Eliminar permanentemente" style="opacity: 0.4;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'">
@@ -8382,6 +8389,7 @@ function switchPagosTab(tab) {
   const filtersContainer = document.getElementById('pagosFilters');
   const tableContainer = document.getElementById('pagosTableContainer');
   const cuotasContainer = document.getElementById('cuotasGestionContainer');
+  const registrosContainer = document.getElementById('registrosPagosContainer');
 
   if (tab === 'cuotas') {
     if (metricsContainer) metricsContainer.style.display = 'none';
@@ -8391,11 +8399,22 @@ function switchPagosTab(tab) {
       cuotasContainer.style.display = 'block';
       loadCuotasGestion();
     }
+    if (registrosContainer) registrosContainer.style.display = 'none';
+  } else if (tab === 'registros') {
+    if (metricsContainer) metricsContainer.style.display = 'none';
+    if (filtersContainer) filtersContainer.style.display = 'none';
+    if (tableContainer) tableContainer.style.display = 'none';
+    if (cuotasContainer) cuotasContainer.style.display = 'none';
+    if (registrosContainer) {
+      registrosContainer.style.display = 'block';
+      loadRegistrosPagos();
+    }
   } else {
     if (metricsContainer) metricsContainer.style.display = 'grid';
     if (filtersContainer) filtersContainer.style.display = 'flex';
     if (tableContainer) tableContainer.style.display = 'block';
     if (cuotasContainer) cuotasContainer.style.display = 'none';
+    if (registrosContainer) registrosContainer.style.display = 'none';
 
     if (tab === 'archivo') {
       loadPagosData('?archivo=true');
@@ -8431,6 +8450,77 @@ function filterPagos() {
   });
 
   renderPagosTable(filtered);
+}
+
+async function loadRegistrosPagos() {
+  const container = document.getElementById('registrosPagosContainer');
+  if (!container) return;
+
+  container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Cargando registros...</div>';
+
+  try {
+    const resp = await fetch(`${API_URL}/pagos/registros/audit`);
+    const data = await resp.json();
+
+    const registros = data.registros || [];
+
+    if (registros.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 60px 20px;">
+          <i data-lucide="scroll-text" style="width: 48px; height: 48px; color: #ccc; margin-bottom: 15px;"></i>
+          <p style="color: #999; font-size: 16px; margin: 0 0 4px 0;">No hay registros de auditoría</p>
+          <p style="color: #ccc; font-size: 14px; margin: 0;">Los movimientos de pagos aparecerán aquí</p>
+        </div>`;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      return;
+    }
+
+    const accionIcons = {
+      'eliminado': { icon: 'trash-2', color: '#dc2626', bg: '#fee2e2', label: 'Eliminado' },
+      'archivado': { icon: 'archive', color: '#d97706', bg: '#fef3c7', label: 'Archivado' },
+      'desarchivado': { icon: 'archive-restore', color: '#2563eb', bg: '#dbeafe', label: 'Desarchivado' }
+    };
+
+    container.innerHTML = `
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: #4a5259; margin: 0 0 5px 0;">Registros de Auditoría</h3>
+        <p style="color: #666; font-size: 14px; margin: 0;">${registros.length} registro${registros.length !== 1 ? 's' : ''}</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        ${registros.map(r => {
+          const config = accionIcons[r.accion] || { icon: 'info', color: '#6b7280', bg: '#f3f4f6', label: r.accion };
+          const fecha = new Date(r.fecha);
+          const fechaStr = fecha.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+          const horaStr = fecha.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+
+          return `
+            <div style="background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border-left: 4px solid ${config.color}; display: flex; align-items: flex-start; gap: 14px;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: ${config.bg}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i data-lucide="${config.icon}" style="width: 20px; height: 20px; color: ${config.color};"></i>
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                  <span style="background: ${config.bg}; color: ${config.color}; padding: 2px 10px; border-radius: 8px; font-size: 12px; font-weight: 600;">${config.label}</span>
+                  <span style="color: #9ca3af; font-size: 12px;">${fechaStr} ${horaStr}</span>
+                </div>
+                <p style="margin: 0; color: #374151; font-size: 14px; line-height: 1.5;">${r.descripcion || ''}</p>
+                <div style="display: flex; gap: 16px; margin-top: 6px; flex-wrap: wrap;">
+                  ${r.monto ? `<span style="color: #6b7280; font-size: 12px;">Monto: <strong>$${parseFloat(r.monto).toLocaleString('es-AR', {minimumFractionDigits: 2})}</strong></span>` : ''}
+                  ${r.nombre_admin ? `<span style="color: #6b7280; font-size: 12px;">Admin: <strong>${r.nombre_admin}</strong></span>` : ''}
+                </div>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>`;
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  } catch (error) {
+    console.error('Error al cargar registros de pagos:', error);
+    container.innerHTML = `
+      <div style="text-align: center; padding: 40px; color: #f44336;">
+        <p>Error al cargar los registros</p>
+      </div>`;
+  }
 }
 
 function ensurePagoPanel() {
@@ -8882,7 +8972,11 @@ async function openRegistrarPagoModal() {
               return;
             }
 
-            const cursosActivos = inscripciones.filter(i => i.estado === 'activo');
+            const cursosActivos = inscripciones.filter(i => {
+              if (i.estado !== 'activo') return false;
+              if (i.ciclo_lectivo && i.ciclo_lectivo < new Date().getFullYear()) return false;
+              return true;
+            });
 
             if (cursosActivos.length === 0) {
               cursoSelect.innerHTML = '<option value="">No hay cursos activos</option>';
@@ -9254,28 +9348,46 @@ async function eliminarAula(id, nombre) {
 }
 
 async function openNuevoIdiomaModal() {
-  const { value: nombre } = await Swal.fire({
+  const flagOptions = ['🇬🇧','🇫🇷','🇩🇪','🇮🇹','🇧🇷','🇯🇵','🇨🇳','🇰🇷','🇷🇺','🇸🇦','🇮🇳','🇹🇷','🇪🇸','🇺🇸','🇵🇹','🇬🇷','🇳🇱','🇸🇪','🇵🇱','🇺🇦','🏛️','🌐'];
+
+  const { value: formValues } = await Swal.fire({
     title: 'Nuevo Idioma',
-    input: 'text',
-    inputLabel: 'Nombre del idioma',
-    inputPlaceholder: 'Ej: Inglés',
+    html: `
+      <div style="text-align: left;">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Nombre del idioma</label>
+          <input id="swal-idioma-nombre" type="text" class="swal2-input" placeholder="Ej: Inglés" style="width: 100%; margin: 0;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Bandera</label>
+          <div id="swal-flag-grid" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; max-height: 120px; overflow-y: auto;">
+            ${flagOptions.map((f, i) => `<button type="button" class="flag-option" data-flag="${f}" onclick="document.querySelectorAll('.flag-option').forEach(b=>b.style.outline='none');this.style.outline='3px solid #4a5259';document.getElementById('swal-selected-flag').value='${f}'" style="font-size: 28px; background: none; border: none; cursor: pointer; padding: 4px; border-radius: 6px; transition: transform 0.2s;" onmouseenter="this.style.transform='scale(1.2)'" onmouseleave="this.style.transform='scale(1)'">${f}</button>`).join('')}
+          </div>
+          <input type="hidden" id="swal-selected-flag" value="">
+        </div>
+      </div>
+    `,
     showCancelButton: true,
     confirmButtonText: 'Crear',
     cancelButtonText: 'Cancelar',
     confirmButtonColor: '#4a5259',
-    inputValidator: (value) => {
-      if (!value) {
-        return 'El nombre es obligatorio';
+    preConfirm: () => {
+      const nombre = document.getElementById('swal-idioma-nombre').value.trim();
+      const bandera = document.getElementById('swal-selected-flag').value;
+      if (!nombre) {
+        Swal.showValidationMessage('El nombre es obligatorio');
+        return false;
       }
+      return { nombre_idioma: nombre, bandera: bandera || null };
     }
   });
 
-  if (nombre) {
+  if (formValues) {
     try {
       const res = await fetch(`${API_URL}/idiomas`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre_idioma: nombre })
+        body: JSON.stringify(formValues)
       });
       
       const data = await res.json();
@@ -9293,29 +9405,47 @@ async function openNuevoIdiomaModal() {
   }
 }
 
-async function editarIdioma(id, nombreActual) {
-  const { value: nombre } = await Swal.fire({
+async function editarIdioma(id, nombreActual, banderaActual) {
+  const flagOptions = ['🇬🇧','🇫🇷','🇩🇪','🇮🇹','🇧🇷','🇯🇵','🇨🇳','🇰🇷','🇷🇺','🇸🇦','🇮🇳','🇹🇷','🇪🇸','🇺🇸','🇵🇹','🇬🇷','🇳🇱','🇸🇪','🇵🇱','🇺🇦','🏛️','🌐'];
+
+  const { value: formValues } = await Swal.fire({
     title: 'Editar Idioma',
-    input: 'text',
-    inputLabel: 'Nombre del idioma',
-    inputValue: nombreActual,
+    html: `
+      <div style="text-align: left;">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Nombre del idioma</label>
+          <input id="swal-idioma-nombre" type="text" class="swal2-input" value="${nombreActual}" style="width: 100%; margin: 0;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Bandera</label>
+          <div id="swal-flag-grid" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; max-height: 120px; overflow-y: auto;">
+            ${flagOptions.map(f => `<button type="button" class="flag-option" data-flag="${f}" onclick="document.querySelectorAll('.flag-option').forEach(b=>b.style.outline='none');this.style.outline='3px solid #4a5259';document.getElementById('swal-selected-flag').value='${f}'" style="font-size: 28px; background: none; border: none; cursor: pointer; padding: 4px; border-radius: 6px; transition: transform 0.2s; ${f === banderaActual ? 'outline: 3px solid #4a5259;' : ''}" onmouseenter="this.style.transform='scale(1.2)'" onmouseleave="this.style.transform='scale(1)'">${f}</button>`).join('')}
+          </div>
+          <input type="hidden" id="swal-selected-flag" value="${banderaActual || ''}">
+        </div>
+      </div>
+    `,
     showCancelButton: true,
     confirmButtonText: 'Guardar',
     cancelButtonText: 'Cancelar',
     confirmButtonColor: '#4a5259',
-    inputValidator: (value) => {
-      if (!value) {
-        return 'El nombre es obligatorio';
+    preConfirm: () => {
+      const nombre = document.getElementById('swal-idioma-nombre').value.trim();
+      const bandera = document.getElementById('swal-selected-flag').value;
+      if (!nombre) {
+        Swal.showValidationMessage('El nombre es obligatorio');
+        return false;
       }
+      return { nombre_idioma: nombre, bandera: bandera || null };
     }
   });
 
-  if (nombre) {
+  if (formValues) {
     try {
       const res = await fetch(`${API_URL}/idiomas/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre_idioma: nombre })
+        body: JSON.stringify(formValues)
       });
       
       const data = await res.json();

@@ -189,6 +189,38 @@ const chatServer = new ChatServer(server);
 
 setChatServer(chatServer);
 
+// Auto-migrate: ensure new tables/columns exist
+(async () => {
+  try {
+    // Add bandera column to idiomas if not exists
+    const [idiomasCols] = await pool.query("SHOW COLUMNS FROM idiomas LIKE 'bandera'");
+    if (idiomasCols.length === 0) {
+      await pool.query("ALTER TABLE idiomas ADD COLUMN bandera VARCHAR(10) DEFAULT NULL AFTER nombre_idioma");
+      console.log('[migration] Added bandera column to idiomas');
+    }
+
+    // Create registros_pagos table if not exists
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS registros_pagos (
+        id_registro INT NOT NULL AUTO_INCREMENT,
+        accion VARCHAR(50) NOT NULL,
+        id_pago INT DEFAULT NULL,
+        id_admin INT DEFAULT NULL,
+        nombre_admin VARCHAR(100) DEFAULT NULL,
+        nombre_alumno VARCHAR(100) DEFAULT NULL,
+        concepto VARCHAR(255) DEFAULT NULL,
+        monto DECIMAL(10,2) DEFAULT NULL,
+        descripcion TEXT DEFAULT NULL,
+        fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id_registro)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+    `);
+    console.log('[migration] registros_pagos table ensured');
+  } catch (err) {
+    console.error('[migration] Error running auto-migrations:', err.message);
+  }
+})();
+
 server.listen(PORT, () => {
   console.log(` Servidor HTTP activo en http://localhost:${PORT}`);
   console.log(` Servidor Socket.IO de Chat activo en http://localhost:${PORT}/socket.io/`);

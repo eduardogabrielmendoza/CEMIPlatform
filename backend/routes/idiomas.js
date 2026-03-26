@@ -34,11 +34,11 @@ router.patch("/:id/estado", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { nombre_idioma } = req.body;
+    const { nombre_idioma, bandera } = req.body;
     
     const [result] = await pool.query(
-      "INSERT INTO idiomas (nombre_idioma) VALUES (?)",
-      [nombre_idioma]
+      "INSERT INTO idiomas (nombre_idioma, bandera) VALUES (?, ?)",
+      [nombre_idioma, bandera || null]
     );
     
     res.status(201).json({ 
@@ -57,11 +57,11 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const { nombre_idioma } = req.body;
+    const { nombre_idioma, bandera } = req.body;
     
     await pool.query(
-      "UPDATE idiomas SET nombre_idioma = ? WHERE id_idioma = ?",
-      [nombre_idioma, req.params.id]
+      "UPDATE idiomas SET nombre_idioma = ?, bandera = ? WHERE id_idioma = ?",
+      [nombre_idioma, bandera || null, req.params.id]
     );
     
     res.json({ 

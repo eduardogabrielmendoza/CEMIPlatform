@@ -320,6 +320,19 @@ router.get("/alumno/:id/historial", async (req, res) => {
   }
 });
 
+// Obtener registros/auditoría de pagos (must be before /:id)
+router.get("/registros/audit", async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT * FROM registros_pagos ORDER BY fecha DESC LIMIT 200`
+    );
+    res.json({ success: true, registros: rows });
+  } catch (error) {
+    console.error("Error al obtener registros de pagos:", error);
+    res.status(500).json({ success: false, message: "Error al obtener registros" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -605,10 +618,14 @@ router.put("/:id/archivar",
     try {
       const { id } = req.params;
 
-      const [pago] = await pool.query(
-        'SELECT id_pago, estado_pago FROM pagos WHERE id_pago = ?',
-        [id]
-      );
+      const [pago] = await pool.query(`
+        SELECT pa.id_pago, pa.estado_pago, pa.concepto, pa.monto,
+               CONCAT(p.nombre, ' ', p.apellido) AS alumno_nombre
+        FROM pagos pa
+        LEFT JOIN alumnos a ON pa.id_alumno = a.id_alumno
+        LEFT JOIN personas p ON a.id_persona = p.id_persona
+        WHERE pa.id_pago = ?
+      `, [id]);
 
       if (pago.length === 0) {
         return res.status(404).json({ 
@@ -627,6 +644,31 @@ router.put("/:id/archivar",
       await pool.query(
         'UPDATE pagos SET archivado = 1 WHERE id_pago = ?', 
         [id]
+      );
+
+      // Get admin name and log
+      let nombreAdmin = 'Administrador';
+      if (req.user && req.user.id_persona) {
+        const [admin] = await pool.query(
+          "SELECT CONCAT(nombre, ' ', apellido) AS nombre FROM personas WHERE id_persona = ?",
+          [req.user.id_persona]
+        );
+        if (admin.length > 0) nombreAdmin = admin[0].nombre;
+      }
+
+      await pool.query(
+        `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          'archivado',
+          id,
+          req.user?.id_persona || null,
+          nombreAdmin,
+          pago[0].alumno_nombre || 'Desconocido',
+          pago[0].concepto || '',
+          pago[0].monto || 0,
+          `${nombreAdmin} ha archivado el pago #${id} de ${pago[0].alumno_nombre || 'Desconocido'} correspondiente a "${pago[0].concepto || ''}" por $${parseFloat(pago[0].monto || 0).toFixed(2)}`
+        ]
       );
 
       console.log(`[pagos] Pago ${id} archivado exitosamente`);
@@ -658,10 +700,14 @@ router.put("/:id/desarchivar",
     try {
       const { id } = req.params;
 
-      const [pago] = await pool.query(
-        'SELECT id_pago, archivado FROM pagos WHERE id_pago = ?',
-        [id]
-      );
+      const [pago] = await pool.query(`
+        SELECT pa.id_pago, pa.archivado, pa.concepto, pa.monto,
+               CONCAT(p.nombre, ' ', p.apellido) AS alumno_nombre
+        FROM pagos pa
+        LEFT JOIN alumnos a ON pa.id_alumno = a.id_alumno
+        LEFT JOIN personas p ON a.id_persona = p.id_persona
+        WHERE pa.id_pago = ?
+      `, [id]);
 
       if (pago.length === 0) {
         return res.status(404).json({ 
@@ -680,6 +726,31 @@ router.put("/:id/desarchivar",
       await pool.query(
         'UPDATE pagos SET archivado = 0 WHERE id_pago = ?', 
         [id]
+      );
+
+      // Get admin name and log
+      let nombreAdmin = 'Administrador';
+      if (req.user && req.user.id_persona) {
+        const [admin] = await pool.query(
+          "SELECT CONCAT(nombre, ' ', apellido) AS nombre FROM personas WHERE id_persona = ?",
+          [req.user.id_persona]
+        );
+        if (admin.length > 0) nombreAdmin = admin[0].nombre;
+      }
+
+      await pool.query(
+        `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          'desarchivado',
+          id,
+          req.user?.id_persona || null,
+          nombreAdmin,
+          pago[0].alumno_nombre || 'Desconocido',
+          pago[0].concepto || '',
+          pago[0].monto || 0,
+          `${nombreAdmin} ha desarchivado el pago #${id} de ${pago[0].alumno_nombre || 'Desconocido'} correspondiente a "${pago[0].concepto || ''}" por $${parseFloat(pago[0].monto || 0).toFixed(2)}`
+        ]
       );
 
       console.log(`[pagos] Pago ${id} desarchivado exitosamente`);
@@ -711,10 +782,14 @@ router.delete("/:id",
     try {
       const { id } = req.params;
 
-      const [pago] = await pool.query(
-        'SELECT id_pago FROM pagos WHERE id_pago = ?',
-        [id]
-      );
+      // Fetch full pago details before deleting for audit log
+      const [pago] = await pool.query(`
+        SELECT pa.*, CONCAT(p.nombre, ' ', p.apellido) AS alumno_nombre
+        FROM pagos pa
+        LEFT JOIN alumnos a ON pa.id_alumno = a.id_alumno
+        LEFT JOIN personas p ON a.id_persona = p.id_persona
+        WHERE pa.id_pago = ?
+      `, [id]);
 
       if (pago.length === 0) {
         return res.status(404).json({ 
@@ -722,6 +797,34 @@ router.delete("/:id",
           message: "Pago no encontrado" 
         });
       }
+
+      const pagoData = pago[0];
+
+      // Get admin name from token
+      let nombreAdmin = 'Administrador';
+      if (req.user && req.user.id_persona) {
+        const [admin] = await pool.query(
+          "SELECT CONCAT(nombre, ' ', apellido) AS nombre FROM personas WHERE id_persona = ?",
+          [req.user.id_persona]
+        );
+        if (admin.length > 0) nombreAdmin = admin[0].nombre;
+      }
+
+      // Create audit record
+      await pool.query(
+        `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          'eliminado',
+          id,
+          req.user?.id_persona || null,
+          nombreAdmin,
+          pagoData.alumno_nombre || 'Desconocido',
+          pagoData.concepto || '',
+          pagoData.monto || 0,
+          `${nombreAdmin} ha eliminado permanentemente el pago #${id} de ${pagoData.alumno_nombre || 'Desconocido'} correspondiente a "${pagoData.concepto || ''}" por un total de $${parseFloat(pagoData.monto || 0).toFixed(2)}`
+        ]
+      );
 
       const [result] = await pool.query('DELETE FROM pagos WHERE id_pago = ?', [id]);
 
