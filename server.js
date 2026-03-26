@@ -49,7 +49,7 @@ app.use(helmet({
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "ws:", "wss:", "https://unpkg.com", "http://localhost:3000", "ws://localhost:3000"],
+      connectSrc: ["'self'", "ws:", "wss:", "https://unpkg.com", "https://cdn.socket.io", "https://cdnjs.cloudflare.com", "http://localhost:3000", "ws://localhost:3000"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
@@ -198,6 +198,22 @@ setChatServer(chatServer);
       await pool.query("ALTER TABLE idiomas ADD COLUMN bandera VARCHAR(10) DEFAULT NULL AFTER nombre_idioma");
       console.log('[migration] Added bandera column to idiomas');
     }
+
+    // Populate bandera with 2-letter ISO codes for known idiomas (only when NULL)
+    const banderaMap = [
+      ['gb', '%ingl%'], ['fr', '%franc%'], ['de', '%alem%'],
+      ['it', '%italian%'], ['br', '%portugu%'], ['jp', '%japon%'],
+      ['cn', '%chin%'], ['cn', '%mandarin%'], ['kr', '%crean%'],
+      ['kr', '%coreano%'], ['ru', '%ruso%'], ['sa', '%arab%'],
+      ['in', '%hindi%'], ['tr', '%turco%'], ['es', '%espa%'],
+    ];
+    for (const [code, pattern] of banderaMap) {
+      await pool.query(
+        'UPDATE idiomas SET bandera = ? WHERE LOWER(nombre_idioma) LIKE ? AND bandera IS NULL',
+        [code, pattern]
+      ).catch(() => {});
+    }
+    console.log('[migration] bandera values populated for known idiomas');
 
     // Create registros_pagos table if not exists
     await pool.query(`

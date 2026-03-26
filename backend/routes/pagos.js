@@ -478,6 +478,39 @@ router.post("/realizar",
     // Log del evento
     eventLogger.payments.created('Admin', `Alumno #${id_alumno}`, monto);
 
+    // Audit log
+    try {
+      let nombreAdmin = 'Administrador';
+      if (req.user && req.user.id_persona) {
+        const [admin] = await pool.query(
+          "SELECT CONCAT(nombre, ' ', apellido) AS nombre FROM personas WHERE id_persona = ?",
+          [req.user.id_persona]
+        );
+        if (admin.length > 0) nombreAdmin = admin[0].nombre;
+      }
+      const [alumnoInfo] = await pool.query(
+        "SELECT CONCAT(p.nombre, ' ', p.apellido) AS nombre FROM alumnos a JOIN personas p ON a.id_persona = p.id_persona WHERE a.id_alumno = ?",
+        [id_alumno]
+      );
+      const nombreAlumno = alumnoInfo.length > 0 ? alumnoInfo[0].nombre : `Alumno #${id_alumno}`;
+      await pool.query(
+        `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          'registrado',
+          result.insertId,
+          req.user?.id_persona || null,
+          nombreAdmin,
+          nombreAlumno,
+          detalle_pago,
+          monto,
+          `${nombreAdmin} registró un pago de ${nombreAlumno} — ${detalle_pago} por $${parseFloat(monto).toFixed(2)}`
+        ]
+      );
+    } catch (logErr) {
+      console.error('[pagos] Error al registrar auditoría de pago:', logErr.message);
+    }
+
     res.json({
       success: true,
       message: "Pago registrado exitosamente",
@@ -619,7 +652,7 @@ router.put("/:id/archivar",
       const { id } = req.params;
 
       const [pago] = await pool.query(`
-        SELECT pa.id_pago, pa.estado_pago, pa.concepto, pa.monto,
+        SELECT pa.id_pago, pa.estado_pago, pa.detalle_pago AS concepto, pa.monto,
                CONCAT(p.nombre, ' ', p.apellido) AS alumno_nombre
         FROM pagos pa
         LEFT JOIN alumnos a ON pa.id_alumno = a.id_alumno
@@ -656,20 +689,24 @@ router.put("/:id/archivar",
         if (admin.length > 0) nombreAdmin = admin[0].nombre;
       }
 
-      await pool.query(
-        `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          'archivado',
-          id,
-          req.user?.id_persona || null,
-          nombreAdmin,
-          pago[0].alumno_nombre || 'Desconocido',
-          pago[0].concepto || '',
-          pago[0].monto || 0,
-          `${nombreAdmin} ha archivado el pago #${id} de ${pago[0].alumno_nombre || 'Desconocido'} correspondiente a "${pago[0].concepto || ''}" por $${parseFloat(pago[0].monto || 0).toFixed(2)}`
-        ]
-      );
+      try {
+        await pool.query(
+          `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            'archivado',
+            id,
+            req.user?.id_persona || null,
+            nombreAdmin,
+            pago[0].alumno_nombre || 'Desconocido',
+            pago[0].concepto || '',
+            pago[0].monto || 0,
+            `${nombreAdmin} ha archivado el pago #${id} de ${pago[0].alumno_nombre || 'Desconocido'} correspondiente a "${pago[0].concepto || ''}" por $${parseFloat(pago[0].monto || 0).toFixed(2)}`
+          ]
+        );
+      } catch (logErr) {
+        console.error('[pagos] Error al registrar auditoría de archivado:', logErr.message);
+      }
 
       console.log(`[pagos] Pago ${id} archivado exitosamente`);
       res.json({ 
@@ -701,7 +738,7 @@ router.put("/:id/desarchivar",
       const { id } = req.params;
 
       const [pago] = await pool.query(`
-        SELECT pa.id_pago, pa.archivado, pa.concepto, pa.monto,
+        SELECT pa.id_pago, pa.archivado, pa.detalle_pago AS concepto, pa.monto,
                CONCAT(p.nombre, ' ', p.apellido) AS alumno_nombre
         FROM pagos pa
         LEFT JOIN alumnos a ON pa.id_alumno = a.id_alumno
@@ -738,20 +775,24 @@ router.put("/:id/desarchivar",
         if (admin.length > 0) nombreAdmin = admin[0].nombre;
       }
 
-      await pool.query(
-        `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          'desarchivado',
-          id,
-          req.user?.id_persona || null,
-          nombreAdmin,
-          pago[0].alumno_nombre || 'Desconocido',
-          pago[0].concepto || '',
-          pago[0].monto || 0,
-          `${nombreAdmin} ha desarchivado el pago #${id} de ${pago[0].alumno_nombre || 'Desconocido'} correspondiente a "${pago[0].concepto || ''}" por $${parseFloat(pago[0].monto || 0).toFixed(2)}`
-        ]
-      );
+      try {
+        await pool.query(
+          `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            'desarchivado',
+            id,
+            req.user?.id_persona || null,
+            nombreAdmin,
+            pago[0].alumno_nombre || 'Desconocido',
+            pago[0].concepto || '',
+            pago[0].monto || 0,
+            `${nombreAdmin} ha desarchivado el pago #${id} de ${pago[0].alumno_nombre || 'Desconocido'} correspondiente a "${pago[0].concepto || ''}" por $${parseFloat(pago[0].monto || 0).toFixed(2)}`
+          ]
+        );
+      } catch (logErr) {
+        console.error('[pagos] Error al registrar auditoría de desarchivado:', logErr.message);
+      }
 
       console.log(`[pagos] Pago ${id} desarchivado exitosamente`);
       res.json({ 
@@ -811,20 +852,24 @@ router.delete("/:id",
       }
 
       // Create audit record
-      await pool.query(
-        `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          'eliminado',
-          id,
-          req.user?.id_persona || null,
-          nombreAdmin,
-          pagoData.alumno_nombre || 'Desconocido',
-          pagoData.concepto || '',
-          pagoData.monto || 0,
-          `${nombreAdmin} ha eliminado permanentemente el pago #${id} de ${pagoData.alumno_nombre || 'Desconocido'} correspondiente a "${pagoData.concepto || ''}" por un total de $${parseFloat(pagoData.monto || 0).toFixed(2)}`
-        ]
-      );
+      try {
+        await pool.query(
+          `INSERT INTO registros_pagos (accion, id_pago, id_admin, nombre_admin, nombre_alumno, concepto, monto, descripcion)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            'eliminado',
+            id,
+            req.user?.id_persona || null,
+            nombreAdmin,
+            pagoData.alumno_nombre || 'Desconocido',
+            pagoData.detalle_pago || '',
+            pagoData.monto || 0,
+            `${nombreAdmin} ha eliminado permanentemente el pago #${id} de ${pagoData.alumno_nombre || 'Desconocido'} correspondiente a "${pagoData.detalle_pago || ''}" por un total de $${parseFloat(pagoData.monto || 0).toFixed(2)}`
+          ]
+        );
+      } catch (logErr) {
+        console.error('[pagos] Error al registrar auditoría de eliminación:', logErr.message);
+      }
 
       const [result] = await pool.query('DELETE FROM pagos WHERE id_pago = ?', [id]);
 

@@ -5304,19 +5304,19 @@ case "pagos":
     
     case "idiomas":
       const idiomaFlags = {
-        'inglés': '🇬🇧', 'ingles': '🇬🇧', 'english': '🇬🇧',
-        'francés': '🇫🇷', 'frances': '🇫🇷', 'french': '🇫🇷',
-        'alemán': '🇩🇪', 'aleman': '🇩🇪', 'german': '🇩🇪',
-        'italiano': '🇮🇹', 'italian': '🇮🇹',
-        'portugués': '🇧🇷', 'portugues': '🇧🇷', 'portuguese': '🇧🇷',
-        'japonés': '🇯🇵', 'japones': '🇯🇵', 'japanese': '🇯🇵',
-        'chino': '🇨🇳', 'chinese': '🇨🇳', 'mandarín': '🇨🇳', 'mandarin': '🇨🇳',
-        'coreano': '🇰🇷', 'korean': '🇰🇷',
-        'ruso': '🇷🇺', 'russian': '🇷🇺',
-        'árabe': '🇸🇦', 'arabe': '🇸🇦', 'arabic': '🇸🇦',
-        'hindi': '🇮🇳',
-        'turco': '🇹🇷', 'turkish': '🇹🇷',
-        'español': '🇪🇸', 'espanol': '🇪🇸', 'spanish': '🇪🇸'
+        'inglés': 'gb', 'ingles': 'gb', 'english': 'gb',
+        'francés': 'fr', 'frances': 'fr', 'french': 'fr',
+        'alemán': 'de', 'aleman': 'de', 'german': 'de',
+        'italiano': 'it', 'italian': 'it',
+        'portugués': 'br', 'portugues': 'br', 'portuguese': 'br',
+        'japonés': 'jp', 'japones': 'jp', 'japanese': 'jp',
+        'chino': 'cn', 'chinese': 'cn', 'mandarín': 'cn', 'mandarin': 'cn',
+        'coreano': 'kr', 'korean': 'kr',
+        'ruso': 'ru', 'russian': 'ru',
+        'árabe': 'sa', 'arabe': 'sa', 'arabic': 'sa',
+        'hindi': 'in',
+        'turco': 'tr', 'turkish': 'tr',
+        'español': 'es', 'espanol': 'es', 'spanish': 'es'
       };
       
       return `
@@ -5336,14 +5336,17 @@ case "pagos":
         </div>
         <div class="idiomas-grid" id="idiomasGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
           ${data.length > 0 ? data.map(idioma => {
-            const flag = idioma.bandera || idiomaFlags[(idioma.nombre_idioma || '').toLowerCase().trim()] || '🌐';
+            const flagCode = idioma.bandera || idiomaFlags[(idioma.nombre_idioma || '').toLowerCase().trim()] || null;
+            const flagHtml = flagCode
+              ? `<img src="https://flagcdn.com/40x30/${flagCode}.png" alt="${idioma.nombre_idioma}" style="width:40px;height:30px;object-fit:cover;border-radius:3px;" onerror="this.style.display='none'">`
+              : `<span style="font-size:32px;">🌐</span>`;
             const estado = idioma.estado || 'activo';
             
             return `
             <div class="idioma-card" data-estado="${estado}" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s ease; position: relative; overflow: hidden; border: 1px solid #e5e7eb; ${estado === 'inactivo' ? 'opacity: 0.6;' : ''}" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
               
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                <div style="font-size: 40px; line-height: 1;">${flag}</div>
+                <div style="line-height: 1;">${flagHtml}</div>
                 <label class="estado-switch" title="${estado === 'activo' ? 'Desactivar' : 'Activar'}">
                   <input type="checkbox" ${estado === 'activo' ? 'checked' : ''} onchange="toggleEstadoIdioma(${idioma.id_idioma}, this.checked ? 'activo' : 'inactivo', this)">
                   <span class="slider"></span>
@@ -5356,7 +5359,7 @@ case "pagos":
               <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
               
               <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                <button class="btn-icon-edit" onclick="editarIdioma(${idioma.id_idioma}, '${idioma.nombre_idioma}', '${(flag || '').replace(/'/g, "\\'")}')" title="Editar">
+                <button class="btn-icon-edit" onclick="editarIdioma(${idioma.id_idioma}, '${idioma.nombre_idioma}', '${flagCode || ''}')" title="Editar">
                   <i data-lucide="edit-2"></i>
                 </button>
                 <button class="btn-icon-danger" onclick="eliminarIdioma(${idioma.id_idioma}, '${idioma.nombre_idioma}')" title="Eliminar permanentemente" style="opacity: 0.4;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'">
@@ -8463,6 +8466,19 @@ async function loadRegistrosPagos() {
     const data = await resp.json();
 
     const registros = data.registros || [];
+    const activeFilter = container.dataset.filter || 'todos';
+
+    const accionConfig = {
+      'registrado':   { icon: 'circle-plus',    color: '#16a34a', bg: '#dcfce7', label: 'Registrado' },
+      'archivado':    { icon: 'archive',         color: '#d97706', bg: '#fef3c7', label: 'Archivado' },
+      'desarchivado': { icon: 'archive-restore', color: '#2563eb', bg: '#dbeafe', label: 'Desarchivado' },
+      'eliminado':    { icon: 'trash-2',         color: '#dc2626', bg: '#fee2e2', label: 'Eliminado' },
+      'anulado':      { icon: 'x-circle',        color: '#7c3aed', bg: '#ede9fe', label: 'Anulado' },
+    };
+
+    // Count by action
+    const counts = {};
+    registros.forEach(r => { counts[r.accion] = (counts[r.accion] || 0) + 1; });
 
     if (registros.length === 0) {
       container.innerHTML = `
@@ -8475,43 +8491,74 @@ async function loadRegistrosPagos() {
       return;
     }
 
-    const accionIcons = {
-      'eliminado': { icon: 'trash-2', color: '#dc2626', bg: '#fee2e2', label: 'Eliminado' },
-      'archivado': { icon: 'archive', color: '#d97706', bg: '#fef3c7', label: 'Archivado' },
-      'desarchivado': { icon: 'archive-restore', color: '#2563eb', bg: '#dbeafe', label: 'Desarchivado' }
-    };
+    // Filter
+    const filtered = activeFilter === 'todos' ? registros : registros.filter(r => r.accion === activeFilter);
+
+    // Group by date
+    const grouped = {};
+    const today = new Date(); today.setHours(0,0,0,0);
+    const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+    filtered.forEach(r => {
+      const d = new Date(r.fecha); d.setHours(0,0,0,0);
+      let label;
+      if (d.getTime() === today.getTime()) label = 'Hoy';
+      else if (d.getTime() === yesterday.getTime()) label = 'Ayer';
+      else label = new Date(r.fecha).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      if (!grouped[label]) grouped[label] = [];
+      grouped[label].push(r);
+    });
+
+    // Build filter tabs
+    const filterTabs = ['todos', 'registrado', 'archivado', 'desarchivado', 'eliminado'].map(key => {
+      const count = key === 'todos' ? registros.length : (counts[key] || 0);
+      const cfg = accionConfig[key] || { color: '#6b7280', label: 'Todos' };
+      const isActive = activeFilter === key;
+      const label = key === 'todos' ? 'Todos' : cfg.label;
+      return `<button onclick="setRegistrosFilter('${key}')" style="padding: 5px 14px; border-radius: 20px; border: 1px solid ${isActive ? cfg.color : '#e5e7eb'}; cursor: pointer; font-size: 12px; font-weight: ${isActive ? '600' : '400'}; background: ${isActive ? cfg.color : 'white'}; color: ${isActive ? 'white' : '#6b7280'}; transition: all 0.15s; white-space: nowrap;">${label} <span style="opacity:0.85;">(${count})</span></button>`;
+    }).join('');
+
+    // Build record items
+    const items = Object.entries(grouped).map(([dateLabel, recs]) => {
+      const rows = recs.map(r => {
+        const cfg = accionConfig[r.accion] || { icon: 'info', color: '#6b7280', bg: '#f3f4f6', label: r.accion };
+        const hora = new Date(r.fecha).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+        return `
+          <div style="background: white; border-radius: 10px; padding: 12px 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-left: 3px solid ${cfg.color}; display: flex; align-items: flex-start; gap: 11px;">
+            <div style="width: 30px; height: 30px; border-radius: 8px; background: ${cfg.bg}; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;">
+              <i data-lucide="${cfg.icon}" style="width: 14px; height: 14px; color: ${cfg.color};"></i>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px; flex-wrap: wrap;">
+                <span style="background: ${cfg.bg}; color: ${cfg.color}; padding: 1px 8px; border-radius: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.03em;">${cfg.label.toUpperCase()}</span>
+                <span style="color: #9ca3af; font-size: 11px;">${hora}</span>
+                ${r.monto ? `<span style="margin-left: auto; color: #374151; font-size: 12px; font-weight: 600;">$${parseFloat(r.monto).toLocaleString('es-AR',{minimumFractionDigits:2})}</span>` : ''}
+              </div>
+              <p style="margin: 0 0 3px 0; color: #374151; font-size: 13px; line-height: 1.5;">${r.descripcion || '-'}</p>
+              ${r.nombre_admin ? `<p style="margin: 0; color: #9ca3af; font-size: 11px;">${r.nombre_admin}</p>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+      return `
+        <div style="margin-bottom: 20px;">
+          <p style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 8px 0; padding-bottom: 6px; border-bottom: 1px solid #f0f0f0;">${dateLabel}</p>
+          <div style="display: flex; flex-direction: column; gap: 7px;">${rows}</div>
+        </div>`;
+    }).join('');
+
+    const emptyFiltered = filtered.length === 0
+      ? `<p style="text-align:center;color:#999;padding:30px 0;font-size:14px;">No hay registros con este filtro</p>`
+      : items;
 
     container.innerHTML = `
-      <div style="margin-bottom: 20px;">
-        <h3 style="color: #4a5259; margin: 0 0 5px 0;">Registros de Auditoría</h3>
-        <p style="color: #666; font-size: 14px; margin: 0;">${registros.length} registro${registros.length !== 1 ? 's' : ''}</p>
+      <div style="margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <h3 style="color: #4a5259; margin: 0 0 2px 0; font-size: 15px; font-weight: 600;">Auditoría de Pagos</h3>
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">${registros.length} movimiento${registros.length !== 1 ? 's' : ''} registrado${registros.length !== 1 ? 's' : ''}</p>
+        </div>
+        <button onclick="loadRegistrosPagos()" style="background:none;border:1px solid #e5e7eb;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;color:#6b7280;display:flex;align-items:center;gap:5px;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Actualizar</button>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        ${registros.map(r => {
-          const config = accionIcons[r.accion] || { icon: 'info', color: '#6b7280', bg: '#f3f4f6', label: r.accion };
-          const fecha = new Date(r.fecha);
-          const fechaStr = fecha.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-          const horaStr = fecha.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-
-          return `
-            <div style="background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border-left: 4px solid ${config.color}; display: flex; align-items: flex-start; gap: 14px;">
-              <div style="width: 40px; height: 40px; border-radius: 10px; background: ${config.bg}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                <i data-lucide="${config.icon}" style="width: 20px; height: 20px; color: ${config.color};"></i>
-              </div>
-              <div style="flex: 1; min-width: 0;">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
-                  <span style="background: ${config.bg}; color: ${config.color}; padding: 2px 10px; border-radius: 8px; font-size: 12px; font-weight: 600;">${config.label}</span>
-                  <span style="color: #9ca3af; font-size: 12px;">${fechaStr} ${horaStr}</span>
-                </div>
-                <p style="margin: 0; color: #374151; font-size: 14px; line-height: 1.5;">${r.descripcion || ''}</p>
-                <div style="display: flex; gap: 16px; margin-top: 6px; flex-wrap: wrap;">
-                  ${r.monto ? `<span style="color: #6b7280; font-size: 12px;">Monto: <strong>$${parseFloat(r.monto).toLocaleString('es-AR', {minimumFractionDigits: 2})}</strong></span>` : ''}
-                  ${r.nombre_admin ? `<span style="color: #6b7280; font-size: 12px;">Admin: <strong>${r.nombre_admin}</strong></span>` : ''}
-                </div>
-              </div>
-            </div>`;
-        }).join('')}
-      </div>`;
+      <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">${filterTabs}</div>
+      ${emptyFiltered}`;
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
   } catch (error) {
@@ -8520,6 +8567,14 @@ async function loadRegistrosPagos() {
       <div style="text-align: center; padding: 40px; color: #f44336;">
         <p>Error al cargar los registros</p>
       </div>`;
+  }
+}
+
+function setRegistrosFilter(filter) {
+  const container = document.getElementById('registrosPagosContainer');
+  if (container) {
+    container.dataset.filter = filter;
+    loadRegistrosPagos();
   }
 }
 
@@ -9348,7 +9403,15 @@ async function eliminarAula(id, nombre) {
 }
 
 async function openNuevoIdiomaModal() {
-  const flagOptions = ['🇬🇧','🇫🇷','🇩🇪','🇮🇹','🇧🇷','🇯🇵','🇨🇳','🇰🇷','🇷🇺','🇸🇦','🇮🇳','🇹🇷','🇪🇸','🇺🇸','🇵🇹','🇬🇷','🇳🇱','🇸🇪','🇵🇱','🇺🇦','🏛️','🌐'];
+  const flagOptions = [
+    {code:'gb',label:'Inglés'},{code:'fr',label:'Francés'},{code:'de',label:'Alemán'},
+    {code:'it',label:'Italiano'},{code:'br',label:'Portugués (BR)'},{code:'pt',label:'Portugués (PT)'},
+    {code:'jp',label:'Japonés'},{code:'cn',label:'Chino'},{code:'kr',label:'Coreano'},
+    {code:'ru',label:'Ruso'},{code:'sa',label:'Árabe'},{code:'in',label:'Hindi'},
+    {code:'tr',label:'Turco'},{code:'es',label:'Español'},{code:'us',label:'Inglés (EE.UU.)'},
+    {code:'gr',label:'Griego'},{code:'nl',label:'Neerlandés'},{code:'se',label:'Sueco'},
+    {code:'pl',label:'Polaco'},{code:'ua',label:'Ucraniano'}
+  ];
 
   const { value: formValues } = await Swal.fire({
     title: 'Nuevo Idioma',
@@ -9360,8 +9423,8 @@ async function openNuevoIdiomaModal() {
         </div>
         <div>
           <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Bandera</label>
-          <div id="swal-flag-grid" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; max-height: 120px; overflow-y: auto;">
-            ${flagOptions.map((f, i) => `<button type="button" class="flag-option" data-flag="${f}" onclick="document.querySelectorAll('.flag-option').forEach(b=>b.style.outline='none');this.style.outline='3px solid #4a5259';document.getElementById('swal-selected-flag').value='${f}'" style="font-size: 28px; background: none; border: none; cursor: pointer; padding: 4px; border-radius: 6px; transition: transform 0.2s;" onmouseenter="this.style.transform='scale(1.2)'" onmouseleave="this.style.transform='scale(1)'">${f}</button>`).join('')}
+          <div id="swal-flag-grid" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; max-height: 140px; overflow-y: auto;">
+            ${flagOptions.map(f => `<button type="button" class="flag-option" data-flag="${f.code}" title="${f.label}" onclick="document.querySelectorAll('.flag-option').forEach(b=>b.style.outline='none');this.style.outline='3px solid #4a5259';document.getElementById('swal-selected-flag').value='${f.code}'" style="background: none; border: none; cursor: pointer; padding: 3px; border-radius: 6px; transition: transform 0.15s;" onmouseenter="this.style.transform='scale(1.25)'" onmouseleave="this.style.transform='scale(1)'"><img src="https://flagcdn.com/32x24/${f.code}.png" alt="${f.label}" style="width:32px;height:24px;object-fit:cover;border-radius:2px;display:block;"></button>`).join('')}
           </div>
           <input type="hidden" id="swal-selected-flag" value="">
         </div>
@@ -9406,7 +9469,15 @@ async function openNuevoIdiomaModal() {
 }
 
 async function editarIdioma(id, nombreActual, banderaActual) {
-  const flagOptions = ['🇬🇧','🇫🇷','🇩🇪','🇮🇹','🇧🇷','🇯🇵','🇨🇳','🇰🇷','🇷🇺','🇸🇦','🇮🇳','🇹🇷','🇪🇸','🇺🇸','🇵🇹','🇬🇷','🇳🇱','🇸🇪','🇵🇱','🇺🇦','🏛️','🌐'];
+  const flagOptions = [
+    {code:'gb',label:'Inglés'},{code:'fr',label:'Francés'},{code:'de',label:'Alemán'},
+    {code:'it',label:'Italiano'},{code:'br',label:'Portugués (BR)'},{code:'pt',label:'Portugués (PT)'},
+    {code:'jp',label:'Japonés'},{code:'cn',label:'Chino'},{code:'kr',label:'Coreano'},
+    {code:'ru',label:'Ruso'},{code:'sa',label:'Árabe'},{code:'in',label:'Hindi'},
+    {code:'tr',label:'Turco'},{code:'es',label:'Español'},{code:'us',label:'Inglés (EE.UU.)'},
+    {code:'gr',label:'Griego'},{code:'nl',label:'Neerlandés'},{code:'se',label:'Sueco'},
+    {code:'pl',label:'Polaco'},{code:'ua',label:'Ucraniano'}
+  ];
 
   const { value: formValues } = await Swal.fire({
     title: 'Editar Idioma',
@@ -9418,8 +9489,8 @@ async function editarIdioma(id, nombreActual, banderaActual) {
         </div>
         <div>
           <label style="display: block; margin-bottom: 6px; font-weight: 500; color: #374151;">Bandera</label>
-          <div id="swal-flag-grid" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; max-height: 120px; overflow-y: auto;">
-            ${flagOptions.map(f => `<button type="button" class="flag-option" data-flag="${f}" onclick="document.querySelectorAll('.flag-option').forEach(b=>b.style.outline='none');this.style.outline='3px solid #4a5259';document.getElementById('swal-selected-flag').value='${f}'" style="font-size: 28px; background: none; border: none; cursor: pointer; padding: 4px; border-radius: 6px; transition: transform 0.2s; ${f === banderaActual ? 'outline: 3px solid #4a5259;' : ''}" onmouseenter="this.style.transform='scale(1.2)'" onmouseleave="this.style.transform='scale(1)'">${f}</button>`).join('')}
+          <div id="swal-flag-grid" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; max-height: 140px; overflow-y: auto;">
+            ${flagOptions.map(f => `<button type="button" class="flag-option" data-flag="${f.code}" title="${f.label}" onclick="document.querySelectorAll('.flag-option').forEach(b=>b.style.outline='none');this.style.outline='3px solid #4a5259';document.getElementById('swal-selected-flag').value='${f.code}'" style="background: none; border: none; cursor: pointer; padding: 3px; border-radius: 6px; transition: transform 0.15s; ${f.code === banderaActual ? 'outline: 3px solid #4a5259;' : ''}" onmouseenter="this.style.transform='scale(1.25)'" onmouseleave="this.style.transform='scale(1)'"><img src="https://flagcdn.com/32x24/${f.code}.png" alt="${f.label}" style="width:32px;height:24px;object-fit:cover;border-radius:2px;display:block;"></button>`).join('')}
           </div>
           <input type="hidden" id="swal-selected-flag" value="${banderaActual || ''}">
         </div>
