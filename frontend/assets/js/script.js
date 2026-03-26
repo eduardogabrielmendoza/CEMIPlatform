@@ -6215,6 +6215,12 @@ async function openCursoPanel(idCurso) {
 
     const cuposMax = curso.cupo_maximo || 30;
     const cuposDisponibles = cuposMax - inscritos.length;
+    const anioActual = new Date().getFullYear();
+    const cicloLectivo = curso.ciclo_lectivo || anioActual;
+    const cursoFinalizado = cicloLectivo < anioActual;
+    const estadoCurso = cursoFinalizado ? 'Finalizado' : 'En curso';
+    const estadoColor = cursoFinalizado ? '#6b7280' : '#16a34a';
+    const estadoBg = cursoFinalizado ? '#f3f4f6' : '#dcfce7';
 
     document.getElementById('cursoStats').innerHTML = `
       <div class="stat-card info">
@@ -6232,6 +6238,14 @@ async function openCursoPanel(idCurso) {
       <div class="stat-card info">
         <div class="stat-label">Horario</div>
         <div class="stat-value" style="font-size: 16px;">${curso.horario || 'Por definir'}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Ciclo Lectivo</div>
+        <div class="stat-value" style="font-size: 22px;">${cicloLectivo}</div>
+      </div>
+      <div class="stat-card ${cursoFinalizado ? '' : 'success'}">
+        <div class="stat-label">Estado</div>
+        <div class="stat-value" style="font-size: 16px;"><span style="background:${estadoBg};color:${estadoColor};padding:4px 12px;border-radius:12px;font-size:13px;font-weight:500;">${estadoCurso}</span></div>
       </div>
       <div class="stat-card ${cuposDisponibles <= 5 ? 'warning' : 'success'}">
         <div class="stat-label">Aula</div>
@@ -6393,6 +6407,11 @@ function ensureEditarCursoModal() {
                 <input type="number" id="editCupo" min="1" max="100" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
               </div>
             </div>
+
+            <div>
+              <label for="editCicloLectivo">Ciclo Lectivo:</label>
+              <input type="number" id="editCicloLectivo" min="2020" max="2040" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
           </div>
           
           <div class="form-actions" style="margin-top: 24px;">
@@ -6453,6 +6472,7 @@ async function openEditarCursoModal(curso) {
     document.getElementById('editNombreCurso').value = cursoCompleto.nombre_curso || '';
     document.getElementById('editHorario').value = cursoCompleto.horario || '';
     document.getElementById('editCupo').value = cursoCompleto.cupo_maximo || 30;
+    document.getElementById('editCicloLectivo').value = cursoCompleto.ciclo_lectivo || new Date().getFullYear();
 
     modal.classList.add('active');
 
@@ -6466,7 +6486,8 @@ async function openEditarCursoModal(curso) {
         id_aula: document.getElementById('editAula').value || null,
         id_idioma: parseInt(document.getElementById('editIdioma').value),
         id_nivel: parseInt(document.getElementById('editNivel').value),
-        id_profesor: parseInt(document.getElementById('editProfesor').value)
+        id_profesor: parseInt(document.getElementById('editProfesor').value),
+        ciclo_lectivo: parseInt(document.getElementById('editCicloLectivo').value)
       };
 
       try {
@@ -6784,6 +6805,7 @@ function renderHistorialAcademico(historial) {
   if (!historial || historial.length === 0) {
     return '<p style="color: #999; text-align: center; padding: 20px;">No hay registros de historial académico</p>';
   }
+  var anioActual = new Date().getFullYear();
   var porCiclo = {};
   historial.forEach(function(h) {
     var ciclo = h.ciclo_lectivo || 'Sin ciclo';
@@ -6794,17 +6816,22 @@ function renderHistorialAcademico(historial) {
   var html = '';
   ciclosOrdenados.forEach(function(ciclo) {
     var items = porCiclo[ciclo];
+    var cicloFinalizado = ciclo !== 'Sin ciclo' && parseInt(ciclo) < anioActual;
     html += '<div style="margin-bottom: 16px;">';
     html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">';
     html += '<span style="background:#4a5259;color:white;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">Ciclo ' + ciclo + '</span>';
+    if (cicloFinalizado) {
+      html += '<span style="background:#f3f4f6;color:#6b7280;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:500;">Finalizado</span>';
+    }
     html += '<span style="color:#9ca3af;font-size:12px;">' + items.length + ' curso' + (items.length !== 1 ? 's' : '') + '</span>';
     html += '</div>';
     html += '<div style="display:flex;flex-direction:column;gap:8px;">';
     items.forEach(function(h) {
-      var estadoColor = h.estado_inscripcion === 'activo' ? '#16a34a' : '#d97706';
-      var estadoBg = h.estado_inscripcion === 'activo' ? '#dcfce7' : '#fef3c7';
-      var estadoText = h.estado_inscripcion === 'activo' ? 'Cursando' : 'Finalizado';
-      var notas = [h.parcial1, h.parcial2, h.final].filter(function(v) { return v != null; });
+      var esFinalizado = cicloFinalizado || h.estado_inscripcion !== 'activo';
+      var estadoColor = esFinalizado ? '#6b7280' : '#16a34a';
+      var estadoBg = esFinalizado ? '#f3f4f6' : '#dcfce7';
+      var estadoText = esFinalizado ? 'Finalizado' : 'Cursando';
+      var notas = [h.parcial1, h.parcial2].filter(function(v) { return v != null; });
       var promedio = notas.length > 0 ? (notas.reduce(function(a, b) { return a + b; }, 0) / notas.length).toFixed(1) : null;
       var promedioColor = promedio ? (parseFloat(promedio) >= 7 ? '#16a34a' : parseFloat(promedio) >= 4 ? '#d97706' : '#dc2626') : '';
       html += '<div style="background:#f8f9fa;border-radius:10px;padding:12px 16px;border-left:3px solid ' + estadoColor + ';display:flex;align-items:center;justify-content:space-between;gap:12px;">';
@@ -6900,22 +6927,27 @@ async function openAlumnoPanel(idAlumno) {
         <h3><i data-lucide="book-open"></i> Cursos Inscritos (${alumno.cursos?.length || 0})</h3>
         ${alumno.cursos && alumno.cursos.length > 0 ? `
           <div class="cursos-list">
-            ${alumno.cursos.map(c => `
-              <div class="curso-item">
+            ${alumno.cursos.map(c => {
+              const esFinalizado = c.ciclo_lectivo && c.ciclo_lectivo < new Date().getFullYear();
+              const estadoLabel = esFinalizado ? 'Finalizado' : 'Cursando';
+              const estadoClr = esFinalizado ? '#6b7280' : '#16a34a';
+              const estadoBgC = esFinalizado ? '#f3f4f6' : '#dcfce7';
+              return `
+              <div class="curso-item" style="${esFinalizado ? 'opacity:0.7;' : ''}">
                 <div class="curso-item-info">
-                  <h4>${c.nombre_curso}</h4>
-                  <p>${c.nombre_idioma} - ${c.nivel} ${c.horario ? `• ${c.horario}` : ''}</p>
+                  <h4>${c.nombre_curso} <span style="background:${estadoBgC};color:${estadoClr};padding:2px 8px;border-radius:8px;font-size:11px;font-weight:500;margin-left:6px;">${estadoLabel}</span></h4>
+                  <p>${c.nombre_idioma} - ${c.nivel} ${c.horario ? `• ${c.horario}` : ''} ${c.ciclo_lectivo ? `• Ciclo ${c.ciclo_lectivo}` : ''}</p>
                 </div>
                 <div class="curso-item-calificacion">
-                  ${c.promedio !== null ? `
+                  ${c.promedio !== null && c.promedio !== undefined ? `
                     <div class="promedio">${parseFloat(c.promedio).toFixed(1)}</div>
                     <div class="label">Promedio</div>
                   ` : '<div class="label" style="font-size: 13px; color: #999;">Sin calificaciones</div>'}
                 </div>
-              </div>
-            `).join('')}
+              </div>`;
+            }).join('')}
           </div>
-        ` : '<p style="color: #999; text-align: center; padding: 20px;">No está inscrito en ningún curso actualmente</p>'}
+        ` : '<p style="color: #999; text-align: center; padding: 20px;">No está inscrito en ningún curso actualmente</p>'}}
       </div>
 
       <!-- Resumen de Pagos -->
@@ -11073,6 +11105,10 @@ async function openNuevoCursoModal() {
               ${aulas.map(a => `<option value="${a.id_aula}">${a.nombre_aula} (${a.capacidad} personas)</option>`).join('')}
             </select>
           </div>
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Ciclo Lectivo</label>
+            <input id="ciclo_lectivo" type="number" class="swal2-input" value="${new Date().getFullYear()}" min="2020" max="2040" style="width: 100%; margin: 0;">
+          </div>
         </div>
       `,
       width: '600px',
@@ -11095,6 +11131,7 @@ async function openNuevoCursoModal() {
         const horario = document.getElementById('horario').value;
         const cupo_maximo = document.getElementById('cupo_maximo').value;
         const id_aula = document.getElementById('id_aula').value;
+        const ciclo_lectivo = document.getElementById('ciclo_lectivo').value;
         
         if (!nombre_curso) {
           Swal.showValidationMessage('El nombre del curso es obligatorio');
@@ -11108,7 +11145,7 @@ async function openNuevoCursoModal() {
           Swal.showValidationMessage('Debe seleccionar un profesor');
           return false;
         }
-        return { nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula };
+        return { nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula, ciclo_lectivo };
       }
     });
 
@@ -11192,6 +11229,10 @@ async function editarCurso(id) {
               ${aulas.map(a => `<option value="${a.id_aula}" ${curso.id_aula == a.id_aula ? 'selected' : ''}>${a.nombre_aula} (${a.capacidad} personas)</option>`).join('')}
             </select>
           </div>
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Ciclo Lectivo</label>
+            <input id="ciclo_lectivo" type="number" class="swal2-input" value="${curso.ciclo_lectivo || new Date().getFullYear()}" min="2020" max="2040" style="width: 100%; margin: 0;">
+          </div>
         </div>
       `,
       width: '600px',
@@ -11215,12 +11256,13 @@ async function editarCurso(id) {
         const horario = document.getElementById('horario').value;
         const cupo_maximo = document.getElementById('cupo_maximo').value;
         const id_aula = document.getElementById('id_aula').value;
+        const ciclo_lectivo = document.getElementById('ciclo_lectivo').value;
         
         if (!nombre_curso || !id_idioma || !id_profesor) {
           Swal.showValidationMessage('Nombre del curso, idioma y profesor son obligatorios');
           return false;
         }
-        return { nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula };
+        return { nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula, ciclo_lectivo };
       }
     });
 

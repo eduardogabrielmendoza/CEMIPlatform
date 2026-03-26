@@ -378,12 +378,14 @@ router.get("/:id", async (req, res) => {
         c.horario,
         a.nombre_aula AS nombre_aula,
         c.cupo_maximo,
+        c.ciclo_lectivo,
+        c.estado,
         (SELECT COUNT(*) FROM inscripciones WHERE id_curso = c.id_curso AND estado = 'activo') AS alumnos_inscritos
       FROM cursos c
       INNER JOIN idiomas i ON c.id_idioma = i.id_idioma
       LEFT JOIN niveles n ON c.id_nivel = n.id_nivel
-      INNER JOIN profesores p ON c.id_profesor = p.id_profesor
-      INNER JOIN personas per ON p.id_persona = per.id_persona
+      LEFT JOIN profesores p ON c.id_profesor = p.id_profesor
+      LEFT JOIN personas per ON p.id_persona = per.id_persona
       LEFT JOIN aulas a ON c.id_aula = a.id_aula
       WHERE c.id_curso = ?
     `;
@@ -608,7 +610,11 @@ router.put("/:id/profesor", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre_curso, horario, cupo_maximo, id_aula, id_idioma, id_nivel, id_profesor } = req.body;
+    const { nombre_curso, horario, cupo_maximo, id_aula, id_idioma, id_nivel, id_profesor, ciclo_lectivo } = req.body;
+
+    const anioActual = new Date().getFullYear();
+    const ciclo = ciclo_lectivo ? parseInt(ciclo_lectivo) : null;
+    const estado = ciclo && ciclo < anioActual ? 'inactivo' : 'activo';
 
     const query = `
       UPDATE cursos 
@@ -618,7 +624,9 @@ router.put("/:id", async (req, res) => {
           id_aula = ?,
           id_idioma = ?,
           id_nivel = ?,
-          id_profesor = ?
+          id_profesor = ?,
+          ciclo_lectivo = COALESCE(?, ciclo_lectivo),
+          estado = ?
       WHERE id_curso = ?
     `;
 
@@ -630,6 +638,8 @@ router.put("/:id", async (req, res) => {
       id_idioma,
       id_nivel,
       id_profesor,
+      ciclo,
+      estado,
       id
     ]);
 
@@ -646,7 +656,7 @@ router.put("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula } = req.body;
+    const { nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula, ciclo_lectivo } = req.body;
 
     if (!nombre_curso || !id_idioma || !id_profesor) {
       return res.status(400).json({ 
@@ -655,9 +665,13 @@ router.post("/", async (req, res) => {
       });
     }
 
+    const anioActual = new Date().getFullYear();
+    const ciclo = ciclo_lectivo ? parseInt(ciclo_lectivo) : anioActual;
+    const estado = ciclo < anioActual ? 'inactivo' : 'activo';
+
     const [result] = await pool.query(
-      `INSERT INTO cursos (nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO cursos (nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula, ciclo_lectivo, estado) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         nombre_curso, 
         id_idioma, 
@@ -665,7 +679,9 @@ router.post("/", async (req, res) => {
         id_profesor, 
         horario || 'Horario por definir', 
         cupo_maximo || 30, 
-        id_aula || null
+        id_aula || null,
+        ciclo,
+        estado
       ]
     );
 

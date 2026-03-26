@@ -427,32 +427,24 @@ router.delete("/:id", async (req, res) => {
   try {
     const id_profesor = req.params.id;
 
-    const [cursos] = await pool.query(
-      'SELECT COUNT(*) as total FROM cursos WHERE id_profesor = ?',
-      [id_profesor]
-    );
-
-    if (cursos[0].total > 0) {
-      return res.status(400).json({ 
-        success: false,
-        message: `No se puede eliminar: el profesor tiene ${cursos[0].total} curso(s) asignado(s). Los cursos quedarán sin profesor.` 
-      });
+    // Get the id_persona for this profesor
+    const [profRows] = await pool.query('SELECT id_persona FROM profesores WHERE id_profesor = ?', [id_profesor]);
+    if (profRows.length === 0) {
+      return res.status(404).json({ success: false, message: "Profesor no encontrado" });
     }
+    const id_persona = profRows[0].id_persona;
 
+    // Remove profesor from any assigned courses
     await pool.query('UPDATE cursos SET id_profesor = NULL WHERE id_profesor = ?', [id_profesor]);
     
-    await pool.query('DELETE FROM usuarios WHERE id_persona = ?', [id_profesor]);
+    // Delete user account if exists
+    await pool.query('DELETE FROM usuarios WHERE id_persona = ?', [id_persona]);
     
+    // Delete profesor record
     await pool.query('DELETE FROM profesores WHERE id_profesor = ?', [id_profesor]);
     
-    const [result] = await pool.query('DELETE FROM personas WHERE id_persona = ?', [id_profesor]);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ 
-        success: false,
-        message: "Profesor no encontrado" 
-      });
-    }
+    // Delete persona record
+    await pool.query('DELETE FROM personas WHERE id_persona = ?', [id_persona]);
 
     res.json({ 
       message: "Profesor eliminado correctamente", 

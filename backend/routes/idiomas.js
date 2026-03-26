@@ -79,8 +79,32 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    await pool.query("DELETE FROM Idiomas WHERE id_idioma = ?", [req.params.id]);
+    const { id } = req.params;
+
+    // Check for cursos using this idioma
+    const [cursos] = await pool.query('SELECT COUNT(*) as total FROM cursos WHERE id_idioma = ?', [id]);
+    if (cursos[0].total > 0) {
+      return res.status(400).json({ 
+        success: false,
+        message: `No se puede eliminar: hay ${cursos[0].total} curso(s) asociado(s) a este idioma` 
+      });
+    }
+
+    // Check for niveles using this idioma
+    const [niveles] = await pool.query('SELECT COUNT(*) as total FROM niveles WHERE id_idioma = ?', [id]);
+    if (niveles[0].total > 0) {
+      return res.status(400).json({ 
+        success: false,
+        message: `No se puede eliminar: hay ${niveles[0].total} nivel(es) asociado(s) a este idioma. Elimine los niveles primero.` 
+      });
+    }
+
+    const [result] = await pool.query("DELETE FROM Idiomas WHERE id_idioma = ?", [id]);
     
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Idioma no encontrado" });
+    }
+
     res.json({ 
       success: true,
       message: "Idioma eliminado exitosamente" 
