@@ -580,6 +580,158 @@
         max-height: 300px;
       }
     }
+
+    /* Sidebar collapsible groups */
+    .sidebar-group-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 16px;
+      background: none;
+      border: none;
+      color: #e0e0e0;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 11px;
+      margin-top: 8px;
+      opacity: 0.7;
+    }
+    .sidebar-group-toggle:hover { opacity: 1; }
+    .sidebar-group-toggle.active { opacity: 1; color: #fff; }
+    .sidebar-group-toggle .sidebar-chevron {
+      margin-left: auto;
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s ease;
+    }
+    .sidebar-group-toggle.open .sidebar-chevron {
+      transform: rotate(180deg);
+    }
+    .sidebar-group {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .sidebar-group.open {
+      max-height: 400px;
+    }
+    .sidebar-sub {
+      padding-left: 32px !important;
+      font-size: 13px !important;
+    }
+
+    /* Estado switch */
+    .estado-switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+    .estado-switch input { opacity: 0; width: 0; height: 0; }
+    .estado-switch .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 22px;
+    }
+    .estado-switch .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    .estado-switch input:checked + .slider { background-color: #22c55e; }
+    .estado-switch input:checked + .slider:before { transform: translateX(18px); }
+
+    /* Admin tables */
+    .admin-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .admin-table thead th {
+      background: #f8f9fa;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .admin-table tbody td {
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #374151;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: middle;
+    }
+    .admin-table tbody tr:hover { background: #f9fafb; }
+    .admin-table tbody tr:last-child td { border-bottom: none; }
+    .btn-load-more {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin: 20px auto;
+      padding: 12px 24px;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      color: #4a5259;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-load-more:hover { background: #e5e7eb; }
+
+    /* Filter panel */
+    .filter-panel {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+    }
+    .filter-panel label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #4b5563;
+      cursor: pointer;
+    }
+    .filter-panel label input[type="checkbox"] {
+      accent-color: #4a5259;
+    }
+    .filter-panel select {
+      padding: 6px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 13px;
+      background: white;
+    }
   </style>
 </head>
 <body class="dashboard-body admin">
@@ -595,26 +747,40 @@
       <img src="images/logodashboard.png" alt="Logo Cemi" class="logo-hover" style="width: 100%; max-width: 200px; height: auto;">
     </div>
     <nav class="sidebar-menu">
-      <button id="btnCursos" class="active stagger-item hover-lift"><i data-lucide="book"></i> Cursos</button>
-      <button id="btnAlumnos" class="stagger-item hover-lift"><i data-lucide="users"></i> Alumnos</button>
-      <button id="btnProfesores" class="stagger-item hover-lift"><i data-lucide="graduation-cap"></i> Profesores</button>
-      <button id="btnAdministradores" class="stagger-item hover-lift"><i data-lucide="shield"></i> Administradores</button>
+      <button class="sidebar-group-toggle active stagger-item hover-lift" data-group="admin">
+        <i data-lucide="layout-grid"></i> Administración General
+        <i data-lucide="chevron-down" class="sidebar-chevron"></i>
+      </button>
+      <div class="sidebar-group open" id="groupAdmin">
+        <button id="btnCursos" class="sidebar-sub active stagger-item hover-lift"><i data-lucide="book"></i> Cursos</button>
+        <button id="btnAlumnos" class="sidebar-sub stagger-item hover-lift"><i data-lucide="users"></i> Alumnos</button>
+        <button id="btnProfesores" class="sidebar-sub stagger-item hover-lift"><i data-lucide="graduation-cap"></i> Profesores</button>
+        <button id="btnAdministradores" class="sidebar-sub stagger-item hover-lift"><i data-lucide="shield"></i> Administradores</button>
+        <button id="btnAulas" class="sidebar-sub stagger-item hover-lift"><i data-lucide="door-open"></i> Aulas</button>
+        <button id="btnIdiomas" class="sidebar-sub stagger-item hover-lift"><i data-lucide="languages"></i> Idiomas</button>
+      </div>
+
+      <button class="sidebar-group-toggle stagger-item hover-lift" data-group="seguridad">
+        <i data-lucide="shield-check"></i> Seguridad
+        <i data-lucide="chevron-down" class="sidebar-chevron"></i>
+      </button>
+      <div class="sidebar-group" id="groupSeguridad">
+        <button id="btnInvestigacion" class="sidebar-sub stagger-item hover-lift"><i data-lucide="flask-conical"></i> Investigación</button>
+        <button id="btnStatus" class="sidebar-sub stagger-item hover-lift"><i data-lucide="activity"></i> Status</button>
+        <button id="btnRecuperacion" class="sidebar-sub stagger-item hover-lift" style="position: relative;">
+          <i data-lucide="key-round"></i> Recuperación
+          <span id="recuperacionBadge" class="notification-badge" style="display: none;"></span>
+        </button>
+        <button id="btnCodigosCemi" class="sidebar-sub stagger-item hover-lift"><i data-lucide="ticket"></i> Códigos CEMI</button>
+      </div>
+
       <button id="btnPagos" class="stagger-item hover-lift"><i data-lucide="credit-card"></i> Pagos</button>
-      <button id="btnAulas" class="stagger-item hover-lift"><i data-lucide="door-open"></i> Aulas</button>
-      <button id="btnIdiomas" class="stagger-item hover-lift"><i data-lucide="languages"></i> Idiomas</button>
-      <button id="btnInvestigacion" class="stagger-item hover-lift"><i data-lucide="flask-conical"></i> Investigacion</button>
       <button id="btnChatSoporte" class="stagger-item hover-lift" style="position: relative;">
         <i data-lucide="message-circle"></i> Chat Soporte
         <span id="chatNotificationBadge" class="notification-badge" style="display: none;"></span>
       </button>
-      <button id="btnStatus" class="stagger-item hover-lift"><i data-lucide="activity"></i> Status del Sistema</button>
-      <button id="btnRecuperacion" class="stagger-item hover-lift" style="position: relative;">
-        <i data-lucide="key-round"></i> Recuperación
-        <span id="recuperacionBadge" class="notification-badge" style="display: none;"></span>
-      </button>
-      <button id="btnCodigosCemi" class="stagger-item hover-lift"><i data-lucide="ticket"></i> Códigos CEMI</button>
       <button id="btnAyuda" class="stagger-item hover-lift"><i data-lucide="help-circle"></i> Ayuda</button>
-      <button id="logoutBtn" class="logout stagger-item hover-lift"><i data-lucide="log-out"></i> Cerrar sesion</button>
+      <button id="logoutBtn" class="logout stagger-item hover-lift"><i data-lucide="log-out"></i> Cerrar sesión</button>
     </nav>
   </aside>
 

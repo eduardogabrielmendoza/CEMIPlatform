@@ -5,7 +5,36 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const { id_profesor } = req.query; // viene del frontend
+    const { id_profesor, limit, offset, idioma, nivel, ciclo_lectivo, busqueda } = req.query;
+
+    let where = [];
+    let params = [];
+
+    if (id_profesor) { where.push('c.id_profesor = ?'); params.push(id_profesor); }
+    if (idioma) { where.push('c.id_idioma = ?'); params.push(idioma); }
+    if (nivel) { where.push('c.id_nivel = ?'); params.push(nivel); }
+    if (ciclo_lectivo) { where.push('c.ciclo_lectivo = ?'); params.push(ciclo_lectivo); }
+    if (busqueda) {
+      where.push('(c.nombre_curso LIKE ? OR i.nombre_idioma LIKE ? OR n.descripcion LIKE ?)');
+      const b = `%${busqueda}%`;
+      params.push(b, b, b);
+    }
+
+    const whereClause = where.length > 0 ? 'WHERE ' + where.join(' AND ') : '';
+
+    const [countResult] = await pool.query(`
+      SELECT COUNT(*) as total FROM cursos c 
+      INNER JOIN idiomas i ON c.id_idioma = i.id_idioma 
+      LEFT JOIN niveles n ON c.id_nivel = n.id_nivel 
+      ${whereClause}
+    `, params);
+    const total = countResult[0].total;
+
+    let limitClause = '';
+    if (limit) {
+      limitClause = `LIMIT ${parseInt(limit)}`;
+      if (offset) limitClause += ` OFFSET ${parseInt(offset)}`;
+    }
 
     const query = `
       SELECT 
@@ -18,6 +47,7 @@ router.get("/", async (req, res) => {
         c.horario,
         a.nombre_aula AS nombre_aula,
         c.cupo_maximo,
+        c.ciclo_lectivo,
         (SELECT COUNT(*) FROM inscripciones WHERE id_curso = c.id_curso AND estado = 'activo') AS alumnos_inscritos
       FROM cursos c
       INNER JOIN idiomas i ON c.id_idioma = i.id_idioma
@@ -25,12 +55,13 @@ router.get("/", async (req, res) => {
       LEFT JOIN profesores p ON c.id_profesor = p.id_profesor
       LEFT JOIN personas per ON p.id_profesor = per.id_persona
       LEFT JOIN aulas a ON c.id_aula = a.id_aula
-      ${id_profesor ? "WHERE c.id_profesor = ?" : ""}
+      ${whereClause}
       ORDER BY c.id_curso DESC
+      ${limitClause}
     `;
 
-    const [rows] = await pool.query(query, id_profesor ? [id_profesor] : []);
-    res.json(rows);
+    const [rows] = await pool.query(query, params);
+    res.json({ data: rows, total });
   } catch (error) {
     console.error("Error al obtener los cursos:", error);
     res.status(500).json({ message: "Error al obtener los cursos" });

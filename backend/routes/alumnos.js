@@ -8,6 +8,39 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
+    const { limit, offset, estado, curso, ciclo_lectivo, orden, busqueda } = req.query;
+
+    let where = [];
+    let params = [];
+
+    if (estado) { where.push('a.estado = ?'); params.push(estado); }
+    if (busqueda) {
+      where.push('(p.nombre LIKE ? OR p.apellido LIKE ? OR a.legajo LIKE ? OR p.mail LIKE ? OR p.dni LIKE ?)');
+      const b = `%${busqueda}%`;
+      params.push(b, b, b, b, b);
+    }
+    if (curso) {
+      where.push('a.id_alumno IN (SELECT i.id_alumno FROM inscripciones i WHERE i.id_curso = ? AND i.estado = "activo")');
+      params.push(curso);
+    }
+    if (ciclo_lectivo) {
+      where.push('a.id_alumno IN (SELECT i.id_alumno FROM inscripciones i JOIN cursos c2 ON i.id_curso = c2.id_curso WHERE c2.ciclo_lectivo = ?)');
+      params.push(ciclo_lectivo);
+    }
+
+    const whereClause = where.length > 0 ? 'WHERE ' + where.join(' AND ') : '';
+    const orderClause = orden === 'nombre' ? 'ORDER BY p.nombre ASC' : orden === 'apellido' ? 'ORDER BY p.apellido ASC' : 'ORDER BY a.id_alumno DESC';
+
+    // Count total
+    const [countResult] = await pool.query(`SELECT COUNT(*) as total FROM alumnos a JOIN personas p ON a.id_alumno = p.id_persona ${whereClause}`, params);
+    const total = countResult[0].total;
+
+    let limitClause = '';
+    if (limit) {
+      limitClause = `LIMIT ${parseInt(limit)}`;
+      if (offset) limitClause += ` OFFSET ${parseInt(offset)}`;
+    }
+
     const [rows] = await pool.query(`
       SELECT 
         a.id_alumno, 
@@ -25,12 +58,29 @@ router.get("/", async (req, res) => {
          WHERE i.id_alumno = a.id_alumno AND i.estado = 'activo') as cursos_inscritos
       FROM alumnos a
       JOIN personas p ON a.id_alumno = p.id_persona
-      ORDER BY a.id_alumno DESC
-    `);
-    res.json(rows);
+      ${whereClause}
+      ${orderClause}
+      ${limitClause}
+    `, params);
+    res.json({ data: rows, total });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al obtener alumnos" });
+  }
+});
+
+// PATCH estado del alumno
+router.patch("/:id/estado", async (req, res) => {
+  try {
+    const { estado } = req.body;
+    if (!['activo', 'inactivo'].includes(estado)) {
+      return res.status(400).json({ success: false, message: "Estado inválido" });
+    }
+    await pool.query('UPDATE alumnos SET estado = ? WHERE id_alumno = ?', [estado, req.params.id]);
+    res.json({ success: true, message: "Estado actualizado" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error al actualizar estado" });
   }
 });
 

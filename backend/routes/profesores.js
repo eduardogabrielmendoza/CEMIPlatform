@@ -6,6 +6,34 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
+    const { limit, offset, estado, idioma, busqueda, orden } = req.query;
+
+    let where = [];
+    let params = [];
+
+    if (estado) { where.push('p.estado = ?'); params.push(estado); }
+    if (busqueda) {
+      where.push('(per.nombre LIKE ? OR per.apellido LIKE ? OR per.mail LIKE ? OR per.dni LIKE ? OR p.especialidad LIKE ?)');
+      const b = `%${busqueda}%`;
+      params.push(b, b, b, b, b);
+    }
+    if (idioma) {
+      where.push('p.id_profesor IN (SELECT pi.id_profesor FROM profesores_idiomas pi WHERE pi.id_idioma = ?)');
+      params.push(idioma);
+    }
+
+    const whereClause = where.length > 0 ? 'WHERE ' + where.join(' AND ') : '';
+    const orderClause = orden === 'nombre' ? 'ORDER BY per.nombre ASC' : orden === 'apellido' ? 'ORDER BY per.apellido ASC' : 'ORDER BY p.id_profesor DESC';
+
+    const [countResult] = await pool.query(`SELECT COUNT(*) as total FROM profesores p JOIN personas per ON p.id_profesor = per.id_persona ${whereClause}`, params);
+    const total = countResult[0].total;
+
+    let limitClause = '';
+    if (limit) {
+      limitClause = `LIMIT ${parseInt(limit)}`;
+      if (offset) limitClause += ` OFFSET ${parseInt(offset)}`;
+    }
+
     const [rows] = await pool.query(`
       SELECT 
         p.id_profesor,
@@ -27,9 +55,11 @@ router.get("/", async (req, res) => {
          WHERE c.id_profesor = p.id_profesor) as total_cursos
       FROM profesores p
       JOIN personas per ON p.id_profesor = per.id_persona
-      ORDER BY p.id_profesor DESC
-    `);
-    res.json(rows);
+      ${whereClause}
+      ${orderClause}
+      ${limitClause}
+    `, params);
+    res.json({ data: rows, total });
   } catch (error) {
     console.error("Error al obtener los profesores:", error);
     res.status(500).json({ message: "Error al obtener los profesores" });

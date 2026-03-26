@@ -130,9 +130,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initAdminSPA() {
-  const buttons = document.querySelectorAll(".sidebar-menu button");
+  const buttons = document.querySelectorAll(".sidebar-menu button:not(.sidebar-group-toggle)");
+  const groupToggles = document.querySelectorAll(".sidebar-group-toggle");
   const mainContent = document.getElementById("mainContent");
   const loader = document.getElementById("loader");
+
+  // Collapsible sidebar groups
+  groupToggles.forEach(toggle => {
+    toggle.addEventListener("click", () => {
+      const groupId = toggle.dataset.group;
+      const group = document.getElementById(groupId === 'admin' ? 'groupAdmin' : 'groupSeguridad');
+      if (group) {
+        const isOpen = group.classList.contains('open');
+        group.classList.toggle('open');
+        toggle.classList.toggle('open');
+      }
+    });
+  });
 
   buttons.forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -145,6 +159,9 @@ function initAdminSPA() {
   });
 
   loadSection("cursos");
+
+  // Pagination state
+  window._adminPagination = {};
 
   async function loadSection(section) {
     const chatContainer = document.getElementById('adminChatContainer');
@@ -159,35 +176,29 @@ function initAdminSPA() {
     try {
       let html = "";
       let endpoint = "";
+      const PAGE_SIZE = 10;
 
       switch (section) {
         case "cursos":
-          endpoint = `${API_URL}/cursos`;
-          html = ``;
+          endpoint = `${API_URL}/cursos?limit=${PAGE_SIZE}&offset=0`;
           break;
         case "alumnos":
-          endpoint = `${API_URL}/alumnos`;
-          html = ``;
+          endpoint = `${API_URL}/alumnos?limit=${PAGE_SIZE}&offset=0`;
           break;
         case "profesores":
-          endpoint = `${API_URL}/profesores`;
-          html = ``;
+          endpoint = `${API_URL}/profesores?limit=${PAGE_SIZE}&offset=0`;
           break;
         case "administradores":
-          endpoint = `${API_URL}/administradores`;
-          html = ``;
+          endpoint = `${API_URL}/administradores?limit=${PAGE_SIZE}&offset=0`;
           break;
         case "pagos":
           endpoint = `${API_URL}/pagos`;
-          html = ``;
           break;
         case "aulas":
           endpoint = `${API_URL}/aulas`;
-          html = ``;
           break;
         case "idiomas":
           endpoint = `${API_URL}/idiomas`;
-          html = ``;
           break;
         case "investigacion":
           loader.classList.add("hidden");
@@ -206,7 +217,7 @@ function initAdminSPA() {
             chatContainer.style.display = 'block';
             adminChatManager.renderChatView();
           }
-          return; // Salir antes del setTimeout normal
+          return;
         case "classroom":
           window.location.href = 'classroom-login.html';
           return;
@@ -243,14 +254,30 @@ function initAdminSPA() {
 
       if (endpoint) {
         const res = await fetch(endpoint);
-        const data = await res.json();
+        const responseData = await res.json();
+
+        // Handle paginated vs non-paginated responses
+        const isPaginated = ['cursos', 'alumnos', 'profesores', 'administradores'].includes(section);
+        let tableData, total;
+
+        if (isPaginated) {
+          tableData = responseData.data || [];
+          total = responseData.total || 0;
+          window._adminPagination[section] = { offset: tableData.length, total, pageSize: PAGE_SIZE };
+        } else {
+          tableData = responseData;
+          total = Array.isArray(responseData) ? responseData.length : 0;
+        }
 
         if (section === 'pagos') {
-          html += generateTable(section, data);
+          html += generateTable(section, responseData);
         } else if (section === 'aulas' || section === 'idiomas') {
-          html += generateTable(section, data);
-        } else if (data && data.length > 0) {
-          html += generateTable(section, data);
+          html += generateTable(section, tableData);
+        } else if (total > 0) {
+          html += generateTable(section, tableData, total);
+          if (isPaginated && tableData.length < total) {
+            html += `<button class="btn-load-more" onclick="loadMoreRows('${section}')">Cargar más (${tableData.length} de ${total})</button>`;
+          }
         } else {
           html += "<p>No hay datos disponibles.</p>";
         }
@@ -262,13 +289,6 @@ function initAdminSPA() {
         if (section === 'cursos') {
           lucide.createIcons();
           setupCursoFilters();
-          
-          document.querySelectorAll('.curso-card-new').forEach(card => {
-            card.addEventListener('click', () => {
-              const idCurso = card.getAttribute('data-id');
-              openCursoPanel(idCurso);
-            });
-          });
         }
         if (section === 'alumnos') {
           lucide.createIcons();
@@ -302,6 +322,43 @@ function initAdminSPA() {
       mainContent.innerHTML = "<p>Error al cargar los datos.</p>";
       mainContent.classList.add("active");
     }
+  }
+}
+
+// Load more rows for paginated tables
+async function loadMoreRows(section) {
+  const state = window._adminPagination[section];
+  if (!state) return;
+
+  const btn = document.querySelector('.btn-load-more');
+  if (btn) { btn.textContent = 'Cargando...'; btn.disabled = true; }
+
+  try {
+    const res = await fetch(`${API_URL}/${section}?limit=${state.pageSize}&offset=${state.offset}`);
+    const responseData = await res.json();
+    const newRows = responseData.data || [];
+
+    const tbody = document.getElementById(`${section}TableBody`);
+    if (tbody && newRows.length > 0) {
+      newRows.forEach(item => {
+        tbody.insertAdjacentHTML('beforeend', generateTableRow(section, item));
+      });
+      lucide.createIcons();
+    }
+
+    state.offset += newRows.length;
+
+    if (btn) {
+      if (state.offset >= state.total) {
+        btn.remove();
+      } else {
+        btn.textContent = `Cargar más (${state.offset} de ${state.total})`;
+        btn.disabled = false;
+      }
+    }
+  } catch (error) {
+    console.error('Error loading more rows:', error);
+    if (btn) { btn.textContent = 'Error, reintentar'; btn.disabled = false; }
   }
 }
 
@@ -4811,14 +4868,15 @@ function openUpdateModal(id) {
 }
 
 
-function generateTable(section, data) {
+function generateTable(section, data, total) {
   switch (section) {
     case "cursos":
+      const cursosTotal = total || data.length;
       return `
-        <div class="cursos-header" style="display: flex; align-items: center; margin-bottom: 25px; gap: 20px; flex-wrap: wrap;">
+        <div class="cursos-header" style="display: flex; align-items: center; margin-bottom: 20px; gap: 20px; flex-wrap: wrap;">
           <div style="flex-shrink: 0;">
             <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gestión de Cursos</h2>
-            <p style="color: #666; margin: 0; font-size: 14px;">${data.length} curso${data.length !== 1 ? 's' : ''} disponible${data.length !== 1 ? 's' : ''}</p>
+            <p style="color: #666; margin: 0; font-size: 14px;">${cursosTotal} curso${cursosTotal !== 1 ? 's' : ''} disponible${cursosTotal !== 1 ? 's' : ''}</p>
           </div>
           <div style="position: relative; flex: 1; max-width: 400px;">
             <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
@@ -4829,80 +4887,41 @@ function generateTable(section, data) {
             Nuevo Curso
           </button>
         </div>
-        <div class="cursos-grid" id="cursosGrid">
-          ${data.map(c => {
-            const cuposMax = c.cupo_maximo || 30;
-            const inscritos = c.alumnos_inscritos || 0;
-            const porcentaje = (inscritos / cuposMax) * 100;
-            let barColor = '#22c55e';
-            if (porcentaje >= 90) barColor = '#ef4444';
-            else if (porcentaje >= 70) barColor = '#f59e0b';
-
-            return `
-            <div class="curso-card-new" data-id="${c.id_curso}" data-name="${c.nombre_curso}" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s ease; position: relative; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
-              
-              <div style="position: absolute; top: 12px; right: 12px; background: rgba(74, 82, 89, 0.1); color: #4a5259; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 12px;">${c.nivel || "Sin nivel"}</div>
-              
-              <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
-                <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                  <i data-lucide="book-open" style="width: 28px; height: 28px; color: #4a5259;"></i>
-                </div>
-                <div style="flex: 1; min-width: 0;">
-                  <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 16px; font-weight: 500; font-family: 'Inter', sans-serif; padding-right: 60px;">${c.nombre_curso}</h3>
-                  <p style="margin: 0; color: #6b7280; font-size: 13px;">${c.nombre_idioma || "Sin idioma"}</p>
-                </div>
-              </div>
-              
-              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="user" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${c.profesor || "Sin profesor asignado"}</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="clock" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${c.horario || "Horario por definir"}</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="map-pin" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${c.nombre_aula || "Sin aula asignada"}</span>
-                </div>
-              </div>
-              
-              <div style="margin-bottom: 16px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <span style="color: #6b7280; font-size: 12px;">Capacidad</span>
-                  <span style="color: #1e1e1e; font-size: 12px; font-weight: 500;">${inscritos} / ${cuposMax}</span>
-                </div>
-                <div style="height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
-                  <div style="height: 100%; width: ${Math.min(porcentaje, 100)}%; background: ${barColor}; border-radius: 3px; transition: width 0.3s ease;"></div>
-                </div>
-              </div>
-              
-              <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
-              
-              <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                <button class="btn-icon-success" onclick="event.stopPropagation(); asignarProfesorACurso(${c.id_curso}, '${c.nombre_curso}')" title="Asignar Profesor">
-                  <i data-lucide="user-check"></i>
-                </button>
-                <button class="btn-icon-primary" onclick="event.stopPropagation(); openCursoPanel(${c.id_curso})" title="Ver detalles">
-                  <i data-lucide="eye"></i>
-                </button>
-                <button class="btn-icon-edit" onclick="event.stopPropagation(); editarCurso(${c.id_curso})" title="Editar">
-                  <i data-lucide="edit-2"></i>
-                </button>
-                <button class="btn-icon-danger" onclick="event.stopPropagation(); eliminarCurso(${c.id_curso}, '${c.nombre_curso}')" title="Eliminar">
-                  <i data-lucide="trash-2"></i>
-                </button>
-              </div>
-            </div>
-          `}).join('')}
-        </div>`;
+        <div class="filter-panel">
+          <label><input type="checkbox" checked onchange="filterTableRows('cursos')"> Todos</label>
+          <select id="cursoFilterIdioma" onchange="filterTableRows('cursos')" style="margin-left: auto;">
+            <option value="">Todos los idiomas</option>
+          </select>
+          <select id="cursoFilterNivel" onchange="filterTableRows('cursos')">
+            <option value="">Todos los niveles</option>
+          </select>
+        </div>
+        <table class="admin-table" id="cursosTable">
+          <thead>
+            <tr>
+              <th>Curso</th>
+              <th>Idioma</th>
+              <th>Nivel</th>
+              <th>Profesor</th>
+              <th>Horario</th>
+              <th>Aula</th>
+              <th>Cupo</th>
+              <th>Ciclo</th>
+              <th style="width: 120px; text-align: center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="cursosTableBody">
+            ${data.map(c => generateTableRow('cursos', c)).join('')}
+          </tbody>
+        </table>
+      `;
     case "alumnos":
+      const alumnosTotal = total || data.length;
       return `
         <div class="alumnos-header">
           <div style="flex-shrink: 0;">
             <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gestión de Alumnos</h2>
-            <p style="color: #666; margin: 0; font-size: 14px;">${data.length} alumno${data.length !== 1 ? 's' : ''} registrado${data.length !== 1 ? 's' : ''}</p>
+            <p style="color: #666; margin: 0; font-size: 14px;">${alumnosTotal} alumno${alumnosTotal !== 1 ? 's' : ''} registrado${alumnosTotal !== 1 ? 's' : ''}</p>
           </div>
           <div class="alumnos-search-filter">
             <div style="position: relative; flex: 1;">
@@ -4919,80 +4938,37 @@ function generateTable(section, data) {
             </button>
           </div>
         </div>
-        <div class="cursos-grid" id="alumnosGrid">
-          ${data.map(a => {
-            const estado = a.estado || 'activo';
-            const cursos = a.cursos_inscritos || 0;
-            const iniciales = `${a.nombre.charAt(0)}${a.apellido.charAt(0)}`.toUpperCase();
-            const avatarUrl = a.avatar ? a.avatar : null;
-            
-            return `
-            <div class="persona-card alumno-card" data-id="${a.id_alumno}" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s ease; position: relative; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
-              
-              <div style="position: absolute; top: 12px; right: 12px; background: ${estado === 'activo' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; color: ${estado === 'activo' ? '#16a34a' : '#dc2626'}; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 12px;">${estado.charAt(0).toUpperCase() + estado.slice(1)}</div>
-              
-              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-                <div style="background: ${avatarUrl ? 'transparent' : 'rgba(74, 82, 89, 0.08)'}; border-radius: 50%; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; ${avatarUrl ? 'border: 2px solid #e5e7eb;' : ''}">
-                  ${avatarUrl 
-                    ? `<img src="${avatarUrl}" alt="${a.nombre}" style="width: 100%; height: 100%; object-fit: cover;">`
-                    : `<span style="color: #4a5259; font-size: 18px; font-weight: 500; font-family: 'Inter', sans-serif;">${iniciales}</span>`
-                  }
-                </div>
-                <div>
-                  <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 16px; font-weight: 500; font-family: 'Inter', sans-serif;">${a.nombre} ${a.apellido}</h3>
-                  <p style="margin: 0; color: #6b7280; font-size: 13px;">Legajo: ${a.legajo}</p>
-                </div>
-              </div>
-              
-              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="mail" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${a.mail}</span>
-                </div>
-                ${a.dni ? `
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="credit-card" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>DNI: ${a.dni}</span>
-                </div>` : ''}
-                ${a.telefono ? `
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="phone" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${a.telefono}</span>
-                </div>` : ''}
-              </div>
-              
-              <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
-              
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="book-open" style="width: 14px; height: 14px;"></i>
-                  ${cursos} ${cursos === 1 ? 'curso' : 'cursos'}
-                </span>
-                <div style="display: flex; gap: 8px;">
-                  <button class="btn-icon-docs" onclick="event.stopPropagation(); openDocumentosModal(${a.id_alumno}, '${a.nombre} ${a.apellido}')" title="Generar documentos">
-                    <i data-lucide="file-text"></i>
-                  </button>
-                  <button class="btn-icon-primary" onclick="event.stopPropagation(); openAlumnoPanel(${a.id_alumno})" title="Ver detalles">
-                    <i data-lucide="eye"></i>
-                  </button>
-                  <button class="btn-icon-edit" onclick="event.stopPropagation(); editarAlumno(${a.id_alumno})" title="Editar">
-                    <i data-lucide="edit-2"></i>
-                  </button>
-                  <button class="btn-icon-danger" onclick="event.stopPropagation(); eliminarAlumno(${a.id_alumno}, '${a.nombre} ${a.apellido}')" title="Eliminar">
-                    <i data-lucide="trash-2"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          `}).join('')}
-        </div>`;
+        <div class="filter-panel">
+          <label><input type="checkbox" id="filterAlumnoActivo" checked onchange="filterTableRows('alumnos')"> Activos</label>
+          <label><input type="checkbox" id="filterAlumnoInactivo" onchange="filterTableRows('alumnos')"> Inactivos</label>
+        </div>
+        <table class="admin-table" id="alumnosTable">
+          <thead>
+            <tr>
+              <th style="width: 50px;"></th>
+              <th>Nombre</th>
+              <th>Legajo</th>
+              <th>Email</th>
+              <th>DNI</th>
+              <th>Teléfono</th>
+              <th>Cursos</th>
+              <th>Estado</th>
+              <th style="width: 130px; text-align: center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="alumnosTableBody">
+            ${data.map(a => generateTableRow('alumnos', a)).join('')}
+          </tbody>
+        </table>
+      `;
 
     case "profesores":
+      const profesoresTotal = total || data.length;
       return `
         <div class="profesores-header">
           <div style="flex-shrink: 0;">
             <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gestión de Profesores</h2>
-            <p style="color: #666; margin: 0; font-size: 14px;">${data.length} profesor${data.length !== 1 ? 'es' : ''} registrado${data.length !== 1 ? 's' : ''}</p>
+            <p style="color: #666; margin: 0; font-size: 14px;">${profesoresTotal} profesor${profesoresTotal !== 1 ? 'es' : ''} registrado${profesoresTotal !== 1 ? 's' : ''}</p>
           </div>
           <div class="profesores-search-filter">
             <div style="position: relative; flex: 1;">
@@ -5005,82 +4981,37 @@ function generateTable(section, data) {
             </button>
           </div>
         </div>
-        <div class="cursos-grid" id="profesoresGrid">
-          ${data.map(p => {
-            const estado = p.estado || 'activo';
-            const cursos = p.total_cursos || 0;
-            const iniciales = `${p.nombre.charAt(0)}${p.apellido.charAt(0)}`.toUpperCase();
-            const idiomas = p.idiomas || 'Sin idiomas';
-            const avatarUrl = p.avatar ? p.avatar : null;
-            
-            return `
-            <div class="persona-card profesor-card" data-id="${p.id_profesor}" data-idioma="${idiomas}" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s ease; position: relative; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
-              
-              <div style="position: absolute; top: 12px; right: 12px; background: ${estado === 'activo' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; color: ${estado === 'activo' ? '#16a34a' : '#dc2626'}; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 12px;">${estado.charAt(0).toUpperCase() + estado.slice(1)}</div>
-              
-              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-                <div style="background: ${avatarUrl ? 'transparent' : 'rgba(74, 82, 89, 0.08)'}; border-radius: 50%; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; ${avatarUrl ? 'border: 2px solid #e5e7eb;' : ''}">
-                  ${avatarUrl 
-                    ? `<img src="${avatarUrl}" alt="${p.nombre}" style="width: 100%; height: 100%; object-fit: cover;">`
-                    : `<span style="color: #4a5259; font-size: 18px; font-weight: 500; font-family: 'Inter', sans-serif;">${iniciales}</span>`
-                  }
-                </div>
-                <div>
-                  <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 16px; font-weight: 500; font-family: 'Inter', sans-serif;">${p.nombre} ${p.apellido}</h3>
-                  <p style="margin: 0; color: #6b7280; font-size: 13px;">${p.especialidad || 'Sin especialidad'}</p>
-                </div>
-              </div>
-              
-              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="mail" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${p.mail}</span>
-                </div>
-                ${p.dni ? `
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="credit-card" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>DNI: ${p.dni}</span>
-                </div>` : ''}
-                ${p.telefono ? `
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="phone" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${p.telefono}</span>
-                </div>` : ''}
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="languages" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${idiomas}</span>
-                </div>
-              </div>
-              
-              <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
-              
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="book-open" style="width: 14px; height: 14px;"></i>
-                  ${cursos} ${cursos === 1 ? 'curso' : 'cursos'}
-                </span>
-                <div style="display: flex; gap: 8px;">
-                  <button class="btn-icon-primary" onclick="event.stopPropagation(); openProfesorPanel(${p.id_profesor})" title="Ver detalles">
-                    <i data-lucide="eye"></i>
-                  </button>
-                  <button class="btn-icon-edit" onclick="event.stopPropagation(); editarProfesor(${p.id_profesor})" title="Editar">
-                    <i data-lucide="edit-2"></i>
-                  </button>
-                  <button class="btn-icon-danger" onclick="event.stopPropagation(); eliminarProfesor(${p.id_profesor}, '${p.nombre} ${p.apellido}')" title="Eliminar">
-                    <i data-lucide="trash-2"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          `}).join('')}
-        </div>`;
+        <div class="filter-panel">
+          <label><input type="checkbox" id="filterProfesorActivo" checked onchange="filterTableRows('profesores')"> Activos</label>
+          <label><input type="checkbox" id="filterProfesorInactivo" onchange="filterTableRows('profesores')"> Inactivos</label>
+          <label><input type="checkbox" id="filterProfesorLicencia" onchange="filterTableRows('profesores')"> De licencia</label>
+        </div>
+        <table class="admin-table" id="profesoresTable">
+          <thead>
+            <tr>
+              <th style="width: 50px;"></th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Especialidad</th>
+              <th>Idiomas</th>
+              <th>Cursos</th>
+              <th>Estado</th>
+              <th style="width: 120px; text-align: center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="profesoresTableBody">
+            ${data.map(p => generateTableRow('profesores', p)).join('')}
+          </tbody>
+        </table>
+      `;
 
     case "administradores":
+      const adminsTotal = total || data.length;
       return `
         <div class="profesores-header">
           <div style="flex-shrink: 0;">
             <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gestión de Administradores</h2>
-            <p style="color: #666; margin: 0; font-size: 14px;">${data.length} administrador${data.length !== 1 ? 'es' : ''} registrado${data.length !== 1 ? 's' : ''}</p>
+            <p style="color: #666; margin: 0; font-size: 14px;">${adminsTotal} administrador${adminsTotal !== 1 ? 'es' : ''} registrado${adminsTotal !== 1 ? 's' : ''}</p>
           </div>
           <div class="profesores-search-filter">
             <div style="position: relative; flex: 1;">
@@ -5093,67 +5024,27 @@ function generateTable(section, data) {
             </button>
           </div>
         </div>
-        <div class="cursos-grid" id="administradoresGrid">
-          ${data.map(admin => {
-            const iniciales = `${admin.nombre.charAt(0)}${admin.apellido.charAt(0)}`.toUpperCase();
-            const estado = admin.estado || 'activo';
-            const avatarUrl = admin.avatar ? admin.avatar : null;
-            
-            return `
-            <div class="persona-card admin-card" data-id="${admin.id_persona}" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s ease; position: relative; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
-              
-              <div style="position: absolute; top: 12px; right: 12px; background: ${estado === 'activo' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; color: ${estado === 'activo' ? '#16a34a' : '#dc2626'}; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 12px;">${estado === 'activo' ? 'Activo' : 'Sin acceso'}</div>
-              
-              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-                <div style="background: ${avatarUrl ? 'transparent' : 'rgba(74, 82, 89, 0.08)'}; border-radius: 50%; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; ${avatarUrl ? 'border: 2px solid #e5e7eb;' : ''}">
-                  ${avatarUrl 
-                    ? `<img src="${avatarUrl}" alt="${admin.nombre}" style="width: 100%; height: 100%; object-fit: cover;">`
-                    : `<span style="color: #4a5259; font-size: 18px; font-weight: 500; font-family: 'Inter', sans-serif;">${iniciales}</span>`
-                  }
-                </div>
-                <div>
-                  <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 16px; font-weight: 500; font-family: 'Inter', sans-serif;">${admin.nombre} ${admin.apellido}</h3>
-                  <p style="margin: 0; color: #6b7280; font-size: 13px;">Administrador</p>
-                </div>
-              </div>
-              
-              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="mail" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${admin.mail}</span>
-                </div>
-                ${admin.telefono ? `
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="phone" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>${admin.telefono}</span>
-                </div>` : ''}
-                ${admin.dni ? `
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="credit-card" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>DNI: ${admin.dni}</span>
-                </div>` : ''}
-                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                  <i data-lucide="user" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                  <span>@${admin.username || 'Sin usuario'}</span>
-                </div>
-              </div>
-              
-              <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
-              
-              <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                <button class="btn-icon-edit" onclick="event.stopPropagation(); editarAdministrador(${admin.id_persona})" title="Editar">
-                  <i data-lucide="edit-2"></i>
-                </button>
-                <button class="btn-icon-warning" onclick="event.stopPropagation(); abrirModalCredencialesAdministrador(${admin.id_persona})" title="Editar Credenciales">
-                  <i data-lucide="key"></i>
-                </button>
-                <button class="btn-icon-danger" onclick="event.stopPropagation(); eliminarAdministrador(${admin.id_persona}, '${admin.nombre} ${admin.apellido}')" title="Eliminar">
-                  <i data-lucide="trash-2"></i>
-                </button>
-              </div>
-            </div>
-          `}).join('')}
-        </div>`;
+        <div class="filter-panel">
+          <label><input type="checkbox" id="filterAdminActivo" checked onchange="filterTableRows('administradores')"> Activos</label>
+          <label><input type="checkbox" id="filterAdminInactivo" onchange="filterTableRows('administradores')"> Inactivos</label>
+        </div>
+        <table class="admin-table" id="administradoresTable">
+          <thead>
+            <tr>
+              <th style="width: 50px;"></th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>DNI</th>
+              <th>Usuario</th>
+              <th>Estado</th>
+              <th style="width: 130px; text-align: center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="administradoresTableBody">
+            ${data.map(admin => generateTableRow('administradores', admin)).join('')}
+          </tbody>
+        </table>
+      `;
 
 case "pagos":
   const pagosArray = data && data.pagos ? data.pagos : [];
@@ -5350,9 +5241,10 @@ case "pagos":
       `;
     
     case "idiomas":
-      const idiomasStats = {
-        total: data.length,
-        populares: ['Inglés', 'Francés', 'Alemán', 'Italiano', 'Portugués']
+      const idiomaFlags = {
+        'Inglés': '🇬🇧', 'Francés': '🇫🇷', 'Alemán': '🇩🇪', 'Italiano': '🇮🇹',
+        'Portugués': '🇧🇷', 'Japonés': '🇯🇵', 'Chino': '🇨🇳', 'Coreano': '🇰🇷',
+        'Ruso': '🇷🇺', 'Árabe': '🇸🇦', 'Hindi': '🇮🇳', 'Turco': '🇹🇷'
       };
       
       return `
@@ -5371,19 +5263,23 @@ case "pagos":
           </button>
         </div>
         <div class="idiomas-grid" id="idiomasGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-          ${data.length > 0 ? data.map((idioma, index) => {
-            const isPopular = idiomasStats.populares.includes(idioma.nombre_idioma);
+          ${data.length > 0 ? data.map(idioma => {
+            const flag = idiomaFlags[idioma.nombre_idioma] || '🌐';
+            const estado = idioma.estado || 'activo';
             
             return `
-            <div class="idioma-card" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s ease; position: relative; overflow: hidden; border: 1px solid #e5e7eb;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
-              ${isPopular ? '<div style="position: absolute; top: 12px; right: 12px; background: rgba(74, 82, 89, 0.1); color: #4a5259; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 12px; display: flex; align-items: center; gap: 4px;"><i data-lucide="star" style="width: 12px; height: 12px;"></i> Popular</div>' : ''}
+            <div class="idioma-card" data-estado="${estado}" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s ease; position: relative; overflow: hidden; border: 1px solid #e5e7eb; ${estado === 'inactivo' ? 'opacity: 0.6;' : ''}" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
               
-              <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                <i data-lucide="languages" style="width: 28px; height: 28px; color: #4a5259;"></i>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                <div style="font-size: 40px; line-height: 1;">${flag}</div>
+                <label class="estado-switch" title="${estado === 'activo' ? 'Desactivar' : 'Activar'}">
+                  <input type="checkbox" ${estado === 'activo' ? 'checked' : ''} onchange="toggleEstadoIdioma(${idioma.id_idioma}, this.checked ? 'activo' : 'inactivo', this)">
+                  <span class="slider"></span>
+                </label>
               </div>
               
               <h3 style="margin: 0 0 6px 0; color: #1e1e1e; font-size: 18px; font-weight: 500; font-family: 'Inter', sans-serif;">${idioma.nombre_idioma}</h3>
-              <p style="margin: 0 0 16px 0; color: #6b7280; font-size: 13px;">ID: ${idioma.id_idioma}</p>
+              <p style="margin: 0 0 16px 0; color: #6b7280; font-size: 13px;">ID: ${idioma.id_idioma} · ${estado === 'activo' ? 'Activo' : 'Inactivo'}</p>
               
               <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
               
@@ -5391,18 +5287,243 @@ case "pagos":
                 <button class="btn-icon-edit" onclick="editarIdioma(${idioma.id_idioma}, '${idioma.nombre_idioma}')" title="Editar">
                   <i data-lucide="edit-2"></i>
                 </button>
-                <button class="btn-icon-danger" onclick="eliminarIdioma(${idioma.id_idioma}, '${idioma.nombre_idioma}')" title="Eliminar">
+                <button class="btn-icon-danger" onclick="eliminarIdioma(${idioma.id_idioma}, '${idioma.nombre_idioma}')" title="Eliminar permanentemente" style="opacity: 0.4;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'">
                   <i data-lucide="trash-2"></i>
                 </button>
               </div>
             </div>
-          `}).join('') : '<div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;"><div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;"><i data-lucide="languages" style="width: 28px; height: 28px; color: #6b7280;"></i></div><p style="color: #6b7280; font-size: 16px; margin: 0 0 4px 0;">No hay idiomas registrados</p><p style="color: #9ca3af; font-size: 14px; margin: 0;">Comienza agregando un nuevo idioma</p></div>'}
+          `}).join('') : '<div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;"><div style="font-size: 48px; margin-bottom: 16px;">🌐</div><p style="color: #6b7280; font-size: 16px; margin: 0 0 4px 0;">No hay idiomas registrados</p><p style="color: #9ca3af; font-size: 14px; margin: 0;">Comienza agregando un nuevo idioma</p></div>'}
         </div>
       `;
       
     default:
       return "<p>Sección no disponible.</p>";
   }
+}
+
+// Generate a single table row for paginated tables
+function generateTableRow(section, item) {
+  switch (section) {
+    case 'cursos': {
+      const c = item;
+      const cuposMax = c.cupo_maximo || 30;
+      const inscritos = c.alumnos_inscritos || 0;
+      return `<tr data-id="${c.id_curso}" class="table-row-curso">
+        <td><strong>${c.nombre_curso}</strong></td>
+        <td>${c.nombre_idioma || '-'}</td>
+        <td>${c.nivel || '-'}</td>
+        <td>${c.profesor || '<span style="color:#9ca3af;">Sin asignar</span>'}</td>
+        <td>${c.horario || '-'}</td>
+        <td>${c.nombre_aula || '-'}</td>
+        <td><span style="font-weight:500;">${inscritos}/${cuposMax}</span></td>
+        <td>${c.ciclo_lectivo || '-'}</td>
+        <td style="text-align:center;">
+          <div style="display:flex;gap:4px;justify-content:center;">
+            <button class="btn-icon-primary" onclick="openCursoPanel(${c.id_curso})" title="Ver"><i data-lucide="eye"></i></button>
+            <button class="btn-icon-edit" onclick="editarCurso(${c.id_curso})" title="Editar"><i data-lucide="edit-2"></i></button>
+            <button class="btn-icon-danger" onclick="eliminarCurso(${c.id_curso}, '${(c.nombre_curso || '').replace(/'/g, "\\'")}')" title="Eliminar" style="opacity:0.4;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'"><i data-lucide="trash-2"></i></button>
+          </div>
+        </td>
+      </tr>`;
+    }
+    case 'alumnos': {
+      const a = item;
+      const estado = a.estado || 'activo';
+      const cursos = a.cursos_inscritos || 0;
+      const iniciales = `${(a.nombre || 'A').charAt(0)}${(a.apellido || 'A').charAt(0)}`.toUpperCase();
+      const avatarUrl = a.avatar || null;
+      return `<tr data-id="${a.id_alumno}" data-estado="${estado}" class="table-row-alumno">
+        <td>
+          <div style="width:36px;height:36px;border-radius:50%;background:${avatarUrl ? 'transparent' : 'rgba(74,82,89,0.08)'};display:flex;align-items:center;justify-content:center;overflow:hidden;${avatarUrl ? 'border:2px solid #e5e7eb;' : ''}">
+            ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;">` : `<span style="font-size:13px;font-weight:500;color:#4a5259;">${iniciales}</span>`}
+          </div>
+        </td>
+        <td><strong>${a.nombre} ${a.apellido}</strong></td>
+        <td>${a.legajo}</td>
+        <td>${a.mail}</td>
+        <td>${a.dni || '-'}</td>
+        <td>${a.telefono || '-'}</td>
+        <td>${cursos}</td>
+        <td>
+          <label class="estado-switch" title="Cambiar estado">
+            <input type="checkbox" ${estado === 'activo' ? 'checked' : ''} onchange="toggleEstado('alumnos', ${a.id_alumno}, this.checked ? 'activo' : 'inactivo', this)">
+            <span class="slider"></span>
+          </label>
+        </td>
+        <td style="text-align:center;">
+          <div style="display:flex;gap:4px;justify-content:center;">
+            <button class="btn-icon-docs" onclick="openDocumentosModal(${a.id_alumno}, '${a.nombre} ${a.apellido}')" title="Documentos"><i data-lucide="file-text"></i></button>
+            <button class="btn-icon-primary" onclick="openAlumnoPanel(${a.id_alumno})" title="Ver"><i data-lucide="eye"></i></button>
+            <button class="btn-icon-edit" onclick="editarAlumno(${a.id_alumno})" title="Editar"><i data-lucide="edit-2"></i></button>
+            <button class="btn-icon-danger" onclick="eliminarAlumno(${a.id_alumno}, '${a.nombre} ${a.apellido}')" title="Eliminar permanentemente" style="opacity:0.4;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'"><i data-lucide="trash-2"></i></button>
+          </div>
+        </td>
+      </tr>`;
+    }
+    case 'profesores': {
+      const p = item;
+      const estado = p.estado || 'activo';
+      const cursos = p.total_cursos || 0;
+      const iniciales = `${(p.nombre || 'P').charAt(0)}${(p.apellido || 'P').charAt(0)}`.toUpperCase();
+      const avatarUrl = p.avatar || null;
+      const idiomas = p.idiomas || 'Sin idiomas';
+      return `<tr data-id="${p.id_profesor}" data-estado="${estado}" class="table-row-profesor">
+        <td>
+          <div style="width:36px;height:36px;border-radius:50%;background:${avatarUrl ? 'transparent' : 'rgba(74,82,89,0.08)'};display:flex;align-items:center;justify-content:center;overflow:hidden;${avatarUrl ? 'border:2px solid #e5e7eb;' : ''}">
+            ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;">` : `<span style="font-size:13px;font-weight:500;color:#4a5259;">${iniciales}</span>`}
+          </div>
+        </td>
+        <td><strong>${p.nombre} ${p.apellido}</strong></td>
+        <td>${p.mail}</td>
+        <td>${p.especialidad || '-'}</td>
+        <td>${idiomas}</td>
+        <td>${cursos}</td>
+        <td>
+          <select onchange="toggleEstado('profesores', ${p.id_profesor}, this.value, this)" style="padding:4px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;background:${estado === 'activo' ? '#dcfce7' : estado === 'licencia' ? '#fef3c7' : '#fee2e2'};color:${estado === 'activo' ? '#16a34a' : estado === 'licencia' ? '#d97706' : '#dc2626'};">
+            <option value="activo" ${estado === 'activo' ? 'selected' : ''}>Activo</option>
+            <option value="inactivo" ${estado === 'inactivo' ? 'selected' : ''}>Inactivo</option>
+            <option value="licencia" ${estado === 'licencia' ? 'selected' : ''}>De licencia</option>
+          </select>
+        </td>
+        <td style="text-align:center;">
+          <div style="display:flex;gap:4px;justify-content:center;">
+            <button class="btn-icon-primary" onclick="openProfesorPanel(${p.id_profesor})" title="Ver"><i data-lucide="eye"></i></button>
+            <button class="btn-icon-edit" onclick="editarProfesor(${p.id_profesor})" title="Editar"><i data-lucide="edit-2"></i></button>
+            <button class="btn-icon-danger" onclick="eliminarProfesor(${p.id_profesor}, '${p.nombre} ${p.apellido}')" title="Eliminar permanentemente" style="opacity:0.4;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'"><i data-lucide="trash-2"></i></button>
+          </div>
+        </td>
+      </tr>`;
+    }
+    case 'administradores': {
+      const admin = item;
+      const estado = admin.estado || 'activo';
+      const iniciales = `${(admin.nombre || 'A').charAt(0)}${(admin.apellido || 'A').charAt(0)}`.toUpperCase();
+      const avatarUrl = admin.avatar || null;
+      return `<tr data-id="${admin.id_persona}" data-estado="${estado}" class="table-row-admin">
+        <td>
+          <div style="width:36px;height:36px;border-radius:50%;background:${avatarUrl ? 'transparent' : 'rgba(74,82,89,0.08)'};display:flex;align-items:center;justify-content:center;overflow:hidden;${avatarUrl ? 'border:2px solid #e5e7eb;' : ''}">
+            ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;">` : `<span style="font-size:13px;font-weight:500;color:#4a5259;">${iniciales}</span>`}
+          </div>
+        </td>
+        <td><strong>${admin.nombre} ${admin.apellido}</strong></td>
+        <td>${admin.mail}</td>
+        <td>${admin.dni || '-'}</td>
+        <td>@${admin.username || 'Sin usuario'}</td>
+        <td>
+          <label class="estado-switch" title="Cambiar estado">
+            <input type="checkbox" ${estado === 'activo' ? 'checked' : ''} onchange="toggleEstado('administradores', ${admin.id_persona}, this.checked ? 'activo' : 'inactivo', this)">
+            <span class="slider"></span>
+          </label>
+        </td>
+        <td style="text-align:center;">
+          <div style="display:flex;gap:4px;justify-content:center;">
+            <button class="btn-icon-edit" onclick="editarAdministrador(${admin.id_persona})" title="Editar"><i data-lucide="edit-2"></i></button>
+            <button class="btn-icon-warning" onclick="abrirModalCredencialesAdministrador(${admin.id_persona})" title="Credenciales"><i data-lucide="key"></i></button>
+            <button class="btn-icon-danger" onclick="eliminarAdministrador(${admin.id_persona}, '${admin.nombre} ${admin.apellido}')" title="Eliminar permanentemente" style="opacity:0.4;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'"><i data-lucide="trash-2"></i></button>
+          </div>
+        </td>
+      </tr>`;
+    }
+    default:
+      return '';
+  }
+}
+
+// Toggle estado for alumnos/profesores/administradores
+async function toggleEstado(section, id, nuevoEstado, element) {
+  try {
+    const res = await fetch(`${API_URL}/${section}/${id}/estado`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ estado: nuevoEstado })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast(`Estado actualizado a "${nuevoEstado}"`, 'success');
+      // Update row styling
+      const row = element.closest('tr');
+      if (row) row.dataset.estado = nuevoEstado;
+      // Update select background if it's a select element
+      if (element.tagName === 'SELECT') {
+        element.style.background = nuevoEstado === 'activo' ? '#dcfce7' : nuevoEstado === 'licencia' ? '#fef3c7' : '#fee2e2';
+        element.style.color = nuevoEstado === 'activo' ? '#16a34a' : nuevoEstado === 'licencia' ? '#d97706' : '#dc2626';
+      }
+    } else {
+      showToast(data.message || 'Error al cambiar estado', 'error');
+      // Revert the switch/select
+      if (element.type === 'checkbox') element.checked = !element.checked;
+    }
+  } catch (error) {
+    console.error('Error toggling estado:', error);
+    showToast('Error de conexión', 'error');
+    if (element.type === 'checkbox') element.checked = !element.checked;
+  }
+}
+
+// Toggle estado for idiomas
+async function toggleEstadoIdioma(id, nuevoEstado, element) {
+  try {
+    const res = await fetch(`${API_URL}/idiomas/${id}/estado`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ estado: nuevoEstado })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast(`Idioma ${nuevoEstado === 'activo' ? 'activado' : 'desactivado'}`, 'success');
+      const card = element.closest('.idioma-card');
+      if (card) {
+        card.dataset.estado = nuevoEstado;
+        card.style.opacity = nuevoEstado === 'activo' ? '1' : '0.6';
+      }
+    } else {
+      showToast(data.message || 'Error al cambiar estado', 'error');
+      element.checked = !element.checked;
+    }
+  } catch (error) {
+    console.error('Error toggling idioma estado:', error);
+    showToast('Error de conexión', 'error');
+    element.checked = !element.checked;
+  }
+}
+
+// Filter table rows by estado checkboxes + search
+function filterTableRows(section) {
+  const rows = document.querySelectorAll(`#${section}TableBody tr`);
+  const searchInput = document.getElementById(`${section === 'cursos' ? 'cursos' : section === 'alumnos' ? 'alumnos' : section === 'profesores' ? 'profesores' : 'administradores'}Search`);
+  const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const estado = row.dataset.estado || '';
+    let showByEstado = true;
+
+    if (section === 'alumnos') {
+      const activo = document.getElementById('filterAlumnoActivo')?.checked;
+      const inactivo = document.getElementById('filterAlumnoInactivo')?.checked;
+      if (!activo && !inactivo) showByEstado = false;
+      else if (activo && !inactivo) showByEstado = estado === 'activo';
+      else if (!activo && inactivo) showByEstado = estado === 'inactivo';
+    } else if (section === 'profesores') {
+      const activo = document.getElementById('filterProfesorActivo')?.checked;
+      const inactivo = document.getElementById('filterProfesorInactivo')?.checked;
+      const licencia = document.getElementById('filterProfesorLicencia')?.checked;
+      const filters = [];
+      if (activo) filters.push('activo');
+      if (inactivo) filters.push('inactivo');
+      if (licencia) filters.push('licencia');
+      showByEstado = filters.length === 0 ? false : filters.includes(estado);
+    } else if (section === 'administradores') {
+      const activo = document.getElementById('filterAdminActivo')?.checked;
+      const inactivo = document.getElementById('filterAdminInactivo')?.checked;
+      if (!activo && !inactivo) showByEstado = false;
+      else if (activo && !inactivo) showByEstado = estado === 'activo';
+      else if (!activo && inactivo) showByEstado = estado === 'inactivo';
+    }
+
+    const matchesSearch = !searchTerm || text.includes(searchTerm);
+    row.style.display = (showByEstado && matchesSearch) ? '' : 'none';
+  });
 }
 
 async function generateDashboardHome() {
@@ -5688,7 +5809,8 @@ async function cargarAlumnosDisponibles(idCurso) {
       fetch(`${API_URL}/inscripciones/curso/${idCurso}`)
     ]);
 
-    const todosAlumnos = await resAlumnos.json();
+    const alumnosResp = await resAlumnos.json();
+    const todosAlumnos = alumnosResp.data || alumnosResp;
     const inscritos = await resInscritos.json();
 
     const inscritosIds = inscritos.map(i => i.id_alumno);
@@ -6065,7 +6187,8 @@ async function openEditarCursoModal(curso) {
     ]);
 
     const idiomas = await resIdiomas.json();
-    const profesores = await resProfesores.json();
+    const profesoresResp = await resProfesores.json();
+    const profesores = profesoresResp.data || profesoresResp;
 
     document.getElementById('editIdioma').innerHTML = `
       <option value="">Seleccione...</option>
@@ -6569,51 +6692,23 @@ function setupAlumnoFilters() {
   const searchInput = document.getElementById('alumnosSearch');
 
   if (searchInput) {
-    searchInput.addEventListener('input', filterAlumnos);
+    searchInput.addEventListener('input', () => filterTableRows('alumnos'));
   }
 }
 
 function filterAlumnos() {
-  const searchTerm = document.getElementById('alumnosSearch')?.value.toLowerCase() || '';
-  
-  const cards = document.querySelectorAll('.alumno-card');
-  
-  cards.forEach(card => {
-    const cardText = card.textContent.toLowerCase();
-    
-    const matchesSearch = cardText.includes(searchTerm);
-    const matchesEstado = true;
-    
-    if (matchesSearch && matchesEstado) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
-  });
+  filterTableRows('alumnos');
 }
 
-// Filtros para Cursos
 function setupCursoFilters() {
   const searchInput = document.getElementById('cursosSearch');
   if (searchInput) {
-    searchInput.addEventListener('input', filterCursos);
+    searchInput.addEventListener('input', () => filterTableRows('cursos'));
   }
 }
 
 function filterCursos() {
-  const searchTerm = document.getElementById('cursosSearch')?.value.toLowerCase() || '';
-  const cards = document.querySelectorAll('.curso-card-new');
-  
-  cards.forEach(card => {
-    const cardText = card.textContent.toLowerCase();
-    const matchesSearch = cardText.includes(searchTerm);
-    
-    if (matchesSearch) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
-  });
+  filterTableRows('cursos');
 }
 
 // Filtros para Aulas
@@ -6896,28 +6991,12 @@ function setupProfesorFilters() {
   const searchInput = document.getElementById('profesoresSearch');
 
   if (searchInput) {
-    searchInput.addEventListener('input', filterProfesores);
+    searchInput.addEventListener('input', () => filterTableRows('profesores'));
   }
 }
 
 function filterProfesores() {
-  const searchTerm = document.getElementById('profesoresSearch')?.value.toLowerCase() || '';
-  
-  const cards = document.querySelectorAll('.profesor-card');
-  
-  cards.forEach(card => {
-    const cardText = card.textContent.toLowerCase();
-    
-    const matchesSearch = cardText.includes(searchTerm);
-    const matchesEstado = true;
-    const matchesIdioma = true;
-    
-    if (matchesSearch && matchesEstado && matchesIdioma) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
-  });
+  filterTableRows('profesores');
 }
 
 
@@ -8889,8 +8968,10 @@ async function openNuevaInscripcionModal() {
       fetch(`${API_URL}/cursos`)
     ]);
     
-    const alumnos = await alumnosRes.json();
-    const cursos = await cursosRes.json();
+    const alumnosResp = await alumnosRes.json();
+    const alumnos = alumnosResp.data || alumnosResp;
+    const cursosResp = await cursosRes.json();
+    const cursos = cursosResp.data || cursosResp;
     
     const { value: formValues } = await Swal.fire({
       title: 'Nueva Inscripción',
@@ -10020,24 +10101,12 @@ function setupAdministradorFilters() {
   const searchInput = document.getElementById('administradoresSearch');
 
   if (searchInput) {
-    searchInput.addEventListener('input', filterAdministradores);
+    searchInput.addEventListener('input', () => filterTableRows('administradores'));
   }
 }
 
 function filterAdministradores() {
-  const searchTerm = document.getElementById('administradoresSearch')?.value.toLowerCase() || '';
-  const cards = document.querySelectorAll('.admin-card');
-  
-  cards.forEach(card => {
-    const cardText = card.textContent.toLowerCase();
-    const matchesSearch = cardText.includes(searchTerm);
-    
-    if (matchesSearch) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
-  });
+  filterTableRows('administradores');
 }
 
 async function openNuevoAdministradorModal() {
@@ -10623,7 +10692,8 @@ async function openNuevoCursoModal() {
 
     const idiomas = await idiomasRes.json();
     const niveles = await nivelesRes.json();
-    const profesores = await profesoresRes.json();
+    const profesoresResp = await profesoresRes.json();
+    const profesores = profesoresResp.data || profesoresResp;
     const aulas = await aulasRes.json();
 
     const { value: formValues } = await Swal.fire({
@@ -10738,7 +10808,8 @@ async function editarCurso(id) {
     const curso = await cursoRes.json();
     const idiomas = await idiomasRes.json();
     const niveles = await nivelesRes.json();
-    const profesores = await profesoresRes.json();
+    const profesoresResp = await profesoresRes.json();
+    const profesores = profesoresResp.data || profesoresResp;
     const aulas = await aulasRes.json();
 
     const { value: formValues } = await Swal.fire({
@@ -10864,7 +10935,8 @@ async function eliminarCurso(id, nombre) {
 async function asignarProfesorACurso(idCurso, nombreCurso) {
   try {
     const res = await fetch(`${API_URL}/profesores`);
-    const profesores = await res.json();
+    const profesoresResp = await res.json();
+    const profesores = profesoresResp.data || profesoresResp;
     
     if (!profesores || profesores.length === 0) {
       Swal.fire('Sin profesores', 'No hay profesores disponibles para asignar', 'info');
@@ -11149,7 +11221,8 @@ async function loadCuotasGestion() {
 
   try {
     const response = await fetch(`${API_URL}/cursos`);
-    const cursos = await response.json();
+    const cursosResp = await response.json();
+    const cursos = cursosResp.data || cursosResp;
 
     const listaCursos = document.getElementById('cursosListaCuotas');
     if (cursos.length === 0) {
@@ -11553,7 +11626,8 @@ async function descargarPDFAlumnos() {
     };
     
     const responseAlumnos = await fetch(`${API_URL}/alumnos`);
-    const alumnos = await responseAlumnos.json();
+    const alumnosResp = await responseAlumnos.json();
+    const alumnos = alumnosResp.data || alumnosResp;
     
     const responseInscripciones = await fetch(`${API_URL}/inscripciones`);
     const inscripciones = await responseInscripciones.json();
@@ -11776,10 +11850,12 @@ async function descargarPDFProfesores() {
     };
     
     const responseProfesores = await fetch(`${API_URL}/profesores`);
-    const profesores = await responseProfesores.json();
+    const profesoresResp = await responseProfesores.json();
+    const profesores = profesoresResp.data || profesoresResp;
     
     const responseCursos = await fetch(`${API_URL}/cursos`);
-    const cursos = await responseCursos.json();
+    const cursosResp = await responseCursos.json();
+    const cursos = cursosResp.data || cursosResp;
     
     const cursosPorProfesor = {};
     cursos.forEach(curso => {

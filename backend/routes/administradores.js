@@ -5,6 +5,32 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
+    const { limit, offset, estado, busqueda, orden } = req.query;
+
+    let having = [];
+    let where = [];
+    let params = [];
+
+    if (busqueda) {
+      where.push('(per.nombre LIKE ? OR per.apellido LIKE ? OR per.mail LIKE ? OR per.dni LIKE ? OR u.username LIKE ?)');
+      const b = `%${busqueda}%`;
+      params.push(b, b, b, b, b);
+    }
+
+    let baseWhere = "(p.nombre_perfil = 'admin' OR p.nombre_perfil = 'administrador')";
+    if (where.length > 0) baseWhere += ' AND ' + where.join(' AND ');
+
+    const orderClause = orden === 'nombre' ? 'ORDER BY per.nombre ASC' : orden === 'apellido' ? 'ORDER BY per.apellido ASC' : 'ORDER BY per.id_persona DESC';
+
+    const [countResult] = await pool.query(`SELECT COUNT(*) as total FROM personas per JOIN usuarios u ON per.id_persona = u.id_persona JOIN perfiles p ON u.id_perfil = p.id_perfil WHERE ${baseWhere}`, params);
+    const total = countResult[0].total;
+
+    let limitClause = '';
+    if (limit) {
+      limitClause = `LIMIT ${parseInt(limit)}`;
+      if (offset) limitClause += ` OFFSET ${parseInt(offset)}`;
+    }
+
     const [rows] = await pool.query(`
       SELECT 
         per.id_persona,
@@ -16,20 +42,35 @@ router.get("/", async (req, res) => {
         per.avatar,
         u.username,
         u.fecha_creacion,
-        CASE 
-          WHEN u.id_usuario IS NOT NULL THEN 'activo'
-          ELSE 'sin_acceso'
-        END as estado
+        adm.estado,
+        adm.nivel_acceso
       FROM personas per
       JOIN usuarios u ON per.id_persona = u.id_persona
       JOIN perfiles p ON u.id_perfil = p.id_perfil
-      WHERE p.nombre_perfil = 'admin' OR p.nombre_perfil = 'administrador'
-      ORDER BY per.id_persona DESC
-    `);
-    res.json(rows);
+      LEFT JOIN administradores adm ON per.id_persona = adm.id_persona
+      WHERE ${baseWhere}
+      ${orderClause}
+      ${limitClause}
+    `, params);
+    res.json({ data: rows, total });
   } catch (error) {
     console.error("Error al obtener los administradores:", error);
     res.status(500).json({ message: "Error al obtener los administradores" });
+  }
+});
+
+// PATCH estado del administrador
+router.patch("/:id/estado", async (req, res) => {
+  try {
+    const { estado } = req.body;
+    if (!['activo', 'inactivo'].includes(estado)) {
+      return res.status(400).json({ success: false, message: "Estado inválido" });
+    }
+    await pool.query('UPDATE administradores SET estado = ? WHERE id_persona = ?', [estado, req.params.id]);
+    res.json({ success: true, message: "Estado actualizado" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error al actualizar estado" });
   }
 });
 
