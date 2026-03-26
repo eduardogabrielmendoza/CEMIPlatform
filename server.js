@@ -222,6 +222,13 @@ setChatServer(chatServer);
     }
     console.log('[migration] bandera values populated for known idiomas');
 
+    // Add 'resuelta' to chat_conversaciones.estado ENUM if not present
+    const [chatEstadoCols] = await pool.query("SHOW COLUMNS FROM chat_conversaciones LIKE 'estado'");
+    if (chatEstadoCols.length > 0 && !chatEstadoCols[0].Type.includes('resuelta')) {
+      await pool.query("ALTER TABLE chat_conversaciones MODIFY COLUMN estado ENUM('pendiente','activa','cerrada','resuelta') DEFAULT 'pendiente'");
+      console.log('[migration] chat_conversaciones.estado ENUM updated with resuelta');
+    }
+
     // Create registros_pagos table if not exists
     await pool.query(`
       CREATE TABLE IF NOT EXISTS registros_pagos (

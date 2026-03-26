@@ -419,6 +419,49 @@
   }
 }
 
+/* ── Chat Milestone: Consulta Resuelta ── */
+.chat-milestone-resolved {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.chat-milestone-line {
+  flex: 1;
+  height: 1px;
+  background: #22c55e;
+  opacity: 0.4;
+}
+
+.chat-milestone-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Disabled state for user chat input */
+.user-chat-input:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.user-chat-attach-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

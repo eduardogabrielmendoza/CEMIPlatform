@@ -190,7 +190,16 @@
     this.socket.on('conversation_closed', () => {
       this.handleConversationClosed();
     });
-    
+
+    this.socket.on('conversation_resolved', (data) => {
+      if (this.activeConversation && this.activeConversation.id_conversacion === data.id_conversacion) {
+        this.activeConversation.estado = 'resuelta';
+        this.loadMessages(data.id_conversacion);
+        const resolveBtn = document.getElementById('adminChatResolveBtn');
+        if (resolveBtn) resolveBtn.style.display = 'none';
+      }
+    });
+
     this.socket.on('joined_conversation', (data) => {
       console.log(' Admin confirmó unión a conversación:', data);
     });
@@ -426,6 +435,12 @@
       lucide.createIcons();
     }
     if (inputArea) inputArea.style.display = 'flex';
+
+    // Show/hide resolve button based on conversation state
+    const resolveBtn = document.getElementById('adminChatResolveBtn');
+    if (resolveBtn) {
+      resolveBtn.style.display = conv.estado !== 'resuelta' ? 'flex' : 'none';
+    }
     
     if (this.socket && this.socket.connected) {
       console.log(' Admin uniéndose a conversación vía Socket.IO:', id);
@@ -483,17 +498,21 @@
     }
     
     container.innerHTML = mensajes.map(msg => {
+      // Milestone del sistema (consulta resuelta)
+      if (msg.tipo_remitente === 'sistema') {
+        return `
+          <div class="chat-milestone-resolved">
+            <div class="chat-milestone-line"></div>
+            <div class="chat-milestone-badge">
+              <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+              <span>${this.escapeHtml(msg.mensaje)}</span>
+            </div>
+            <div class="chat-milestone-line"></div>
+          </div>
+        `;
+      }
+
       const isAdmin = msg.es_admin === 1 || msg.tipo_remitente === 'admin';
-      const time = new Date(msg.fecha_envio).toLocaleTimeString('es-ES', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      });
-      
-      let nombreMostrar = '';
-      let tipoUsuario = '';
-      
-      if (isAdmin) {
-        nombreMostrar = msg.nombre_remitente || 'Admin';
         tipoUsuario = '';
       } else {
         nombreMostrar = msg.nombre_remitente || 'Usuario';
@@ -559,7 +578,8 @@
         </div>
       `;
     }).join('');
-    
+
+    lucide.createIcons();
     this.scrollToBottom();
   }
   
@@ -800,6 +820,49 @@
     }
   }
   
+  async resolveConversation() {
+    if (!this.activeConversation) return;
+
+    if (this.activeConversation.estado === 'resuelta') {
+      Swal.fire({ icon: 'info', title: 'Ya resuelta', text: 'Esta conversación ya fue marcada como resuelta.' });
+      return;
+    }
+
+    const confirm = await Swal.fire({
+      title: '¿Marcar como resuelta?',
+      text: 'El alumno o profesor podrá enviar una nueva consulta después de esto.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#22c55e',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, marcar como resuelta',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const API_URL = window.API_URL || 'http://localhost:3000/api';
+      const response = await fetch(`${API_URL}/chat/conversacion/${this.activeConversation.id_conversacion}/resolver`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        this.activeConversation.estado = 'resuelta';
+        const resolveBtn = document.getElementById('adminChatResolveBtn');
+        if (resolveBtn) resolveBtn.style.display = 'none';
+        await this.loadMessages(this.activeConversation.id_conversacion);
+      } else {
+        throw new Error(data.message || 'Error al resolver');
+      }
+    } catch (error) {
+      console.error(' Error al resolver conversación:', error);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo marcar como resuelta. Intenta de nuevo.' });
+    }
+  }
+
   async markAsRead(id) {
     try {
       const API_URL = window.API_URL || 'http://localhost:3000/api';
@@ -1019,6 +1082,15 @@
               title="Volver a la bandeja">
               <i data-lucide="inbox" style="width: 16px; height: 16px;"></i>
               <span>Bandeja</span>
+            </button>
+            <button 
+              id="adminChatResolveBtn"
+              class="chat-resolve-conversation-btn" 
+              onclick="adminChatManager.resolveConversation()" 
+              title="Marcar consulta como resuelta"
+              style="display:none; background:rgba(34,197,94,0.3); border:1px solid rgba(34,197,94,0.6); color:white; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:12px; align-items:center; gap:6px;">
+              <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+              <span class="hide-mobile-text">Resuelta</span>
             </button>
             <button 
               class="chat-close-conversation-btn" 

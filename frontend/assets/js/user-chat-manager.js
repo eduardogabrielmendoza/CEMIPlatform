@@ -292,6 +292,10 @@
     this.socket.on('conversation_deleted', () => {
       this.handleConversationClosed();
     });
+
+    this.socket.on('conversation_resolved', (data) => {
+      this.handleConversationResolved(data);
+    });
     
     this.socket.on('joined_conversation', (data) => {
       console.log(' Confirmación de unión a conversación:', data);
@@ -382,6 +386,50 @@
     this.activeConversation = null;
     this.loadConversations();
     this.renderMessages();
+  }
+
+  handleConversationResolved(data) {
+    if (this.activeConversation && this.activeConversation.id_conversacion === data.id_conversacion) {
+      this.activeConversation.estado = 'resuelta';
+      this.loadMessages().then(() => {
+        this.enableChatInput();
+      });
+    } else {
+      this.loadConversations();
+    }
+  }
+
+  disableChatInput() {
+    const inputArea = document.getElementById('userChatInputArea');
+    if (!inputArea) return;
+    const input = document.getElementById('userChatMessageInput');
+    const sendBtn = inputArea.querySelector('.user-chat-send-btn');
+    const attachBtn = inputArea.querySelector('.user-chat-attach-btn');
+    if (input) {
+      input.disabled = true;
+      input.placeholder = 'Consulta enviada. Esperando respuesta del administrador...';
+    }
+    if (sendBtn) sendBtn.disabled = true;
+    if (attachBtn) attachBtn.disabled = true;
+    inputArea.style.opacity = '0.7';
+  }
+
+  enableChatInput() {
+    const inputArea = document.getElementById('userChatInputArea');
+    if (!inputArea) return;
+    const input = document.getElementById('userChatMessageInput');
+    const sendBtn = inputArea.querySelector('.user-chat-send-btn');
+    const attachBtn = inputArea.querySelector('.user-chat-attach-btn');
+    const counter = document.getElementById('userChatCharCounter');
+    if (input) {
+      input.disabled = false;
+      input.placeholder = 'Describe tu consulta (máx. 300 caracteres)...';
+      input.value = '';
+    }
+    if (sendBtn) sendBtn.disabled = false;
+    if (attachBtn) attachBtn.disabled = false;
+    if (counter) { counter.textContent = '0/300'; counter.style.color = '#9ca3af'; }
+    inputArea.style.opacity = '';
   }
   
   async loadConversations() {
@@ -505,6 +553,14 @@
     const inputArea = document.getElementById('userChatInputArea');
     if (header) header.style.display = 'flex';
     if (inputArea) inputArea.style.display = 'flex';
+
+    // Disable input for pending/active conversations (user already sent a message)
+    // Enable only when conversation is resolved (ready for a new query)
+    if (conv.estado === 'resuelta') {
+      this.enableChatInput();
+    } else {
+      this.disableChatInput();
+    }
     
     // Activar panel de mensajes en móvil
     const messagesPanel = document.querySelector('.user-chat-messages-panel');
@@ -544,7 +600,7 @@
       const result = await response.json();
       
       if (result.success) {
-        this.activeConversation.mensajes = result.mensajes || [];
+        this.activeConversation.mensajes = result.data?.mensajes || [];
         this.renderMessages();
       }
     } catch (error) {
@@ -582,6 +638,20 @@
     }
     
     container.innerHTML = mensajes.map(msg => {
+      // Milestone del sistema (consulta resuelta)
+      if (msg.tipo_remitente === 'sistema') {
+        return `
+          <div class="chat-milestone-resolved">
+            <div class="chat-milestone-line"></div>
+            <div class="chat-milestone-badge">
+              <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+              <span>${this.escapeHtml(msg.mensaje)}</span>
+            </div>
+            <div class="chat-milestone-line"></div>
+          </div>
+        `;
+      }
+
       const isAdmin = msg.es_admin === 1 || msg.tipo_remitente === 'admin';
       const time = new Date(msg.fecha_envio).toLocaleTimeString('es-ES', { 
         hour: '2-digit', 
@@ -725,6 +795,9 @@
       });
       
       input.value = '';
+      const counter = document.getElementById('userChatCharCounter');
+      if (counter) { counter.textContent = '0/300'; counter.style.color = '#9ca3af'; }
+      this.disableChatInput();
       console.log(' Mensaje enviado a conversación:', this.activeConversation.id_conversacion);
     } else {
       console.error(' Socket.IO no conectado');
@@ -881,6 +954,14 @@
   }
   
   handleTypingInput() {
+    const input = document.getElementById('userChatMessageInput');
+    const counter = document.getElementById('userChatCharCounter');
+    if (input && counter) {
+      const len = input.value.length;
+      counter.textContent = `${len}/300`;
+      counter.style.color = len >= 280 ? '#ef4444' : len >= 250 ? '#f59e0b' : '#9ca3af';
+    }
+
     if (!this.activeConversation || !this.socket || !this.socket.connected) return;
     
     clearTimeout(this.typingTimeout);
@@ -1051,15 +1132,19 @@
             <button class="user-chat-attach-btn" onclick="document.getElementById('userChatFileInput').click()" title="Adjuntar archivo">
               <i data-lucide="paperclip" style="width: 20px; height: 20px;"></i>
             </button>
-            <input 
-              type="text" 
-              id="userChatMessageInput" 
-              class="user-chat-input" 
-              placeholder="Escribe tu mensaje..."
-              onkeypress="if(event.key === 'Enter') userChatManager.sendMessage()"
-              oninput="userChatManager.handleTypingInput()"
-              maxlength="1000"
-            >
+            <div style="flex:1; position:relative;">
+              <input 
+                type="text" 
+                id="userChatMessageInput" 
+                class="user-chat-input" 
+                placeholder="Describe tu consulta (máx. 300 caracteres)..."
+                onkeypress="if(event.key === 'Enter') userChatManager.sendMessage()"
+                oninput="userChatManager.handleTypingInput()"
+                maxlength="300"
+                style="width:100%; padding-right:52px; box-sizing:border-box;"
+              >
+              <span id="userChatCharCounter" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:11px; color:#9ca3af; pointer-events:none;">0/300</span>
+            </div>
             <button class="user-chat-send-btn" onclick="userChatManager.sendMessage()">
               <i data-lucide="send" style="width: 20px; height: 20px;"></i>
             </button>

@@ -405,6 +405,47 @@ router.put("/conversacion/:id/cerrar", async (req, res) => {
 });
 
 
+router.put("/conversacion/:id/resolver", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await pool.query(`
+      UPDATE chat_conversaciones
+      SET estado = 'resuelta', fecha_cierre = CURRENT_TIMESTAMP
+      WHERE id_conversacion = ?
+    `, [id]);
+
+    await pool.query(`
+      INSERT INTO chat_mensajes (
+        id_conversacion,
+        tipo_remitente,
+        id_remitente,
+        nombre_remitente,
+        mensaje
+      ) VALUES (?, 'sistema', NULL, 'Sistema', 'Consulta resuelta')
+    `, [id]);
+
+    if (chatServerInstance) {
+      chatServerInstance.io.to(`conversation_${id}`).emit('conversation_resolved', {
+        id_conversacion: parseInt(id)
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Conversación marcada como resuelta"
+    });
+
+  } catch (error) {
+    console.error("Error al resolver conversación:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al resolver conversación"
+    });
+  }
+});
+
+
 router.post("/mensaje", async (req, res) => {
   try {
     const { id_conversacion, tipo_remitente, id_remitente, nombre_remitente, mensaje } = req.body;
@@ -562,7 +603,7 @@ router.get("/mi-conversacion", async (req, res) => {
          ORDER BY fecha_envio DESC LIMIT 1) as fecha_ultimo_mensaje
       FROM chat_conversaciones c
       WHERE tipo_usuario = ? AND id_usuario = ?
-        AND estado IN ('pendiente', 'activa')
+        AND estado IN ('pendiente', 'activa', 'resuelta')
       ORDER BY fecha_inicio DESC
       LIMIT 1
     `, [tipo_usuario, id_usuario]);
