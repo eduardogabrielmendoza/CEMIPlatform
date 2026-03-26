@@ -342,6 +342,11 @@
       this.playMessageSound();
       this.showNotification('Nuevo mensaje de Soporte', data.mensaje);
     }
+
+    // Admin replied → re-enable input so user can continue the conversation
+    if (data.tipo_remitente === 'admin' && !esMensajePropio) {
+      this.enableChatInput();
+    }
     
     const chatContainer = document.getElementById('userChatContainer');
     const isChatVisible = chatContainer && chatContainer.offsetParent !== null;
@@ -384,8 +389,10 @@
       text: 'El administrador ha cerrado esta conversación.'
     });
     this.activeConversation = null;
+    this.conversations = [];
     this.loadConversations();
     this.renderMessages();
+    this.enableChatInput();
   }
 
   handleConversationResolved(data) {
@@ -482,6 +489,7 @@
           const inputArea = document.getElementById('userChatInputArea');
           if (header) header.style.display = 'flex';
           if (inputArea) inputArea.style.display = 'flex';
+          this.enableChatInput();
         }
         
         this.renderConversationsList();
@@ -768,6 +776,8 @@
       Swal.fire({ icon: 'warning', title: 'Límite de caracteres', text: 'Tu mensaje no puede superar los 300 caracteres.' });
       return;
     }
+
+    if (!this.activeConversation) {
       console.log('️ No hay conversación activa, cargando conversación del usuario...');
       
       await this.loadConversations();
