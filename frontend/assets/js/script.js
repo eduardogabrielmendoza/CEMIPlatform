@@ -5654,6 +5654,53 @@ document.addEventListener('click', function(e) {
 });
 
 // Filter table rows by estado checkboxes + search + cursos-specific filters
+function saveFilterState(section) {
+  const state = {};
+  if (section === 'cursos') {
+    state.activo = document.getElementById('filterCursoActivo')?.checked ?? true;
+    state.inactivo = document.getElementById('filterCursoInactivo')?.checked ?? false;
+    state.idioma = document.getElementById('cursoFilterIdioma')?.value || '';
+    state.nivel = document.getElementById('cursoFilterNivel')?.value || '';
+    state.ciclo = document.getElementById('cursoFilterCiclo')?.value || '';
+  } else if (section === 'alumnos') {
+    state.activo = document.getElementById('filterAlumnoActivo')?.checked ?? true;
+    state.inactivo = document.getElementById('filterAlumnoInactivo')?.checked ?? false;
+  } else if (section === 'profesores') {
+    state.activo = document.getElementById('filterProfesorActivo')?.checked ?? true;
+    state.inactivo = document.getElementById('filterProfesorInactivo')?.checked ?? false;
+    state.licencia = document.getElementById('filterProfesorLicencia')?.checked ?? false;
+  } else if (section === 'administradores') {
+    state.activo = document.getElementById('filterAdminActivo')?.checked ?? true;
+    state.inactivo = document.getElementById('filterAdminInactivo')?.checked ?? false;
+  }
+  try { sessionStorage.setItem('cemi_filter_' + section, JSON.stringify(state)); } catch(e) {}
+}
+
+function restoreFilterState(section) {
+  try {
+    const saved = sessionStorage.getItem('cemi_filter_' + section);
+    if (!saved) return;
+    const state = JSON.parse(saved);
+    if (section === 'cursos') {
+      const ca = document.getElementById('filterCursoActivo'); if (ca) ca.checked = state.activo ?? true;
+      const ci = document.getElementById('filterCursoInactivo'); if (ci) ci.checked = state.inactivo ?? false;
+      const fi = document.getElementById('cursoFilterIdioma'); if (fi && state.idioma) fi.value = state.idioma;
+      const fn = document.getElementById('cursoFilterNivel'); if (fn && state.nivel) fn.value = state.nivel;
+      const fc = document.getElementById('cursoFilterCiclo'); if (fc && state.ciclo) fc.value = state.ciclo;
+    } else if (section === 'alumnos') {
+      const aa = document.getElementById('filterAlumnoActivo'); if (aa) aa.checked = state.activo ?? true;
+      const ai = document.getElementById('filterAlumnoInactivo'); if (ai) ai.checked = state.inactivo ?? false;
+    } else if (section === 'profesores') {
+      const pa = document.getElementById('filterProfesorActivo'); if (pa) pa.checked = state.activo ?? true;
+      const pi2 = document.getElementById('filterProfesorInactivo'); if (pi2) pi2.checked = state.inactivo ?? false;
+      const pl = document.getElementById('filterProfesorLicencia'); if (pl) pl.checked = state.licencia ?? false;
+    } else if (section === 'administradores') {
+      const da = document.getElementById('filterAdminActivo'); if (da) da.checked = state.activo ?? true;
+      const di = document.getElementById('filterAdminInactivo'); if (di) di.checked = state.inactivo ?? false;
+    }
+  } catch(e) {}
+}
+
 function filterTableRows(section) {
   const rows = document.querySelectorAll(`#${section}TableBody tr`);
   const searchInput = document.getElementById(`${section}Search`);
@@ -5704,6 +5751,7 @@ function filterTableRows(section) {
     const matchesSearch = !searchTerm || text.includes(searchTerm);
     row.style.display = (showByEstado && showByFilters && matchesSearch) ? '' : 'none';
   });
+  saveFilterState(section);
   updateFilterBadge(section);
 }
 
@@ -6919,34 +6967,6 @@ async function openAlumnoPanel(idAlumno) {
         </div>
       </div>
 
-      <!-- Cursos Inscritos -->
-      <div class="info-section">
-        <h3><i data-lucide="book-open"></i> Cursos Inscritos (${alumno.cursos?.length || 0})</h3>
-        ${alumno.cursos && alumno.cursos.length > 0 ? `
-          <div class="cursos-list">
-            ${alumno.cursos.map(c => {
-              const esFinalizado = c.ciclo_lectivo && c.ciclo_lectivo < new Date().getFullYear();
-              const estadoLabel = esFinalizado ? 'Finalizado' : 'Cursando';
-              const estadoClr = esFinalizado ? '#6b7280' : '#16a34a';
-              const estadoBgC = esFinalizado ? '#f3f4f6' : '#dcfce7';
-              return `
-              <div class="curso-item" style="${esFinalizado ? 'opacity:0.7;' : ''}">
-                <div class="curso-item-info">
-                  <h4>${c.nombre_curso} <span style="background:${estadoBgC};color:${estadoClr};padding:2px 8px;border-radius:8px;font-size:11px;font-weight:500;margin-left:6px;">${estadoLabel}</span></h4>
-                  <p>${c.nombre_idioma} - ${c.nivel} ${c.horario ? `• ${c.horario}` : ''} ${c.ciclo_lectivo ? `• Ciclo ${c.ciclo_lectivo}` : ''}</p>
-                </div>
-                <div class="curso-item-calificacion">
-                  ${c.promedio !== null && c.promedio !== undefined ? `
-                    <div class="promedio">${parseFloat(c.promedio).toFixed(1)}</div>
-                    <div class="label">Promedio</div>
-                  ` : '<div class="label" style="font-size: 13px; color: #999;">Sin calificaciones</div>'}
-                </div>
-              </div>`;
-            }).join('')}
-          </div>
-        ` : '<p style="color: #999; text-align: center; padding: 20px;">No está inscrito en ningún curso actualmente</p>'}}
-      </div>
-
       <!-- Resumen de Pagos -->
       <div class="info-section">
         <h3><i data-lucide="dollar-sign"></i> Resumen de Pagos</h3>
@@ -7002,6 +7022,8 @@ function setupAlumnoFilters() {
       }
     });
   }
+  restoreFilterState('alumnos');
+  filterTableRows('alumnos');
 }
 
 function filterAlumnos() {
@@ -7068,6 +7090,8 @@ function setupCursoFilters() {
         cicloSelect.appendChild(o);
       });
     }
+    restoreFilterState('cursos');
+    filterTableRows('cursos');
   });
 }
 
@@ -7279,19 +7303,39 @@ async function openProfesorPanel(idProfesor) {
         <h3><i data-lucide="book-open"></i> Cursos que Dicta (${profesor.cursos?.length || 0})</h3>
         ${profesor.cursos && profesor.cursos.length > 0 ? `
           <div class="profesor-cursos-list">
-            ${profesor.cursos.map(c => `
-              <div class="profesor-curso-item">
-                <div class="profesor-curso-info">
-                  <h4>${c.nombre_curso}</h4>
-                  <p>${c.nombre_idioma} - ${c.nivel || 'Sin nivel'} ${c.horario ? `• ${c.horario}` : ''} ${c.nombre_aula ? `• ${c.nombre_aula}` : ''}</p>
+            ${(() => {
+              const anioActual = new Date().getFullYear();
+              const vigentes = profesor.cursos.filter(c => !c.ciclo_lectivo || c.ciclo_lectivo >= anioActual);
+              const finalizados = profesor.cursos.filter(c => c.ciclo_lectivo && c.ciclo_lectivo < anioActual);
+              let html = vigentes.map(c => `
+                <div class="profesor-curso-item">
+                  <div class="profesor-curso-info">
+                    <h4>${c.nombre_curso} ${c.ciclo_lectivo ? `<span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:500;margin-left:6px;">En curso</span>` : ''}</h4>
+                    <p>${c.nombre_idioma} - ${c.nivel || 'Sin nivel'} ${c.horario ? `• ${c.horario}` : ''} ${c.nombre_aula ? `• ${c.nombre_aula}` : ''} ${c.ciclo_lectivo ? `• Ciclo ${c.ciclo_lectivo}` : ''}</p>
+                  </div>
+                  <div class="profesor-curso-stats">
+                    <div class="numero">${c.total_alumnos || 0}</div>
+                    <div class="label">Alumnos</div>
+                    ${c.promedio_curso ? `<div style="font-size: 12px; color: #666; margin-top: 4px;">Prom: ${parseFloat(c.promedio_curso).toFixed(1)}</div>` : ''}
+                  </div>
                 </div>
-                <div class="profesor-curso-stats">
-                  <div class="numero">${c.total_alumnos || 0}</div>
-                  <div class="label">Alumnos</div>
-                  ${c.promedio_curso ? `<div style="font-size: 12px; color: #666; margin-top: 4px;">Prom: ${parseFloat(c.promedio_curso).toFixed(1)}</div>` : ''}
-                </div>
-              </div>
-            `).join('')}
+              `).join('');
+              if (finalizados.length > 0) {
+                html += finalizados.map(c => `
+                  <div class="profesor-curso-item" style="opacity:0.5; background:#f9fafb;">
+                    <div class="profesor-curso-info">
+                      <h4 style="color:#9ca3af;">${c.nombre_curso} <span style="background:#f3f4f6;color:#9ca3af;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:500;margin-left:6px;">Finalizado</span></h4>
+                      <p style="color:#b0b7bf;">${c.nombre_idioma} - ${c.nivel || 'Sin nivel'} ${c.horario ? `• ${c.horario}` : ''} ${c.ciclo_lectivo ? `• Ciclo ${c.ciclo_lectivo}` : ''}</p>
+                    </div>
+                    <div class="profesor-curso-stats" style="opacity:0.5;">
+                      <div class="numero">${c.total_alumnos || 0}</div>
+                      <div class="label">Alumnos</div>
+                    </div>
+                  </div>
+                `).join('');
+              }
+              return html;
+            })()}
           </div>
         ` : '<p style="color: #999; text-align: center; padding: 20px;">No está dictando cursos actualmente</p>'}
       </div>
@@ -7348,6 +7392,8 @@ function setupProfesorFilters() {
       }
     });
   }
+  restoreFilterState('profesores');
+  filterTableRows('profesores');
 }
 
 function filterProfesores() {
@@ -10467,6 +10513,8 @@ function setupAdministradorFilters() {
       }
     });
   }
+  restoreFilterState('administradores');
+  filterTableRows('administradores');
 }
 
 function filterAdministradores() {

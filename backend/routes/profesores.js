@@ -98,6 +98,7 @@ router.get("/:id", async (req, res) => {
       SELECT 
         c.id_curso,
         c.nombre_curso,
+        c.ciclo_lectivo,
         i.nombre_idioma,
         n.descripcion as nivel,
         c.horario,
