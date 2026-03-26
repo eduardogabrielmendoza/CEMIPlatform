@@ -6096,7 +6096,8 @@ async function darDeBajaAlumno(idCurso, idAlumno, nombreAlumno) {
 
   try {
     const resp = await fetch(`${API_URL}/inscripciones/${idCurso}/${idAlumno}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     });
 
     const data = await resp.json();
@@ -8682,7 +8683,8 @@ async function eliminarPagoDefinitivamente(idPago, nombreAlumno, concepto) {
   try {
     console.log('Eliminando pago ID:', idPago);
     const resp = await fetch(`${API_URL}/pagos/${idPago}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     });
 
     console.log('DELETE Response status:', resp.status);
@@ -9189,7 +9191,7 @@ async function eliminarAula(id, nombre) {
 
   if (result.isConfirmed) {
     try {
-      const res = await fetch(`${API_URL}/aulas/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/aulas/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       const data = await res.json();
       
       if (res.ok && data.success) {
@@ -9299,7 +9301,7 @@ async function eliminarIdioma(id, nombre) {
 
   if (result.isConfirmed) {
     try {
-      const res = await fetch(`${API_URL}/idiomas/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/idiomas/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       const data = await res.json();
       
       if (res.ok && data.success) {
@@ -9404,7 +9406,7 @@ async function eliminarInscripcion(id, alumno, curso) {
 
   if (result.isConfirmed) {
     try {
-      const res = await fetch(`${API_URL}/inscripciones/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/inscripciones/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       const data = await res.json();
       
       if (res.ok && data.success) {
@@ -9957,7 +9959,7 @@ async function eliminarAlumno(id, nombre) {
 
   if (result.isConfirmed) {
     try {
-      const res = await fetch(`${API_URL}/alumnos/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/alumnos/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       const data = await res.json();
       
       if (res.ok && data.success) {
@@ -10431,7 +10433,7 @@ async function eliminarProfesor(id, nombre) {
   if (result.isConfirmed) {
     try {
       console.log('Eliminando profesor ID:', id);
-      const res = await fetch(`${API_URL}/profesores/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/profesores/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       console.log('Respuesta del servidor:', res.status, res.statusText);
       const data = await res.json();
       console.log('Datos recibidos:', data);
@@ -11027,7 +11029,7 @@ async function eliminarAdministrador(id, nombre) {
 
   if (result.isConfirmed) {
     try {
-      const res = await fetch(`${API_URL}/administradores/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/administradores/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       const data = await res.json();
       
       if (res.ok && data.success) {
@@ -11299,7 +11301,7 @@ async function eliminarCurso(id, nombre) {
 
   if (result.isConfirmed) {
     try {
-      const res = await fetch(`${API_URL}/cursos/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/cursos/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       const data = await res.json();
       
       if (res.ok && data.success) {
@@ -13284,7 +13286,8 @@ async function eliminarEncuesta(id) {
   if (result.isConfirmed) {
     try {
       const res = await fetch(`${API_URL}/investigacion/encuesta/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       
       const data = await res.json();
