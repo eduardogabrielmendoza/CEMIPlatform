@@ -437,6 +437,9 @@ router.delete("/:id", async (req, res) => {
     // Remove profesor from any assigned courses
     await pool.query('UPDATE cursos SET id_profesor = NULL WHERE id_profesor = ?', [id_profesor]);
     
+    // Clean up profesores_idiomas references
+    await pool.query('DELETE FROM profesores_idiomas WHERE id_profesor = ?', [id_profesor]);
+    
     // Delete user account if exists
     await pool.query('DELETE FROM usuarios WHERE id_persona = ?', [id_persona]);
     

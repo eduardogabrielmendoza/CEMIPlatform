@@ -90,7 +90,10 @@ router.delete("/:id", async (req, res) => {
       });
     }
 
-    const [result] = await pool.query("DELETE FROM Idiomas WHERE id_idioma = ?", [id]);
+    // Clean up profesores_idiomas references
+    await pool.query('DELETE FROM profesores_idiomas WHERE id_idioma = ?', [id]);
+
+    const [result] = await pool.query("DELETE FROM idiomas WHERE id_idioma = ?", [id]);
     
     if (result.affectedRows === 0) {
       return res.status(404).json({ success: false, message: "Idioma no encontrado" });

@@ -1,25 +1,6 @@
 ﻿
 const API_URL = window.API_URL || "http://localhost:3000/api";
 
-// Auto-inject auth token for all API requests
-(function() {
-  const _fetch = window.fetch;
-  window.fetch = function(input, init) {
-    const url = typeof input === 'string' ? input : input.url;
-    if (url.includes('/api/')) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        init = init || {};
-        init.headers = init.headers || {};
-        if (typeof init.headers === 'object' && !(init.headers instanceof Headers) && !init.headers['Authorization']) {
-          init.headers['Authorization'] = `Bearer ${token}`;
-        }
-      }
-    }
-    return _fetch.call(this, input, init);
-  };
-})();
-
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {

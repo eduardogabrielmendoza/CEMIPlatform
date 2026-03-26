@@ -60,8 +60,23 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    await pool.query("DELETE FROM Aulas WHERE id_aula = ?", [req.params.id]);
+    const { id } = req.params;
+
+    // Check for cursos using this aula
+    const [cursos] = await pool.query('SELECT COUNT(*) as total FROM cursos WHERE id_aula = ?', [id]);
+    if (cursos[0].total > 0) {
+      return res.status(400).json({ 
+        success: false,
+        message: `No se puede eliminar: hay ${cursos[0].total} curso(s) usando esta aula` 
+      });
+    }
+
+    const [result] = await pool.query("DELETE FROM aulas WHERE id_aula = ?", [id]);
     
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Aula no encontrada" });
+    }
+
     res.json({ 
       success: true,
       message: "Aula eliminada exitosamente" 
