@@ -16,7 +16,7 @@ router.get("/ciclos-lectivos", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const { id_profesor, limit, offset, idioma, nivel, ciclo_lectivo, busqueda } = req.query;
+    const { id_profesor, limit, offset, idioma, nivel, ciclo_lectivo, estado, busqueda } = req.query;
 
     let where = [];
     let params = [];
@@ -25,6 +25,7 @@ router.get("/", async (req, res) => {
     if (idioma) { where.push('c.id_idioma = ?'); params.push(idioma); }
     if (nivel) { where.push('c.id_nivel = ?'); params.push(nivel); }
     if (ciclo_lectivo) { where.push('c.ciclo_lectivo = ?'); params.push(ciclo_lectivo); }
+    if (estado) { where.push('c.estado = ?'); params.push(estado); }
     if (busqueda) {
       where.push('(c.nombre_curso LIKE ? OR i.nombre_idioma LIKE ? OR n.descripcion LIKE ?)');
       const b = `%${busqueda}%`;
@@ -59,6 +60,7 @@ router.get("/", async (req, res) => {
         a.nombre_aula AS nombre_aula,
         c.cupo_maximo,
         c.ciclo_lectivo,
+        c.estado,
         (SELECT COUNT(*) FROM inscripciones WHERE id_curso = c.id_curso AND estado = 'activo') AS alumnos_inscritos
       FROM cursos c
       INNER JOIN idiomas i ON c.id_idioma = i.id_idioma
@@ -853,6 +855,22 @@ router.get("/:id/cuotas", async (req, res) => {
       message: "Error al obtener cuotas del curso",
       error: error.message
     });
+  }
+});
+
+// Toggle estado de un curso
+router.patch("/:id/estado", async (req, res) => {
+  try {
+    const { estado } = req.body;
+    if (!['activo', 'inactivo'].includes(estado)) {
+      return res.status(400).json({ message: "Estado inválido" });
+    }
+    const [result] = await pool.query("UPDATE cursos SET estado = ? WHERE id_curso = ?", [estado, req.params.id]);
+    if (result.affectedRows === 0) return res.status(404).json({ message: "Curso no encontrado" });
+    res.json({ message: "Estado actualizado", estado });
+  } catch (error) {
+    console.error("Error al cambiar estado del curso:", error);
+    res.status(500).json({ message: "Error al cambiar estado" });
   }
 });
 

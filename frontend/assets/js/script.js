@@ -293,7 +293,6 @@ function initAdminSPA() {
         if (section === 'alumnos') {
           lucide.createIcons();
           setupAlumnoFilters();
-          populateCiclosLectivos();
         }
         if (section === 'profesores') {
           lucide.createIcons();
@@ -336,7 +335,6 @@ async function loadMoreRows(section) {
 
   try {
     let url = `${API_URL}/${section}?limit=${state.pageSize}&offset=${state.offset}`;
-    if (section === 'alumnos' && state.ciclo) url += `&ciclo_lectivo=${encodeURIComponent(state.ciclo)}`;
     const res = await fetch(url);
     const responseData = await res.json();
     const newRows = responseData.data || [];
@@ -4881,23 +4879,27 @@ function generateTable(section, data, total) {
             <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gestión de Cursos</h2>
             <p style="color: #666; margin: 0; font-size: 14px;">${cursosTotal} curso${cursosTotal !== 1 ? 's' : ''} disponible${cursosTotal !== 1 ? 's' : ''}</p>
           </div>
-          <div style="position: relative; flex: 1; max-width: 400px;">
-            <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
-            <input type="text" id="cursosSearch" placeholder="Buscar por nombre, idioma o nivel..." style="width: 100%; padding: 12px 16px 12px 44px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px; transition: all 0.2s;">
+          <div class="alumnos-search-filter">
+            <div style="position: relative; flex: 1;">
+              <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px;"></i>
+              <input type="text" id="cursosSearch" placeholder="Buscar por nombre, idioma o nivel..." style="width: 100%;">
+            </div>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterCursoActivo" checked onchange="filterTableRows('cursos')"> Activos</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterCursoInactivo" onchange="filterTableRows('cursos')"> Inactivos</label>
+            <select id="cursoFilterIdioma" onchange="filterTableRows('cursos')" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#555;">
+              <option value="">Todos los idiomas</option>
+            </select>
+            <select id="cursoFilterNivel" onchange="filterTableRows('cursos')" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#555;">
+              <option value="">Todos los niveles</option>
+            </select>
+            <select id="cursoFilterCiclo" onchange="filterTableRows('cursos')" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#555;">
+              <option value="">Todos los ciclos</option>
+            </select>
+            <button class="btn-primary" style="margin-left: auto;" onclick="openNuevoCursoModal()">
+              <i data-lucide="plus"></i>
+              Nuevo Curso
+            </button>
           </div>
-          <button class="btn-primary" style="margin-left: auto;" onclick="openNuevoCursoModal()">
-            <i data-lucide="plus"></i>
-            Nuevo Curso
-          </button>
-        </div>
-        <div class="filter-panel">
-          <label><input type="checkbox" checked onchange="filterTableRows('cursos')"> Todos</label>
-          <select id="cursoFilterIdioma" onchange="filterTableRows('cursos')" style="margin-left: auto;">
-            <option value="">Todos los idiomas</option>
-          </select>
-          <select id="cursoFilterNivel" onchange="filterTableRows('cursos')">
-            <option value="">Todos los niveles</option>
-          </select>
         </div>
         <table class="admin-table" id="cursosTable">
           <thead>
@@ -4910,6 +4912,7 @@ function generateTable(section, data, total) {
               <th>Aula</th>
               <th>Cupo</th>
               <th>Ciclo</th>
+              <th>Estado</th>
               <th style="width: 120px; text-align: center;">Acciones</th>
             </tr>
           </thead>
@@ -4933,9 +4936,6 @@ function generateTable(section, data, total) {
             </div>
             <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAlumnoActivo" checked onchange="filterTableRows('alumnos')"> Activos</label>
             <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#555;white-space:nowrap;"><input type="checkbox" id="filterAlumnoInactivo" onchange="filterTableRows('alumnos')"> Inactivos</label>
-            <select id="filterCicloLectivo" onchange="filtrarAlumnosPorCiclo()" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#555;">
-              <option value="">Todos los ciclos</option>
-            </select>
             <button class="btn-secondary" onclick="descargarPDFAlumnos()" style="display: flex; align-items: center; gap: 8px;">
               <i data-lucide="download"></i>
               Descargar PDF
@@ -5318,7 +5318,8 @@ function generateTableRow(section, item) {
       const c = item;
       const cuposMax = c.cupo_maximo || 30;
       const inscritos = c.alumnos_inscritos || 0;
-      return `<tr data-id="${c.id_curso}" class="table-row-curso">
+      const estado = c.estado || 'activo';
+      return `<tr data-id="${c.id_curso}" data-estado="${estado}" data-idioma="${(c.nombre_idioma || '').toLowerCase()}" data-nivel="${(c.nivel || '').toLowerCase()}" data-ciclo="${c.ciclo_lectivo || ''}" class="table-row-curso">
         <td><strong>${c.nombre_curso}</strong></td>
         <td>${c.nombre_idioma || '-'}</td>
         <td>${c.nivel || '-'}</td>
@@ -5327,6 +5328,12 @@ function generateTableRow(section, item) {
         <td>${c.nombre_aula || '-'}</td>
         <td><span style="font-weight:500;">${inscritos}/${cuposMax}</span></td>
         <td>${c.ciclo_lectivo || '-'}</td>
+        <td>
+          <select onchange="toggleEstado('cursos', ${c.id_curso}, this.value, this)" style="padding:4px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;background:${estado === 'activo' ? '#dcfce7' : '#fee2e2'};color:${estado === 'activo' ? '#16a34a' : '#dc2626'};">
+            <option value="activo" ${estado === 'activo' ? 'selected' : ''}>Activo</option>
+            <option value="inactivo" ${estado === 'inactivo' ? 'selected' : ''}>Inactivo</option>
+          </select>
+        </td>
         <td style="text-align:center;">
           <div style="display:flex;gap:4px;justify-content:center;">
             <button class="btn-icon-primary" onclick="openCursoPanel(${c.id_curso})" title="Ver"><i data-lucide="eye"></i></button>
@@ -5497,18 +5504,32 @@ async function toggleEstadoIdioma(id, nuevoEstado, element) {
   }
 }
 
-// Filter table rows by estado checkboxes + search
+// Filter table rows by estado checkboxes + search + cursos-specific filters
 function filterTableRows(section) {
   const rows = document.querySelectorAll(`#${section}TableBody tr`);
-  const searchInput = document.getElementById(`${section === 'cursos' ? 'cursos' : section === 'alumnos' ? 'alumnos' : section === 'profesores' ? 'profesores' : 'administradores'}Search`);
+  const searchInput = document.getElementById(`${section}Search`);
   const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
 
   rows.forEach(row => {
     const text = row.textContent.toLowerCase();
     const estado = row.dataset.estado || '';
     let showByEstado = true;
+    let showByFilters = true;
 
-    if (section === 'alumnos') {
+    if (section === 'cursos') {
+      const activo = document.getElementById('filterCursoActivo')?.checked;
+      const inactivo = document.getElementById('filterCursoInactivo')?.checked;
+      if (!activo && !inactivo) showByEstado = false;
+      else if (activo && !inactivo) showByEstado = estado === 'activo';
+      else if (!activo && inactivo) showByEstado = estado === 'inactivo';
+
+      const filterIdioma = document.getElementById('cursoFilterIdioma')?.value?.toLowerCase() || '';
+      const filterNivel = document.getElementById('cursoFilterNivel')?.value?.toLowerCase() || '';
+      const filterCiclo = document.getElementById('cursoFilterCiclo')?.value || '';
+      if (filterIdioma && (row.dataset.idioma || '') !== filterIdioma) showByFilters = false;
+      if (filterNivel && (row.dataset.nivel || '') !== filterNivel) showByFilters = false;
+      if (filterCiclo && (row.dataset.ciclo || '') !== filterCiclo) showByFilters = false;
+    } else if (section === 'alumnos') {
       const activo = document.getElementById('filterAlumnoActivo')?.checked;
       const inactivo = document.getElementById('filterAlumnoInactivo')?.checked;
       if (!activo && !inactivo) showByEstado = false;
@@ -5532,65 +5553,8 @@ function filterTableRows(section) {
     }
 
     const matchesSearch = !searchTerm || text.includes(searchTerm);
-    row.style.display = (showByEstado && matchesSearch) ? '' : 'none';
+    row.style.display = (showByEstado && showByFilters && matchesSearch) ? '' : 'none';
   });
-}
-
-// Populate ciclo lectivo dropdown
-async function populateCiclosLectivos() {
-  try {
-    const res = await fetch(`${API_URL}/cursos/ciclos-lectivos`);
-    const ciclos = await res.json();
-    const select = document.getElementById('filterCicloLectivo');
-    if (select && ciclos.length > 0) {
-      ciclos.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c;
-        opt.textContent = `Ciclo ${c}`;
-        select.appendChild(opt);
-      });
-    }
-  } catch (error) {
-    console.error('Error loading ciclos lectivos:', error);
-  }
-}
-
-// Filter alumnos by ciclo lectivo (reloads from server)
-async function filtrarAlumnosPorCiclo() {
-  const ciclo = document.getElementById('filterCicloLectivo')?.value || '';
-  const PAGE_SIZE = 5;
-  let url = `${API_URL}/alumnos?limit=${PAGE_SIZE}&offset=0`;
-  if (ciclo) url += `&ciclo_lectivo=${encodeURIComponent(ciclo)}`;
-
-  try {
-    const res = await fetch(url);
-    const responseData = await res.json();
-    const alumnos = responseData.data || [];
-    const total = responseData.total || alumnos.length;
-
-    const tbody = document.getElementById('alumnosTableBody');
-    if (tbody) {
-      tbody.innerHTML = alumnos.map(a => generateTableRow('alumnos', a)).join('');
-      lucide.createIcons();
-    }
-
-    window._adminPagination['alumnos'] = { offset: alumnos.length, total, pageSize: PAGE_SIZE, ciclo };
-
-    // Update or remove load more button
-    const existingBtn = document.querySelector('.btn-load-more');
-    if (existingBtn) existingBtn.remove();
-    if (alumnos.length < total) {
-      const table = document.getElementById('alumnosTable');
-      if (table) {
-        table.insertAdjacentHTML('afterend', `<button class="btn-load-more" onclick="loadMoreRows('alumnos')">Cargar más (${alumnos.length} de ${total})</button>`);
-      }
-    }
-
-    filterTableRows('alumnos');
-  } catch (error) {
-    console.error('Error filtering by ciclo lectivo:', error);
-    showToast('Error al filtrar por ciclo lectivo', 'error');
-  }
 }
 
 async function generateDashboardHome() {
@@ -6639,8 +6603,12 @@ async function openAlumnoPanel(idAlumno) {
   overlay.classList.add('active');
 
   try {
-    const resAlumno = await fetch(`${API_URL}/alumnos/${idAlumno}`);
+    const [resAlumno, resHistorial] = await Promise.all([
+      fetch(`${API_URL}/alumnos/${idAlumno}`),
+      fetch(`${API_URL}/inscripciones/alumno/${idAlumno}/historial`)
+    ]);
     const alumno = await resAlumno.json();
+    const historial = await resHistorial.json();
 
     const iniciales = `${alumno.nombre.charAt(0)}${alumno.apellido.charAt(0)}`.toUpperCase();
     document.getElementById('panelAlumnoAvatar').textContent = iniciales;
@@ -6739,6 +6707,53 @@ async function openAlumnoPanel(idAlumno) {
           </div>
         </div>
       </div>
+
+      <!-- Historial Académico -->
+      <div class="info-section">
+        <h3><i data-lucide="history"></i> Historial Académico</h3>
+        ${(() => {
+          if (!historial || historial.length === 0) return '<p style="color: #999; text-align: center; padding: 20px;">No hay registros de historial académico</p>';
+          // Group by ciclo_lectivo
+          const porCiclo = {};
+          historial.forEach(h => {
+            const ciclo = h.ciclo_lectivo || 'Sin ciclo';
+            if (!porCiclo[ciclo]) porCiclo[ciclo] = [];
+            porCiclo[ciclo].push(h);
+          });
+          const ciclosOrdenados = Object.keys(porCiclo).sort((a, b) => b - a);
+          return ciclosOrdenados.map(ciclo => {
+            const items = porCiclo[ciclo];
+            return \`
+              <div style="margin-bottom: 16px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                  <span style="background:#4a5259;color:white;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">Ciclo \${ciclo}</span>
+                  <span style="color:#9ca3af;font-size:12px;">\${items.length} curso\${items.length !== 1 ? 's' : ''}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  \${items.map(h => {
+                    const estadoColor = h.estado_inscripcion === 'activo' ? '#16a34a' : '#d97706';
+                    const estadoBg = h.estado_inscripcion === 'activo' ? '#dcfce7' : '#fef3c7';
+                    const estadoText = h.estado_inscripcion === 'activo' ? 'Cursando' : 'Finalizado';
+                    const promedio = (h.parcial1 != null || h.parcial2 != null || h.final != null) 
+                      ? (((h.parcial1 || 0) + (h.parcial2 || 0) + (h.final || 0)) / [h.parcial1, h.parcial2, h.final].filter(v => v != null).length).toFixed(1)
+                      : null;
+                    return \`
+                    <div style="background:#f8f9fa;border-radius:10px;padding:12px 16px;border-left:3px solid \${estadoColor};display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                      <div style="flex:1;">
+                        <div style="font-weight:500;color:#1e1e1e;font-size:14px;">\${h.nombre_curso}</div>
+                        <div style="color:#6b7280;font-size:12px;margin-top:2px;">\${h.idioma || ''} · \${h.nivel || ''} \${h.profesor ? '· Prof. ' + h.profesor : ''}</div>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:10px;">
+                        \${promedio ? \`<div style="text-align:center;"><div style="font-weight:600;font-size:16px;color:\${parseFloat(promedio) >= 7 ? '#16a34a' : parseFloat(promedio) >= 4 ? '#d97706' : '#dc2626'}">\${promedio}</div><div style="font-size:10px;color:#9ca3af;">Promedio</div></div>\` : ''}
+                        <span style="background:\${estadoBg};color:\${estadoColor};padding:3px 8px;border-radius:8px;font-size:11px;font-weight:500;">\${estadoText}</span>
+                      </div>
+                    </div>\`;
+                  }).join('')}
+                </div>
+              </div>\`;
+          }).join('');
+        })()}
+      </div>
     `;
 
     if (typeof lucide !== 'undefined') {
@@ -6772,6 +6787,20 @@ function setupCursoFilters() {
   if (searchInput) {
     searchInput.addEventListener('input', () => filterTableRows('cursos'));
   }
+  // Populate idioma, nivel, ciclo dropdowns from table data
+  const rows = document.querySelectorAll('#cursosTableBody tr');
+  const idiomas = new Set(), niveles = new Set(), ciclos = new Set();
+  rows.forEach(row => {
+    if (row.dataset.idioma) idiomas.add(row.dataset.idioma);
+    if (row.dataset.nivel) niveles.add(row.dataset.nivel);
+    if (row.dataset.ciclo) ciclos.add(row.dataset.ciclo);
+  });
+  const idiomaSelect = document.getElementById('cursoFilterIdioma');
+  if (idiomaSelect) [...idiomas].sort().forEach(i => { const o = document.createElement('option'); o.value = i; o.textContent = i.charAt(0).toUpperCase() + i.slice(1); idiomaSelect.appendChild(o); });
+  const nivelSelect = document.getElementById('cursoFilterNivel');
+  if (nivelSelect) [...niveles].sort().forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n.charAt(0).toUpperCase() + n.slice(1); nivelSelect.appendChild(o); });
+  const cicloSelect = document.getElementById('cursoFilterCiclo');
+  if (cicloSelect) [...ciclos].sort().reverse().forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = `Ciclo ${c}`; cicloSelect.appendChild(o); });
 }
 
 function filterCursos() {
@@ -11692,10 +11721,7 @@ async function descargarPDFAlumnos() {
       error: [239, 68, 68]
     };
     
-    const cicloSeleccionado = document.getElementById('filterCicloLectivo')?.value || '';
-    let alumnosUrl = `${API_URL}/alumnos`;
-    if (cicloSeleccionado) alumnosUrl += `?ciclo_lectivo=${encodeURIComponent(cicloSeleccionado)}`;
-    const responseAlumnos = await fetch(alumnosUrl);
+    const responseAlumnos = await fetch(`${API_URL}/alumnos`);
     const alumnosResp = await responseAlumnos.json();
     const alumnos = alumnosResp.data || alumnosResp;
     
@@ -11757,7 +11783,7 @@ async function descargarPDFAlumnos() {
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...COLORS.white);
-    doc.text(cicloSeleccionado ? `Alumnos - Ciclo ${cicloSeleccionado}` : 'Listado de Alumnos', pageWidth - 15, 14, { align: 'right' });
+    doc.text('Listado de Alumnos', pageWidth - 15, 14, { align: 'right' });
     
     // Fecha de generación
     doc.setFontSize(8);
@@ -11888,7 +11914,7 @@ async function descargarPDFAlumnos() {
       );
     }
     
-    doc.save(`CEMI_Alumnos${cicloSeleccionado ? '_Ciclo' + cicloSeleccionado : ''}_${new Date().toISOString().split('T')[0]}.pdf`);
+    doc.save(`CEMI_Alumnos_${new Date().toISOString().split('T')[0]}.pdf`);
     
     showToast('PDF descargado exitosamente', 'success');
   } catch (error) {

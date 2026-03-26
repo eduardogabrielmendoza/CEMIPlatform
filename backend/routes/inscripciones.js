@@ -58,6 +58,38 @@ router.get("/alumno/:id", async (req, res) => {
   }
 });
 
+// Historial académico de un alumno (todas las inscripciones con ciclo lectivo)
+router.get("/alumno/:id/historial", async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT 
+        i.id_inscripcion,
+        i.id_curso,
+        i.fecha_inscripcion,
+        i.estado AS estado_inscripcion,
+        c.nombre_curso,
+        c.ciclo_lectivo,
+        idioma.nombre_idioma AS idioma,
+        nivel.descripcion AS nivel,
+        CONCAT(prof_p.nombre, ' ', prof_p.apellido) AS profesor,
+        cal.parcial1, cal.parcial2, cal.final
+      FROM inscripciones i
+      JOIN cursos c ON i.id_curso = c.id_curso
+      JOIN idiomas idioma ON c.id_idioma = idioma.id_idioma
+      LEFT JOIN niveles nivel ON c.id_nivel = nivel.id_nivel
+      LEFT JOIN profesores prof ON c.id_profesor = prof.id_profesor
+      LEFT JOIN personas prof_p ON prof.id_profesor = prof_p.id_persona
+      LEFT JOIN calificaciones cal ON (cal.id_alumno = i.id_alumno AND cal.id_curso = i.id_curso)
+      WHERE i.id_alumno = ?
+      ORDER BY c.ciclo_lectivo DESC, i.fecha_inscripcion DESC
+    `, [req.params.id]);
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener historial del alumno:', error);
+    res.status(500).json({ message: "Error al obtener historial académico" });
+  }
+});
+
 router.get("/curso/:id", async (req, res) => {
   try {
     const id_profesor = req.query.id_profesor;
