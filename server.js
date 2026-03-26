@@ -229,6 +229,13 @@ setChatServer(chatServer);
       console.log('[migration] chat_conversaciones.estado ENUM updated with resuelta');
     }
 
+    // Add 'sistema' to chat_mensajes.tipo_remitente ENUM if not present
+    const [chatMensajesCols] = await pool.query("SHOW COLUMNS FROM chat_mensajes LIKE 'tipo_remitente'");
+    if (chatMensajesCols.length > 0 && !chatMensajesCols[0].Type.includes('sistema')) {
+      await pool.query("ALTER TABLE chat_mensajes MODIFY COLUMN tipo_remitente ENUM('invitado','alumno','profesor','admin','sistema') COLLATE utf8mb4_general_ci NOT NULL");
+      console.log('[migration] chat_mensajes.tipo_remitente ENUM updated with sistema');
+    }
+
     // Create registros_pagos table if not exists
     await pool.query(`
       CREATE TABLE IF NOT EXISTS registros_pagos (
