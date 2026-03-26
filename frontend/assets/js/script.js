@@ -6594,6 +6594,50 @@ function ensureAlumnoPanel() {
   });
 }
 
+function renderHistorialAcademico(historial) {
+  if (!historial || historial.length === 0) {
+    return '<p style="color: #999; text-align: center; padding: 20px;">No hay registros de historial académico</p>';
+  }
+  var porCiclo = {};
+  historial.forEach(function(h) {
+    var ciclo = h.ciclo_lectivo || 'Sin ciclo';
+    if (!porCiclo[ciclo]) porCiclo[ciclo] = [];
+    porCiclo[ciclo].push(h);
+  });
+  var ciclosOrdenados = Object.keys(porCiclo).sort(function(a, b) { return b - a; });
+  var html = '';
+  ciclosOrdenados.forEach(function(ciclo) {
+    var items = porCiclo[ciclo];
+    html += '<div style="margin-bottom: 16px;">';
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">';
+    html += '<span style="background:#4a5259;color:white;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">Ciclo ' + ciclo + '</span>';
+    html += '<span style="color:#9ca3af;font-size:12px;">' + items.length + ' curso' + (items.length !== 1 ? 's' : '') + '</span>';
+    html += '</div>';
+    html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+    items.forEach(function(h) {
+      var estadoColor = h.estado_inscripcion === 'activo' ? '#16a34a' : '#d97706';
+      var estadoBg = h.estado_inscripcion === 'activo' ? '#dcfce7' : '#fef3c7';
+      var estadoText = h.estado_inscripcion === 'activo' ? 'Cursando' : 'Finalizado';
+      var notas = [h.parcial1, h.parcial2, h.final].filter(function(v) { return v != null; });
+      var promedio = notas.length > 0 ? (notas.reduce(function(a, b) { return a + b; }, 0) / notas.length).toFixed(1) : null;
+      var promedioColor = promedio ? (parseFloat(promedio) >= 7 ? '#16a34a' : parseFloat(promedio) >= 4 ? '#d97706' : '#dc2626') : '';
+      html += '<div style="background:#f8f9fa;border-radius:10px;padding:12px 16px;border-left:3px solid ' + estadoColor + ';display:flex;align-items:center;justify-content:space-between;gap:12px;">';
+      html += '<div style="flex:1;">';
+      html += '<div style="font-weight:500;color:#1e1e1e;font-size:14px;">' + h.nombre_curso + '</div>';
+      html += '<div style="color:#6b7280;font-size:12px;margin-top:2px;">' + (h.idioma || '') + ' · ' + (h.nivel || '') + (h.profesor ? ' · Prof. ' + h.profesor : '') + '</div>';
+      html += '</div>';
+      html += '<div style="display:flex;align-items:center;gap:10px;">';
+      if (promedio) {
+        html += '<div style="text-align:center;"><div style="font-weight:600;font-size:16px;color:' + promedioColor + '">' + promedio + '</div><div style="font-size:10px;color:#9ca3af;">Promedio</div></div>';
+      }
+      html += '<span style="background:' + estadoBg + ';color:' + estadoColor + ';padding:3px 8px;border-radius:8px;font-size:11px;font-weight:500;">' + estadoText + '</span>';
+      html += '</div></div>';
+    });
+    html += '</div></div>';
+  });
+  return html;
+}
+
 async function openAlumnoPanel(idAlumno) {
   ensureAlumnoPanel();
   const panel = document.getElementById('alumnoPanel');
@@ -6711,48 +6755,7 @@ async function openAlumnoPanel(idAlumno) {
       <!-- Historial Académico -->
       <div class="info-section">
         <h3><i data-lucide="history"></i> Historial Académico</h3>
-        ${(() => {
-          if (!historial || historial.length === 0) return '<p style="color: #999; text-align: center; padding: 20px;">No hay registros de historial académico</p>';
-          // Group by ciclo_lectivo
-          const porCiclo = {};
-          historial.forEach(h => {
-            const ciclo = h.ciclo_lectivo || 'Sin ciclo';
-            if (!porCiclo[ciclo]) porCiclo[ciclo] = [];
-            porCiclo[ciclo].push(h);
-          });
-          const ciclosOrdenados = Object.keys(porCiclo).sort((a, b) => b - a);
-          return ciclosOrdenados.map(ciclo => {
-            const items = porCiclo[ciclo];
-            return \`
-              <div style="margin-bottom: 16px;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                  <span style="background:#4a5259;color:white;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">Ciclo \${ciclo}</span>
-                  <span style="color:#9ca3af;font-size:12px;">\${items.length} curso\${items.length !== 1 ? 's' : ''}</span>
-                </div>
-                <div style="display:flex;flex-direction:column;gap:8px;">
-                  \${items.map(h => {
-                    const estadoColor = h.estado_inscripcion === 'activo' ? '#16a34a' : '#d97706';
-                    const estadoBg = h.estado_inscripcion === 'activo' ? '#dcfce7' : '#fef3c7';
-                    const estadoText = h.estado_inscripcion === 'activo' ? 'Cursando' : 'Finalizado';
-                    const promedio = (h.parcial1 != null || h.parcial2 != null || h.final != null) 
-                      ? (((h.parcial1 || 0) + (h.parcial2 || 0) + (h.final || 0)) / [h.parcial1, h.parcial2, h.final].filter(v => v != null).length).toFixed(1)
-                      : null;
-                    return \`
-                    <div style="background:#f8f9fa;border-radius:10px;padding:12px 16px;border-left:3px solid \${estadoColor};display:flex;align-items:center;justify-content:space-between;gap:12px;">
-                      <div style="flex:1;">
-                        <div style="font-weight:500;color:#1e1e1e;font-size:14px;">\${h.nombre_curso}</div>
-                        <div style="color:#6b7280;font-size:12px;margin-top:2px;">\${h.idioma || ''} · \${h.nivel || ''} \${h.profesor ? '· Prof. ' + h.profesor : ''}</div>
-                      </div>
-                      <div style="display:flex;align-items:center;gap:10px;">
-                        \${promedio ? \`<div style="text-align:center;"><div style="font-weight:600;font-size:16px;color:\${parseFloat(promedio) >= 7 ? '#16a34a' : parseFloat(promedio) >= 4 ? '#d97706' : '#dc2626'}">\${promedio}</div><div style="font-size:10px;color:#9ca3af;">Promedio</div></div>\` : ''}
-                        <span style="background:\${estadoBg};color:\${estadoColor};padding:3px 8px;border-radius:8px;font-size:11px;font-weight:500;">\${estadoText}</span>
-                      </div>
-                    </div>\`;
-                  }).join('')}
-                </div>
-              </div>\`;
-          }).join('');
-        })()}
+        ${renderHistorialAcademico(historial)}
       </div>
     `;
 
