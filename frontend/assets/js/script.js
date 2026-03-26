@@ -5545,9 +5545,13 @@ async function toggleEstado(section, id, nuevoEstado, element) {
 // Toggle estado for idiomas
 async function toggleEstadoIdioma(id, nuevoEstado, element) {
   try {
+    const token = localStorage.getItem('token');
     const res = await fetch(`${API_URL}/idiomas/${id}/estado`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      },
       body: JSON.stringify({ estado: nuevoEstado })
     });
     const data = await res.json();
