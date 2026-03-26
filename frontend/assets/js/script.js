@@ -6906,8 +6906,10 @@ function setupCursoFilters() {
       var uniqueNiveles = [];
       var seen = {};
       niveles.forEach(function(n) {
-        var desc = (n.descripcion || '').toLowerCase();
-        if (!seen[desc]) { seen[desc] = true; uniqueNiveles.push(n.descripcion); }
+        var desc = (n.descripcion || '').trim();
+        if (!desc) return;
+        var key = desc.toLowerCase();
+        if (!seen[key]) { seen[key] = true; uniqueNiveles.push(desc); }
       });
       uniqueNiveles.sort().forEach(function(desc) {
         var o = document.createElement('option');
@@ -6918,10 +6920,12 @@ function setupCursoFilters() {
     }
     var cicloSelect = document.getElementById('cursoFilterCiclo');
     if (cicloSelect && ciclos.length) {
-      ciclos.sort(function(a, b) { return b.ciclo_lectivo - a.ciclo_lectivo; }).forEach(function(c) {
+      ciclos.forEach(function(c) {
+        var val = (typeof c === 'object') ? c.ciclo_lectivo : c;
+        if (!val) return;
         var o = document.createElement('option');
-        o.value = c.ciclo_lectivo;
-        o.textContent = 'Ciclo ' + c.ciclo_lectivo;
+        o.value = val;
+        o.textContent = 'Ciclo ' + val;
         cicloSelect.appendChild(o);
       });
     }
