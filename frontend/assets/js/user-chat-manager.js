@@ -764,7 +764,10 @@
     
     if (!mensaje) return;
     
-    if (!this.activeConversation) {
+    if (mensaje.length > 300) {
+      Swal.fire({ icon: 'warning', title: 'Límite de caracteres', text: 'Tu mensaje no puede superar los 300 caracteres.' });
+      return;
+    }
       console.log('️ No hay conversación activa, cargando conversación del usuario...');
       
       await this.loadConversations();

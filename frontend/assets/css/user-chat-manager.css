@@ -249,7 +249,10 @@
   padding: 12px 16px;
   border-radius: 16px;
   word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
   white-space: pre-wrap;
+  max-width: 100%;
 }
 
 .user-chat-message.sent .user-chat-message-bubble {

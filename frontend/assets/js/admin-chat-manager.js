@@ -513,6 +513,16 @@
       }
 
       const isAdmin = msg.es_admin === 1 || msg.tipo_remitente === 'admin';
+      const time = new Date(msg.fecha_envio).toLocaleTimeString('es-ES', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+      
+      let nombreMostrar = '';
+      let tipoUsuario = '';
+      
+      if (isAdmin) {
+        nombreMostrar = msg.nombre_remitente || 'Admin';
         tipoUsuario = '';
       } else {
         nombreMostrar = msg.nombre_remitente || 'Usuario';
