@@ -273,13 +273,11 @@ function initAdminSPA() {
           html += generateTable(section, responseData);
         } else if (section === 'aulas' || section === 'idiomas') {
           html += generateTable(section, tableData);
-        } else if (total > 0) {
+        } else {
           html += generateTable(section, tableData, total);
           if (isPaginated && tableData.length < total) {
             html += `<button class="btn-load-more" onclick="loadMoreRows('${section}')">Cargar más (${tableData.length} de ${total})</button>`;
           }
-        } else {
-          html += "<p>No hay datos disponibles.</p>";
         }
       }
 
@@ -5565,9 +5563,7 @@ async function toggleEstadoIdioma(id, nuevoEstado, element) {
 function filterNivelesByIdioma(allNiveles, idiomaId, nivelSelect, selectedNivelId) {
   if (!nivelSelect) return;
   nivelSelect.innerHTML = '<option value="">Sin nivel</option>';
-  if (!idiomaId) return;
-  var filtered = allNiveles.filter(function(n) { return String(n.id_idioma) === String(idiomaId); });
-  filtered.forEach(function(n) {
+  allNiveles.forEach(function(n) {
     var o = document.createElement('option');
     o.value = n.id_nivel;
     o.textContent = n.descripcion;

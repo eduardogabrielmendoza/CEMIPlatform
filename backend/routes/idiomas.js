@@ -90,15 +90,6 @@ router.delete("/:id", async (req, res) => {
       });
     }
 
-    // Check for niveles using this idioma
-    const [niveles] = await pool.query('SELECT COUNT(*) as total FROM niveles WHERE id_idioma = ?', [id]);
-    if (niveles[0].total > 0) {
-      return res.status(400).json({ 
-        success: false,
-        message: `No se puede eliminar: hay ${niveles[0].total} nivel(es) asociado(s) a este idioma. Elimine los niveles primero.` 
-      });
-    }
-
     const [result] = await pool.query("DELETE FROM Idiomas WHERE id_idioma = ?", [id]);
     
     if (result.affectedRows === 0) {
