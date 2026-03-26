@@ -2126,7 +2126,6 @@
 }
 
 .filter-dropdown {
-  display: none;
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
@@ -2137,10 +2136,18 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
   z-index: 100;
   min-width: 260px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  pointer-events: none;
 }
 
 .filter-dropdown.show {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .filter-dropdown-title {

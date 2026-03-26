@@ -4883,7 +4883,7 @@ function generateTable(section, data, total) {
             <div class="search-filter-wrapper">
               <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px; pointer-events: none;"></i>
               <input type="text" id="cursosSearch" placeholder="Buscar por nombre, idioma o nivel..." style="width: 100%;">
-              <button type="button" class="filter-toggle-btn" onclick="toggleFilterDropdown('cursos')">
+              <button type="button" class="filter-toggle-btn" onclick="event.stopPropagation(); toggleFilterDropdown('cursos')">
                 <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
                 <span class="filter-badge" id="cursosFilterBadge" style="display:none;"></span>
               </button>
@@ -4954,7 +4954,7 @@ function generateTable(section, data, total) {
             <div class="search-filter-wrapper">
               <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px; pointer-events: none;"></i>
               <input type="text" id="alumnosSearch" placeholder="Buscar por nombre, legajo o email..." style="width: 100%;">
-              <button type="button" class="filter-toggle-btn" onclick="toggleFilterDropdown('alumnos')">
+              <button type="button" class="filter-toggle-btn" onclick="event.stopPropagation(); toggleFilterDropdown('alumnos')">
                 <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
                 <span class="filter-badge" id="alumnosFilterBadge" style="display:none;"></span>
               </button>
@@ -5011,7 +5011,7 @@ function generateTable(section, data, total) {
             <div class="search-filter-wrapper">
               <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px; pointer-events: none;"></i>
               <input type="text" id="profesoresSearch" placeholder="Buscar por nombre, especialidad o idioma..." style="width: 100%;">
-              <button type="button" class="filter-toggle-btn" onclick="toggleFilterDropdown('profesores')">
+              <button type="button" class="filter-toggle-btn" onclick="event.stopPropagation(); toggleFilterDropdown('profesores')">
                 <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
                 <span class="filter-badge" id="profesoresFilterBadge" style="display:none;"></span>
               </button>
@@ -5064,7 +5064,7 @@ function generateTable(section, data, total) {
             <div class="search-filter-wrapper">
               <i data-lucide="search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #999; width: 18px; height: 18px; pointer-events: none;"></i>
               <input type="text" id="administradoresSearch" placeholder="Buscar por nombre, email o DNI..." style="width: 100%;">
-              <button type="button" class="filter-toggle-btn" onclick="toggleFilterDropdown('administradores')">
+              <button type="button" class="filter-toggle-btn" onclick="event.stopPropagation(); toggleFilterDropdown('administradores')">
                 <i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i>
                 <span class="filter-badge" id="administradoresFilterBadge" style="display:none;"></span>
               </button>
@@ -5569,7 +5569,6 @@ function toggleFilterDropdown(section) {
   document.querySelectorAll('.filter-dropdown.show').forEach(function(d) { d.classList.remove('show'); });
   if (!isOpen) {
     dropdown.classList.add('show');
-    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 }
 
@@ -6686,23 +6685,6 @@ function ensureAlumnoPanel() {
     closeBtn.addEventListener('click', closePanel);
   }
   overlay.addEventListener('click', closePanel);
-  
-  document.addEventListener('click', (e) => {
-    if (panel.classList.contains('active') && !panel.contains(e.target) && !e.target.closest('.alumno-card')) {
-      closePanel();
-    }
-  });
-  
-  let mouseLeaveTimeout;
-  panel.addEventListener('mouseleave', () => {
-    mouseLeaveTimeout = setTimeout(() => {
-      closePanel();
-    }, 500);
-  });
-  
-  panel.addEventListener('mouseenter', () => {
-    clearTimeout(mouseLeaveTimeout);
-  });
 }
 
 function renderHistorialAcademico(historial) {
@@ -6901,20 +6883,49 @@ function setupCursoFilters() {
   if (searchInput) {
     searchInput.addEventListener('input', () => filterTableRows('cursos'));
   }
-  // Populate idioma, nivel, ciclo dropdowns from table data
-  const rows = document.querySelectorAll('#cursosTableBody tr');
-  const idiomas = new Set(), niveles = new Set(), ciclos = new Set();
-  rows.forEach(row => {
-    if (row.dataset.idioma) idiomas.add(row.dataset.idioma);
-    if (row.dataset.nivel) niveles.add(row.dataset.nivel);
-    if (row.dataset.ciclo) ciclos.add(row.dataset.ciclo);
+  // Populate idioma, nivel, ciclo dropdowns from API
+  Promise.all([
+    fetch(`${API_URL}/idiomas`).then(r => r.json()).catch(() => []),
+    fetch(`${API_URL}/niveles`).then(r => r.json()).catch(() => []),
+    fetch(`${API_URL}/cursos/ciclos-lectivos`).then(r => r.json()).catch(() => [])
+  ]).then(function(results) {
+    var idiomas = results[0];
+    var niveles = results[1];
+    var ciclos = results[2];
+    var idiomaSelect = document.getElementById('cursoFilterIdioma');
+    if (idiomaSelect && idiomas.length) {
+      idiomas.forEach(function(i) {
+        var o = document.createElement('option');
+        o.value = (i.nombre_idioma || '').toLowerCase();
+        o.textContent = i.nombre_idioma;
+        idiomaSelect.appendChild(o);
+      });
+    }
+    var nivelSelect = document.getElementById('cursoFilterNivel');
+    if (nivelSelect && niveles.length) {
+      var uniqueNiveles = [];
+      var seen = {};
+      niveles.forEach(function(n) {
+        var desc = (n.descripcion || '').toLowerCase();
+        if (!seen[desc]) { seen[desc] = true; uniqueNiveles.push(n.descripcion); }
+      });
+      uniqueNiveles.sort().forEach(function(desc) {
+        var o = document.createElement('option');
+        o.value = desc.toLowerCase();
+        o.textContent = desc;
+        nivelSelect.appendChild(o);
+      });
+    }
+    var cicloSelect = document.getElementById('cursoFilterCiclo');
+    if (cicloSelect && ciclos.length) {
+      ciclos.sort(function(a, b) { return b.ciclo_lectivo - a.ciclo_lectivo; }).forEach(function(c) {
+        var o = document.createElement('option');
+        o.value = c.ciclo_lectivo;
+        o.textContent = 'Ciclo ' + c.ciclo_lectivo;
+        cicloSelect.appendChild(o);
+      });
+    }
   });
-  const idiomaSelect = document.getElementById('cursoFilterIdioma');
-  if (idiomaSelect) [...idiomas].sort().forEach(i => { const o = document.createElement('option'); o.value = i; o.textContent = i.charAt(0).toUpperCase() + i.slice(1); idiomaSelect.appendChild(o); });
-  const nivelSelect = document.getElementById('cursoFilterNivel');
-  if (nivelSelect) [...niveles].sort().forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n.charAt(0).toUpperCase() + n.slice(1); nivelSelect.appendChild(o); });
-  const cicloSelect = document.getElementById('cursoFilterCiclo');
-  if (cicloSelect) [...ciclos].sort().reverse().forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = `Ciclo ${c}`; cicloSelect.appendChild(o); });
 }
 
 function filterCursos() {
@@ -7013,23 +7024,6 @@ function ensureProfesorPanel() {
     closeBtn.addEventListener('click', closePanel);
   }
   overlay.addEventListener('click', closePanel);
-  
-  document.addEventListener('click', (e) => {
-    if (panel.classList.contains('active') && !panel.contains(e.target) && !e.target.closest('.profesor-card')) {
-      closePanel();
-    }
-  });
-  
-  let mouseLeaveTimeout;
-  panel.addEventListener('mouseleave', () => {
-    mouseLeaveTimeout = setTimeout(() => {
-      closePanel();
-    }, 500);
-  });
-  
-  panel.addEventListener('mouseenter', () => {
-    clearTimeout(mouseLeaveTimeout);
-  });
 }
 
 async function openProfesorPanel(idProfesor) {
