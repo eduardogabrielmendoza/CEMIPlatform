@@ -177,7 +177,7 @@ class CursadoManager {
 
         container.innerHTML = `
             <div style="border-radius: 12px;">
-                <table style="width: 100%; border-collapse: collapse;">
+                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                     <thead>
                         <tr style="background: #f9fafb;">
                             <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
