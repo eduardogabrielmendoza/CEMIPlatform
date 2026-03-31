@@ -53,7 +53,7 @@
     </div>
     <nav class="sidebar-menu">
       <button id="btnCursos" class="stagger-item hover-lift"><i data-lucide="book-open"></i> Mis Cursos</button>
-      <button id="btnCursado" class="stagger-item hover-lift"><i data-lucide="graduation-cap"></i> Cursado</button>
+      <button id="btnCursado" class="stagger-item hover-lift"><i data-lucide="graduation-cap"></i> Cursado Disponible</button>
       <button id="btnNotas" class="stagger-item hover-lift"><i data-lucide="clipboard-list"></i> Mis Calificaciones</button>
       <button id="btnPagos" class="stagger-item hover-lift"><i data-lucide="credit-card"></i> Mis Pagos</button>
       <button id="btnPerfil" class="stagger-item hover-lift"><i data-lucide="user"></i> Mi Perfil</button>
@@ -270,68 +270,85 @@
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px;">
-              ${cursos.length > 0 ? cursos.map((curso, index) => {
-                const promedio = parseFloat(curso.promedio) || 0;
-                const progreso = promedio > 0 ? Math.min((promedio / 10) * 100, 100) : 0;
-                let barColor = '#4a5259';
-                if (promedio >= 7) barColor = '#22c55e';
-                else if (promedio >= 5) barColor = '#f59e0b';
-                else if (promedio > 0) barColor = '#ef4444';
-                
-                return `
-                <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s ease;" onclick="abrirDetalleCursoAlumno(${curso.id_curso}, '${curso.nombre_curso}')" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
-                  
-                  <div style="position: absolute; top: 12px; right: 12px; background: rgba(74, 82, 89, 0.1); color: #4a5259; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 12px;">Nivel ${curso.id_nivel || 'N/A'}</div>
-                  
-                  <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
-                    <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <i data-lucide="book-open" style="width: 28px; height: 28px; color: #4a5259;"></i>
-                    </div>
-                    <div style="flex: 1; min-width: 0; padding-right: 70px;">
-                      <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 16px; font-weight: 500; font-family: 'Inter', sans-serif;">${curso.nombre_curso}</h3>
-                      <p style="margin: 0; color: #6b7280; font-size: 13px;">${curso.nombre_idioma || 'Curso'}</p>
-                    </div>
-                  </div>
-                  
-                  <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                    <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                      <i data-lucide="clock" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                      <span>${curso.horario || 'Por confirmar'}</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                      <i data-lucide="trending-up" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                      <span>Promedio: <strong style="color: ${promedio >= 7 ? '#22c55e' : promedio >= 5 ? '#f59e0b' : promedio > 0 ? '#ef4444' : '#6b7280'}">${promedio > 0 ? promedio.toFixed(1) : 'S/N'}</strong></span>
-                    </div>
-                  </div>
-                  
-                  ${promedio > 0 ? `
-                  <div style="margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                      <span style="color: #6b7280; font-size: 12px;">Progreso</span>
-                      <span style="color: #1e1e1e; font-size: 12px; font-weight: 500;">${progreso.toFixed(0)}%</span>
-                    </div>
-                    <div style="height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
-                      <div style="height: 100%; width: ${progreso}%; background: ${barColor}; border-radius: 3px; transition: width 0.3s ease;"></div>
-                    </div>
-                  </div>
-                  ` : `
-                  <div style="padding: 12px; background: rgba(74, 82, 89, 0.05); border-radius: 8px; margin-bottom: 16px;">
-                    <span style="color: #6b7280; font-size: 13px;">Sin calificaciones registradas</span>
-                  </div>
-                  `}
-                  
-                  <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
-                  
-                  <div style="display: flex; justify-content: flex-end;">
-                    <button style="background: rgba(74, 82, 89, 0.08); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: #4a5259; font-size: 13px; font-weight: 500; transition: all 0.2s;" onclick="event.stopPropagation(); abrirDetalleCursoAlumno(${curso.id_curso}, '${curso.nombre_curso}')" onmouseenter="this.style.background='rgba(74, 82, 89, 0.15)'" onmouseleave="this.style.background='rgba(74, 82, 89, 0.08)'">
-                      <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
-                      Ver detalles
-                    </button>
-                  </div>
+            <div style="background: #ffffff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+              <h3 style="margin: 0 0 20px 0; color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="list" style="width: 18px; height: 18px; color: #4a5259;"></i>
+                Detalle de Cursos Inscritos
+              </h3>
+
+              ${cursos.length > 0 ? `
+                <div style="overflow-x: auto; border-radius: 12px;">
+                  <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
+                    <thead>
+                      <tr style="background: #f9fafb;">
+                        <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                        <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                        <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Nivel</th>
+                        <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Horario</th>
+                        <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Promedio</th>
+                        <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Estado</th>
+                        <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${cursos.map(curso => {
+                        const promedio = parseFloat(curso.promedio) || 0;
+                        let estadoBg = 'rgba(156, 163, 175, 0.1)';
+                        let estadoColor = '#9ca3af';
+                        let estadoTexto = 'Pendiente';
+                        
+                        if (promedio >= 7) {
+                          estadoBg = 'rgba(34, 197, 94, 0.1)';
+                          estadoColor = '#22c55e';
+                          estadoTexto = 'Aprobado';
+                        } else if (promedio >= 4) {
+                          estadoBg = 'rgba(245, 158, 11, 0.1)';
+                          estadoColor = '#f59e0b';
+                          estadoTexto = 'Regular';
+                        } else if (promedio > 0) {
+                          estadoBg = 'rgba(239, 68, 68, 0.1)';
+                          estadoColor = '#ef4444';
+                          estadoTexto = 'Reprobado';
+                        }
+
+                        const nombreCursoEscaped = curso.nombre_curso.replace(/'/g, "\\'");
+
+                        return `
+                          <tr style="border-bottom: 1px solid #f3f4f6; transition: background 0.2s; cursor: pointer;" onmouseenter="this.style.background='#f9fafb'" onmouseleave="this.style.background='transparent'" onclick="abrirDetalleCursoAlumno(${curso.id_curso}, '${nombreCursoEscaped}')">
+                            <td style="padding: 14px 16px; color: #1e1e1e; font-size: 14px;">
+                              <div style="display: flex; align-items: center; gap: 10px;">
+                                <i data-lucide="book-open" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                                <span style="font-weight: 500;">${curso.nombre_curso}</span>
+                              </div>
+                            </td>
+                            <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">${curso.nombre_idioma || 'N/A'}</td>
+                            <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center;">Nivel ${curso.id_nivel || 'N/A'}</td>
+                            <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">
+                              <div style="display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="clock" style="width: 14px; height: 14px; color: #9ca3af;"></i>
+                                ${curso.horario || 'Por confirmar'}
+                              </div>
+                            </td>
+                            <td style="padding: 14px 16px; text-align: center;">
+                              <span style="font-size: 15px; font-weight: 600; color: ${promedio >= 7 ? '#22c55e' : promedio >= 4 ? '#f59e0b' : promedio > 0 ? '#ef4444' : '#9ca3af'};">${promedio > 0 ? promedio.toFixed(1) : 'S/N'}</span>
+                            </td>
+                            <td style="padding: 14px 16px; text-align: center;">
+                              <span style="background: ${estadoBg}; color: ${estadoColor}; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">${estadoTexto}</span>
+                            </td>
+                            <td style="padding: 14px 16px; text-align: center;">
+                              <button style="background: rgba(74, 82, 89, 0.08); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: #4a5259; font-size: 13px; font-weight: 500; transition: all 0.2s;" onclick="event.stopPropagation(); abrirDetalleCursoAlumno(${curso.id_curso}, '${nombreCursoEscaped}')" onmouseenter="this.style.background='rgba(74, 82, 89, 0.15)'" onmouseleave="this.style.background='rgba(74, 82, 89, 0.08)'">
+                                <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+                                Ver detalles
+                              </button>
+                            </td>
+                          </tr>
+                        `;
+                      }).join('')}
+                    </tbody>
+                  </table>
                 </div>
-              `}).join('') : `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 2px dashed #e5e7eb;">
+              ` : `
+                <div style="text-align: center; padding: 60px 20px;">
                   <div style="background: rgba(74, 82, 89, 0.08); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                     <i data-lucide="inbox" style="width: 40px; height: 40px; color: #9ca3af;"></i>
                   </div>
@@ -363,6 +380,31 @@
     },
 
     btnCursado: async () => {
+      await Swal.fire({
+        title: '<span style="font-family: Inter, sans-serif; font-weight: 500;">Inscripciones — Ciclo Lectivo 2026</span>',
+        html: `
+          <div style="text-align:left; font-family: 'Inter', sans-serif; color: #374151; font-size: 14px; line-height: 1.7;">
+            <p style="margin: 0 0 12px 0;">Recordá que para formalizar tu inscripción debés presentarte de forma <strong>presencial por ventanilla</strong> en la sede del CEMI antes del inicio del ciclo lectivo.</p>
+            <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600; color: #92400e; font-size: 14px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Fechas importantes
+              </div>
+              <ul style="margin: 0; padding-left: 18px; color: #78350f;">
+                <li>Las inscripciones se encuentran <strong>actualmente abiertas</strong>.</li>
+                <li>Cierre de inscripciones: <strong>25 de abril de 2026</strong>.</li>
+                <li>Inicio del ciclo lectivo: <strong>5 de mayo de 2026</strong>.</li>
+              </ul>
+            </div>
+            <p style="margin: 0; color: #6b7280; font-size: 13px;">Una vez iniciado el ciclo lectivo, la sección de cursado disponible dejará de estar habilitada hasta el próximo período de inscripción.</p>
+          </div>
+        `,
+        icon: 'info',
+        confirmButtonText: 'Entendido, ver cursos disponibles',
+        confirmButtonColor: '#4a5259',
+        customClass: { popup: 'swal-wide' }
+      });
+
       loader.classList.remove("hidden");
       mainContent.classList.remove("active");
 
@@ -372,9 +414,9 @@
             <div style="margin-bottom: 24px;">
               <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
                 <i data-lucide="graduation-cap" style="width: 28px; height: 28px; color: #4a5259;"></i>
-                <h2 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 500; font-family: 'Inter', sans-serif;">Catálogo de Cursos</h2>
+                <h2 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 500; font-family: 'Inter', sans-serif;">Cursado Disponible</h2>
               </div>
-              <p style="margin: 0; color: #6b7280; font-size: 14px;">Explora todos los cursos disponibles y solicita tu inscripción</p>
+              <p style="margin: 0; color: #6b7280; font-size: 14px;">Explora los cursos disponibles para el ciclo lectivo 2026 y solicitá tu inscripción</p>
             </div>
 
             <div style="background: white; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
