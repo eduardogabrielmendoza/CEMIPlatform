@@ -176,8 +176,8 @@ class CursadoManager {
         }
 
         container.innerHTML = `
-            <div style="overflow-x: auto; border-radius: 12px; background: #fff; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <table style="width: 100%; border-collapse: collapse; min-width: 750px;">
+            <div style="border-radius: 12px; background: #fff; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <table style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr style="background: #f9fafb;">
                             <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
@@ -186,19 +186,14 @@ class CursadoManager {
                             <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Horario</th>
                             <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Profesor</th>
                             <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Cupos</th>
-                            <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${this.cursosDisponibles.map(curso => {
                             const cuposColor = curso.porcentaje_disponible >= 50 ? '#22c55e' : curso.porcentaje_disponible >= 25 ? '#f59e0b' : '#ef4444';
-                            const nombreEscaped = curso.nombre_curso.replace(/'/g, "\\'");
-                            const profEscaped = curso.profesor.nombre.replace(/'/g, "\\'");
-                            const horarioEscaped = curso.horario.replace(/'/g, "\\'");
-                            const estaCompleto = curso.estado === 'completo';
                             
                             return `
-                                <tr style="border-bottom: 1px solid #f3f4f6; transition: background 0.2s;" onmouseenter="this.style.background='#f9fafb'" onmouseleave="this.style.background='transparent'">
+                                <tr style="border-bottom: 1px solid #f3f4f6;">
                                     <td style="padding: 14px 16px; color: #1e1e1e; font-size: 14px;">
                                         <div style="display: flex; align-items: center; gap: 10px;">
                                             <i data-lucide="book-open" style="width: 16px; height: 16px; color: #6b7280;"></i>
@@ -216,16 +211,6 @@ class CursadoManager {
                                     <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">${curso.profesor.nombre}</td>
                                     <td style="padding: 14px 16px; text-align: center;">
                                         <span style="color: ${cuposColor}; font-weight: 600; font-size: 14px;">${curso.cupos_disponibles}/${curso.cupo_maximo}</span>
-                                    </td>
-                                    <td style="padding: 14px 16px; text-align: center;">
-                                        ${estaCompleto ? `
-                                            <span style="background: rgba(156, 163, 175, 0.1); color: #9ca3af; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 500;">Completo</span>
-                                        ` : `
-                                            <button style="background: rgba(74, 82, 89, 0.08); border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: #4a5259; font-size: 13px; font-weight: 500; transition: all 0.2s;" onclick="cursadoManager.solicitarInscripcion(${curso.id_curso}, '${nombreEscaped}', '${profEscaped}', '${horarioEscaped}')" onmouseenter="this.style.background='rgba(74, 82, 89, 0.15)'" onmouseleave="this.style.background='rgba(74, 82, 89, 0.08)'">
-                                                <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
-                                                Solicitar inscripción
-                                            </button>
-                                        `}
                                     </td>
                                 </tr>
                             `;

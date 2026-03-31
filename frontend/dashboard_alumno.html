@@ -316,7 +316,7 @@
                         const nombreCursoEscaped = curso.nombre_curso.replace(/'/g, "\\'");
 
                         return `
-                          <tr style="border-bottom: 1px solid #f3f4f6; transition: background 0.2s; cursor: pointer;" onmouseenter="this.style.background='#f9fafb'" onmouseleave="this.style.background='transparent'" onclick="abrirDetalleCursoAlumno(${curso.id_curso}, '${nombreCursoEscaped}')">
+                          <tr style="border-bottom: 1px solid #f3f4f6; cursor: pointer;" onclick="abrirDetalleCursoAlumno(${curso.id_curso}, '${nombreCursoEscaped}')">
                             <td style="padding: 14px 16px; color: #1e1e1e; font-size: 14px;">
                               <div style="display: flex; align-items: center; gap: 10px;">
                                 <i data-lucide="book-open" style="width: 16px; height: 16px; color: #6b7280;"></i>
@@ -644,7 +644,7 @@
                         }
 
                         return `
-                          <tr style="border-bottom: 1px solid #e5e7eb; transition: background 0.2s;" onmouseenter="this.style.background='#f9fafb'" onmouseleave="this.style.background='transparent'" onclick="verDetalleCalificacion(${curso.id_curso}, '${curso.nombre_curso}')">
+                          <tr style="border-bottom: 1px solid #e5e7eb; cursor: pointer;" onclick="verDetalleCalificacion(${curso.id_curso}, '${curso.nombre_curso}')">
                             <td style="padding: 14px 16px; color: #1e1e1e; font-size: 14px; cursor: pointer;">
                               <div style="display: flex; align-items: center; gap: 10px;">
                                 <i data-lucide="book" style="width: 16px; height: 16px; color: #6b7280;"></i>
