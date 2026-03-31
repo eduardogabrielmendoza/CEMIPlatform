@@ -43,13 +43,18 @@
 
 
 .cursos-grid,
-.mis-cursos-grid,
-#catalogo-cursos-container {
+.mis-cursos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 24px;
   margin-top: 24px;
   width: 100%;
+}
+
+#catalogo-cursos-container {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
 }
 
 
@@ -369,8 +374,7 @@
 
 @media (max-width: 768px) {
   .cursos-grid,
-  .mis-cursos-grid,
-  #catalogo-cursos-container {
+  .mis-cursos-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
