@@ -125,7 +125,7 @@ router.get("/alumno/:id", async (req, res) => {
       JOIN niveles n ON c.id_nivel = n.id_nivel
       JOIN profesores prof ON c.id_profesor = prof.id_profesor
       JOIN personas prof_p ON prof.id_persona = prof_p.id_persona
-      WHERE insc.id_alumno = ? AND insc.estado = 'activo'
+      WHERE insc.id_alumno = ? AND insc.estado = 'activo' AND c.estado = 'activo'
       ORDER BY c.nombre_curso
     `, [id]);
 

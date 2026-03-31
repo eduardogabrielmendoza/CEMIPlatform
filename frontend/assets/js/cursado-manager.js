@@ -109,7 +109,7 @@ class CursadoManager {
 
         if (this.misCursos.length === 0) {
             container.innerHTML = `
-                <div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: #6b7280; font-size: 14px;">
+                <div style="padding: 20px; text-align: center; color: #6b7280; font-size: 14px;">
                     <i data-lucide="info" style="width: 20px; height: 20px; margin-bottom: 8px; color: #9ca3af;"></i>
                     <p style="margin: 0;">No estás inscrito en ningún curso actualmente</p>
                 </div>
@@ -117,22 +117,37 @@ class CursadoManager {
             return;
         }
 
-        container.innerHTML = this.misCursos.map(curso => {
-            return `
-                <div style="background: rgba(74, 82, 89, 0.05); border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 12px; border: 1px solid #e5e7eb;">
-                    <div style="background: rgba(74, 82, 89, 0.1); border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <i data-lucide="book-open" style="width: 20px; height: 20px; color: #4a5259;"></i>
-                    </div>
-                    <div style="flex: 1; min-width: 0;">
-                        <h4 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${curso.nombre_curso}</h4>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <span style="background: rgba(74, 82, 89, 0.1); color: #4a5259; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 500;">${curso.idioma || 'Curso'}</span>
-                            <span style="background: rgba(74, 82, 89, 0.1); color: #4a5259; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 500;">${curso.nivel || 'N/A'}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
+        container.innerHTML = `
+            <div style="overflow-x: auto; border-radius: 12px;">
+                <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+                    <thead>
+                        <tr style="background: #f9fafb;">
+                            <th style="padding: 12px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                            <th style="padding: 12px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                            <th style="padding: 12px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Nivel</th>
+                            <th style="padding: 12px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${this.misCursos.map(curso => `
+                            <tr style="border-bottom: 1px solid #f3f4f6;">
+                                <td style="padding: 12px 16px; color: #1e1e1e; font-size: 14px;">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <i data-lucide="book-open" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                                        <span style="font-weight: 500;">${curso.nombre_curso}</span>
+                                    </div>
+                                </td>
+                                <td style="padding: 12px 16px; color: #6b7280; font-size: 14px;">${curso.idioma || 'N/A'}</td>
+                                <td style="padding: 12px 16px; color: #4a5259; font-size: 14px; text-align: center;">${curso.nivel || 'N/A'}</td>
+                                <td style="padding: 12px 16px; text-align: center;">
+                                    <span style="background: rgba(34, 197, 94, 0.1); color: #22c55e; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;">Inscrito</span>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
 
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
@@ -151,14 +166,74 @@ class CursadoManager {
 
         if (this.cursosDisponibles.length === 0) {
             container.innerHTML = `
-                <div class="alert alert-warning">
-                    <i class="fas fa-search"></i> No se encontraron cursos disponibles con los filtros aplicados
+                <div style="text-align: center; padding: 40px 20px; color: #6b7280;">
+                    <i data-lucide="search-x" style="width: 40px; height: 40px; color: #9ca3af; margin-bottom: 12px;"></i>
+                    <p style="margin: 0; font-size: 14px;">No se encontraron cursos disponibles con los filtros aplicados</p>
                 </div>
             `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
             return;
         }
 
-        container.innerHTML = this.cursosDisponibles.map(curso => this.crearCursoCard(curso)).join('');
+        container.innerHTML = `
+            <div style="overflow-x: auto; border-radius: 12px; background: #fff; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <table style="width: 100%; border-collapse: collapse; min-width: 750px;">
+                    <thead>
+                        <tr style="background: #f9fafb;">
+                            <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                            <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                            <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Nivel</th>
+                            <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Horario</th>
+                            <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Profesor</th>
+                            <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Cupos</th>
+                            <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${this.cursosDisponibles.map(curso => {
+                            const cuposColor = curso.porcentaje_disponible >= 50 ? '#22c55e' : curso.porcentaje_disponible >= 25 ? '#f59e0b' : '#ef4444';
+                            const nombreEscaped = curso.nombre_curso.replace(/'/g, "\\'");
+                            const profEscaped = curso.profesor.nombre.replace(/'/g, "\\'");
+                            const horarioEscaped = curso.horario.replace(/'/g, "\\'");
+                            const estaCompleto = curso.estado === 'completo';
+                            
+                            return `
+                                <tr style="border-bottom: 1px solid #f3f4f6; transition: background 0.2s;" onmouseenter="this.style.background='#f9fafb'" onmouseleave="this.style.background='transparent'">
+                                    <td style="padding: 14px 16px; color: #1e1e1e; font-size: 14px;">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <i data-lucide="book-open" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                                            <span style="font-weight: 500;">${curso.nombre_curso}</span>
+                                        </div>
+                                    </td>
+                                    <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">${curso.idioma.nombre}</td>
+                                    <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center;">${curso.nivel.descripcion}</td>
+                                    <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <i data-lucide="clock" style="width: 14px; height: 14px; color: #9ca3af;"></i>
+                                            ${curso.horario}
+                                        </div>
+                                    </td>
+                                    <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">${curso.profesor.nombre}</td>
+                                    <td style="padding: 14px 16px; text-align: center;">
+                                        <span style="color: ${cuposColor}; font-weight: 600; font-size: 14px;">${curso.cupos_disponibles}/${curso.cupo_maximo}</span>
+                                    </td>
+                                    <td style="padding: 14px 16px; text-align: center;">
+                                        ${estaCompleto ? `
+                                            <span style="background: rgba(156, 163, 175, 0.1); color: #9ca3af; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 500;">Completo</span>
+                                        ` : `
+                                            <button style="background: rgba(74, 82, 89, 0.08); border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: #4a5259; font-size: 13px; font-weight: 500; transition: all 0.2s;" onclick="cursadoManager.solicitarInscripcion(${curso.id_curso}, '${nombreEscaped}', '${profEscaped}', '${horarioEscaped}')" onmouseenter="this.style.background='rgba(74, 82, 89, 0.15)'" onmouseleave="this.style.background='rgba(74, 82, 89, 0.08)'">
+                                                <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
+                                                Solicitar inscripción
+                                            </button>
+                                        `}
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
         
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();

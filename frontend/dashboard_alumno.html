@@ -225,7 +225,9 @@
         console.log("Datos recibidos:", data); // Debug
 
         const cursos = data.cursos || [];
-        const totalCursos = cursos.length;
+        const cursosActivos = cursos.filter(c => c.estado_curso === 'activo');
+        const cursosInactivos = cursos.filter(c => c.estado_curso === 'inactivo');
+        const totalActivos = cursosActivos.length;
         const promedioGeneral = parseFloat(data.promedio_general) || 0;
 
         mainContent.innerHTML = `
@@ -244,8 +246,8 @@
                   <i data-lucide="book-open" style="width: 28px; height: 28px; color: #4a5259;"></i>
                 </div>
                 <div>
-                  <div style="font-size: 32px; font-weight: 600; color: #1e1e1e;">${totalCursos}</div>
-                  <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Cursos Inscritos</div>
+                  <div style="font-size: 32px; font-weight: 600; color: #1e1e1e;">${totalActivos}</div>
+                  <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Cursos Activos</div>
                 </div>
               </div>
 
@@ -264,7 +266,7 @@
                   <i data-lucide="award" style="width: 28px; height: 28px; color: #4a5259;"></i>
                 </div>
                 <div>
-                  <div style="font-size: 32px; font-weight: 600; color: #1e1e1e;">${cursos.filter(c => c.promedio && c.promedio >= 7).length}/${totalCursos}</div>
+                  <div style="font-size: 32px; font-weight: 600; color: #1e1e1e;">${cursosActivos.filter(c => c.promedio && c.promedio >= 7).length}/${totalActivos}</div>
                   <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Aprobados</div>
                 </div>
               </div>
@@ -273,10 +275,10 @@
             <div style="background: #ffffff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
               <h3 style="margin: 0 0 20px 0; color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 10px;">
                 <i data-lucide="list" style="width: 18px; height: 18px; color: #4a5259;"></i>
-                Detalle de Cursos Inscritos
+                Cursos Activos
               </h3>
 
-              ${cursos.length > 0 ? `
+              ${cursosActivos.length > 0 ? `
                 <div style="overflow-x: auto; border-radius: 12px;">
                   <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
                     <thead>
@@ -291,7 +293,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      ${cursos.map(curso => {
+                      ${cursosActivos.map(curso => {
                         const promedio = parseFloat(curso.promedio) || 0;
                         let estadoBg = 'rgba(156, 163, 175, 0.1)';
                         let estadoColor = '#9ca3af';
@@ -352,11 +354,49 @@
                   <div style="background: rgba(74, 82, 89, 0.08); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                     <i data-lucide="inbox" style="width: 40px; height: 40px; color: #9ca3af;"></i>
                   </div>
-                  <h3 style="margin: 0 0 8px 0; color: #1e1e1e; font-size: 18px; font-weight: 500;">No hay cursos inscritos</h3>
-                  <p style="margin: 0; color: #6b7280; font-size: 14px;">Aún no estás inscrito en ningún curso. Contacta con administración para más información.</p>
+                  <h3 style="margin: 0 0 8px 0; color: #1e1e1e; font-size: 18px; font-weight: 500;">No hay cursos activos</h3>
+                  <p style="margin: 0; color: #6b7280; font-size: 14px;">No tenés cursos activos en este momento. Contactá con administración para más información.</p>
                 </div>
               `}
             </div>
+
+            ${cursosInactivos.length > 0 ? `
+            <div style="background: #ffffff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; margin-top: 24px;">
+              <h3 style="margin: 0 0 20px 0; color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="archive" style="width: 18px; height: 18px; color: #9ca3af;"></i>
+                Historial de Cursado
+              </h3>
+              <div style="overflow-x: auto; border-radius: 12px;">
+                <table style="width: 100%; border-collapse: collapse; min-width: 400px;">
+                  <thead>
+                    <tr style="background: #f9fafb;">
+                      <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                      <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                      <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Nivel</th>
+                      <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${cursosInactivos.map(curso => `
+                      <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">
+                          <div style="display: flex; align-items: center; gap: 10px;">
+                            <i data-lucide="book-open" style="width: 16px; height: 16px; color: #9ca3af;"></i>
+                            <span style="font-weight: 500;">${curso.nombre_curso}</span>
+                          </div>
+                        </td>
+                        <td style="padding: 14px 16px; color: #9ca3af; font-size: 14px;">${curso.nombre_idioma || 'N/A'}</td>
+                        <td style="padding: 14px 16px; color: #9ca3af; font-size: 14px; text-align: center;">Nivel ${curso.id_nivel || 'N/A'}</td>
+                        <td style="padding: 14px 16px; text-align: center;">
+                          <span style="background: rgba(156, 163, 175, 0.1); color: #9ca3af; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">Finalizado</span>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            ` : ''}
           </div>
         `;
 
@@ -424,7 +464,7 @@
                 <i data-lucide="book-open" style="width: 20px; height: 20px; color: #4a5259;"></i>
                 Mis Cursos Actuales
               </h3>
-              <div id="mis-cursos-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+              <div id="mis-cursos-container">
                 <div style="text-align: center; padding: 20px; color: #6b7280;">
                   <p>Cargando...</p>
                 </div>
@@ -455,8 +495,8 @@
               <span id="total-cursos-count" style="background: rgba(74, 82, 89, 0.1); color: #4a5259; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;">Cargando...</span>
             </div>
 
-            <div id="catalogo-cursos-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px;">
-              <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #6b7280;">
+            <div id="catalogo-cursos-container">
+              <div style="text-align: center; padding: 40px; color: #6b7280;">
                 <p>Cargando catálogo de cursos...</p>
               </div>
             </div>

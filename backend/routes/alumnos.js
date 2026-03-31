@@ -130,6 +130,7 @@ router.get("/:id",
       SELECT 
         c.id_curso,
         c.nombre_curso,
+        c.estado as estado_curso,
         i.nombre_idioma as nombre_idioma,
         n.descripcion as nivel,
         c.id_nivel,

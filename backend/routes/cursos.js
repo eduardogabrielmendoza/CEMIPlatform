@@ -159,7 +159,7 @@ router.get('/catalogo', async (req, res) => {
             LEFT JOIN profesores prof ON c.id_profesor = prof.id_profesor
             LEFT JOIN personas pp ON prof.id_persona = pp.id_persona
             LEFT JOIN aulas a ON c.id_aula = a.id_aula
-            WHERE 1=1
+            WHERE c.estado = 'activo'
         `;
 
         const params = [id_alumno];
@@ -326,6 +326,7 @@ router.get('/mis-cursos/:id_alumno', async (req, res) => {
             LEFT JOIN aulas a ON c.id_aula = a.id_aula
             WHERE ins.id_alumno = ? 
             AND ins.estado = 'activo'
+            AND c.estado = 'activo'
             ORDER BY ins.fecha_inscripcion DESC
         `;
 

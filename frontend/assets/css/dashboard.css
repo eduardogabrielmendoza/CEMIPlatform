@@ -560,7 +560,7 @@
   transition: all var(--duration-normal) var(--ease-smooth);
 }
 
-#mainContent tr:hover {
+#mainContent tbody tr:hover {
   background: var(--hw-cream);
   transform: translateX(4px);
   box-shadow: none;
