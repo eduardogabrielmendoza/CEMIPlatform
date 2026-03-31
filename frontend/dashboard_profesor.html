@@ -1760,100 +1760,6 @@
       }
     }
 
-    async function cargarCalificacionesCurso(cursoId) {
-      try {
-        const res = await fetch(`${API_URL}/inscripciones/curso/${cursoId}`);
-        const alumnos = await res.json();
-        
-        const calificacionesBody = document.getElementById('calificacionesBody');
-        if (calificacionesBody) {
-          calificacionesBody.innerHTML = alumnos.map(alumno => `
-            <tr data-alumno-id="${alumno.id_alumno}">
-              <td>${alumno.nombre} ${alumno.apellido}</td>
-              <td>
-                <input type="number" min="0" max="10" step="0.5" 
-                       value="${alumno.parcial1 || ''}" 
-                       onchange="guardarCalificacion(${alumno.id_alumno}, 'parcial1', this.value, ${cursoId})"
-                />
-              </td>
-              <td>
-                <input type="number" min="0" max="10" step="0.5" 
-                       value="${alumno.parcial2 || ''}" 
-                       onchange="guardarCalificacion(${alumno.id_alumno}, 'parcial2', this.value, ${cursoId})"
-                />
-              </td>
-              <td>
-                <input type="number" min="0" max="10" step="0.5" 
-                       value="${alumno.final || ''}" 
-                       onchange="guardarCalificacion(${alumno.id_alumno}, 'final', this.value, ${cursoId})"
-                />
-              </td>
-              <td>
-                <button class="btn-primary" onclick="guardarTodasCalificaciones(${alumno.id_alumno}, ${cursoId})">
-                  Guardar
-                </button>
-              </td>
-            </tr>
-          `).join('');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        showNotification('Error al cargar las calificaciones', 'error');
-      }
-    }
-
-    async function guardarTodasCalificaciones(idAlumno, idCurso) {
-      try {
-        const row = document.querySelector(`tr[data-alumno-id="${idAlumno}"]`);
-        if (!row) {
-          throw new Error('No se encontró la fila del alumno');
-        }
-
-        const inputs = row.querySelectorAll('.calificacion-input');
-        if (!inputs.length) {
-          throw new Error('No se encontraron campos de calificación');
-        }
-        
-        const calificaciones = {
-          id_alumno: idAlumno,
-          id_curso: idCurso,
-          parcial1: inputs[0].value || null,
-          parcial2: inputs[1].value || null,
-          final: inputs[2].value || null
-        };
-
-        const response = await fetch(`${API_URL}/calificaciones/todas`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(calificaciones)
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Error al guardar las calificaciones');
-        }
-
-        // Actualizar la vista
-        inputs.forEach((input, index) => {
-          const cell = input.parentElement;
-          cell.textContent = input.value || '-';
-        });
-
-        // Ocultar el botón guardar
-        const btnGuardar = row.querySelector('.btn-guardar');
-        if (btnGuardar) {
-          btnGuardar.style.display = 'none';
-        }
-
-        showNotification('Calificaciones guardadas exitosamente');
-      } catch (error) {
-        console.error('Error:', error);
-        showNotification(error.message || 'Error al guardar las calificaciones', 'error');
-      }
-
-    }
     // NOTE: duplicate modal initialization removed (handled inside btnCalificaciones scope)
 
     // La función showNotification ya está definida arriba
@@ -2091,235 +1997,118 @@
     };
 
     // Función para cargar calificaciones de un curso
-    let modoEdicionActivo = false;
 
     window.cargarCalificacionesCurso = async function(idCurso, nombreCurso) {
       try {
         loader.classList.remove('hidden');
 
-        // Obtener detalles del curso con alumnos y estadísticas
         const res = await fetch(`${API_URL}/cursos/${idCurso}/detalles`);
         const data = await res.json();
         
         const { alumnos, estadisticas } = data;
 
-        // Mostrar el contenedor de calificaciones
         const calificacionesContent = document.getElementById('calificacionesContent');
         calificacionesContent.style.display = 'block';
 
-        // Renderizar contenido
+        // Construir filas de alumnos
+        const filasAlumnos = alumnos.map(alumno => {
+          const promedio = alumno.promedio !== null ? parseFloat(alumno.promedio) : null;
+          let estadoTexto = 'Pendiente';
+          let estadoColor = '#9ca3af';
+          
+          if (promedio !== null) {
+            if (promedio >= 7) { estadoTexto = 'Aprobado'; estadoColor = '#22c55e'; }
+            else if (promedio >= 5) { estadoTexto = 'Regular'; estadoColor = '#f59e0b'; }
+            else { estadoTexto = 'Reprobado'; estadoColor = '#ef4444'; }
+          }
+
+          return `
+            <tr data-alumno-id="${alumno.id_alumno}" data-alumno="${alumno.nombre_completo.toLowerCase()}">
+              <td style="padding: 14px 16px; font-size: 14px; font-weight: 500;">${alumno.nombre_completo}</td>
+              <td style="padding: 14px 16px; text-align: center;">
+                <input type="number" class="nota-input" data-tipo="parcial1" value="${alumno.parcial1 || ''}" min="1" max="10" step="0.01" placeholder="-" onchange="marcarModificado(${alumno.id_alumno})" style="width: 60px; padding: 6px 8px; border: 1px solid #e5e7eb; border-radius: 8px; text-align: center; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#4a5259'; this.style.boxShadow='0 0 0 3px rgba(74,82,89,0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'" />
+              </td>
+              <td style="padding: 14px 16px; text-align: center;">
+                <input type="number" class="nota-input" data-tipo="parcial2" value="${alumno.parcial2 || ''}" min="1" max="10" step="0.01" placeholder="-" onchange="marcarModificado(${alumno.id_alumno})" style="width: 60px; padding: 6px 8px; border: 1px solid #e5e7eb; border-radius: 8px; text-align: center; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#4a5259'; this.style.boxShadow='0 0 0 3px rgba(74,82,89,0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'" />
+              </td>
+              <td style="padding: 14px 16px; text-align: center;">
+                <input type="number" class="nota-input" data-tipo="final" value="${alumno.final || ''}" min="1" max="10" step="0.01" placeholder="-" onchange="marcarModificado(${alumno.id_alumno})" style="width: 60px; padding: 6px 8px; border: 1px solid #e5e7eb; border-radius: 8px; text-align: center; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#4a5259'; this.style.boxShadow='0 0 0 3px rgba(74,82,89,0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'" />
+              </td>
+              <td style="padding: 14px 16px; text-align: center; font-weight: 600; color: ${estadoColor};">
+                ${promedio !== null ? promedio.toFixed(1) : '-'}
+              </td>
+              <td style="padding: 14px 16px; text-align: center;">
+                <span style="background: ${estadoColor}15; color: ${estadoColor}; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">${estadoTexto}</span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
         calificacionesContent.innerHTML = `
-          <div class="calificaciones-header-section">
-            <div class="calificaciones-titulo">
-              <h3>
-                <i data-lucide="clipboard-list"></i>
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h3 style="font-family: 'Inter'; margin: 0; color: #1e1e1e; font-size: 20px; font-weight: 400; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="clipboard-list" style="width: 20px; height: 20px; color: #4a5259;"></i>
                 ${nombreCurso}
               </h3>
-              <button class="btn-volver-cursos" onclick="volverACursos()">
-                <i data-lucide="arrow-left"></i>
-                Volver a Cursos
+              <button onclick="volverACursos()" style="padding: 8px 16px; background: white; color: #4a5259; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif;">
+                <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i>
+                Volver
               </button>
             </div>
 
-            <div class="calificaciones-stats-row">
-              <div class="calif-stat-mini">
-                <h4>${estadisticas.total_alumnos}</h4>
-                <p>Total Alumnos</p>
+            <div style="display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+              <div style="background: white; border-radius: 12px; padding: 16px 20px; border: 1px solid #e5e7eb; flex: 1; min-width: 120px; text-align: center;">
+                <div style="font-size: 24px; font-weight: 600; color: #1e1e1e;">${estadisticas.total_alumnos}</div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">Alumnos</div>
               </div>
-              <div class="calif-stat-mini success">
-                <h4>${estadisticas.promedio_general}</h4>
-                <p>Promedio General</p>
+              <div style="background: white; border-radius: 12px; padding: 16px 20px; border: 1px solid #e5e7eb; flex: 1; min-width: 120px; text-align: center;">
+                <div style="font-size: 24px; font-weight: 600; color: #4a5259;">${estadisticas.promedio_general}</div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">Promedio</div>
               </div>
-              <div class="calif-stat-mini success">
-                <h4>${estadisticas.aprobados}</h4>
-                <p>Aprobados</p>
-              </div>
-              <div class="calif-stat-mini ${estadisticas.reprobados > 0 ? 'danger' : ''}">
-                <h4>${estadisticas.reprobados}</h4>
-                <p>Reprobados</p>
-              </div>
-              <div class="calif-stat-mini warning">
-                <h4>${estadisticas.sin_calificaciones}</h4>
-                <p>Sin Calificar</p>
+              <div style="background: white; border-radius: 12px; padding: 16px 20px; border: 1px solid #e5e7eb; flex: 1; min-width: 120px; text-align: center;">
+                <div style="font-size: 24px; font-weight: 600; color: #22c55e;">${estadisticas.aprobados}</div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">Aprobados</div>
               </div>
             </div>
 
-            <div class="calificaciones-filtros-enhanced">
-              <div class="filtros-busqueda">
-                <div class="filtro-item">
-                  <label>
-                    <i data-lucide="search"></i>
-                    Buscar alumno:
-                  </label>
-                  <input 
-                    type="text" 
-                    id="buscarAlumno" 
-                    placeholder="Nombre o email..."
-                    onkeyup="filtrarAlumnos()"
-                  />
-                </div>
-                
-                <div class="filtro-item">
-                  <label>
-                    <i data-lucide="filter"></i>
-                    Estado:
-                  </label>
-                  <select id="filtroEstado" onchange="filtrarAlumnos()">
-                    <option value="">Todos</option>
-                    <option value="aprobado">Aprobados (7-10)</option>
-                    <option value="regular">Regular (5-6)</option>
-                    <option value="reprobado">Reprobados (1-4)</option>
-                    <option value="pendiente">Sin Calificar</option>
-                  </select>
-                </div>
-
-                <div class="filtro-item">
-                  <label>
-                    <i data-lucide="bar-chart-2"></i>
-                    Rango:
-                  </label>
-                  <select id="filtroRango" onchange="filtrarAlumnos()">
-                    <option value="">Todos los rangos</option>
-                    <option value="9-10">9-10 (Excelente)</option>
-                    <option value="7-8">7-8 (Muy Bueno)</option>
-                    <option value="5-6">5-6 (Regular)</option>
-                    <option value="1-4">1-4 (Reprobado)</option>
-                  </select>
-                </div>
-
-                <div class="filtro-item">
-                  <label>
-                    <i data-lucide="arrow-up-down"></i>
-                    Ordenar:
-                  </label>
-                  <select id="ordenarPor" onchange="ordenarAlumnos()">
-                    <option value="nombre">Nombre (A-Z)</option>
-                    <option value="promedio-desc">Promedio (Mayor-Menor)</option>
-                    <option value="promedio-asc">Promedio (Menor-Mayor)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="filtros-acciones">
-                <button class="btn-limpiar-filtros" onclick="limpiarFiltros()">
-                  <i data-lucide="x-circle"></i>
-                  Limpiar Filtros
-                </button>
-                <button class="btn-modo-edicion" onclick="toggleModoEdicionCalif(${idCurso})">
-                  <i data-lucide="edit"></i>
-                  <span id="btnTextoEdicion">Modo Edición</span>
-                </button>
-              </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+              <input 
+                type="text" 
+                id="buscarAlumno" 
+                placeholder="Buscar alumno..."
+                onkeyup="filtrarAlumnos()"
+                style="padding: 10px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; width: 250px;"
+                onfocus="this.style.borderColor='#4a5259'; this.style.boxShadow='0 0 0 3px rgba(74,82,89,0.1)'"
+                onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+              />
+              <button onclick="guardarTodasCalificaciones(${idCurso})" style="padding: 10px 20px; background: #1e1e1e; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif;">
+                <i data-lucide="save" style="width: 14px; height: 14px;"></i>
+                Guardar Todo
+              </button>
             </div>
           </div>
 
-          <div class="calificaciones-table-container">
-            <table class="calificaciones-table-profesor">
+          <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+            <table style="width: 100%; border-collapse: collapse;">
               <thead>
                 <tr>
-                  <th>Alumno</th>
-                  <th>Email</th>
-                  <th class="center">Parcial 1</th>
-                  <th class="center">Parcial 2</th>
-                  <th class="center">Final</th>
-                  <th class="center">Promedio</th>
-                  <th class="center">Estado</th>
-                  <th class="center">Acciones</th>
+                  <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Alumno</th>
+                  <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Parcial 1</th>
+                  <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Parcial 2</th>
+                  <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Final</th>
+                  <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Promedio</th>
+                  <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Estado</th>
                 </tr>
               </thead>
               <tbody id="tablaCalificacionesBody">
-                ${alumnos.map(alumno => {
-                  const promedio = alumno.promedio !== null ? parseFloat(alumno.promedio) : null;
-                  let estadoBadge = '';
-                  let estadoClase = '';
-                  
-                  if (promedio === null) {
-                    estadoBadge = '<span class="calificacion-badge pendiente">Pendiente</span>';
-                    estadoClase = 'pendiente';
-                  } else if (promedio >= 7) {
-                    estadoBadge = '<span class="calificacion-badge aprobado">Aprobado</span>';
-                    estadoClase = 'aprobado';
-                  } else if (promedio >= 5) {
-                    estadoBadge = '<span class="calificacion-badge regular">Regular</span>';
-                    estadoClase = 'regular';
-                  } else {
-                    estadoBadge = '<span class="calificacion-badge reprobado">Reprobado</span>';
-                    estadoClase = 'reprobado';
-                  }
-
-                  return `
-                    <tr data-alumno="${alumno.nombre_completo.toLowerCase()}" data-estado="${estadoClase}" data-alumno-id="${alumno.id_alumno}">
-                      <td>${alumno.nombre_completo}</td>
-                      <td>${alumno.mail}</td>
-                      <td class="center">
-                        <span class="nota-display">${alumno.parcial1 || '-'}</span>
-                        <input 
-                          type="number" 
-                          class="nota-input" 
-                          data-tipo="parcial1"
-                          value="${alumno.parcial1 || ''}" 
-                          min="1" 
-                          max="10" 
-                          step="0.01"
-                          style="display: none;"
-                          onchange="marcarModificado(${alumno.id_alumno})"
-                        />
-                      </td>
-                      <td class="center">
-                        <span class="nota-display">${alumno.parcial2 || '-'}</span>
-                        <input 
-                          type="number" 
-                          class="nota-input" 
-                          data-tipo="parcial2"
-                          value="${alumno.parcial2 || ''}" 
-                          min="1" 
-                          max="10" 
-                          step="0.01"
-                          style="display: none;"
-                          onchange="marcarModificado(${alumno.id_alumno})"
-                        />
-                      </td>
-                      <td class="center">
-                        <span class="nota-display">${alumno.final || '-'}</span>
-                        <input 
-                          type="number" 
-                          class="nota-input" 
-                          data-tipo="final"
-                          value="${alumno.final || ''}" 
-                          min="1" 
-                          max="10" 
-                          step="0.01"
-                          style="display: none;"
-                          onchange="marcarModificado(${alumno.id_alumno})"
-                        />
-                      </td>
-                      <td class="center promedio-cell ${promedio !== null && promedio >= 7 ? 'aprobado' : promedio !== null && promedio >= 5 ? 'regular' : promedio !== null ? 'reprobado' : ''}">
-                        ${promedio !== null ? promedio.toFixed(2) : '-'}
-                      </td>
-                      <td class="center">${estadoBadge}</td>
-                      <td class="center">
-                        <div class="acciones-column">
-                          <button 
-                            class="btn-guardar-nota" 
-                            style="display: none;"
-                            onclick="guardarCalificacionesAlumno(${alumno.id_alumno}, ${idCurso})"
-                          >
-                            <i data-lucide="save"></i>
-                            Guardar
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  `;
-                }).join('')}
+                ${filasAlumnos}
               </tbody>
             </table>
           </div>
         `;
 
-        // Scroll hacia el contenido de calificaciones
         calificacionesContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
         lucide.createIcons();
         loader.classList.add('hidden');
 
@@ -2334,159 +2123,86 @@
     window.volverACursos = function() {
       const calificacionesContent = document.getElementById('calificacionesContent');
       calificacionesContent.style.display = 'none';
-      modoEdicionActivo = false;
-    };
-
-    // Toggle modo edición
-    window.toggleModoEdicionCalif = function(idCurso) {
-      modoEdicionActivo = !modoEdicionActivo;
-      const btnTexto = document.getElementById('btnTextoEdicion');
-      const btn = event.target.closest('.btn-modo-edicion');
-      
-      const displays = document.querySelectorAll('.nota-display');
-      const inputs = document.querySelectorAll('.nota-input');
-      const botones = document.querySelectorAll('.btn-guardar-nota');
-
-      if (modoEdicionActivo) {
-        btnTexto.textContent = 'Cancelar Edición';
-        btn.classList.add('editing');
-        displays.forEach(d => d.style.display = 'none');
-        inputs.forEach(i => i.style.display = 'block');
-        botones.forEach(b => b.style.display = 'inline-flex');
-      } else {
-        btnTexto.textContent = 'Modo Edición';
-        btn.classList.remove('editing');
-        displays.forEach(d => d.style.display = 'inline');
-        inputs.forEach(i => i.style.display = 'none');
-        botones.forEach(b => b.style.display = 'none');
-      }
-
-      lucide.createIcons();
     };
 
     // Marcar fila como modificada
     window.marcarModificado = function(idAlumno) {
       const row = document.querySelector(`tr[data-alumno-id="${idAlumno}"]`);
-      row.style.background = '#fff3e0';
+      if (row) row.style.background = '#fff3e0';
     };
 
-    // Guardar calificaciones de un alumno
-    window.guardarCalificacionesAlumno = async function(idAlumno, idCurso) {
+    // Guardar todas las calificaciones a la vez
+    window.guardarTodasCalificaciones = async function(idCurso) {
       try {
-        const row = document.querySelector(`tr[data-alumno-id="${idAlumno}"]`);
-        const inputs = row.querySelectorAll('.nota-input');
-        
-        const parcial1 = inputs[0].value ? parseFloat(inputs[0].value) : null;
-        const parcial2 = inputs[1].value ? parseFloat(inputs[1].value) : null;
-        const final = inputs[2].value ? parseFloat(inputs[2].value) : null;
+        const filas = document.querySelectorAll('#tablaCalificacionesBody tr[data-alumno-id]');
+        let guardadas = 0;
+        let errores = 0;
 
-        const response = await fetch(`${API_URL}/calificaciones/todas`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id_alumno: idAlumno,
-            id_curso: idCurso,
-            parcial1,
-            parcial2,
-            final
-          })
-        });
+        loader.classList.remove('hidden');
 
-        if (!response.ok) throw new Error('Error al guardar');
+        for (const fila of filas) {
+          const idAlumno = fila.dataset.alumnoId;
+          const inputs = fila.querySelectorAll('.nota-input');
+          
+          const parcial1 = inputs[0].value ? parseFloat(inputs[0].value) : null;
+          const parcial2 = inputs[1].value ? parseFloat(inputs[1].value) : null;
+          const final = inputs[2].value ? parseFloat(inputs[2].value) : null;
 
-        row.style.background = '#e8f5e9';
-        setTimeout(() => row.style.background = '', 1000);
-        
-        showNotification('Calificaciones guardadas exitosamente', 'success');
-        
+          try {
+            const response = await fetch(`${API_URL}/calificaciones/todas`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id_alumno: parseInt(idAlumno),
+                id_curso: idCurso,
+                parcial1,
+                parcial2,
+                final
+              })
+            });
+
+            if (response.ok) {
+              fila.style.background = '#e8f5e9';
+              guardadas++;
+            } else {
+              errores++;
+            }
+          } catch (e) {
+            errores++;
+          }
+        }
+
+        loader.classList.add('hidden');
+
+        if (errores === 0) {
+          showNotification('Calificaciones guardadas exitosamente', 'success');
+        } else {
+          showNotification(`Guardadas: ${guardadas}, Errores: ${errores}`, 'warning');
+        }
+
         // Recargar para actualizar estadísticas
         setTimeout(() => {
-          const nombreCurso = document.querySelector('.calificaciones-titulo h3').textContent.trim();
+          const h3El = document.querySelector('#calificacionesContent h3');
+          const nombreCurso = h3El ? h3El.textContent.trim() : '';
           cargarCalificacionesCurso(idCurso, nombreCurso);
         }, 1000);
 
       } catch (error) {
         console.error('Error:', error);
+        loader.classList.add('hidden');
         showNotification('Error al guardar las calificaciones', 'error');
       }
     };
 
-    // Filtrar alumnos MEJORADO con múltiples filtros
+    // Filtrar alumnos por nombre
     window.filtrarAlumnos = function() {
       const busqueda = document.getElementById('buscarAlumno').value.toLowerCase();
-      const filtroEstado = document.getElementById('filtroEstado').value;
-      const filtroRango = document.getElementById('filtroRango').value;
       const filas = document.querySelectorAll('#tablaCalificacionesBody tr');
 
       filas.forEach(fila => {
         const nombreAlumno = fila.dataset.alumno || '';
-        const estadoAlumno = fila.dataset.estado || '';
-        
-        // Obtener el promedio de la fila
-        const promedioCell = fila.querySelector('.promedio-cell');
-        const promedioTexto = promedioCell ? promedioCell.textContent.trim() : '-';
-        const promedio = promedioTexto !== '-' ? parseFloat(promedioTexto) : -1;
-        
-        // Filtro de búsqueda
-        const coincideNombre = nombreAlumno.includes(busqueda);
-        
-        // Filtro de estado
-        const coincideEstado = !filtroEstado || estadoAlumno === filtroEstado;
-        
-        // Filtro de rango
-        let coincideRango = true;
-        if (filtroRango) {
-          const [min, max] = filtroRango.split('-').map(Number);
-          if (promedio === -1) {
-            coincideRango = false;
-          } else {
-            coincideRango = promedio >= min && promedio <= max;
-          }
-        }
-
-        // Mostrar/ocultar fila
-        if (coincideNombre && coincideEstado && coincideRango) {
-          fila.style.display = '';
-        } else {
-          fila.style.display = 'none';
-        }
+        fila.style.display = nombreAlumno.includes(busqueda) ? '' : 'none';
       });
-    };
-
-    // Ordenar alumnos
-    window.ordenarAlumnos = function() {
-      const ordenarPor = document.getElementById('ordenarPor').value;
-      const tbody = document.getElementById('tablaCalificacionesBody');
-      const filas = Array.from(tbody.querySelectorAll('tr'));
-
-      filas.sort((a, b) => {
-        if (ordenarPor === 'nombre') {
-          const nombreA = a.dataset.alumno || '';
-          const nombreB = b.dataset.alumno || '';
-          return nombreA.localeCompare(nombreB);
-        } else if (ordenarPor === 'promedio-desc') {
-          const promedioA = parseFloat(a.querySelector('.promedio-cell').textContent.trim()) || 0;
-          const promedioB = parseFloat(b.querySelector('.promedio-cell').textContent.trim()) || 0;
-          return promedioB - promedioA;
-        } else if (ordenarPor === 'promedio-asc') {
-          const promedioA = parseFloat(a.querySelector('.promedio-cell').textContent.trim()) || 0;
-          const promedioB = parseFloat(b.querySelector('.promedio-cell').textContent.trim()) || 0;
-          return promedioA - promedioB;
-        }
-        return 0;
-      });
-
-      // Re-insertar filas ordenadas
-      filas.forEach(fila => tbody.appendChild(fila));
-    };
-
-    // Limpiar todos los filtros
-    window.limpiarFiltros = function() {
-      document.getElementById('buscarAlumno').value = '';
-      document.getElementById('filtroEstado').value = '';
-      document.getElementById('filtroRango').value = '';
-      document.getElementById('ordenarPor').value = 'nombre';
-      filtrarAlumnos();
     };
 
     // FUNCIONES DE ASISTENCIAS
@@ -2498,121 +2214,93 @@
         loader.classList.remove('hidden');
         cursoAsistenciaActual = idCurso;
         
-        // Fecha actual por defecto
         const hoy = new Date().toISOString().split('T')[0];
         fechaAsistenciaActual = hoy;
 
         const asistenciasContent = document.getElementById('asistenciasContent');
         asistenciasContent.style.display = 'block';
 
-        // Obtener estadísticas generales del curso
         const resEstadisticas = await fetch(`${API_URL}/asistencias/curso/${idCurso}/estadisticas`);
         const { generales } = await resEstadisticas.json();
 
         asistenciasContent.innerHTML = `
-          <div class="asistencias-header-section">
-            <div class="asistencias-titulo-row">
-              <h3>
-                <i data-lucide="calendar-check"></i>
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h3 style="font-family: 'Inter'; margin: 0; color: #1e1e1e; font-size: 20px; font-weight: 400; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="calendar-check" style="width: 20px; height: 20px; color: #4a5259;"></i>
                 ${nombreCurso}
               </h3>
-              <button class="btn-volver-cursos" onclick="volverACursosAsistencias()">
-                <i data-lucide="arrow-left"></i>
-                Volver a Cursos
+              <button onclick="volverACursosAsistencias()" style="padding: 8px 16px; background: white; color: #4a5259; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif;">
+                <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i>
+                Volver
               </button>
             </div>
 
-            <div class="asistencias-stats-mini">
-              <div class="asist-stat-card info">
-                <h4>${generales.total_clases_dictadas || 0}</h4>
-                <p>Clases Dictadas</p>
-              </div>
-              <div class="asist-stat-card success">
-                <h4>${generales.total_presentes || 0}</h4>
-                <p>Presentes</p>
-              </div>
-              <div class="asist-stat-card danger">
-                <h4>${generales.total_ausentes || 0}</h4>
-                <p>Ausentes</p>
-              </div>
-              <div class="asist-stat-card warning">
-                <h4>${generales.total_tardanzas || 0}</h4>
-                <p>Tardanzas</p>
-              </div>
-              <div class="asist-stat-card">
-                <h4>${generales.porcentaje_asistencia_general || 0}%</h4>
-                <p>Asistencia General</p>
-              </div>
+            <div style="background: white; border-radius: 12px; padding: 14px 20px; border: 1px solid #e5e7eb; margin-bottom: 20px; display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+              <span style="font-size: 13px; color: #6b7280;">
+                <strong style="color: #1e1e1e;">${generales.total_clases_dictadas || 0}</strong> clases dictadas
+              </span>
+              <span style="font-size: 13px; color: #6b7280;">
+                <strong style="color: #22c55e;">${generales.total_presentes || 0}</strong> presentes
+              </span>
+              <span style="font-size: 13px; color: #6b7280;">
+                <strong style="color: #ef4444;">${generales.total_ausentes || 0}</strong> ausentes
+              </span>
+              <span style="font-size: 13px; color: #6b7280;">
+                <strong style="color: #f59e0b;">${generales.total_tardanzas || 0}</strong> tardanzas
+              </span>
+              <span style="font-size: 13px; color: #6b7280; margin-left: auto;">
+                Asistencia general: <strong style="color: #1e1e1e;">${generales.porcentaje_asistencia_general || 0}%</strong>
+              </span>
             </div>
 
-            <div class="asistencias-controles-enhanced">
-              <div class="asistencias-controles-principal">
-                <div class="fecha-selector">
-                  <label for="fechaAsistencia">
-                    <i data-lucide="calendar"></i>
-                    Fecha:
-                  </label>
-                  <input 
-                    type="date" 
-                    id="fechaAsistencia" 
-                    value="${hoy}"
-                    onchange="cargarAsistenciasPorFecha(${idCurso})"
-                  />
-                </div>
-                
-                <div class="registro-rapido-grupo">
-                  <label style="font-size: 14px; color: #666; margin-right: 10px;">
-                    <i data-lucide="zap"></i>
-                    Registro Rápido:
-                  </label>
-                  <button class="btn-rapido presente" onclick="marcarTodosEstado('presente')" title="Marcar todos presente">
-                    <i data-lucide="check-circle"></i>
-                    Todos Presente
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <input 
+                  type="date" 
+                  id="fechaAsistencia" 
+                  value="${hoy}"
+                  onchange="cargarAsistenciasPorFecha(${idCurso})"
+                  style="padding: 10px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none;"
+                />
+                <div style="display: flex; gap: 6px;">
+                  <button onclick="marcarTodosEstado('presente')" title="Todos presente" style="padding: 8px 12px; background: white; color: #22c55e; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-family: 'Inter', sans-serif;">
+                    <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i>
+                    Todos
                   </button>
-                  <button class="btn-rapido ausente" onclick="marcarTodosEstado('ausente')" title="Marcar todos ausente">
-                    <i data-lucide="x-circle"></i>
-                    Todos Ausente
-                  </button>
-                  <button class="btn-rapido tardanza" onclick="marcarTodosEstado('tardanza')" title="Marcar todos con tardanza">
-                    <i data-lucide="clock"></i>
-                    Todos Tardanza
+                  <button onclick="marcarTodosEstado('ausente')" title="Todos ausente" style="padding: 8px 12px; background: white; color: #ef4444; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-family: 'Inter', sans-serif;">
+                    <i data-lucide="x-circle" style="width: 14px; height: 14px;"></i>
+                    Todos
                   </button>
                 </div>
               </div>
 
-              <div class="asistencias-controles-secundarios">
-                <button class="btn-guardar-asistencias" onclick="guardarAsistenciasLote(${idCurso})">
-                  <i data-lucide="save"></i>
-                  Guardar Asistencias
-                </button>
-                <button class="btn-ver-estadisticas" onclick="verEstadisticasDetalladas(${idCurso})">
-                  <i data-lucide="bar-chart-2"></i>
-                  Estadísticas
+              <div style="display: flex; gap: 8px;">
+                <button onclick="guardarAsistenciasLote(${idCurso})" style="padding: 10px 20px; background: #1e1e1e; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif;">
+                  <i data-lucide="save" style="width: 14px; height: 14px;"></i>
+                  Guardar
                 </button>
                 ${generales.total_clases_dictadas > 0 ? `
-                  <button class="btn-limpiar-asistencias" onclick="limpiarAsistenciasCurso(${idCurso}, '${nombreCurso}')">
-                    <i data-lucide="trash-2"></i>
-                    Limpiar Datos
+                  <button onclick="limpiarAsistenciasCurso(${idCurso}, '${nombreCurso}')" style="padding: 10px 14px; background: white; color: #ef4444; border: 1px solid #fecaca; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif;" title="Limpiar todos los datos de asistencia">
+                    <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
                   </button>
                 ` : ''}
               </div>
             </div>
           </div>
 
-          <div class="asistencias-table-container">
-            <table class="asistencias-table" id="tablaAsistencias">
+          <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+            <table style="width: 100%; border-collapse: collapse;" id="tablaAsistencias">
               <thead>
                 <tr>
-                  <th>Alumno</th>
-                  <th>Email</th>
-                  <th class="center">Estado</th>
-                  <th>Observaciones</th>
-                  <th class="center">Acciones</th>
+                  <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Alumno</th>
+                  <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Estado</th>
+                  <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Observaciones</th>
                 </tr>
               </thead>
               <tbody id="asistenciasTableBody">
                 <tr>
-                  <td colspan="5" style="text-align: center;">Cargando...</td>
+                  <td colspan="3" style="text-align: center; padding: 30px; color: #9ca3af;">Cargando...</td>
                 </tr>
               </tbody>
             </table>
@@ -2621,7 +2309,6 @@
 
         lucide.createIcons();
         
-        // Cargar asistencias de la fecha
         await cargarAsistenciasPorFecha(idCurso);
 
         asistenciasContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2647,81 +2334,32 @@
         if (alumnos.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="5" style="text-align:center; padding: 40px;">
-                <div style="color: #999; font-size: 16px;">
-                  <i data-lucide="alert-circle" style="width: 48px; height: 48px; margin-bottom: 10px;"></i>
-                  <p style="margin: 10px 0 5px 0; font-weight: 600;">No hay alumnos inscritos en este curso</p>
-                  <p style="margin: 0; font-size: 14px;">Inscribe alumnos para poder registrar asistencias</p>
-                </div>
+              <td colspan="3" style="text-align:center; padding: 40px; color: #9ca3af;">
+                No hay alumnos inscritos en este curso
               </td>
             </tr>
           `;
-          lucide.createIcons();
           return;
         }
 
-        tbody.innerHTML = alumnos.map(alumno => `
-          <tr data-alumno-id="${alumno.id_alumno}">
-            <td><strong>${alumno.nombre_completo}</strong></td>
-            <td>${alumno.mail}</td>
-            <td class="center">
-              <div class="asistencia-botones">
-                <button 
-                  class="btn-estado-asistencia presente ${alumno.estado === 'presente' ? 'active' : ''}"
-                  onclick="cambiarEstadoAsistencia(${alumno.id_alumno}, 'presente')"
-                  title="Presente"
-                >
-                  <i data-lucide="check-circle"></i>
-                  Presente
-                </button>
-                <button 
-                  class="btn-estado-asistencia ausente ${alumno.estado === 'ausente' ? 'active' : ''}"
-                  onclick="cambiarEstadoAsistencia(${alumno.id_alumno}, 'ausente')"
-                  title="Ausente"
-                >
-                  <i data-lucide="x-circle"></i>
-                  Ausente
-                </button>
-                <button 
-                  class="btn-estado-asistencia tardanza ${alumno.estado === 'tardanza' ? 'active' : ''}"
-                  onclick="cambiarEstadoAsistencia(${alumno.id_alumno}, 'tardanza')"
-                  title="Tardanza"
-                >
-                  <i data-lucide="clock"></i>
-                  Tardanza
-                </button>
-                <button 
-                  class="btn-estado-asistencia justificado ${alumno.estado === 'justificado' ? 'active' : ''}"
-                  onclick="cambiarEstadoAsistencia(${alumno.id_alumno}, 'justificado')"
-                  title="Justificado"
-                >
-                  <i data-lucide="file-text"></i>
-                  Justificado
-                </button>
-              </div>
-            </td>
-            <td>
-              <input 
-                type="text" 
-                class="observaciones-input"
-                placeholder="Agregar observación..."
-                value="${alumno.observaciones || ''}"
-                data-alumno-id="${alumno.id_alumno}"
-              />
-            </td>
-            <td class="center">
-              <button 
-                class="btn-ver-historial" 
-                onclick="verHistorialAsistencia(${alumno.id_alumno}, '${alumno.nombre_completo}', ${idCurso})"
-                title="Ver historial de asistencias"
-              >
-                <i data-lucide="calendar"></i>
-                Historial
-              </button>
-            </td>
-          </tr>
-        `).join('');
+        const filasAsist = alumnos.map(alumno => {
+          const estados = ['presente', 'ausente', 'tardanza', 'justificado'];
+          const iconos = { presente: 'check', ausente: 'x', tardanza: 'clock', justificado: 'file-text' };
+          const colores = { presente: '#22c55e', ausente: '#ef4444', tardanza: '#f59e0b', justificado: '#6b7280' };
 
+          const botonesEstado = estados.map(e => {
+            const isActive = alumno.estado === e;
+            return '<button class="btn-estado-asistencia ' + e + (isActive ? ' active' : '') + '" onclick="cambiarEstadoAsistencia(' + alumno.id_alumno + ', \'' + e + '\')" title="' + e.charAt(0).toUpperCase() + e.slice(1) + '" style="width: 34px; height: 34px; border-radius: 50%; border: 2px solid ' + (isActive ? colores[e] : '#e5e7eb') + '; background: ' + (isActive ? colores[e] + '15' : 'white') + '; color: ' + (isActive ? colores[e] : '#9ca3af') + '; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: all 0.15s;"><i data-lucide="' + iconos[e] + '" style="width: 14px; height: 14px;"></i></button>';
+          }).join('');
+
+          return '<tr data-alumno-id="' + alumno.id_alumno + '">' +
+            '<td style="padding: 14px 16px; font-size: 14px; font-weight: 500;">' + alumno.nombre_completo + '</td>' +
+            '<td style="padding: 14px 16px; text-align: center;"><div style="display: flex; gap: 6px; justify-content: center;">' + botonesEstado + '</div></td>' +
+            '<td style="padding: 14px 16px;"><input type="text" class="observaciones-input" placeholder="Observación..." value="' + (alumno.observaciones || '') + '" data-alumno-id="' + alumno.id_alumno + '" style="width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: Inter, sans-serif; outline: none;" onfocus="this.style.borderColor=\'#4a5259\'" onblur="this.style.borderColor=\'#e5e7eb\'" /></td>' +
+            '</tr>';
+        }).join('');
+
+        tbody.innerHTML = filasAsist;
         lucide.createIcons();
 
       } catch (error) {
@@ -2733,17 +2371,28 @@
     window.cambiarEstadoAsistencia = function(idAlumno, nuevoEstado) {
       const row = document.querySelector(`tr[data-alumno-id="${idAlumno}"]`);
       const botones = row.querySelectorAll('.btn-estado-asistencia');
+      const colores = { presente: '#22c55e', ausente: '#ef4444', tardanza: '#f59e0b', justificado: '#6b7280' };
       
-      // Remover active de todos
-      botones.forEach(btn => btn.classList.remove('active'));
+      botones.forEach(btn => {
+        btn.classList.remove('active');
+        // Reset all to inactive style
+        const estados = ['presente', 'ausente', 'tardanza', 'justificado'];
+        const estado = estados.find(e => btn.classList.contains(e));
+        if (estado) {
+          btn.style.borderColor = '#e5e7eb';
+          btn.style.background = 'white';
+          btn.style.color = '#9ca3af';
+        }
+      });
       
-      // Activar el seleccionado
       const botonSeleccionado = row.querySelector(`.btn-estado-asistencia.${nuevoEstado}`);
       if (botonSeleccionado) {
         botonSeleccionado.classList.add('active');
+        botonSeleccionado.style.borderColor = colores[nuevoEstado];
+        botonSeleccionado.style.background = colores[nuevoEstado] + '15';
+        botonSeleccionado.style.color = colores[nuevoEstado];
       }
 
-      // Marcar fila como modificada
       row.style.background = '#fff3e0';
     };
 
@@ -2791,7 +2440,8 @@
 
         // Recargar para actualizar estadísticas
         setTimeout(() => {
-          const nombreCurso = document.querySelector('.asistencias-titulo-row h3').textContent.trim();
+          const h3El = document.querySelector('#asistenciasContent h3');
+          const nombreCurso = h3El ? h3El.textContent.trim() : '';
           cargarAsistenciasCurso(idCurso, nombreCurso);
         }, 1000);
 

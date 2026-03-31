@@ -4385,92 +4385,72 @@
 
 .asistencia-botones {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 .btn-estado-asistencia {
-  padding: 8px 16px;
-  border: 2px solid;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  background: white;
+  color: #9ca3af;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: white;
+  justify-content: center;
+  padding: 0;
+  font-size: 0;
 }
 
 .btn-estado-asistencia i {
-  width: 16px;
-  height: 16px;
-}
-
-.btn-estado-asistencia.presente {
-  border-color: #4a5259;
-  color: #4a5259;
+  width: 14px;
+  height: 14px;
 }
 
 .btn-estado-asistencia.presente.active {
-  background: linear-gradient(135deg, #3d444a, #4a5259);
-  color: white;
-  border-color: #3d444a;
-}
-
-.btn-estado-asistencia.ausente {
-  border-color: #e53935;
-  color: #e53935;
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  color: #22c55e;
 }
 
 .btn-estado-asistencia.ausente.active {
-  background: linear-gradient(135deg, #c62828, #e53935);
-  color: white;
-  border-color: #c62828;
-}
-
-.btn-estado-asistencia.tardanza {
-  border-color: #7e9ac8;
-  color: #7e9ac8;
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
 }
 
 .btn-estado-asistencia.tardanza.active {
-  background: linear-gradient(135deg, #5a7db8, #7e9ac8);
-  color: white;
-  border-color: #5a7db8;
-}
-
-.btn-estado-asistencia.justificado {
-  border-color: #3d444a;
-  color: #3d444a;
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  color: #f59e0b;
 }
 
 .btn-estado-asistencia.justificado.active {
-  background: linear-gradient(135deg, #3d444a, #4a5259);
-  color: white;
-  border-color: #3d444a;
+  border-color: #6b7280;
+  background: rgba(107, 114, 128, 0.08);
+  color: #6b7280;
 }
 
 .btn-estado-asistencia:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .observaciones-input {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   font-size: 13px;
-  resize: vertical;
-  min-height: 36px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
 }
 
 .observaciones-input:focus {
-  outline: none;
-  border-color: #4A6FA5;
-  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+  border-color: #4a5259;
+  box-shadow: 0 0 0 3px rgba(74, 82, 89, 0.1);
 }
 
 .estadisticas-modal {
