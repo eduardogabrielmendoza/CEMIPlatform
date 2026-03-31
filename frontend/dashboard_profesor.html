@@ -208,13 +208,13 @@
   loader.classList.remove("hidden");
   try {
     const id_profesor = localStorage.getItem("id_profesor");
-    console.log(" Enviando request:", `${API_URL}/cursos?id_profesor=${id_profesor}`);
     
     const res = await fetch(`${API_URL}/cursos?id_profesor=${id_profesor}`);
-    const data = await res.json();
+    const resData = await res.json();
+    const cursos = resData.data || [];
     loader.classList.add("hidden");
 
-    if (!data.length) {
+    if (!cursos.length) {
       mainContent.innerHTML = `
         <div class="profesor-cursos-container">
           <div class="profesor-header-section">
@@ -240,10 +240,14 @@
       return;
     }
 
-    // Calcular estadísticas
-    const totalCursos = data.length;
-    const totalAlumnos = data.reduce((sum, c) => sum + parseInt(c.alumnos_inscritos || 0), 0);
-    const promedioAlumnos = (totalAlumnos / totalCursos).toFixed(1);
+    // Separar cursos activos e inactivos
+    const cursosActivos = cursos.filter(c => c.estado === 'activo');
+    const cursosInactivos = cursos.filter(c => c.estado !== 'activo');
+
+    // Calcular estadísticas solo de cursos activos
+    const totalCursos = cursosActivos.length;
+    const totalAlumnos = cursosActivos.reduce((sum, c) => sum + parseInt(c.alumnos_inscritos || 0), 0);
+    const promedioAlumnos = totalCursos > 0 ? (totalAlumnos / totalCursos).toFixed(1) : '0';
 
     mainContent.innerHTML = `
       <div class="profesor-cursos-container">
@@ -264,7 +268,7 @@
             </div>
             <div class="stat-content-wrapper">
               <div class="stat-number">${totalCursos}</div>
-              <div class="stat-label">Cursos Asignados</div>
+              <div class="stat-label">Cursos Activos</div>
               <div class="stat-sublabel">Activos este período</div>
             </div>
             <div class="stat-decoration"></div>
@@ -277,7 +281,7 @@
             <div class="stat-content-wrapper">
               <div class="stat-number">${totalAlumnos}</div>
               <div class="stat-label">Alumnos Totales</div>
-              <div class="stat-sublabel">En todos los cursos</div>
+              <div class="stat-sublabel">En cursos activos</div>
             </div>
             <div class="stat-decoration"></div>
           </div>
@@ -295,70 +299,105 @@
           </div>
         </div>
 
-        <div class="cursos-grid">
-          ${data.map(curso => {
-            const porcentajeCupo = ((curso.alumnos_inscritos / curso.cupo_maximo) * 100).toFixed(0);
-            let barColor = '#22c55e';
-            if (porcentajeCupo >= 90) barColor = '#ef4444';
-            else if (porcentajeCupo >= 70) barColor = '#f59e0b';
-            
-            return `
-              <div class="profesor-curso-card-new" onclick="openCursoDetalle(${curso.id_curso})" style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s ease; position: relative; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='translateY(0)';">
-                
-                <div style="position: absolute; top: 12px; right: 12px; background: rgba(74, 82, 89, 0.1); color: #4a5259; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 12px;">${curso.nivel || 'Sin nivel'}</div>
-                
-                <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
-                  <div style="background: rgba(74, 82, 89, 0.08); border-radius: 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <i data-lucide="book-open" style="width: 28px; height: 28px; color: #4a5259;"></i>
-                  </div>
-                  <div style="flex: 1; min-width: 0;">
-                    <h3 style="margin: 0 0 4px 0; color: #1e1e1e; font-size: 16px; font-weight: 500; font-family: 'Inter', sans-serif; padding-right: 60px;">${curso.nombre_curso}</h3>
-                    <p style="margin: 0; color: #6b7280; font-size: 13px;">${curso.nombre_idioma}</p>
-                  </div>
-                </div>
-                
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                    <i data-lucide="clock" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                    <span>${curso.horario || 'Horario por definir'}</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                    <i data-lucide="door-open" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                    <span>${curso.nombre_aula || 'Sin aula asignada'}</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 13px;">
-                    <i data-lucide="users" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                    <span>${curso.alumnos_inscritos} de ${curso.cupo_maximo} alumnos</span>
-                  </div>
-                </div>
-                
-                <div style="margin-bottom: 16px;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="color: #6b7280; font-size: 12px;">Capacidad</span>
-                    <span style="color: #1e1e1e; font-size: 12px; font-weight: 500;">${porcentajeCupo}% ocupado</span>
-                  </div>
-                  <div style="height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
-                    <div style="height: 100%; width: ${Math.min(porcentajeCupo, 100)}%; background: ${barColor}; border-radius: 3px; transition: width 0.3s ease;"></div>
-                  </div>
-                </div>
-                
-                <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
-                
-                <div style="display: flex; justify-content: flex-end;">
-                  <button style="padding: 8px 16px; background: #1e1e1e; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px;" onclick="event.stopPropagation(); openCursoDetalle(${curso.id_curso})">
-                    <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
-                    Ver detalles
-                  </button>
-                </div>
-              </div>
-            `;
-          }).join('')}
+        <!-- Tabla de Cursos Activos -->
+        <div style="background: white; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+          <h3 style="font-family: 'Inter'; margin: 0 0 16px 0; color: #1e1e1e; font-size: 20px; font-weight: 400; display: flex; align-items: center; gap: 10px;">
+            <i data-lucide="book-open" style="width: 20px; height: 20px; color: #4a5259;"></i>
+            Mis Cursos Actuales
+          </h3>
+          ${cursosActivos.length > 0 ? \`
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Nivel</th>
+                <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Horario</th>
+                <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Aula</th>
+                <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Alumnos</th>
+                <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              \${cursosActivos.map(curso => \`
+                <tr style="border-bottom: 1px solid #f3f4f6;">
+                  <td style="padding: 14px 16px; font-size: 14px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <i data-lucide="book-open" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                      <span style="font-weight: 500;">\${curso.nombre_curso}</span>
+                    </div>
+                  </td>
+                  <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">\${curso.nombre_idioma}</td>
+                  <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center;">\${curso.nivel || 'N/A'}</td>
+                  <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <i data-lucide="clock" style="width: 14px; height: 14px; color: #9ca3af;"></i>
+                      \${curso.horario || 'Por definir'}
+                    </div>
+                  </td>
+                  <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">\${curso.nombre_aula || 'Sin aula'}</td>
+                  <td style="padding: 14px 16px; text-align: center;">
+                    <span style="font-weight: 600; font-size: 14px;">\${curso.alumnos_inscritos}/\${curso.cupo_maximo}</span>
+                  </td>
+                  <td style="padding: 14px 16px; text-align: center;">
+                    <button onclick="openCursoDetalle(\${curso.id_curso})" style="padding: 6px 14px; background: #1e1e1e; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                      <i data-lucide="eye" style="width: 13px; height: 13px;"></i>
+                      Ver detalles
+                    </button>
+                  </td>
+                </tr>
+              \`).join('')}
+            </tbody>
+          </table>
+          \` : \`
+          <div style="text-align: center; padding: 30px 20px; color: #6b7280;">
+            <i data-lucide="inbox" style="width: 36px; height: 36px; color: #9ca3af; margin-bottom: 10px;"></i>
+            <p style="margin: 0; font-size: 14px;">No tienes cursos activos actualmente</p>
+          </div>
+          \`}
         </div>
+
+        ${cursosInactivos.length > 0 ? \`
+        <!-- Tabla de Historial de Cursos -->
+        <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+          <h3 style="font-family: 'Inter'; margin: 0 0 16px 0; color: #1e1e1e; font-size: 20px; font-weight: 400; display: flex; align-items: center; gap: 10px;">
+            <i data-lucide="archive" style="width: 20px; height: 20px; color: #9ca3af;"></i>
+            Historial de Cursos
+          </h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Nivel</th>
+                <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              \${cursosInactivos.map(curso => \`
+                <tr style="border-bottom: 1px solid #f3f4f6;">
+                  <td style="padding: 14px 16px; color: #9ca3af; font-size: 14px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <i data-lucide="book-open" style="width: 16px; height: 16px; color: #9ca3af;"></i>
+                      <span style="font-weight: 500;">\${curso.nombre_curso}</span>
+                    </div>
+                  </td>
+                  <td style="padding: 14px 16px; color: #9ca3af; font-size: 14px;">\${curso.nombre_idioma}</td>
+                  <td style="padding: 14px 16px; color: #9ca3af; font-size: 14px; text-align: center;">\${curso.nivel || 'N/A'}</td>
+                  <td style="padding: 14px 16px; text-align: center;">
+                    <span style="background: rgba(156, 163, 175, 0.1); color: #9ca3af; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">Finalizado</span>
+                  </td>
+                </tr>
+              \`).join('')}
+            </tbody>
+          </table>
+        </div>
+        \` : ''}
       </div>
     `;
 
-    // Reinicializar iconos de Lucide
     lucide.createIcons();
+    setTimeout(() => mainContent.classList.add("active"), 100);
   } catch (error) {
     loader.classList.add("hidden");
     mainContent.innerHTML = `<p>Error al cargar los cursos.</p>`;
@@ -376,7 +415,8 @@
           }
 
           const resCursos = await fetch(`${API_URL}/cursos?id_profesor=${id_profesor}`);
-          const cursos = await resCursos.json();
+          const resData = await resCursos.json();
+          const cursos = (resData.data || []).filter(c => c.estado === 'activo');
 
           mainContent.innerHTML = `
             <div class="calificaciones-container-profesor">
@@ -390,55 +430,50 @@
                 </div>
               </div>
               
-              <div class="calificaciones-curso-selector">
-                <div class="cursos-selector-grid-enhanced">
-                  ${cursos.map((curso, index) => {
-                    // Iconos dinámicos por idioma
-                    const idiomaIcons = {
-                      'Inglés': 'book-open',
-                      'Francés': 'coffee',
-                      'Alemán': 'beer',
-                      'Italiano': 'pizza',
-                      'Portugués': 'globe',
-                      'Japonés': 'star',
-                      'Chino': 'circle',
-                      'Coreano': 'heart'
-                    };
-                    const icon = idiomaIcons[curso.nombre_idioma] || 'book';
-                    
-                    // Colores Harvard minimalista
-                    const color = { primary: '#4a5259', light: 'rgba(74, 82, 89, 0.08)' };
-                    
-                    return `
-                    <div class="curso-selector-card-enhanced" onclick="cargarCalificacionesCurso(${curso.id_curso}, '${curso.nombre_curso}')" style="border-left: 4px solid ${color.primary};">
-                      <div class="curso-card-icon" style="background: ${color.light};">
-                        <i data-lucide="${icon}" style="color: ${color.primary};"></i>
-                      </div>
-                      <div class="curso-card-content">
-                        <h4 style="color: #1e1e1e;">${curso.nombre_curso}</h4>
-                        <div class="curso-card-meta">
-                          <span class="curso-badge" style="background: ${color.light}; color: ${color.primary};">
-                            <i data-lucide="globe-2"></i>
-                            ${curso.nombre_idioma}
-                          </span>
-                          <span class="curso-badge" style="background: #f5f5f5; color: #666;">
-                            <i data-lucide="award"></i>
-                            ${curso.nivel || 'N/A'}
-                          </span>
-                        </div>
-                        <div class="curso-card-footer">
-                          <span class="curso-alumnos-count">
-                            <i data-lucide="users"></i>
-                            ${curso.alumnos_inscritos} alumno${curso.alumnos_inscritos !== 1 ? 's' : ''}
-                          </span>
-                        </div>
-                      </div>
-                      <div class="curso-card-arrow">
-                        <i data-lucide="chevron-right"></i>
-                      </div>
-                    </div>
-                  `}).join('')}
+              <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+                <h3 style="font-family: 'Inter'; margin: 0 0 16px 0; color: #1e1e1e; font-size: 20px; font-weight: 400; display: flex; align-items: center; gap: 10px;">
+                  <i data-lucide="book-open" style="width: 20px; height: 20px; color: #4a5259;"></i>
+                  Seleccionar Curso
+                </h3>
+                ${cursos.length > 0 ? \`
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr>
+                      <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                      <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                      <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Nivel</th>
+                      <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Alumnos</th>
+                      <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    \${cursos.map(curso => \`
+                      <tr style="border-bottom: 1px solid #f3f4f6; cursor: pointer;" onclick="cargarCalificacionesCurso(\${curso.id_curso}, '\${curso.nombre_curso}')">
+                        <td style="padding: 14px 16px; font-size: 14px;">
+                          <div style="display: flex; align-items: center; gap: 10px;">
+                            <i data-lucide="book-open" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                            <span style="font-weight: 500;">\${curso.nombre_curso}</span>
+                          </div>
+                        </td>
+                        <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">\${curso.nombre_idioma}</td>
+                        <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center;">\${curso.nivel || 'N/A'}</td>
+                        <td style="padding: 14px 16px; text-align: center; font-size: 14px; font-weight: 600;">\${curso.alumnos_inscritos}</td>
+                        <td style="padding: 14px 16px; text-align: center;">
+                          <button onclick="event.stopPropagation(); cargarCalificacionesCurso(\${curso.id_curso}, '\${curso.nombre_curso}')" style="padding: 6px 14px; background: #1e1e1e; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                            <i data-lucide="clipboard-list" style="width: 13px; height: 13px;"></i>
+                            Ver calificaciones
+                          </button>
+                        </td>
+                      </tr>
+                    \`).join('')}
+                  </tbody>
+                </table>
+                \` : \`
+                <div style="text-align: center; padding: 30px 20px; color: #6b7280;">
+                  <i data-lucide="inbox" style="width: 36px; height: 36px; color: #9ca3af; margin-bottom: 10px;"></i>
+                  <p style="margin: 0; font-size: 14px;">No tienes cursos activos para gestionar calificaciones</p>
                 </div>
+                \`}
               </div>
 
               <div id="calificacionesContent" class="calificaciones-content" style="display: none;">
@@ -471,7 +506,8 @@
           }
 
           const resCursos = await fetch(`${API_URL}/cursos?id_profesor=${id_profesor}`);
-          const cursos = await resCursos.json();
+          const resData = await resCursos.json();
+          const cursos = (resData.data || []).filter(c => c.estado === 'activo');
 
           mainContent.innerHTML = `
             <div class="asistencias-container-profesor">
@@ -485,55 +521,50 @@
                 </div>
               </div>
               
-              <div class="asistencias-selector-cursos">
-                <div class="cursos-selector-grid-enhanced">
-                  ${cursos.map((curso, index) => {
-                    // Iconos dinámicos por idioma
-                    const idiomaIcons = {
-                      'Inglés': 'book-open',
-                      'Francés': 'coffee',
-                      'Alemán': 'beer',
-                      'Italiano': 'pizza',
-                      'Portugués': 'globe',
-                      'Japonés': 'star',
-                      'Chino': 'circle',
-                      'Coreano': 'heart'
-                    };
-                    const icon = idiomaIcons[curso.nombre_idioma] || 'book';
-                    
-                    // Colores Harvard minimalista
-                    const color = { primary: '#4a5259', light: 'rgba(74, 82, 89, 0.08)' };
-                    
-                    return `
-                    <div class="curso-selector-card-enhanced" onclick="cargarAsistenciasCurso(${curso.id_curso}, '${curso.nombre_curso}')" style="border-left: 4px solid ${color.primary};">
-                      <div class="curso-card-icon" style="background: ${color.light};">
-                        <i data-lucide="${icon}" style="color: ${color.primary};"></i>
-                      </div>
-                      <div class="curso-card-content">
-                        <h4 style="color: #1e1e1e;">${curso.nombre_curso}</h4>
-                        <div class="curso-card-meta">
-                          <span class="curso-badge" style="background: rgba(74, 82, 89, 0.1); color: #4a5259;">
-                            <i data-lucide="globe-2"></i>
-                            ${curso.nombre_idioma}
-                          </span>
-                          <span class="curso-badge" style="background: #f5f5f5; color: #666;">
-                            <i data-lucide="award"></i>
-                            ${curso.nivel || 'N/A'}
-                          </span>
-                        </div>
-                        <div class="curso-card-footer">
-                          <span class="curso-alumnos-count">
-                            <i data-lucide="users"></i>
-                            ${curso.alumnos_inscritos} alumno${curso.alumnos_inscritos !== 1 ? 's' : ''}
-                          </span>
-                        </div>
-                      </div>
-                      <div class="curso-card-arrow">
-                        <i data-lucide="chevron-right"></i>
-                      </div>
-                    </div>
-                  `}).join('')}
+              <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+                <h3 style="font-family: 'Inter'; margin: 0 0 16px 0; color: #1e1e1e; font-size: 20px; font-weight: 400; display: flex; align-items: center; gap: 10px;">
+                  <i data-lucide="book-open" style="width: 20px; height: 20px; color: #4a5259;"></i>
+                  Seleccionar Curso
+                </h3>
+                ${cursos.length > 0 ? \`
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr>
+                      <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                      <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                      <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Nivel</th>
+                      <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Alumnos</th>
+                      <th style="padding: 14px 16px; text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    \${cursos.map(curso => \`
+                      <tr style="border-bottom: 1px solid #f3f4f6; cursor: pointer;" onclick="cargarAsistenciasCurso(\${curso.id_curso}, '\${curso.nombre_curso}')">
+                        <td style="padding: 14px 16px; font-size: 14px;">
+                          <div style="display: flex; align-items: center; gap: 10px;">
+                            <i data-lucide="book-open" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                            <span style="font-weight: 500;">\${curso.nombre_curso}</span>
+                          </div>
+                        </td>
+                        <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">\${curso.nombre_idioma}</td>
+                        <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center;">\${curso.nivel || 'N/A'}</td>
+                        <td style="padding: 14px 16px; text-align: center; font-size: 14px; font-weight: 600;">\${curso.alumnos_inscritos}</td>
+                        <td style="padding: 14px 16px; text-align: center;">
+                          <button onclick="event.stopPropagation(); cargarAsistenciasCurso(\${curso.id_curso}, '\${curso.nombre_curso}')" style="padding: 6px 14px; background: #1e1e1e; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                            <i data-lucide="calendar-check" style="width: 13px; height: 13px;"></i>
+                            Ver asistencias
+                          </button>
+                        </td>
+                      </tr>
+                    \`).join('')}
+                  </tbody>
+                </table>
+                \` : \`
+                <div style="text-align: center; padding: 30px 20px; color: #6b7280;">
+                  <i data-lucide="inbox" style="width: 36px; height: 36px; color: #9ca3af; margin-bottom: 10px;"></i>
+                  <p style="margin: 0; font-size: 14px;">No tienes cursos activos para gestionar asistencias</p>
                 </div>
+                \`}
               </div>
 
               <div id="asistenciasContent" class="asistencias-content" style="display: none;">
@@ -1948,7 +1979,7 @@
                     let badge = '';
                     if (promedio === 0) {
                       badge = '<span class="calificacion-badge pendiente">Pendiente</span>';
-                    } else if (promedio >= 60) {
+                    } else if (promedio >= 7) {
                       badge = '<span class="calificacion-badge aprobado">Aprobado</span>';
                     } else {
                       badge = '<span class="calificacion-badge reprobado">Reprobado</span>';
