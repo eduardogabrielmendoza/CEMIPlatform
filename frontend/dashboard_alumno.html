@@ -487,17 +487,19 @@
                 onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <h3 style="font-family: 'Inter'; padding-top: 20px; margin: 0; color: #1e1e1e; font-size: 20px; font-weight: 500; display: flex; align-items: center; gap: 10px;">
-                <i data-lucide="book" style="width: 20px; height: 20px; color: #4a5259;"></i>
-                Cursos Disponibles
-              </h3>
-              <span id="total-cursos-count" style="background: rgba(74, 82, 89, 0.1); color: #4a5259; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;">Cargando...</span>
-            </div>
+            <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-family: 'Inter'; margin: 0; color: #1e1e1e; font-size: 20px; font-weight: 400; display: flex; align-items: center; gap: 10px;">
+                  <i data-lucide="book" style="width: 20px; height: 20px; color: #4a5259;"></i>
+                  Cursos Disponibles
+                </h3>
+                <span id="total-cursos-count" style="background: rgba(74, 82, 89, 0.1); color: #4a5259; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;">Cargando...</span>
+              </div>
 
-            <div id="catalogo-cursos-container">
-              <div style="text-align: center; padding: 40px; color: #6b7280;">
-                <p>Cargando catálogo de cursos...</p>
+              <div id="catalogo-cursos-container">
+                <div style="text-align: center; padding: 40px; color: #6b7280;">
+                  <p>Cargando catálogo de cursos...</p>
+                </div>
               </div>
             </div>
           </div>
@@ -560,6 +562,8 @@
         
         const data = await response.json();
         const cursos = data.cursos || [];
+        const cursosActivos = cursos.filter(c => c.estado_curso === 'activo');
+        const cursosInactivos = cursos.filter(c => c.estado_curso === 'inactivo');
 
         mainContent.innerHTML = `
           <div style="padding: 0;">
@@ -576,7 +580,7 @@
                   <i data-lucide="book-open" style="width: 24px; height: 24px; color: #4a5259;"></i>
                 </div>
                 <div>
-                  <h3 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 600;">${cursos.length}</h3>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 600;">${cursosActivos.length}</h3>
                   <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">Cursos Activos</p>
                 </div>
               </div>
@@ -596,7 +600,7 @@
                   <i data-lucide="trending-up" style="width: 24px; height: 24px; color: #4a5259;"></i>
                 </div>
                 <div>
-                  <h3 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 600;">${cursos.filter(c => c.promedio && c.promedio >= 7).length}</h3>
+                  <h3 style="margin: 0; color: #1e1e1e; font-size: 24px; font-weight: 600;">${cursosActivos.filter(c => c.promedio && c.promedio >= 7).length}</h3>
                   <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 13px;">Cursos Aprobados</p>
                 </div>
               </div>
@@ -605,10 +609,10 @@
             <div style="background: #ffffff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
               <h3 style="margin: 0 0 20px 0; color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 10px;">
                 <i data-lucide="list" style="width: 18px; height: 18px; color: #4a5259;"></i>
-                Detalle de Calificaciones
+                Calificaciones Actuales
               </h3>
               
-              ${cursos.length > 0 ? `
+              ${cursosActivos.length > 0 ? `
                 <div style="border-radius: 12px;">
                   <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
                     <thead>
@@ -623,7 +627,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      ${cursos.map(curso => {
+                      ${cursosActivos.map(curso => {
                         const promedio = parseFloat(curso.promedio) || 0;
                         let estadoBg = 'rgba(156, 163, 175, 0.1)';
                         let estadoColor = '#9ca3af';
@@ -693,11 +697,47 @@
               ` : `
                 <div style="text-align: center; padding: 40px 20px;">
                   <i data-lucide="clipboard-x" style="width: 48px; height: 48px; color: #9ca3af; margin-bottom: 16px;"></i>
-                  <h3 style="margin: 0 0 8px 0; color: #4a5259; font-size: 16px; font-weight: 600;">No hay calificaciones disponibles</h3>
-                  <p style="margin: 0; color: #6b7280; font-size: 14px;">Aún no tienes cursos con calificaciones registradas.</p>
+                  <h3 style="margin: 0 0 8px 0; color: #4a5259; font-size: 16px; font-weight: 600;">No hay calificaciones activas</h3>
+                  <p style="margin: 0; color: #6b7280; font-size: 14px;">No tenés cursos activos con calificaciones registradas.</p>
                 </div>
               `}
             </div>
+
+            ${cursosInactivos.length > 0 ? `
+            <div style="background: #ffffff; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; margin-top: 24px;">
+              <h3 style="margin: 0 0 20px 0; color: #1e1e1e; font-size: 16px; font-weight: 400; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="archive" style="width: 18px; height: 18px; color: #9ca3af;"></i>
+                Historial Académico
+              </h3>
+              <div style="border-radius: 12px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr style="background: #f9fafb;">
+                      <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                      <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
+                      <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${cursosInactivos.map(curso => `
+                      <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">
+                          <div style="display: flex; align-items: center; gap: 10px;">
+                            <i data-lucide="book" style="width: 16px; height: 16px; color: #9ca3af;"></i>
+                            <span style="font-weight: 500;">${curso.nombre_curso}</span>
+                          </div>
+                        </td>
+                        <td style="padding: 14px 16px; color: #9ca3af; font-size: 14px;">${curso.nombre_idioma || 'N/A'}</td>
+                        <td style="padding: 14px 16px; text-align: center;">
+                          <span style="background: rgba(74, 82, 89, 0.1); color: #4a5259; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">Aprobado</span>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            ` : ''}
           </div>
         `;
 

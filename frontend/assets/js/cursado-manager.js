@@ -176,7 +176,7 @@ class CursadoManager {
         }
 
         container.innerHTML = `
-            <div style="border-radius: 12px; background: #fff; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <div style="border-radius: 12px;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr style="background: #f9fafb;">
