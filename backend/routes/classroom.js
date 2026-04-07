@@ -61,7 +61,7 @@ router.get("/clases/:tipo/:id", async (req, res) => {
         LEFT JOIN aulas a ON c.id_aula = a.id_aula
         LEFT JOIN profesores prof ON c.id_profesor = prof.id_profesor
         LEFT JOIN personas p ON prof.id_persona = p.id_persona
-        WHERE c.id_profesor = ?
+        WHERE c.id_profesor = ? AND c.estado = 'activo'
         ORDER BY c.nombre_curso
       `;
       params = [id];
@@ -86,7 +86,7 @@ router.get("/clases/:tipo/:id", async (req, res) => {
         LEFT JOIN aulas a ON c.id_aula = a.id_aula
         LEFT JOIN profesores prof ON c.id_profesor = prof.id_profesor
         LEFT JOIN personas p ON prof.id_persona = p.id_persona
-        WHERE ins.id_alumno = ? AND ins.estado = 'activo'
+        WHERE ins.id_alumno = ? AND ins.estado = 'activo' AND c.estado = 'activo'
         ORDER BY c.nombre_curso
       `;
       params = [id];
@@ -1947,7 +1947,7 @@ router.get("/recursos/:tipo/:id", async (req, res) => {
         FROM cursos c
         JOIN idiomas i ON c.id_idioma = i.id_idioma
         LEFT JOIN niveles n ON c.id_nivel = n.id_nivel
-        WHERE c.id_profesor = ?
+        WHERE c.id_profesor = ? AND c.estado = 'activo'
       `, [id]);
       cursosUsuario = cursos;
     } else if (tipo === 'alumno') {
@@ -1957,7 +1957,7 @@ router.get("/recursos/:tipo/:id", async (req, res) => {
         JOIN cursos c ON ins.id_curso = c.id_curso
         JOIN idiomas i ON c.id_idioma = i.id_idioma
         LEFT JOIN niveles n ON c.id_nivel = n.id_nivel
-        WHERE ins.id_alumno = ? AND ins.estado = 'activo'
+        WHERE ins.id_alumno = ? AND ins.estado = 'activo' AND c.estado = 'activo'
       `, [id]);
       cursosUsuario = cursos;
     }
