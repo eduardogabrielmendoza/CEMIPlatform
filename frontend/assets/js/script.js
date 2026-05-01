@@ -198,7 +198,7 @@ function initAdminSPA() {
 
       switch (section) {
         case "cursos":
-          endpoint = `${API_URL}/cursos?limit=${PAGE_SIZE}&offset=0`;
+          endpoint = `${API_URL}/cursos?limit=999&offset=0`;
           break;
         case "alumnos":
           endpoint = `${API_URL}/alumnos?limit=${PAGE_SIZE}&offset=0`;
@@ -282,7 +282,7 @@ function initAdminSPA() {
         const responseData = await res.json();
 
         // Handle paginated vs non-paginated responses
-        const isPaginated = ['cursos', 'alumnos', 'profesores', 'administradores'].includes(section);
+        const isPaginated = ['alumnos', 'profesores', 'administradores'].includes(section);
         let tableData, total;
 
         if (isPaginated) {
@@ -298,6 +298,9 @@ function initAdminSPA() {
           html += generateTable(section, responseData);
         } else if (section === 'aulas' || section === 'idiomas') {
           html += generateTable(section, tableData);
+        } else if (section === 'cursos') {
+          // Cursos uses accordion (no pagination needed)
+          html += generateTable(section, responseData.data || responseData, responseData.total || (Array.isArray(responseData) ? responseData.length : 0));
         } else {
           html += generateTable(section, tableData, total);
           if (isPaginated && total > 0) {
@@ -5925,6 +5928,8 @@ function filterCursosAccordion() {
   const filterCiclo = document.getElementById('cursoFilterCiclo')?.value || '';
   const showActivo = document.getElementById('filterCursoActivo')?.checked;
   const showInactivo = document.getElementById('filterCursoInactivo')?.checked;
+  const hasActiveFilter = searchTerm || filterIdioma || filterNivel || filterCiclo || (!showActivo || !showInactivo);
+
   document.querySelectorAll('.curso-accordion-item').forEach(item => {
     const rows = item.querySelectorAll('tbody tr');
     let visibleCount = 0;
@@ -5945,12 +5950,37 @@ function filterCursosAccordion() {
       row.style.display = show ? '' : 'none';
       if (show) visibleCount++;
     });
+
+    // Update accordion count badge
+    const countEl = item.querySelector('.curso-accordion-count');
+    if (countEl) {
+      const totalRows = rows.length;
+      if (hasActiveFilter) {
+        countEl.textContent = `${visibleCount} de ${totalRows} curso${totalRows !== 1 ? 's' : ''}`;
+      } else {
+        const activos = Array.from(rows).filter(r => (r.dataset.estado || '') === 'activo').length;
+        countEl.textContent = `${totalRows} curso${totalRows !== 1 ? 's' : ''} \u00b7 ${activos} activo${activos !== 1 ? 's' : ''}`;
+      }
+    }
+
+    // Hide accordion item if filtered by idioma or no visible rows
     if (filterIdioma && item.dataset.idioma !== filterIdioma) {
       item.style.display = 'none';
     } else {
       item.style.display = visibleCount > 0 ? '' : 'none';
     }
+
+    // Recalculate max-height for open items
+    if (item.classList.contains('open')) {
+      const body = item.querySelector('.curso-accordion-body');
+      if (body) body.style.maxHeight = body.scrollHeight + 'px';
+    }
   });
+
+  // Hide hint when filters are active
+  const hint = document.getElementById('cursoAccordionHint');
+  if (hint && hasActiveFilter) hint.style.display = 'none';
+
   saveFilterState('cursos');
   updateFilterBadge('cursos');
 }

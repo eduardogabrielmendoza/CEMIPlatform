@@ -2261,6 +2261,7 @@ button:has([data-lucide="trash-2"]),
 .search-filter-wrapper {
   position: relative;
   flex: 1;
+  z-index: 100;
 }
 
 .filter-toggle-btn {
@@ -2311,7 +2312,7 @@ button:has([data-lucide="trash-2"]),
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-  z-index: 100;
+  z-index: 1000;
   min-width: 260px;
   opacity: 0;
   visibility: hidden;
