@@ -2239,6 +2239,8 @@ button:has([data-lucide="trash-2"]),
   align-items: center;
   margin-bottom: 24px;
   gap: 16px;
+  position: relative;
+  z-index: 50;
 }
 
 .alumnos-search-filter {

@@ -4981,7 +4981,7 @@ function generateTable(section, data, total) {
           </div>`;
       }).join('');
       return `
-        <div class="cursos-header" style="display: flex; align-items: center; margin-bottom: 20px; gap: 20px; flex-wrap: wrap;">
+        <div class="cursos-header" style="display: flex; align-items: center; margin-bottom: 20px; gap: 20px; flex-wrap: wrap; position: relative; z-index: 50;">
           <div style="flex-shrink: 0;">
             <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gesti\u00f3n de Cursos</h2>
             <p style="color: #666; margin: 0; font-size: 14px;">${cursosTotal} curso${cursosTotal !== 1 ? 's' : ''} disponible${cursosTotal !== 1 ? 's' : ''}</p>
@@ -5062,8 +5062,8 @@ function generateTable(section, data, total) {
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Estado</div>
                   <div class="filter-dropdown-checkboxes">
-                    <label><input type="checkbox" id="filterAlumnoActivo" checked onchange="handleEstadoExclusion('alumnos','activo'); filterTableRows('alumnos')"> Activos</label>
-                    <label><input type="checkbox" id="filterAlumnoInactivo" onchange="handleEstadoExclusion('alumnos','inactivo'); filterTableRows('alumnos')"> Inactivos</label>
+                    <label><input type="checkbox" id="filterAlumnoActivo" checked onchange="handleEstadoExclusion('alumnos','activo'); reloadSectionByEstado('alumnos')"> Activos</label>
+                    <label><input type="checkbox" id="filterAlumnoInactivo" onchange="handleEstadoExclusion('alumnos','inactivo'); reloadSectionByEstado('alumnos')"> Inactivos</label>
                   </div>
                 </div>
               </div>
@@ -5101,7 +5101,7 @@ function generateTable(section, data, total) {
     case "profesores":
       const profesoresTotal = total || data.length;
       return `
-        <div class="profesores-header">
+        <div class="profesores-header" style="position:relative;z-index:50;">
           <div style="flex-shrink: 0;">
             <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gestión de Profesores</h2>
             <p style="color: #666; margin: 0; font-size: 14px;">${profesoresTotal} profesor${profesoresTotal !== 1 ? 'es' : ''} registrado${profesoresTotal !== 1 ? 's' : ''}</p>
@@ -5119,9 +5119,9 @@ function generateTable(section, data, total) {
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Estado</div>
                   <div class="filter-dropdown-checkboxes">
-                    <label><input type="checkbox" id="filterProfesorActivo" checked onchange="handleEstadoExclusion('profesores','activo'); reloadProfesoresPorEstado()"> Activos</label>
-                    <label><input type="checkbox" id="filterProfesorInactivo" onchange="handleEstadoExclusion('profesores','inactivo'); reloadProfesoresPorEstado()"> Inactivos</label>
-                    <label><input type="checkbox" id="filterProfesorLicencia" onchange="handleEstadoExclusion('profesores','licencia'); reloadProfesoresPorEstado()"> Licencia</label>
+                    <label><input type="checkbox" id="filterProfesorActivo" checked onchange="handleEstadoExclusion('profesores','activo'); reloadSectionByEstado('profesores')"> Activos</label>
+                    <label><input type="checkbox" id="filterProfesorInactivo" onchange="handleEstadoExclusion('profesores','inactivo'); reloadSectionByEstado('profesores')"> Inactivos</label>
+                    <label><input type="checkbox" id="filterProfesorLicencia" onchange="handleEstadoExclusion('profesores','licencia'); reloadSectionByEstado('profesores')"> Licencia</label>
                   </div>
                 </div>
               </div>
@@ -5154,7 +5154,7 @@ function generateTable(section, data, total) {
     case "administradores":
       const adminsTotal = total || data.length;
       return `
-        <div class="profesores-header">
+        <div class="profesores-header" style="position:relative;z-index:50;">
           <div style="flex-shrink: 0;">
             <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gestión de Administradores</h2>
             <p style="color: #666; margin: 0; font-size: 14px;">${adminsTotal} administrador${adminsTotal !== 1 ? 'es' : ''} registrado${adminsTotal !== 1 ? 's' : ''}</p>
@@ -5172,8 +5172,8 @@ function generateTable(section, data, total) {
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Estado</div>
                   <div class="filter-dropdown-checkboxes">
-                    <label><input type="checkbox" id="filterAdminActivo" checked onchange="handleEstadoExclusion('administradores','activo'); filterTableRows('administradores')"> Activos</label>
-                    <label><input type="checkbox" id="filterAdminInactivo" onchange="handleEstadoExclusion('administradores','inactivo'); filterTableRows('administradores')"> Inactivos</label>
+                    <label><input type="checkbox" id="filterAdminActivo" checked onchange="handleEstadoExclusion('administradores','activo'); reloadSectionByEstado('administradores')"> Activos</label>
+                    <label><input type="checkbox" id="filterAdminInactivo" onchange="handleEstadoExclusion('administradores','inactivo'); reloadSectionByEstado('administradores')"> Inactivos</label>
                   </div>
                 </div>
               </div>
@@ -5888,6 +5888,14 @@ function handleEstadoExclusion(section, clicked) {
     const anyOther = (inactivoEl && inactivoEl.checked) || (licenciaEl && licenciaEl.checked);
     if (!anyOther && activoEl) activoEl.checked = true;
   }
+}
+
+// Reload section data by estado without destroying the dropdown
+function reloadSectionByEstado(section) {
+  saveFilterState(section);
+  updateFilterBadge(section);
+  const btn = document.getElementById('btn' + section.charAt(0).toUpperCase() + section.slice(1));
+  if (btn) btn.click();
 }
 
 // Accordion toggle + filter for cursos section
