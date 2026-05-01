@@ -142,6 +142,25 @@ router.post("/", async (req, res) => {
 
     const lista = Array.isArray(alumnos) ? alumnos : [alumnos];
 
+    const [cursoRows] = await pool.query(
+      "SELECT id_curso, id_profesor FROM cursos WHERE id_curso = ? AND estado = 'activo'",
+      [id_curso]
+    );
+    if (cursoRows.length === 0) {
+      return res.status(400).json({ success: false, message: "Solo se pueden inscribir alumnos en cursos activos" });
+    }
+
+    const placeholders = lista.map(() => "?").join(",");
+    const [alumnosActivos] = await pool.query(
+      `SELECT id_alumno FROM alumnos WHERE id_alumno IN (${placeholders}) AND estado = 'activo'`,
+      lista
+    );
+    const activos = new Set(alumnosActivos.map((alumno) => String(alumno.id_alumno)));
+    const alumnosInvalidos = lista.filter((idAlumno) => !activos.has(String(idAlumno)));
+    if (alumnosInvalidos.length > 0) {
+      return res.status(400).json({ success: false, message: "Solo se pueden inscribir alumnos activos" });
+    }
+
     const values = lista.map(id_alumno => [id_alumno, id_curso, new Date(), 'activo']);
 
     const [result] = await pool.query(
@@ -185,7 +204,7 @@ router.post("/", async (req, res) => {
       }
     }
 
-    res.status(201).json({ message: 'inscripciones creadas', inserted: result.affectedRows });
+    res.status(201).json({ success: true, message: 'inscripciones creadas', inserted: result.affectedRows });
   } catch (error) {
     console.error('Error al crear inscripciones:', error);
     res.status(500).json({ message: 'Error al crear inscripciones' });

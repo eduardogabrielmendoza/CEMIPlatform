@@ -8,6 +8,42 @@ async function tableHasColumn(table, column) {
     return rows.length > 0;
 }
 
+async function validateCursoAsignaciones({ id_idioma, id_profesor, id_aula }) {
+  const [idiomaRows] = await pool.query(
+    "SELECT id_idioma FROM idiomas WHERE id_idioma = ? AND COALESCE(estado, 'activo') = 'activo'",
+    [id_idioma]
+  );
+  if (idiomaRows.length === 0) {
+    return "El idioma seleccionado no esta activo";
+  }
+
+  const [profesorRows] = await pool.query(
+    `SELECT p.id_profesor
+     FROM profesores p
+     INNER JOIN profesores_idiomas pi ON p.id_profesor = pi.id_profesor
+     WHERE p.id_profesor = ?
+       AND p.estado = 'activo'
+       AND pi.id_idioma = ?
+     LIMIT 1`,
+    [id_profesor, id_idioma]
+  );
+  if (profesorRows.length === 0) {
+    return "El profesor debe estar activo y ensenar el idioma del curso";
+  }
+
+  if (id_aula) {
+    const [aulaRows] = await pool.query(
+      "SELECT id_aula FROM aulas WHERE id_aula = ? AND COALESCE(estado, 'activo') = 'activo'",
+      [id_aula]
+    );
+    if (aulaRows.length === 0) {
+      return "El aula seleccionada no esta activa";
+    }
+  }
+
+  return null;
+}
+
 // Get distinct ciclo_lectivo values
 router.get("/ciclos-lectivos", async (req, res) => {
   try {
@@ -293,6 +329,7 @@ router.get('/filtros/opciones', async (req, res) => {
             FROM profesores prof
             INNER JOIN personas p ON prof.id_persona = p.id_persona
             INNER JOIN cursos c ON prof.id_profesor = c.id_profesor
+            WHERE prof.estado = 'activo'
             ORDER BY nombre_completo
         `);
 
@@ -584,15 +621,32 @@ router.put("/:id/profesor", async (req, res) => {
       });
     }
 
+    const [cursoRows] = await pool.query(
+      "SELECT id_idioma FROM cursos WHERE id_curso = ?",
+      [id]
+    );
+    if (cursoRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Curso no encontrado"
+      });
+    }
+
     const [profesorRows] = await pool.query(
-      'SELECT id_profesor FROM profesores WHERE id_profesor = ? AND estado = "activo"',
-      [id_profesor]
+      `SELECT p.id_profesor
+       FROM profesores p
+       INNER JOIN profesores_idiomas pi ON p.id_profesor = pi.id_profesor
+       WHERE p.id_profesor = ?
+         AND p.estado = 'activo'
+         AND pi.id_idioma = ?
+       LIMIT 1`,
+      [id_profesor, cursoRows[0].id_idioma]
     );
 
     if (profesorRows.length === 0) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Profesor no encontrado o inactivo" 
+      return res.status(400).json({
+        success: false,
+        message: "El profesor debe estar activo y ensenar el idioma del curso"
       });
     }
 
@@ -629,6 +683,10 @@ router.put("/:id", async (req, res) => {
     const anioActual = new Date().getFullYear();
     const ciclo = ciclo_lectivo ? parseInt(ciclo_lectivo) : null;
     const estado = ciclo && ciclo < anioActual ? 'inactivo' : 'activo';
+    const validationError = await validateCursoAsignaciones({ id_idioma, id_profesor, id_aula });
+    if (validationError) {
+      return res.status(400).json({ success: false, message: validationError });
+    }
 
     const query = `
       UPDATE cursos 
@@ -682,6 +740,10 @@ router.post("/", async (req, res) => {
     const anioActual = new Date().getFullYear();
     const ciclo = ciclo_lectivo ? parseInt(ciclo_lectivo) : anioActual;
     const estado = ciclo < anioActual ? 'inactivo' : 'activo';
+    const validationError = await validateCursoAsignaciones({ id_idioma, id_profesor, id_aula });
+    if (validationError) {
+      return res.status(400).json({ success: false, message: validationError });
+    }
 
     const [result] = await pool.query(
       `INSERT INTO cursos (nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula, ciclo_lectivo, estado) 

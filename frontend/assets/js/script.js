@@ -129,6 +129,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function getProfesorEstadoParamFromStorage() {
+  let state = { activo: true, inactivo: false, licencia: false };
+  try {
+    state = { ...state, ...JSON.parse(sessionStorage.getItem('cemi_filter_profesores') || '{}') };
+  } catch (error) {}
+  const estados = [];
+  if (state.activo) estados.push('activo');
+  if (state.inactivo) estados.push('inactivo');
+  if (state.licencia) estados.push('licencia');
+  return `&estado=${encodeURIComponent(estados.length ? estados.join(',') : 'ninguno')}`;
+}
+
+function reloadProfesoresPorEstado() {
+  if (typeof saveFilterState === 'function') saveFilterState('profesores');
+  const btn = document.getElementById('btnProfesores');
+  if (btn) btn.click();
+}
+
 function initAdminSPA() {
   const buttons = document.querySelectorAll(".sidebar-menu button:not(.sidebar-group-toggle)");
   const groupToggles = document.querySelectorAll(".sidebar-group-toggle");
@@ -186,7 +204,7 @@ function initAdminSPA() {
           endpoint = `${API_URL}/alumnos?limit=${PAGE_SIZE}&offset=0`;
           break;
         case "profesores":
-          endpoint = `${API_URL}/profesores?limit=${PAGE_SIZE}&offset=0`;
+          endpoint = `${API_URL}/profesores?limit=${PAGE_SIZE}&offset=0${getProfesorEstadoParamFromStorage()}`;
           break;
         case "administradores":
           endpoint = `${API_URL}/administradores?limit=${PAGE_SIZE}&offset=0`;
@@ -340,6 +358,7 @@ async function loadMoreRows(section) {
 
   try {
     let url = `${API_URL}/${section}?limit=${state.pageSize}&offset=${state.offset}`;
+    if (section === 'profesores') url += getProfesorEstadoParamFromStorage();
     const res = await fetch(url);
     const responseData = await res.json();
     const newRows = responseData.data || [];
@@ -5025,9 +5044,9 @@ function generateTable(section, data, total) {
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Estado</div>
                   <div class="filter-dropdown-checkboxes">
-                    <label><input type="checkbox" id="filterProfesorActivo" checked onchange="filterTableRows('profesores')"> Activos</label>
-                    <label><input type="checkbox" id="filterProfesorInactivo" onchange="filterTableRows('profesores')"> Inactivos</label>
-                    <label><input type="checkbox" id="filterProfesorLicencia" onchange="filterTableRows('profesores')"> Licencia</label>
+                    <label><input type="checkbox" id="filterProfesorActivo" checked onchange="reloadProfesoresPorEstado()"> Activos</label>
+                    <label><input type="checkbox" id="filterProfesorInactivo" onchange="reloadProfesoresPorEstado()"> Inactivos</label>
+                    <label><input type="checkbox" id="filterProfesorLicencia" onchange="reloadProfesoresPorEstado()"> Licencia</label>
                   </div>
                 </div>
               </div>
@@ -5615,6 +5634,31 @@ function filterNivelesByIdioma(allNiveles, idiomaId, nivelSelect, selectedNivelI
   });
 }
 
+async function cargarProfesoresActivosPorIdioma(idIdioma, selectedProfesorId = '') {
+  const profesorSelect = document.getElementById('id_profesor');
+  if (!profesorSelect) return;
+  profesorSelect.innerHTML = '<option value="">Seleccionar idioma primero</option>';
+  if (!idIdioma) return;
+
+  profesorSelect.innerHTML = '<option value="">Cargando profesores...</option>';
+  try {
+    const res = await fetch(`${API_URL}/profesores?estado=activo&idioma=${encodeURIComponent(idIdioma)}&limit=1000`);
+    const data = await res.json();
+    const profesores = data.data || data || [];
+    if (!profesores.length) {
+      profesorSelect.innerHTML = '<option value="">No hay profesores activos para este idioma</option>';
+      return;
+    }
+    profesorSelect.innerHTML = '<option value="">Seleccionar profesor</option>' + profesores.map((p) => {
+      const selected = String(p.id_profesor) === String(selectedProfesorId) ? 'selected' : '';
+      return `<option value="${p.id_profesor}" ${selected}>${p.nombre} ${p.apellido} - ${p.especialidad || 'Sin especialidad'}</option>`;
+    }).join('');
+  } catch (error) {
+    console.error('Error cargando profesores por idioma:', error);
+    profesorSelect.innerHTML = '<option value="">Error al cargar profesores</option>';
+  }
+}
+
 // Debounce helper
 var _searchTimers = {};
 function debounceSearch(section, fn, delay) {
@@ -5625,6 +5669,7 @@ function debounceSearch(section, fn, delay) {
 // Server-side search across all records
 function searchServerSide(section, query) {
   var url = API_URL + '/' + section + '?busqueda=' + encodeURIComponent(query) + '&limit=100';
+  if (section === 'profesores') url += getProfesorEstadoParamFromStorage();
   fetch(url).then(function(res) { return res.json(); }).then(function(data) {
     var rows = data.data || data;
     var tbody = document.getElementById(section + 'TableBody');
@@ -9779,14 +9824,14 @@ async function eliminarIdioma(id, nombre) {
 async function openNuevaInscripcionModal() {
   try {
     const [alumnosRes, cursosRes] = await Promise.all([
-      fetch(`${API_URL}/alumnos`),
-      fetch(`${API_URL}/cursos`)
+      fetch(`${API_URL}/alumnos?estado=activo&limit=1000`),
+      fetch(`${API_URL}/cursos?estado=activo&limit=1000`)
     ]);
     
     const alumnosResp = await alumnosRes.json();
     const alumnos = alumnosResp.data || alumnosResp;
     const cursosResp = await cursosRes.json();
-    const cursos = cursosResp.data || cursosResp;
+    const cursos = (cursosResp.data || cursosResp).filter(c => (c.estado || 'activo') === 'activo');
     
     const { value: formValues } = await Swal.fire({
       title: 'Nueva Inscripción',
@@ -11508,17 +11553,14 @@ async function eliminarAdministrador(id, nombre) {
 
 async function openNuevoCursoModal() {
   try {
-    const [idiomasRes, nivelesRes, profesoresRes, aulasRes] = await Promise.all([
-      fetch(`${API_URL}/idiomas`),
+    const [idiomasRes, nivelesRes, aulasRes] = await Promise.all([
+      fetch(`${API_URL}/idiomas?estado=activo`),
       fetch(`${API_URL}/niveles`),
-      fetch(`${API_URL}/profesores`),
-      fetch(`${API_URL}/aulas`)
+      fetch(`${API_URL}/aulas?estado=activo`)
     ]);
 
     const idiomas = await idiomasRes.json();
     const allNiveles = await nivelesRes.json();
-    const profesoresResp = await profesoresRes.json();
-    const profesores = profesoresResp.data || profesoresResp;
     const aulas = await aulasRes.json();
 
     const { value: formValues } = await Swal.fire({
@@ -11545,8 +11587,7 @@ async function openNuevoCursoModal() {
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Profesor</label>
             <select id="id_profesor" class="swal2-input" style="width: 100%; margin: 0;">
-              <option value="">Seleccionar profesor</option>
-              ${profesores.map(p => `<option value="${p.id_profesor}">${p.nombre} ${p.apellido}</option>`).join('')}
+              <option value="">Seleccionar idioma primero</option>
             </select>
           </div>
           <div style="margin-bottom: 15px;">
@@ -11580,6 +11621,7 @@ async function openNuevoCursoModal() {
         var idiomaSelect = document.getElementById('id_idioma');
         idiomaSelect.addEventListener('change', function() {
           filterNivelesByIdioma(allNiveles, this.value, document.getElementById('id_nivel'), '');
+          cargarProfesoresActivosPorIdioma(this.value, '');
         });
       },
       preConfirm: () => {
@@ -11632,19 +11674,16 @@ async function openNuevoCursoModal() {
 
 async function editarCurso(id) {
   try {
-    const [cursoRes, idiomasRes, nivelesRes, profesoresRes, aulasRes] = await Promise.all([
+    const [cursoRes, idiomasRes, nivelesRes, aulasRes] = await Promise.all([
       fetch(`${API_URL}/cursos/${id}`),
-      fetch(`${API_URL}/idiomas`),
+      fetch(`${API_URL}/idiomas?estado=activo`),
       fetch(`${API_URL}/niveles`),
-      fetch(`${API_URL}/profesores`),
-      fetch(`${API_URL}/aulas`)
+      fetch(`${API_URL}/aulas?estado=activo`)
     ]);
 
     const curso = await cursoRes.json();
     const idiomas = await idiomasRes.json();
     const allNiveles = await nivelesRes.json();
-    const profesoresResp = await profesoresRes.json();
-    const profesores = profesoresResp.data || profesoresResp;
     const aulas = await aulasRes.json();
 
     const { value: formValues } = await Swal.fire({
@@ -11670,7 +11709,7 @@ async function editarCurso(id) {
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Profesor</label>
             <select id="id_profesor" class="swal2-input" style="width: 100%; margin: 0;">
-              ${profesores.map(p => `<option value="${p.id_profesor}" ${curso.id_profesor == p.id_profesor ? 'selected' : ''}>${p.nombre} ${p.apellido}</option>`).join('')}
+              <option value="">Cargando profesores...</option>
             </select>
           </div>
           <div style="margin-bottom: 15px;">
@@ -11702,9 +11741,11 @@ async function editarCurso(id) {
       confirmButtonColor: '#4a5259',
       didOpen: function() {
         filterNivelesByIdioma(allNiveles, curso.id_idioma, document.getElementById('id_nivel'), curso.id_nivel);
+        cargarProfesoresActivosPorIdioma(curso.id_idioma, curso.id_profesor);
         var idiomaSelect = document.getElementById('id_idioma');
         idiomaSelect.addEventListener('change', function() {
           filterNivelesByIdioma(allNiveles, this.value, document.getElementById('id_nivel'), '');
+          cargarProfesoresActivosPorIdioma(this.value, '');
         });
       },
       preConfirm: () => {
@@ -11780,7 +11821,9 @@ async function eliminarCurso(id, nombre) {
 
 async function asignarProfesorACurso(idCurso, nombreCurso) {
   try {
-    const res = await fetch(`${API_URL}/profesores`);
+    const cursoRes = await fetch(`${API_URL}/cursos/${idCurso}`);
+    const curso = await cursoRes.json();
+    const res = await fetch(`${API_URL}/profesores?estado=activo&idioma=${encodeURIComponent(curso.id_idioma)}&limit=1000`);
     const profesoresResp = await res.json();
     const profesores = profesoresResp.data || profesoresResp;
     
@@ -11792,7 +11835,7 @@ async function asignarProfesorACurso(idCurso, nombreCurso) {
     const profesoresActivos = profesores.filter(p => p.estado === 'activo');
     
     if (profesoresActivos.length === 0) {
-      Swal.fire('Sin profesores activos', 'No hay profesores activos disponibles', 'info');
+      Swal.fire('Sin profesores activos', 'No hay profesores activos disponibles para el idioma de este curso', 'info');
       return;
     }
 
@@ -13799,7 +13842,13 @@ async function renderDepuracionSection() {
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;">
         <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
-          <h3 style="font-size:16px;color:#374151;margin:0 0 14px 0;">Secciones</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
+            <h3 style="font-size:16px;color:#374151;margin:0;">Secciones</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn-secondary" type="button" onclick="toggleDepuracionSecciones(true)">Seleccionar todas</button>
+              <button class="btn-secondary" type="button" onclick="toggleDepuracionSecciones(false)">Limpiar selección</button>
+            </div>
+          </div>
           <div id="depuracionOpciones" style="display:flex;flex-direction:column;gap:10px;"><p style="color:#9ca3af;margin:0;">Cargando opciones...</p></div>
           <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">
             <button class="btn-primary" onclick="exportarYLimpiarDepuracion()"><i data-lucide="download"></i> Exportar y Limpiar</button>
@@ -13813,6 +13862,12 @@ async function renderDepuracionSection() {
         </div>
       </div>
     </div>`;
+}
+
+function toggleDepuracionSecciones(checked) {
+  document.querySelectorAll('.depuracion-checkbox').forEach(cb => {
+    cb.checked = checked;
+  });
 }
 
 async function initDepuracionSection() {

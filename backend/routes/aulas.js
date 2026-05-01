@@ -5,7 +5,14 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT *, COALESCE(estado, 'activo') AS estado FROM aulas ORDER BY nombre_aula");
+    const { estado } = req.query;
+    const params = [];
+    let whereClause = "";
+    if (estado) {
+      whereClause = "WHERE COALESCE(estado, 'activo') = ?";
+      params.push(estado);
+    }
+    const [rows] = await pool.query(`SELECT *, COALESCE(estado, 'activo') AS estado FROM aulas ${whereClause} ORDER BY nombre_aula`, params);
     res.json(rows);
   } catch (error) {
     console.error(error);

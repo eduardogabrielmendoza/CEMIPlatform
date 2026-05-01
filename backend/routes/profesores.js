@@ -11,7 +11,20 @@ router.get("/", async (req, res) => {
     let where = [];
     let params = [];
 
-    if (estado) { where.push('p.estado = ?'); params.push(estado); }
+    const estadosPermitidos = ["activo", "inactivo", "licencia"];
+    if (estado === "todos") {
+      // Sin filtro de estado, usado solo para reportes internos.
+    } else {
+      const estados = estado
+        ? String(estado).split(",").map((item) => item.trim()).filter((item) => estadosPermitidos.includes(item))
+        : ["activo"];
+      if (estado && estados.length === 0) {
+        where.push("1 = 0");
+      } else {
+        where.push(`p.estado IN (${estados.map(() => "?").join(",")})`);
+        params.push(...estados);
+      }
+    }
     if (busqueda) {
       where.push('(per.nombre LIKE ? OR per.apellido LIKE ? OR per.mail LIKE ? OR per.dni LIKE ? OR p.especialidad LIKE ?)');
       const b = `%${busqueda}%`;
@@ -300,9 +313,10 @@ router.post("/", async (req, res) => {
       );
 
       if (perfilRows.length > 0) {
+        const passwordHash = bcrypt.hashSync(password, 10);
         await pool.query(
           'INSERT INTO usuarios (username, password_hash, password_plain, id_persona, id_perfil) VALUES (?, ?, ?, ?, ?)',
-          [username, password, password, username, id_persona, perfilRows[0].id_perfil]
+          [username, passwordHash, password, id_persona, perfilRows[0].id_perfil]
         );
       }
     }
