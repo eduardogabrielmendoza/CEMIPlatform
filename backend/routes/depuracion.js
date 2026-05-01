@@ -214,10 +214,12 @@ router.post("/seed-demo", async (_req, res) => {
     });
   } catch (error) {
     console.error("Error ejecutando seeder demo:", error);
+    const detail = error.sqlMessage || error.message || "Error desconocido";
     res.status(500).json({
       success: false,
-      message: "Error al ejecutar el script de datos",
-      error: error.message
+      message: `Error al ejecutar el script de datos: ${detail}`,
+      error: detail,
+      code: error.code || null
     });
   }
 });

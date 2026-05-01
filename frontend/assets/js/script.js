@@ -13846,7 +13846,10 @@ async function ejecutarSeederDemo() {
   try {
     const res = await fetch(`${API_URL}/depuracion/seed-demo`, { method: 'POST' });
     const data = await res.json();
-    if (!res.ok || !data.success) throw new Error(data.message || 'No se pudo ejecutar el seeder');
+    if (!res.ok || !data.success) {
+      const detail = data.error || data.message || 'No se pudo ejecutar el seeder';
+      throw new Error(detail);
+    }
 
     const summary = data.summary || {};
     const message = `Seeder ejecutado: ${summary.alumnos || 0} alumnos, ${summary.profesores || 0} profesores, ${summary.cursos || 0} cursos, ${summary.aulas || 0} aulas y ${summary.idiomas || 0} idiomas.`;

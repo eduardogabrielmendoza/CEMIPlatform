@@ -40,7 +40,11 @@ const aulas = [
 async function ensureColumn(table, column, definition) {
   const [rows] = await pool.query(`SHOW COLUMNS FROM ${table} LIKE ?`, [column]);
   if (rows.length === 0) {
-    await pool.query(`ALTER TABLE ${table} ADD COLUMN ${definition}`);
+    try {
+      await pool.query(`ALTER TABLE ${table} ADD COLUMN ${definition}`);
+    } catch (error) {
+      if (error.code !== "ER_DUP_FIELDNAME") throw error;
+    }
   }
 }
 
@@ -77,8 +81,8 @@ async function upsertPersona({ nombre, apellido, mail, dni, telefono }) {
   if (existing.length) return existing[0].id_persona;
 
   const [result] = await pool.query(
-    "INSERT INTO personas (nombre, apellido, mail, dni, telefono, fecha_nacimiento, direccion) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [nombre, apellido, mail, dni, telefono, "1999-04-12", "San Miguel de Tucuman"]
+    "INSERT INTO personas (nombre, apellido, mail, dni, telefono) VALUES (?, ?, ?, ?, ?)",
+    [nombre, apellido, mail, dni, telefono]
   );
   return result.insertId;
 }
@@ -151,10 +155,10 @@ async function seedPersonas() {
       telefono: `381555${String(1000 + i)}`
     });
     await pool.query(
-      `INSERT INTO alumnos (id_alumno, id_persona, legajo, domicilio, fecha_nacimiento, estado, fecha_registro)
-       VALUES (?, ?, ?, ?, ?, 'activo', ?)
+      `INSERT INTO alumnos (id_alumno, id_persona, legajo, estado, fecha_registro)
+       VALUES (?, ?, ?, 'activo', ?)
        ON DUPLICATE KEY UPDATE estado = 'activo', legajo = VALUES(legajo)`,
-      [id, id, `SD${String(i + 1).padStart(3, "0")}`, "San Miguel de Tucuman", "2001-03-15", "2026-03-01"]
+      [id, id, `SD${String(i + 1).padStart(3, "0")}`, "2026-03-01"]
     );
     await upsertUsuario(id, `alumno.demo${i + 1}`, perfilAlumno, hash);
     alumnoIds.push(id);
