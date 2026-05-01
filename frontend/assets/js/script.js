@@ -1,4 +1,4 @@
-﻿
+
 const API_URL = window.API_URL || "http://localhost:3000/api";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -300,8 +300,28 @@ function initAdminSPA() {
           html += generateTable(section, tableData);
         } else {
           html += generateTable(section, tableData, total);
-          if (isPaginated && tableData.length < total) {
-            html += `<button class="btn-load-more" onclick="loadMoreRows('${section}')">Cargar más (${tableData.length} de ${total})</button>`;
+          if (isPaginated && total > 0) {
+            const currentPage = 1;
+            const totalPages = Math.ceil(total / PAGE_SIZE);
+            const showFrom = 1;
+            const showTo = Math.min(tableData.length, total);
+            html += `
+              <div class="pagination-slider-container" id="paginationContainer_${section}">
+                <div class="pagination-meta">Mostrando <strong>${showFrom}-${showTo}</strong> de <strong>${total}</strong></div>
+                <div class="pagination-slider-wrapper">
+                  <button class="pagination-arrow" onclick="goToPage('${section}', 'prev')" ${currentPage <= 1 ? 'disabled' : ''}>
+                    <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+                  </button>
+                  <div class="pagination-pages" id="paginationPages_${section}">
+                    ${generatePaginationDots(currentPage, totalPages, section)}
+                  </div>
+                  <button class="pagination-arrow" onclick="goToPage('${section}', 'next')" ${currentPage >= totalPages ? 'disabled' : ''}>
+                    <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+                  </button>
+                </div>
+              </div>`;
+            window._adminPagination[section].currentPage = 1;
+            window._adminPagination[section].totalPages = totalPages;
           }
         }
       }
@@ -348,42 +368,69 @@ function initAdminSPA() {
   }
 }
 
-// Load more rows for paginated tables
-async function loadMoreRows(section) {
+// Page navigation for paginated tables
+function generatePaginationDots(current, totalPages, section) {
+  let html = '';
+  const maxVisible = 5;
+  let start = Math.max(1, current - Math.floor(maxVisible / 2));
+  let end = Math.min(totalPages, start + maxVisible - 1);
+  if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
+  if (start > 1) {
+    html += `<button class="pagination-dot" onclick="goToPage('${section}', 1)">1</button>`;
+    if (start > 2) html += '<span class="pagination-ellipsis">\u2026</span>';
+  }
+  for (let i = start; i <= end; i++) {
+    html += `<button class="pagination-dot ${i === current ? 'active' : ''}" onclick="goToPage('${section}', ${i})">${i}</button>`;
+  }
+  if (end < totalPages) {
+    if (end < totalPages - 1) html += '<span class="pagination-ellipsis">\u2026</span>';
+    html += `<button class="pagination-dot" onclick="goToPage('${section}', ${totalPages})">${totalPages}</button>`;
+  }
+  return html;
+}
+
+async function goToPage(section, pageOrDir) {
   const state = window._adminPagination[section];
   if (!state) return;
-
-  const btn = document.querySelector('.btn-load-more');
-  if (btn) { btn.textContent = 'Cargando...'; btn.disabled = true; }
-
+  let targetPage;
+  if (pageOrDir === 'prev') targetPage = Math.max(1, state.currentPage - 1);
+  else if (pageOrDir === 'next') targetPage = Math.min(state.totalPages, state.currentPage + 1);
+  else targetPage = parseInt(pageOrDir);
+  if (targetPage === state.currentPage) return;
+  const container = document.getElementById(`paginationContainer_${section}`);
+  if (container) container.querySelectorAll('button').forEach(b => b.disabled = true);
   try {
-    let url = `${API_URL}/${section}?limit=${state.pageSize}&offset=${state.offset}`;
+    const offset = (targetPage - 1) * state.pageSize;
+    let url = `${API_URL}/${section}?limit=${state.pageSize}&offset=${offset}`;
     if (section === 'profesores') url += getProfesorEstadoParamFromStorage();
     const res = await fetch(url);
     const responseData = await res.json();
     const newRows = responseData.data || [];
-
     const tbody = document.getElementById(`${section}TableBody`);
-    if (tbody && newRows.length > 0) {
-      newRows.forEach(item => {
-        tbody.insertAdjacentHTML('beforeend', generateTableRow(section, item));
-      });
+    if (tbody) {
+      tbody.innerHTML = '';
+      newRows.forEach(item => { tbody.insertAdjacentHTML('beforeend', generateTableRow(section, item)); });
       lucide.createIcons();
     }
-
-    state.offset += newRows.length;
-
-    if (btn) {
-      if (state.offset >= state.total) {
-        btn.remove();
-      } else {
-        btn.textContent = `Cargar más (${state.offset} de ${state.total})`;
-        btn.disabled = false;
-      }
+    state.currentPage = targetPage;
+    state.offset = offset + newRows.length;
+    const showFrom = offset + 1;
+    const showTo = offset + newRows.length;
+    if (container) {
+      const metaEl = container.querySelector('.pagination-meta');
+      if (metaEl) metaEl.innerHTML = `Mostrando <strong>${showFrom}-${showTo}</strong> de <strong>${state.total}</strong>`;
+      const pagesEl = document.getElementById(`paginationPages_${section}`);
+      if (pagesEl) pagesEl.innerHTML = generatePaginationDots(targetPage, state.totalPages, section);
+      const arrows = container.querySelectorAll('.pagination-arrow');
+      if (arrows[0]) arrows[0].disabled = targetPage <= 1;
+      if (arrows[1]) arrows[1].disabled = targetPage >= state.totalPages;
+      container.querySelectorAll('button:not(.pagination-arrow)').forEach(b => b.disabled = false);
+      lucide.createIcons();
     }
+    filterTableRows(section);
   } catch (error) {
-    console.error('Error loading more rows:', error);
-    if (btn) { btn.textContent = 'Error, reintentar'; btn.disabled = false; }
+    console.error('Error loading page:', error);
+    if (container) container.querySelectorAll('button').forEach(b => b.disabled = false);
   }
 }
 
@@ -4897,10 +4944,43 @@ function generateTable(section, data, total) {
   switch (section) {
     case "cursos":
       const cursosTotal = total || data.length;
+      // Group cursos by idioma for collapsible accordion
+      const cursosByIdioma = {};
+      data.forEach(c => {
+        const key = c.nombre_idioma || 'Sin idioma';
+        if (!cursosByIdioma[key]) cursosByIdioma[key] = [];
+        cursosByIdioma[key].push(c);
+      });
+      const idiomaKeys = Object.keys(cursosByIdioma).sort();
+      const accordionItems = idiomaKeys.map((idioma) => {
+        const cursos = cursosByIdioma[idioma];
+        const activos = cursos.filter(c => (c.estado || 'activo') === 'activo').length;
+        return `
+          <div class="curso-accordion-item" data-idioma="${idioma.toLowerCase()}">
+            <button class="curso-accordion-header" onclick="toggleCursoAccordion(this)" type="button">
+              <div class="curso-accordion-title">
+                <i data-lucide="book-open" style="width:18px;height:18px;color:#4a5259;"></i>
+                <span>${idioma}</span>
+                <span class="curso-accordion-count">${cursos.length} curso${cursos.length !== 1 ? 's' : ''} \u00b7 ${activos} activo${activos !== 1 ? 's' : ''}</span>
+              </div>
+              <i data-lucide="chevron-down" class="curso-accordion-chevron" style="width:18px;height:18px;color:#9ca3af;transition:transform 0.3s ease;"></i>
+            </button>
+            <div class="curso-accordion-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;">
+              <table class="admin-table" style="margin:0;border-radius:0 0 12px 12px;box-shadow:none;border-top:1px solid #e5e7eb;">
+                <thead><tr>
+                  <th>Curso</th><th>Idioma</th><th>Nivel</th><th>Profesor</th><th>Horario</th><th>Aula</th><th>Cupo</th><th>Ciclo</th><th>Estado</th><th style="width:120px;text-align:center;">Acciones</th>
+                </tr></thead>
+                <tbody>
+                  ${cursos.map(c => generateTableRow('cursos', c)).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>`;
+      }).join('');
       return `
         <div class="cursos-header" style="display: flex; align-items: center; margin-bottom: 20px; gap: 20px; flex-wrap: wrap;">
           <div style="flex-shrink: 0;">
-            <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gestión de Cursos</h2>
+            <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gesti\u00f3n de Cursos</h2>
             <p style="color: #666; margin: 0; font-size: 14px;">${cursosTotal} curso${cursosTotal !== 1 ? 's' : ''} disponible${cursosTotal !== 1 ? 's' : ''}</p>
           </div>
           <div class="alumnos-search-filter">
@@ -4916,25 +4996,25 @@ function generateTable(section, data, total) {
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Estado</div>
                   <div class="filter-dropdown-checkboxes">
-                    <label><input type="checkbox" id="filterCursoActivo" checked onchange="filterTableRows('cursos')"> Activos</label>
-                    <label><input type="checkbox" id="filterCursoInactivo" onchange="filterTableRows('cursos')"> Inactivos</label>
+                    <label><input type="checkbox" id="filterCursoActivo" checked onchange="handleEstadoExclusion('cursos','activo'); filterCursosAccordion()"> Activos</label>
+                    <label><input type="checkbox" id="filterCursoInactivo" onchange="handleEstadoExclusion('cursos','inactivo'); filterCursosAccordion()"> Inactivos</label>
                   </div>
                 </div>
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Idioma</div>
-                  <select id="cursoFilterIdioma" onchange="filterTableRows('cursos')">
+                  <select id="cursoFilterIdioma" onchange="filterCursosAccordion()">
                     <option value="">Todos los idiomas</option>
                   </select>
                 </div>
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Nivel</div>
-                  <select id="cursoFilterNivel" onchange="filterTableRows('cursos')">
+                  <select id="cursoFilterNivel" onchange="filterCursosAccordion()">
                     <option value="">Todos los niveles</option>
                   </select>
                 </div>
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Ciclo lectivo</div>
-                  <select id="cursoFilterCiclo" onchange="filterTableRows('cursos')">
+                  <select id="cursoFilterCiclo" onchange="filterCursosAccordion()">
                     <option value="">Todos los ciclos</option>
                   </select>
                 </div>
@@ -4946,25 +5026,17 @@ function generateTable(section, data, total) {
             </button>
           </div>
         </div>
-        <table class="admin-table" id="cursosTable">
-          <thead>
-            <tr>
-              <th>Curso</th>
-              <th>Idioma</th>
-              <th>Nivel</th>
-              <th>Profesor</th>
-              <th>Horario</th>
-              <th>Aula</th>
-              <th>Cupo</th>
-              <th>Ciclo</th>
-              <th>Estado</th>
-              <th style="width: 120px; text-align: center;">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="cursosTableBody">
-            ${data.map(c => generateTableRow('cursos', c)).join('')}
-          </tbody>
-        </table>
+        <div class="curso-accordion-hint" id="cursoAccordionHint" style="text-align:center;padding:24px;color:#9ca3af;font-size:14px;">
+          <i data-lucide="mouse-pointer-click" style="width:24px;height:24px;margin-bottom:8px;display:inline-block;"></i>
+          <p style="margin:0;">Selecciona un idioma para ver sus cursos y niveles</p>
+        </div>
+        <div id="cursosAccordionList" style="display:flex;flex-direction:column;gap:4px;">
+          ${accordionItems}
+        </div>
+        <!-- Hidden tbody for filter compatibility -->
+        <table style="display:none;"><tbody id="cursosTableBody">
+          ${data.map(c => generateTableRow('cursos', c)).join('')}
+        </tbody></table>
       `;
     case "alumnos":
       const alumnosTotal = total || data.length;
@@ -4987,8 +5059,8 @@ function generateTable(section, data, total) {
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Estado</div>
                   <div class="filter-dropdown-checkboxes">
-                    <label><input type="checkbox" id="filterAlumnoActivo" checked onchange="filterTableRows('alumnos')"> Activos</label>
-                    <label><input type="checkbox" id="filterAlumnoInactivo" onchange="filterTableRows('alumnos')"> Inactivos</label>
+                    <label><input type="checkbox" id="filterAlumnoActivo" checked onchange="handleEstadoExclusion('alumnos','activo'); filterTableRows('alumnos')"> Activos</label>
+                    <label><input type="checkbox" id="filterAlumnoInactivo" onchange="handleEstadoExclusion('alumnos','inactivo'); filterTableRows('alumnos')"> Inactivos</label>
                   </div>
                 </div>
               </div>
@@ -5044,9 +5116,9 @@ function generateTable(section, data, total) {
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Estado</div>
                   <div class="filter-dropdown-checkboxes">
-                    <label><input type="checkbox" id="filterProfesorActivo" checked onchange="reloadProfesoresPorEstado()"> Activos</label>
-                    <label><input type="checkbox" id="filterProfesorInactivo" onchange="reloadProfesoresPorEstado()"> Inactivos</label>
-                    <label><input type="checkbox" id="filterProfesorLicencia" onchange="reloadProfesoresPorEstado()"> Licencia</label>
+                    <label><input type="checkbox" id="filterProfesorActivo" checked onchange="handleEstadoExclusion('profesores','activo'); reloadProfesoresPorEstado()"> Activos</label>
+                    <label><input type="checkbox" id="filterProfesorInactivo" onchange="handleEstadoExclusion('profesores','inactivo'); reloadProfesoresPorEstado()"> Inactivos</label>
+                    <label><input type="checkbox" id="filterProfesorLicencia" onchange="handleEstadoExclusion('profesores','licencia'); reloadProfesoresPorEstado()"> Licencia</label>
                   </div>
                 </div>
               </div>
@@ -5097,8 +5169,8 @@ function generateTable(section, data, total) {
                 <div class="filter-dropdown-group">
                   <div class="filter-dropdown-label">Estado</div>
                   <div class="filter-dropdown-checkboxes">
-                    <label><input type="checkbox" id="filterAdminActivo" checked onchange="filterTableRows('administradores')"> Activos</label>
-                    <label><input type="checkbox" id="filterAdminInactivo" onchange="filterTableRows('administradores')"> Inactivos</label>
+                    <label><input type="checkbox" id="filterAdminActivo" checked onchange="handleEstadoExclusion('administradores','activo'); filterTableRows('administradores')"> Activos</label>
+                    <label><input type="checkbox" id="filterAdminInactivo" onchange="handleEstadoExclusion('administradores','inactivo'); filterTableRows('administradores')"> Inactivos</label>
                   </div>
                 </div>
               </div>
@@ -5683,8 +5755,8 @@ function searchServerSide(section, query) {
       tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:20px;color:#999;">No se encontraron resultados</td></tr>';
     }
     if (typeof lucide !== 'undefined') lucide.createIcons();
-    var loadMoreBtn = document.querySelector('.btn-load-more');
-    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    var paginationContainer = document.getElementById('paginationContainer_' + section);
+    if (paginationContainer) paginationContainer.style.display = 'none';
     filterTableRows(section);
   });
 }
@@ -5787,6 +5859,100 @@ function restoreFilterState(section) {
       const di = document.getElementById('filterAdminInactivo'); if (di) di.checked = state.inactivo ?? false;
     }
   } catch(e) {}
+}
+
+// Selección excluyente de filtros de estado
+function handleEstadoExclusion(section, clicked) {
+  const map = {
+    cursos:          { activo: 'filterCursoActivo',    inactivo: 'filterCursoInactivo' },
+    alumnos:         { activo: 'filterAlumnoActivo',   inactivo: 'filterAlumnoInactivo' },
+    profesores:      { activo: 'filterProfesorActivo', inactivo: 'filterProfesorInactivo', licencia: 'filterProfesorLicencia' },
+    administradores: { activo: 'filterAdminActivo',    inactivo: 'filterAdminInactivo' }
+  };
+  const ids = map[section];
+  if (!ids) return;
+  const activoEl   = document.getElementById(ids.activo);
+  const inactivoEl = document.getElementById(ids.inactivo);
+  const licenciaEl = ids.licencia ? document.getElementById(ids.licencia) : null;
+  if (clicked === 'activo') {
+    if (activoEl && activoEl.checked) {
+      if (inactivoEl) inactivoEl.checked = false;
+      if (licenciaEl) licenciaEl.checked = false;
+    }
+  } else {
+    const otherChecked = (inactivoEl && inactivoEl.checked) || (licenciaEl && licenciaEl.checked);
+    if (otherChecked && activoEl) activoEl.checked = false;
+    const anyOther = (inactivoEl && inactivoEl.checked) || (licenciaEl && licenciaEl.checked);
+    if (!anyOther && activoEl) activoEl.checked = true;
+  }
+}
+
+// Accordion toggle + filter for cursos section
+function toggleCursoAccordion(btn) {
+  const item = btn.closest('.curso-accordion-item');
+  const body = item.querySelector('.curso-accordion-body');
+  const chevron = btn.querySelector('.curso-accordion-chevron');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.curso-accordion-item.open').forEach(other => {
+    if (other !== item) {
+      other.classList.remove('open');
+      other.querySelector('.curso-accordion-body').style.maxHeight = '0';
+      other.querySelector('.curso-accordion-body').style.opacity = '0';
+      const otherChev = other.querySelector('.curso-accordion-chevron');
+      if (otherChev) otherChev.style.transform = 'rotate(0deg)';
+    }
+  });
+  if (isOpen) {
+    item.classList.remove('open');
+    body.style.maxHeight = '0';
+    body.style.opacity = '0';
+    if (chevron) chevron.style.transform = 'rotate(0deg)';
+  } else {
+    item.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.style.opacity = '1';
+    if (chevron) chevron.style.transform = 'rotate(180deg)';
+    const hint = document.getElementById('cursoAccordionHint');
+    if (hint) hint.style.display = 'none';
+  }
+}
+
+function filterCursosAccordion() {
+  const searchInput = document.getElementById('cursosSearch');
+  const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+  const filterIdioma = document.getElementById('cursoFilterIdioma')?.value?.toLowerCase() || '';
+  const filterNivel = document.getElementById('cursoFilterNivel')?.value?.toLowerCase() || '';
+  const filterCiclo = document.getElementById('cursoFilterCiclo')?.value || '';
+  const showActivo = document.getElementById('filterCursoActivo')?.checked;
+  const showInactivo = document.getElementById('filterCursoInactivo')?.checked;
+  document.querySelectorAll('.curso-accordion-item').forEach(item => {
+    const rows = item.querySelectorAll('tbody tr');
+    let visibleCount = 0;
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const estado = row.dataset.estado || '';
+      const idioma = row.dataset.idioma || '';
+      const nivel = row.dataset.nivel || '';
+      const ciclo = row.dataset.ciclo || '';
+      let show = true;
+      if (!showActivo && !showInactivo) show = false;
+      else if (showActivo && !showInactivo) show = estado === 'activo';
+      else if (!showActivo && showInactivo) show = estado === 'inactivo';
+      if (filterIdioma && idioma !== filterIdioma) show = false;
+      if (filterNivel && nivel !== filterNivel) show = false;
+      if (filterCiclo && ciclo !== filterCiclo) show = false;
+      if (searchTerm && !text.includes(searchTerm)) show = false;
+      row.style.display = show ? '' : 'none';
+      if (show) visibleCount++;
+    });
+    if (filterIdioma && item.dataset.idioma !== filterIdioma) {
+      item.style.display = 'none';
+    } else {
+      item.style.display = visibleCount > 0 ? '' : 'none';
+    }
+  });
+  saveFilterState('cursos');
+  updateFilterBadge('cursos');
 }
 
 function filterTableRows(section) {
@@ -7167,14 +7333,7 @@ function setupCursoFilters() {
   const searchInput = document.getElementById('cursosSearch');
   if (searchInput) {
     searchInput.addEventListener('input', function() {
-      var query = this.value.trim();
-      if (query.length >= 2) {
-        debounceSearch('cursos', function() { searchServerSide('cursos', query); }, 350);
-      } else if (query.length === 0) {
-        debounceSearch('cursos', function() { document.getElementById('btnCursos').click(); }, 350);
-      } else {
-        filterTableRows('cursos');
-      }
+      filterCursosAccordion();
     });
   }
   // Populate idioma, nivel, ciclo dropdowns from API
@@ -7224,12 +7383,12 @@ function setupCursoFilters() {
       });
     }
     restoreFilterState('cursos');
-    filterTableRows('cursos');
+    filterCursosAccordion();
   });
 }
 
 function filterCursos() {
-  filterTableRows('cursos');
+  filterCursosAccordion();
 }
 
 // Filtros para Aulas
@@ -8411,7 +8570,7 @@ async function loadPagosData(queryParams = '') {
     document.getElementById('metricPendientes').textContent = pagosStats.cuotas_pendientes || 0;
     document.getElementById('metricPromedio').textContent = parseFloat(pagosStats.promedio_pago || 0).toLocaleString('es-AR', {minimumFractionDigits: 0});
 
-    const mediosPago = [...new Set(allPagos.map(p => p.medio_pago))];
+    const mediosPago = [...new Set(allPagos.map(p => normalizeMedioPago(p.medio_pago)))];
     const selectMedio = document.getElementById('pagoFilterMedio');
     selectMedio.innerHTML = '<option value="">Todos</option>' + 
       mediosPago.map(m => `<option value="${m}">${m}</option>`).join('');
@@ -8429,6 +8588,13 @@ async function loadPagosData(queryParams = '') {
   }
 }
 
+// Normaliza medio de pago con encoding roto
+function normalizeMedioPago(medio) {
+  if (!medio) return medio;
+  if (/tarjeta\s+de\s+cr/i.test(medio)) return 'Tarjeta de Débito';
+  return medio;
+}
+
 function renderPagosTable(pagos) {
   const tbody = document.getElementById('pagosTableBody');
   
@@ -8438,6 +8604,7 @@ function renderPagosTable(pagos) {
   }
 
   tbody.innerHTML = pagos.map(p => {
+    p.medio_pago = normalizeMedioPago(p.medio_pago);
     const estadoBadgeClass = {
       'en_proceso': 'warning',
       'pagado': 'success',
@@ -8634,7 +8801,7 @@ function filterPagos() {
       p.legajo.toLowerCase().includes(searchTerm) ||
       (p.concepto && p.concepto.toLowerCase().includes(searchTerm));
     
-    const matchesMedio = !medioFilter || p.medio_pago === medioFilter;
+    const matchesMedio = !medioFilter || normalizeMedioPago(p.medio_pago) === medioFilter;
 
     return matchesSearch && matchesMedio;
   });
@@ -9176,7 +9343,6 @@ async function openRegistrarPagoModal() {
             <select id="swal-medio-pago" class="swal2-input" style="width: 100%; margin: 0;">
               <option value="Efectivo">Efectivo</option>
               <option value="Transferencia">Transferencia</option>
-              <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
               <option value="Tarjeta de Débito">Tarjeta de Débito</option>
             </select>
           </div>
