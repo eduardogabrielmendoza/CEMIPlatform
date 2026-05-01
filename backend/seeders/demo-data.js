@@ -37,11 +37,34 @@ const aulas = [
   ["Aula Taller 303", 20], ["Auditorio CEMI", 45]
 ];
 
+const levelCandidates = {
+  A1: ["A1", "Base"],
+  A2: ["A2", "Pre-Intermedio"],
+  B1: ["B1", "Intermedio"],
+  B2: ["B2", "Intermedio-Alto", "Avanzado"]
+};
+
+const tableColumnsCache = new Map();
+
+async function getTableColumns(table) {
+  if (tableColumnsCache.has(table)) return tableColumnsCache.get(table);
+  const [rows] = await pool.query(`SHOW COLUMNS FROM ${table}`);
+  const columns = new Set(rows.map((row) => row.Field));
+  tableColumnsCache.set(table, columns);
+  return columns;
+}
+
+async function tableExists(table) {
+  const [rows] = await pool.query("SHOW TABLES LIKE ?", [table]);
+  return rows.length > 0;
+}
+
 async function ensureColumn(table, column, definition) {
   const [rows] = await pool.query(`SHOW COLUMNS FROM ${table} LIKE ?`, [column]);
   if (rows.length === 0) {
     try {
       await pool.query(`ALTER TABLE ${table} ADD COLUMN ${definition}`);
+      tableColumnsCache.delete(table);
     } catch (error) {
       if (error.code !== "ER_DUP_FIELDNAME") throw error;
     }
@@ -69,6 +92,46 @@ async function ensureSchema() {
       PRIMARY KEY (id_registro)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
   `);
+  await ensureColumn("registros_pagos", "id_pago", "id_pago INT DEFAULT NULL AFTER accion");
+  await ensureColumn("registros_pagos", "id_admin", "id_admin INT DEFAULT NULL AFTER id_pago");
+  await ensureColumn("registros_pagos", "nombre_admin", "nombre_admin VARCHAR(100) DEFAULT NULL AFTER id_admin");
+  await ensureColumn("registros_pagos", "nombre_alumno", "nombre_alumno VARCHAR(100) DEFAULT NULL AFTER nombre_admin");
+  await ensureColumn("registros_pagos", "concepto", "concepto VARCHAR(255) DEFAULT NULL AFTER nombre_alumno");
+  await ensureColumn("registros_pagos", "monto", "monto DECIMAL(10,2) DEFAULT NULL AFTER concepto");
+  await ensureColumn("registros_pagos", "descripcion", "descripcion TEXT DEFAULT NULL AFTER monto");
+  await ensureColumn("registros_pagos", "fecha", "fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER descripcion");
+  await ensureColumn("pagos", "archivado", "archivado TINYINT(1) DEFAULT 0 AFTER estado_pago");
+}
+
+async function ensureNivel(idIdioma, code) {
+  const columns = await getTableColumns("niveles");
+  const hasIdiomaColumn = columns.has("id_idioma");
+  const candidates = levelCandidates[code] || [code];
+  const placeholders = candidates.map(() => "?").join(",");
+
+  if (hasIdiomaColumn) {
+    const [rows] = await pool.query(
+      `SELECT id_nivel FROM niveles WHERE id_idioma = ? AND descripcion IN (${placeholders}) ORDER BY id_nivel LIMIT 1`,
+      [idIdioma, ...candidates]
+    );
+    if (rows.length > 0) return rows[0].id_nivel;
+
+    const [result] = await pool.query(
+      "INSERT INTO niveles (id_idioma, descripcion) VALUES (?, ?)",
+      [idIdioma, candidates[0]]
+    );
+    return result.insertId;
+  }
+
+  const [rows] = await pool.query(
+    `SELECT id_nivel FROM niveles WHERE descripcion IN (${placeholders}) ORDER BY id_nivel LIMIT 1`,
+    candidates
+  );
+  if (rows.length > 0) return rows[0].id_nivel;
+
+  const descripcion = candidates[1] || candidates[0];
+  const [result] = await pool.query("INSERT INTO niveles (descripcion) VALUES (?)", [descripcion]);
+  return result.insertId;
 }
 
 async function getPerfilId(nombre, fallback) {
@@ -90,9 +153,17 @@ async function upsertPersona({ nombre, apellido, mail, dni, telefono }) {
 async function upsertUsuario(idPersona, username, perfilId, hash) {
   const [existing] = await pool.query("SELECT id_usuario FROM usuarios WHERE username = ?", [username]);
   if (existing.length) return;
+  const columns = await getTableColumns("usuarios");
+  const insertColumns = ["username", "password_hash", "id_persona", "id_perfil"];
+  const values = [username, hash, idPersona, perfilId];
+  if (columns.has("password_plain")) {
+    insertColumns.push("password_plain");
+    values.push(password);
+  }
+  const placeholders = insertColumns.map(() => "?").join(",");
   await pool.query(
-    "INSERT INTO usuarios (username, password_hash, id_persona, id_perfil, password_plain) VALUES (?, ?, ?, ?, ?)",
-    [username, hash, idPersona, perfilId, password]
+    `INSERT INTO usuarios (${insertColumns.join(", ")}) VALUES (${placeholders})`,
+    values
   );
 }
 
@@ -108,13 +179,7 @@ async function seedIdiomas() {
     const [rows] = await pool.query("SELECT id_idioma FROM idiomas WHERE nombre_idioma = ?", [idioma.nombre]);
     ids[idioma.nombre] = rows[0].id_idioma;
     for (const nivel of idioma.niveles) {
-      const [nivelRows] = await pool.query(
-        "SELECT id_nivel FROM niveles WHERE id_idioma = ? AND descripcion = ?",
-        [ids[idioma.nombre], nivel]
-      );
-      if (nivelRows.length === 0) {
-        await pool.query("INSERT INTO niveles (id_idioma, descripcion) VALUES (?, ?)", [ids[idioma.nombre], nivel]);
-      }
+      await ensureNivel(ids[idioma.nombre], nivel);
     }
   }
   return ids;
@@ -198,15 +263,12 @@ async function seedCursos(idiomaIds, aulaIds, profesorIds) {
   const ids = [];
   for (let i = 0; i < cursos.length; i++) {
     const [nombre, idioma, nivel] = cursos[i];
-    const [nivelRows] = await pool.query(
-      "SELECT id_nivel FROM niveles WHERE id_idioma = ? AND descripcion = ? LIMIT 1",
-      [idiomaIds[idioma], nivel]
-    );
+    const idNivel = await ensureNivel(idiomaIds[idioma], nivel);
     const [existing] = await pool.query("SELECT id_curso FROM cursos WHERE nombre_curso = ?", [nombre]);
     const values = [
       nombre,
       idiomaIds[idioma],
-      nivelRows[0].id_nivel,
+      idNivel,
       profesorIds[i],
       i % 2 === 0 ? "Lunes y Miercoles 18:00" : "Martes y Jueves 19:30",
       30,
@@ -233,12 +295,17 @@ async function seedCursos(idiomaIds, aulaIds, profesorIds) {
 }
 
 async function seedRelations(cursoIds, alumnoIds, profesorIds, idiomaIds) {
-  for (let i = 0; i < profesorIds.length; i++) {
-    const idiomaId = Object.values(idiomaIds)[i % 3];
-    await pool.query(
-      "INSERT IGNORE INTO profesores_idiomas (id_profesor, id_idioma) VALUES (?, ?)",
-      [profesorIds[i], idiomaId]
-    );
+  if (await tableExists("profesores_idiomas")) {
+    const profesorIdiomaColumns = await getTableColumns("profesores_idiomas");
+    if (profesorIdiomaColumns.has("id_profesor") && profesorIdiomaColumns.has("id_idioma")) {
+      for (let i = 0; i < profesorIds.length; i++) {
+        const idiomaId = Object.values(idiomaIds)[i % 3];
+        await pool.query(
+          "INSERT IGNORE INTO profesores_idiomas (id_profesor, id_idioma) VALUES (?, ?)",
+          [profesorIds[i], idiomaId]
+        );
+      }
+    }
   }
 
   const medios = ["Efectivo", "Transferencia", "Tarjeta de Credito"];
@@ -249,8 +316,14 @@ async function seedRelations(cursoIds, alumnoIds, profesorIds, idiomaIds) {
   await pool.query("INSERT IGNORE INTO conceptos_pago (id_concepto, descripcion, monto_sugerido) VALUES (2, 'Cuota Mensual', 15000)");
   const [mediosRows] = await pool.query("SELECT id_medio_pago, descripcion FROM medios_pago");
 
-  await pool.query("DELETE FROM registros_pagos WHERE nombre_admin = 'Seeder CEMI'");
-  await pool.query("DELETE FROM pagos WHERE detalle_pago LIKE '%Curso demo %'");
+  const registrosColumns = await getTableColumns("registros_pagos");
+  if (registrosColumns.has("nombre_admin")) {
+    await pool.query("DELETE FROM registros_pagos WHERE nombre_admin = 'Seeder CEMI'");
+  }
+  const pagoCleanupColumns = await getTableColumns("pagos");
+  if (pagoCleanupColumns.has("detalle_pago")) {
+    await pool.query("DELETE FROM pagos WHERE detalle_pago LIKE '%Curso demo %'");
+  }
 
   const meses = ["Matricula", "Marzo", "Abril", "Mayo", "Junio", "Julio"];
   for (let c = 0; c < cursoIds.length; c++) {
@@ -278,33 +351,45 @@ async function seedRelations(cursoIds, alumnoIds, profesorIds, idiomaIds) {
         const pagoFecha = new Date(today);
         pagoFecha.setDate(today.getDate() - ((idx + c) % 45));
         const monto = mes === "Matricula" ? 12000 : 18000 + ((idx + c) % 4) * 2500;
+        const pagoColumns = await getTableColumns("pagos");
+        const pagoData = {
+          id_alumno: alumnoId,
+          id_curso: cursoIds[c],
+          id_concepto: mes === "Matricula" ? 1 : 2,
+          id_medio_pago: medio.id_medio_pago,
+          monto,
+          fecha_pago: pagoFecha.toISOString().slice(0, 10),
+          periodo: `2026-${String(Math.min(11, idx + 2)).padStart(2, "0")}`,
+          detalle_pago: `${mes} - Curso demo ${c + 1}`,
+          mes_cuota: mes,
+          estado_pago: "pagado",
+          archivado: 0
+        };
+        const insertPagoColumns = Object.keys(pagoData).filter((column) => pagoColumns.has(column));
+        const insertPagoValues = insertPagoColumns.map((column) => pagoData[column]);
         const [pago] = await pool.query(
-          `INSERT INTO pagos (id_alumno, id_curso, id_concepto, id_medio_pago, monto, fecha_pago, periodo, detalle_pago, mes_cuota, estado_pago, archivado)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pagado', 0)`,
-          [
-            alumnoId,
-            cursoIds[c],
-            mes === "Matricula" ? 1 : 2,
-            medio.id_medio_pago,
-            monto,
-            pagoFecha.toISOString().slice(0, 10),
-            `2026-${String(Math.min(11, idx + 2)).padStart(2, "0")}`,
-            `${mes} - Curso demo ${c + 1}`,
-            mes
-          ]
+          `INSERT INTO pagos (${insertPagoColumns.join(", ")}) VALUES (${insertPagoColumns.map(() => "?").join(", ")})`,
+          insertPagoValues
         );
-        await pool.query(
-          `INSERT INTO registros_pagos (accion, id_pago, nombre_admin, nombre_alumno, concepto, monto, descripcion, fecha)
-           VALUES ('registrado', ?, 'Seeder CEMI', ?, ?, ?, ?, ?)`,
-          [
-            pago.insertId,
-            `Alumno demo ${idx + 1}`,
-            `${mes} - Curso demo ${c + 1}`,
-            monto,
-            `Seeder CEMI registró un pago demo por $${monto}`,
-            pagoFecha
-          ]
-        );
+        const registroColumns = await getTableColumns("registros_pagos");
+        const registroData = {
+          accion: "registrado",
+          id_pago: pago.insertId,
+          nombre_admin: "Seeder CEMI",
+          nombre_alumno: `Alumno demo ${idx + 1}`,
+          concepto: `${mes} - Curso demo ${c + 1}`,
+          monto,
+          descripcion: `Seeder CEMI registro un pago demo por $${monto}`,
+          fecha: pagoFecha
+        };
+        const insertRegistroColumns = Object.keys(registroData).filter((column) => registroColumns.has(column));
+        const insertRegistroValues = insertRegistroColumns.map((column) => registroData[column]);
+        if (insertRegistroColumns.length > 0) {
+          await pool.query(
+            `INSERT INTO registros_pagos (${insertRegistroColumns.join(", ")}) VALUES (${insertRegistroColumns.map(() => "?").join(", ")})`,
+            insertRegistroValues
+          );
+        }
       }
     }
   }

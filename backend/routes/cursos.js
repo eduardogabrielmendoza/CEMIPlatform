@@ -3,6 +3,11 @@ import pool from "../utils/db.js";
 
 const router = express.Router();
 
+async function tableHasColumn(table, column) {
+    const [rows] = await pool.query(`SHOW COLUMNS FROM ${table} LIKE ?`, [column]);
+    return rows.length > 0;
+}
+
 // Get distinct ciclo_lectivo values
 router.get("/ciclos-lectivos", async (req, res) => {
   try {
@@ -264,13 +269,21 @@ router.get('/filtros/opciones', async (req, res) => {
             ORDER BY i.nombre_idioma
         `);
 
-        const [niveles] = await pool.query(`
-            SELECT DISTINCT n.id_nivel, n.descripcion, i.nombre_idioma
-            FROM niveles n
-            INNER JOIN idiomas i ON n.id_idioma = i.id_idioma
-            INNER JOIN cursos c ON n.id_nivel = c.id_nivel
-            ORDER BY i.nombre_idioma, n.descripcion
-        `);
+        const nivelesTieneIdioma = await tableHasColumn("niveles", "id_idioma");
+        const [niveles] = nivelesTieneIdioma
+            ? await pool.query(`
+                SELECT DISTINCT n.id_nivel, n.descripcion, i.nombre_idioma
+                FROM niveles n
+                INNER JOIN idiomas i ON n.id_idioma = i.id_idioma
+                INNER JOIN cursos c ON n.id_nivel = c.id_nivel
+                ORDER BY i.nombre_idioma, n.descripcion
+            `)
+            : await pool.query(`
+                SELECT DISTINCT n.id_nivel, n.descripcion, 'Todos los idiomas' AS nombre_idioma
+                FROM niveles n
+                INNER JOIN cursos c ON n.id_nivel = c.id_nivel
+                ORDER BY n.descripcion
+            `);
 
         const [profesores] = await pool.query(`
             SELECT DISTINCT 
