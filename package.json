@@ -10,6 +10,7 @@
     "dev": "node dev-server.js",
     "dev:backend": "nodemon server.js",
     "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev\"",
+    "seed:demo": "node backend/seeders/demo-data.js",
     "open": "start http://localhost:8080",
     "prod": "NODE_ENV=production node server.js"
   },

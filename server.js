@@ -33,6 +33,7 @@ import gdprRoutes from "./backend/routes/gdpr.js";
 import codigosRecuperacionRoutes from "./backend/routes/codigosRecuperacion.js";
 import codigosCemiRoutes from "./backend/routes/codigos-cemi.js";
 import recuperacionRoutes from "./backend/routes/recuperacion.js";
+import depuracionRoutes from "./backend/routes/depuracion.js";
 import ChatServer from "./backend/utils/chat-server.js";
 import http from "http";
 import { verificarToken } from "./backend/utils/authMiddleware.js";
@@ -178,6 +179,7 @@ app.use("/api/comunidad", comunidadRoutes);
 app.use("/api/gdpr", verificarToken, gdprRoutes);
 app.use("/api/codigos-recuperacion", verificarToken, codigosRecuperacionRoutes);
 app.use("/api/codigos-cemi", verificarToken, codigosCemiRoutes);
+app.use("/api/depuracion", verificarToken, depuracionRoutes);
 
 app.get("/", (req, res) => {
   res.sendFile("index.html", { root: "frontend" });
@@ -253,6 +255,42 @@ setChatServer(chatServer);
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
     `);
     console.log('[migration] registros_pagos table ensured');
+
+    const [aulasEstadoCols] = await pool.query("SHOW COLUMNS FROM aulas LIKE 'estado'");
+    if (aulasEstadoCols.length === 0) {
+      await pool.query("ALTER TABLE aulas ADD COLUMN estado ENUM('activo','inactivo') DEFAULT 'activo' AFTER capacidad");
+      console.log('[migration] Added estado column to aulas');
+    }
+
+    const [cursosCicloCols] = await pool.query("SHOW COLUMNS FROM cursos LIKE 'ciclo_lectivo'");
+    if (cursosCicloCols.length === 0) {
+      await pool.query("ALTER TABLE cursos ADD COLUMN ciclo_lectivo INT DEFAULT NULL AFTER cupo_maximo");
+      await pool.query("UPDATE cursos SET ciclo_lectivo = YEAR(CURDATE()) WHERE ciclo_lectivo IS NULL");
+      console.log('[migration] Added ciclo_lectivo column to cursos');
+    }
+
+    const [cursosEstadoCols] = await pool.query("SHOW COLUMNS FROM cursos LIKE 'estado'");
+    if (cursosEstadoCols.length === 0) {
+      await pool.query("ALTER TABLE cursos ADD COLUMN estado ENUM('activo','inactivo') DEFAULT 'activo' AFTER ciclo_lectivo");
+      console.log('[migration] Added estado column to cursos');
+    }
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS depuraciones_backup (
+        id_depuracion INT NOT NULL AUTO_INCREMENT,
+        secciones JSON NOT NULL,
+        backup_json JSON NOT NULL,
+        total_registros INT NOT NULL DEFAULT 0,
+        creado_por INT DEFAULT NULL,
+        creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        expira_en TIMESTAMP NOT NULL,
+        restaurado_en TIMESTAMP NULL DEFAULT NULL,
+        PRIMARY KEY (id_depuracion),
+        KEY idx_depuraciones_expira (expira_en),
+        KEY idx_depuraciones_restaurado (restaurado_en)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+    `);
+    console.log('[migration] depuraciones_backup table ensured');
   } catch (err) {
     console.error('[migration] Error running auto-migrations:', err.message);
   }

@@ -101,6 +101,7 @@ router.get("/curso/:id", async (req, res) => {
         p.nombre,
         p.apellido,
         p.mail,
+        i.fecha_inscripcion,
         c.parcial1,
         c.parcial2,
         c.final
@@ -118,6 +119,8 @@ router.get("/curso/:id", async (req, res) => {
       query += ` AND EXISTS (SELECT 1 FROM cursos cu WHERE cu.id_curso = i.id_curso AND cu.id_profesor = ?)`;
       params.push(id_profesor);
     }
+
+    query += ` ORDER BY i.fecha_inscripcion DESC, a.id_alumno DESC`;
     
     const [rows] = await pool.query(query, params);
     

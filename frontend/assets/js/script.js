@@ -247,6 +247,13 @@ function initAdminSPA() {
           mainContent.classList.add("active");
           lucide.createIcons();
           return;
+        case "depuracion":
+          loader.classList.add("hidden");
+          mainContent.innerHTML = await renderDepuracionSection();
+          mainContent.classList.add("active");
+          lucide.createIcons();
+          await initDepuracionSection();
+          return;
         default:
           endpoint = "";
           html = "<p>Seleccione una sección</p>";
@@ -4502,7 +4509,7 @@ async function pingService(serviceId, serviceName) {
               </div>
               <div>
                 <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Detalles</div>
-                <div style="font-weight: 600; color: #1e293b; font-size: 0.85rem;">${data.details ? Object.values(data.details).join(', ') : 'N/A'}</div>
+                <div style="font-weight: 600; color: #1e293b; font-size: 0.85rem;">${data.details ? Object.values(data.details).join(', ') : 'Sin detalle'}</div>
               </div>
             </div>
           </div>
@@ -5168,6 +5175,23 @@ case "pagos":
           <option value="">Todos</option>
         </select>
       </div>
+      <div class="filter-group">
+        <label>Fecha</label>
+        <select id="pagoDatePreset">
+          <option value="">Todo el historial</option>
+          <option value="semana">Última semana</option>
+          <option value="mes">Último mes</option>
+          <option value="custom">Rango personalizado</option>
+        </select>
+      </div>
+      <div class="filter-group pagos-custom-date" style="display:none;">
+        <label>Fecha Inicio</label>
+        <input type="date" id="pagoFechaInicio">
+      </div>
+      <div class="filter-group pagos-custom-date" style="display:none;">
+        <label>Fecha Fin</label>
+        <input type="date" id="pagoFechaFin">
+      </div>
       <div>
         <button class="btn-add-pago" onclick="openRegistrarPagoModal()">
           <i data-lucide="plus"></i>
@@ -5264,17 +5288,22 @@ case "pagos":
           ${data.length > 0 ? data.map(a => {
             const capacidadColor = '#4a5259';
             const capacidadIcon = a.capacidad >= 40 ? 'users' : a.capacidad >= 25 ? 'user-check' : 'user';
+            const estado = a.estado || 'activo';
             
             return `
-            <div class="aula-card" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; border-left: 4px solid ${capacidadColor};" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'; this.style.transform='translateY(0)';">
+            <div class="aula-card" data-estado="${estado}" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; border-left: 4px solid ${estado === 'activo' ? capacidadColor : '#9ca3af'}; ${estado === 'inactivo' ? 'opacity:0.68;' : ''}" onmouseenter="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'; this.style.transform='translateY(0)';">
               <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
                 <div style="width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, ${capacidadColor}20, ${capacidadColor}40); display: flex; align-items: center; justify-content: center;">
                   <i data-lucide="door-open" style="width: 24px; height: 24px; color: ${capacidadColor};"></i>
                 </div>
                 <div style="flex: 1;">
                   <h3 style="margin: 0 0 5px 0; color: #4a5259; font-size: 18px;">${a.nombre_aula}</h3>
-                  <p style="margin: 0; color: #666; font-size: 13px;">Aula ${a.id_aula}</p>
+                  <p style="margin: 0; color: #666; font-size: 13px;">Aula ${a.id_aula} · ${estado === 'activo' ? 'Activa' : 'Inactiva'}</p>
                 </div>
+                <label class="estado-switch" title="${estado === 'activo' ? 'Marcar inactiva' : 'Marcar activa'}">
+                  <input type="checkbox" ${estado === 'activo' ? 'checked' : ''} onchange="toggleEstadoAula(${a.id_aula}, this.checked ? 'activo' : 'inactivo', this)">
+                  <span class="slider"></span>
+                </label>
               </div>
               
               <div style="background: #f8f9fa; border-radius: 8px; padding: 12px; margin-bottom: 15px;">
@@ -5290,7 +5319,7 @@ case "pagos":
               </div>
               
               <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                <button class="btn-icon-edit" onclick="editarAula(${a.id_aula}, '${a.nombre_aula}', ${a.capacidad})" title="Editar">
+                <button class="btn-icon-edit" onclick="editarAula(${a.id_aula}, '${a.nombre_aula}', ${a.capacidad}, '${estado}')" title="Editar">
                   <i data-lucide="edit-2"></i>
                 </button>
                 <button class="btn-icon-danger" onclick="eliminarAula(${a.id_aula}, '${a.nombre_aula}')" title="Eliminar">
@@ -6250,6 +6279,68 @@ function ensureCursoPanel() {
   overlay.addEventListener('click', closePanel);
 }
 
+const cursoAlumnosPagination = {
+  pageSize: 5,
+  currentPage: 1,
+  alumnos: []
+};
+
+function renderCursoAlumnosPage(page = 1) {
+  const container = document.getElementById('alumnosInscritos');
+  if (!container) return;
+
+  const alumnos = cursoAlumnosPagination.alumnos || [];
+  const pageSize = cursoAlumnosPagination.pageSize;
+  const totalPages = Math.max(1, Math.ceil(alumnos.length / pageSize));
+  const safePage = Math.min(Math.max(page, 1), totalPages);
+  cursoAlumnosPagination.currentPage = safePage;
+
+  if (alumnos.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <i data-lucide="users"></i>
+        <p>No hay alumnos inscritos en este curso</p>
+      </div>`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    return;
+  }
+
+  const start = (safePage - 1) * pageSize;
+  const visible = alumnos.slice(start, start + pageSize);
+  const rows = visible.map(a => {
+    const iniciales = `${(a.nombre || 'A')[0]}${(a.apellido || 'A')[0]}`.toUpperCase();
+    const fecha = a.fecha_inscripcion ? new Date(a.fecha_inscripcion).toLocaleDateString('es-AR') : 'Fecha sin registrar';
+    return `
+      <div class="alumno-item">
+        <div class="alumno-avatar">${iniciales}</div>
+        <div class="alumno-info">
+          <div class="alumno-nombre">${a.nombre} ${a.apellido}</div>
+          <div class="alumno-email">${a.mail || 'Sin email'} · Inscripción: ${fecha}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const controls = totalPages > 1 ? `
+    <div class="curso-alumnos-pagination">
+      <button class="pagination-icon-btn" onclick="renderCursoAlumnosPage(${safePage - 1})" ${safePage === 1 ? 'disabled' : ''} title="Página anterior">
+        <i data-lucide="chevron-left"></i>
+      </button>
+      <input type="range" min="1" max="${totalPages}" value="${safePage}" oninput="renderCursoAlumnosPage(parseInt(this.value, 10))" aria-label="Página de alumnos">
+      <span>Página ${safePage} de ${totalPages}</span>
+      <button class="pagination-icon-btn" onclick="renderCursoAlumnosPage(${safePage + 1})" ${safePage === totalPages ? 'disabled' : ''} title="Página siguiente">
+        <i data-lucide="chevron-right"></i>
+      </button>
+    </div>` : '';
+
+  container.innerHTML = `
+    <div class="curso-alumnos-label">Mostrando últimos 5 alumnos inscritos</div>
+    ${rows}
+    ${controls}
+  `;
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
 async function openCursoPanel(idCurso) {
   ensureCursoPanel();
   
@@ -6284,11 +6375,11 @@ async function openCursoPanel(idCurso) {
     document.getElementById('cursoStats').innerHTML = `
       <div class="stat-card info">
         <div class="stat-label">Idioma</div>
-        <div class="stat-value" style="font-size: 20px;">${curso.nombre_idioma || 'N/A'}</div>
+        <div class="stat-value" style="font-size: 20px;">${curso.nombre_idioma || 'Sin idioma'}</div>
       </div>
       <div class="stat-card success">
         <div class="stat-label">Nivel</div>
-        <div class="stat-value" style="font-size: 20px;">${curso.nivel || 'N/A'}</div>
+        <div class="stat-value" style="font-size: 20px;">${curso.nivel || 'Sin nivel'}</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Profesor</div>
@@ -6316,25 +6407,8 @@ async function openCursoPanel(idCurso) {
       </div>
     `;
 
-    if (inscritos.length === 0) {
-      document.getElementById('alumnosInscritos').innerHTML = `
-        <div class="empty-state">
-          <i data-lucide="users"></i>
-          <p>No hay alumnos inscritos en este curso</p>
-        </div>`;
-    } else {
-      document.getElementById('alumnosInscritos').innerHTML = inscritos.map(a => {
-        const iniciales = `${(a.nombre || 'A')[0]}${(a.apellido || 'A')[0]}`.toUpperCase();
-        return `
-          <div class="alumno-item">
-            <div class="alumno-avatar">${iniciales}</div>
-            <div class="alumno-info">
-              <div class="alumno-nombre">${a.nombre} ${a.apellido}</div>
-              <div class="alumno-email">${a.mail || 'Sin email'}</div>
-            </div>
-          </div>`;
-      }).join('');
-    }
+    cursoAlumnosPagination.alumnos = inscritos;
+    renderCursoAlumnosPage(1);
 
     // Render historial de ciclos lectivos
     const historialSection = document.getElementById('cursoHistorialSection');
@@ -6951,7 +7025,7 @@ async function openAlumnoPanel(idAlumno) {
           </div>
           <div class="info-item">
             <div class="info-item-label">Fecha de Registro</div>
-            <div class="info-item-value">${alumno.fecha_registro ? new Date(alumno.fecha_registro).toLocaleDateString('es-AR') : 'N/A'}</div>
+            <div class="info-item-value">${alumno.fecha_registro ? new Date(alumno.fecha_registro).toLocaleDateString('es-AR') : 'Sin fecha'}</div>
           </div>
           <div class="info-item">
             <div class="info-item-label">Estado</div>
@@ -7252,7 +7326,7 @@ async function openProfesorPanel(idProfesor) {
           </div>
           <div class="info-item">
             <div class="info-item-label">Fecha de Ingreso</div>
-            <div class="info-item-value">${profesor.fecha_ingreso ? new Date(profesor.fecha_ingreso).toLocaleDateString('es-AR') : 'N/A'}</div>
+            <div class="info-item-value">${profesor.fecha_ingreso ? new Date(profesor.fecha_ingreso).toLocaleDateString('es-AR') : 'Sin fecha'}</div>
           </div>
           <div class="info-item">
             <div class="info-item-label">Antigüedad</div>
@@ -7293,7 +7367,7 @@ async function openProfesorPanel(idProfesor) {
             <div class="stat-label">Alumnos Activos</div>
           </div>
           <div class="stat-box success">
-            <div class="stat-number">${profesor.promedio_general || 'N/A'}</div>
+            <div class="stat-number">${profesor.promedio_general || 'Sin promedio'}</div>
             <div class="stat-label">Promedio General</div>
             ${profesor.promedio_general ? `
             <div class="progress-bar">
@@ -8228,11 +8302,55 @@ function showConfirm(title, message, icon = 'alert-circle', isDanger = false) {
 
 let allPagos = [];
 let pagosStats = {};
+let currentPagosQuery = '';
+let registrosDateFilter = { preset: '', inicio: '', fin: '' };
+
+function buildDateQuery(prefix) {
+  const preset = document.getElementById(`${prefix}DatePreset`)?.value || '';
+  const params = new URLSearchParams();
+
+  if (preset === 'semana' || preset === 'mes') {
+    params.set('rango', preset);
+  } else if (preset === 'custom') {
+    const inicio = document.getElementById(`${prefix}FechaInicio`)?.value;
+    const fin = document.getElementById(`${prefix}FechaFin`)?.value;
+    if (inicio) params.set('fecha_inicio', inicio);
+    if (fin) params.set('fecha_fin', fin);
+  }
+
+  const query = params.toString();
+  return query ? `?${query}` : '';
+}
+
+function mergeQueryStrings(...queries) {
+  const params = new URLSearchParams();
+  queries.filter(Boolean).forEach(query => {
+    const clean = query.startsWith('?') ? query.slice(1) : query;
+    new URLSearchParams(clean).forEach((value, key) => params.set(key, value));
+  });
+  const output = params.toString();
+  return output ? `?${output}` : '';
+}
+
+function buildDateQueryFromState(state) {
+  const params = new URLSearchParams();
+  if (state.preset === 'semana' || state.preset === 'mes') {
+    params.set('rango', state.preset);
+  } else if (state.preset === 'custom') {
+    if (state.inicio) params.set('fecha_inicio', state.inicio);
+    if (state.fin) params.set('fecha_fin', state.fin);
+  }
+  const query = params.toString();
+  return query ? `?${query}` : '';
+}
 
 async function loadPagosData(queryParams = '') {
   try {
-    console.log('Cargando datos de pagos con query:', queryParams);
-    const resp = await fetch(`${API_URL}/pagos${queryParams}`);
+    currentPagosQuery = queryParams;
+    const dateQuery = buildDateQuery('pago');
+    const finalQuery = mergeQueryStrings(queryParams, dateQuery);
+    console.log('Cargando datos de pagos con query:', finalQuery);
+    const resp = await fetch(`${API_URL}/pagos${finalQuery}`);
     console.log('Response status:', resp.status);
     
     const data = await resp.json();
@@ -8436,9 +8554,29 @@ function switchPagosTab(tab) {
 function setupPagosFilters() {
   const searchInput = document.getElementById('pagoSearchAlumno');
   const medioFilter = document.getElementById('pagoFilterMedio');
+  const datePreset = document.getElementById('pagoDatePreset');
+  const fechaInicio = document.getElementById('pagoFechaInicio');
+  const fechaFin = document.getElementById('pagoFechaFin');
 
   if (searchInput) searchInput.addEventListener('input', filterPagos);
   if (medioFilter) medioFilter.addEventListener('change', filterPagos);
+  if (datePreset) datePreset.addEventListener('change', handlePagosDatePresetChange);
+  if (fechaInicio) fechaInicio.addEventListener('change', () => loadPagosData(currentPagosQuery));
+  if (fechaFin) fechaFin.addEventListener('change', () => loadPagosData(currentPagosQuery));
+}
+
+function handlePagosDatePresetChange() {
+  const preset = document.getElementById('pagoDatePreset')?.value || '';
+  document.querySelectorAll('.pagos-custom-date').forEach(el => {
+    el.style.display = preset === 'custom' ? '' : 'none';
+  });
+  if (preset !== 'custom') {
+    const inicio = document.getElementById('pagoFechaInicio');
+    const fin = document.getElementById('pagoFechaFin');
+    if (inicio) inicio.value = '';
+    if (fin) fin.value = '';
+  }
+  loadPagosData(currentPagosQuery);
 }
 
 function filterPagos() {
@@ -8466,7 +8604,7 @@ async function loadRegistrosPagos() {
   container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Cargando registros...</div>';
 
   try {
-    const resp = await fetch(`${API_URL}/pagos/registros/audit`);
+    const resp = await fetch(`${API_URL}/pagos/registros/audit${buildDateQueryFromState(registrosDateFilter)}`);
     const data = await resp.json();
 
     const registros = data.registros || [];
@@ -8476,7 +8614,7 @@ async function loadRegistrosPagos() {
       'registrado':   { icon: 'circle-plus',    color: '#16a34a', bg: '#dcfce7', label: 'Registrado' },
       'archivado':    { icon: 'archive',         color: '#d97706', bg: '#fef3c7', label: 'Archivado' },
       'desarchivado': { icon: 'archive-restore', color: '#2563eb', bg: '#dbeafe', label: 'Desarchivado' },
-      'eliminado':    { icon: 'trash-2',         color: '#dc2626', bg: '#fee2e2', label: 'Eliminado' },
+      'eliminado':    { icon: 'x-circle',        color: '#dc2626', bg: '#fee2e2', label: 'Eliminado' },
       'anulado':      { icon: 'x-circle',        color: '#7c3aed', bg: '#ede9fe', label: 'Anulado' },
     };
 
@@ -8561,6 +8699,25 @@ async function loadRegistrosPagos() {
         </div>
         <button onclick="loadRegistrosPagos()" style="background:none;border:1px solid #e5e7eb;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;color:#6b7280;display:flex;align-items:center;gap:5px;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Actualizar</button>
       </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:end; margin-bottom:14px; background:#f8f9fa; border:1px solid #e5e7eb; border-radius:10px; padding:12px;">
+        <div class="filter-group" style="min-width:180px;">
+          <label>Fecha</label>
+          <select id="registroDatePreset" onchange="handleRegistrosDatePresetChange()" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:8px;">
+            <option value="" ${registrosDateFilter.preset === '' ? 'selected' : ''}>Todo el historial</option>
+            <option value="semana" ${registrosDateFilter.preset === 'semana' ? 'selected' : ''}>Última semana</option>
+            <option value="mes" ${registrosDateFilter.preset === 'mes' ? 'selected' : ''}>Último mes</option>
+            <option value="custom" ${registrosDateFilter.preset === 'custom' ? 'selected' : ''}>Rango personalizado</option>
+          </select>
+        </div>
+        <div class="filter-group registros-custom-date" style="${registrosDateFilter.preset === 'custom' ? '' : 'display:none;'} min-width:160px;">
+          <label>Fecha Inicio</label>
+          <input type="date" id="registroFechaInicio" value="${registrosDateFilter.inicio}" onchange="handleRegistrosDatePresetChange()" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:8px;">
+        </div>
+        <div class="filter-group registros-custom-date" style="${registrosDateFilter.preset === 'custom' ? '' : 'display:none;'} min-width:160px;">
+          <label>Fecha Fin</label>
+          <input type="date" id="registroFechaFin" value="${registrosDateFilter.fin}" onchange="handleRegistrosDatePresetChange()" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:8px;">
+        </div>
+      </div>
       <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">${filterTabs}</div>
       ${emptyFiltered}`;
 
@@ -8580,6 +8737,16 @@ function setRegistrosFilter(filter) {
     container.dataset.filter = filter;
     loadRegistrosPagos();
   }
+}
+
+function handleRegistrosDatePresetChange() {
+  const preset = document.getElementById('registroDatePreset')?.value || '';
+  registrosDateFilter = {
+    preset,
+    inicio: preset === 'custom' ? (document.getElementById('registroFechaInicio')?.value || '') : '',
+    fin: preset === 'custom' ? (document.getElementById('registroFechaFin')?.value || '') : ''
+  };
+  loadRegistrosPagos();
 }
 
 function ensurePagoPanel() {
@@ -9265,6 +9432,13 @@ async function openNuevaAulaModal() {
           <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Capacidad</label>
           <input id="capacidad" type="number" class="swal2-input" placeholder="Ej: 30" style="width: 100%; margin: 0;">
         </div>
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Estado</label>
+          <select id="estado_aula" class="swal2-input" style="width: 100%; margin: 0;">
+            <option value="activo">Activa</option>
+            <option value="inactivo">Inactiva</option>
+          </select>
+        </div>
       </div>
     `,
     focusConfirm: false,
@@ -9275,6 +9449,7 @@ async function openNuevaAulaModal() {
     preConfirm: () => {
       const nombre = document.getElementById('nombre_aula').value;
       const capacidad = document.getElementById('capacidad').value;
+      const estado = document.getElementById('estado_aula').value;
       
       if (!nombre) {
         Swal.showValidationMessage('El nombre es obligatorio');
@@ -9284,7 +9459,7 @@ async function openNuevaAulaModal() {
         Swal.showValidationMessage('La capacidad debe ser mayor a 0');
         return false;
       }
-      return { nombre, capacidad };
+      return { nombre, capacidad, estado };
     }
   });
 
@@ -9295,7 +9470,8 @@ async function openNuevaAulaModal() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre_aula: formValues.nombre,
-          capacidad: formValues.capacidad
+          capacidad: formValues.capacidad,
+          estado: formValues.estado
         })
       });
       
@@ -9314,7 +9490,7 @@ async function openNuevaAulaModal() {
   }
 }
 
-async function editarAula(id, nombre, capacidad) {
+async function editarAula(id, nombre, capacidad, estadoActual = 'activo') {
   const { value: formValues } = await Swal.fire({
     title: 'Editar Aula',
     html: `
@@ -9327,6 +9503,13 @@ async function editarAula(id, nombre, capacidad) {
           <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Capacidad</label>
           <input id="capacidad" type="number" class="swal2-input" value="${capacidad}" style="width: 100%; margin: 0;">
         </div>
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Estado</label>
+          <select id="estado_aula" class="swal2-input" style="width: 100%; margin: 0;">
+            <option value="activo" ${estadoActual === 'activo' ? 'selected' : ''}>Activa</option>
+            <option value="inactivo" ${estadoActual === 'inactivo' ? 'selected' : ''}>Inactiva</option>
+          </select>
+        </div>
       </div>
     `,
     focusConfirm: false,
@@ -9337,6 +9520,7 @@ async function editarAula(id, nombre, capacidad) {
     preConfirm: () => {
       const nombre = document.getElementById('nombre_aula').value;
       const capacidad = document.getElementById('capacidad').value;
+      const estado = document.getElementById('estado_aula').value;
       
       if (!nombre) {
         Swal.showValidationMessage('El nombre es obligatorio');
@@ -9346,7 +9530,7 @@ async function editarAula(id, nombre, capacidad) {
         Swal.showValidationMessage('La capacidad debe ser mayor a 0');
         return false;
       }
-      return { nombre, capacidad };
+      return { nombre, capacidad, estado };
     }
   });
 
@@ -9357,7 +9541,8 @@ async function editarAula(id, nombre, capacidad) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre_aula: formValues.nombre,
-          capacidad: formValues.capacidad
+          capacidad: formValues.capacidad,
+          estado: formValues.estado
         })
       });
       
@@ -9373,6 +9558,37 @@ async function editarAula(id, nombre, capacidad) {
       console.error(error);
       Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
     }
+  }
+}
+
+async function toggleEstadoAula(id, nuevoEstado, element) {
+  const estadoAnterior = nuevoEstado === 'activo' ? 'inactivo' : 'activo';
+  try {
+    const res = await fetch(`${API_URL}/aulas/${id}/estado`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ estado: nuevoEstado })
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Error al cambiar estado');
+    }
+
+    const card = element.closest('.aula-card');
+    if (card) {
+      card.dataset.estado = nuevoEstado;
+      card.style.opacity = nuevoEstado === 'activo' ? '1' : '0.68';
+      const label = card.querySelector('h3 + p');
+      if (label) {
+        label.textContent = label.textContent.replace(/Activa|Inactiva/, nuevoEstado === 'activo' ? 'Activa' : 'Inactiva');
+      }
+    }
+    showToast(`Aula ${nuevoEstado === 'activo' ? 'activa' : 'inactiva'}`, 'success');
+  } catch (error) {
+    console.error('Error cambiando estado de aula:', error);
+    element.checked = estadoAnterior === 'activo';
+    showToast(error.message || 'Error al cambiar estado', 'error');
   }
 }
 
@@ -12956,7 +13172,7 @@ async function renderInvestigacionSection() {
               <i data-lucide="calendar"></i>
             </div>
             <div class="stat-info">
-              <span class="stat-number">${stats.estadisticas?.ultimaEncuesta ? new Date(stats.estadisticas.ultimaEncuesta).toLocaleDateString('es-AR', {day: '2-digit', month: 'short'}) : 'N/A'}</span>
+              <span class="stat-number">${stats.estadisticas?.ultimaEncuesta ? new Date(stats.estadisticas.ultimaEncuesta).toLocaleDateString('es-AR', {day: '2-digit', month: 'short'}) : 'Sin fecha'}</span>
               <span class="stat-label">Última Encuesta</span>
             </div>
           </div>
@@ -12991,7 +13207,7 @@ async function renderInvestigacionSection() {
                   <div class="encuesta-meta">
                     <span><i data-lucide="mail"></i> ${enc.email}</span>
                     <span class="satisfaction-badge satisfaction-${enc.satisfaction || 'na'}">
-                      <i data-lucide="star"></i> ${enc.satisfaction || 'N/A'}/10
+                      <i data-lucide="star"></i> ${enc.satisfaction || 'Sin puntaje'}/10
                     </span>
                   </div>
                 </div>
@@ -13569,6 +13785,169 @@ async function eliminarEncuesta(id) {
   }
 }
 
+async function renderDepuracionSection() {
+  return `
+    <div class="depuracion-admin" style="max-width:1100px;margin:0 auto;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:22px;">
+        <div>
+          <h2 style="color:#4a5259;margin:0 0 6px 0;">Seguridad > Depuración</h2>
+          <p style="color:#6b7280;margin:0;font-size:14px;">Exporta un backup de las secciones seleccionadas y limpia esos datos de la base.</p>
+        </div>
+        <button class="btn-primary" onclick="loadDepuracionBackups()"><i data-lucide="refresh-cw"></i> Actualizar</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;">
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <h3 style="font-size:16px;color:#374151;margin:0 0 14px 0;">Secciones</h3>
+          <div id="depuracionOpciones" style="display:flex;flex-direction:column;gap:10px;"><p style="color:#9ca3af;margin:0;">Cargando opciones...</p></div>
+          <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">
+            <button class="btn-primary" onclick="exportarYLimpiarDepuracion()"><i data-lucide="download"></i> Exportar y Limpiar</button>
+            <button class="btn-secondary" onclick="revertirUltimaDepuracion()"><i data-lucide="rotate-ccw"></i> Revertir</button>
+          </div>
+          <p style="color:#9ca3af;font-size:12px;line-height:1.5;margin:14px 0 0 0;">La reversión queda habilitada únicamente durante las 24 horas posteriores a cada depuración.</p>
+        </div>
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <h3 style="font-size:16px;color:#374151;margin:0 0 14px 0;">Backups recientes</h3>
+          <div id="depuracionBackups" style="display:flex;flex-direction:column;gap:10px;"><p style="color:#9ca3af;margin:0;">Cargando backups...</p></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+async function initDepuracionSection() {
+  await Promise.all([loadDepuracionOpciones(), loadDepuracionBackups()]);
+}
+
+async function loadDepuracionOpciones() {
+  const container = document.getElementById('depuracionOpciones');
+  if (!container) return;
+  try {
+    const res = await fetch(`${API_URL}/depuracion/opciones`);
+    const data = await res.json();
+    const opciones = data.opciones || [];
+    container.innerHTML = opciones.map(op => `
+      <label style="display:flex;gap:10px;align-items:flex-start;border:1px solid #e5e7eb;border-radius:8px;padding:11px;cursor:pointer;">
+        <input type="checkbox" class="depuracion-checkbox" value="${op.id}" style="margin-top:3px;accent-color:#4a5259;">
+        <span><strong style="display:block;color:#374151;font-size:14px;">${op.label}</strong><span style="display:block;color:#9ca3af;font-size:12px;margin-top:2px;">Tablas: ${op.tables.join(', ')}</span></span>
+      </label>`).join('');
+  } catch (error) {
+    console.error('Error cargando opciones de depuración:', error);
+    container.innerHTML = '<p style="color:#dc2626;margin:0;">No se pudieron cargar las opciones.</p>';
+  }
+}
+
+async function loadDepuracionBackups() {
+  const container = document.getElementById('depuracionBackups');
+  if (!container) return;
+  try {
+    const res = await fetch(`${API_URL}/depuracion/backups`);
+    const data = await res.json();
+    const backups = data.backups || [];
+    const now = Date.now();
+    if (backups.length === 0) {
+      container.innerHTML = '<p style="color:#9ca3af;margin:0;">No hay backups de depuración.</p>';
+      return;
+    }
+    container.innerHTML = backups.map(b => {
+      const expira = new Date(b.expira_en);
+      const activo = !b.restaurado_en && expira.getTime() > now;
+      const secciones = Array.isArray(b.secciones) ? b.secciones : JSON.parse(b.secciones || '[]');
+      return `
+        <div style="border:1px solid ${activo ? '#bbf7d0' : '#e5e7eb'};background:${activo ? '#f0fdf4' : '#f9fafb'};border-radius:8px;padding:12px;">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+            <div>
+              <strong style="color:#374151;">Backup #${b.id_depuracion}</strong>
+              <p style="margin:4px 0 0 0;color:#6b7280;font-size:12px;">${b.total_registros} registro(s) · ${secciones.join(', ')}</p>
+              <p style="margin:4px 0 0 0;color:#9ca3af;font-size:12px;">Expira: ${expira.toLocaleString('es-AR')}</p>
+            </div>
+            <button class="btn-secondary" onclick="revertirDepuracion(${b.id_depuracion})" ${activo ? '' : 'disabled'} style="${activo ? '' : 'opacity:.5;cursor:not-allowed;'}"><i data-lucide="rotate-ccw"></i> Revertir</button>
+          </div>
+        </div>`;
+    }).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  } catch (error) {
+    console.error('Error cargando backups:', error);
+    container.innerHTML = '<p style="color:#dc2626;margin:0;">No se pudieron cargar los backups.</p>';
+  }
+}
+
+function downloadDepuracionBackup(payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `depuracion-backup-${payload.id_depuracion}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function exportarYLimpiarDepuracion() {
+  const secciones = [...document.querySelectorAll('.depuracion-checkbox:checked')].map(cb => cb.value);
+  if (secciones.length === 0) {
+    showToast('Selecciona al menos una sección', 'error');
+    return;
+  }
+  const result = await Swal.fire({
+    title: 'Exportar y limpiar',
+    html: `Se generará un backup y luego se borrarán los datos de <strong>${secciones.length}</strong> sección(es).`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Exportar y Limpiar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#4a5259'
+  });
+  if (!result.isConfirmed) return;
+  try {
+    const res = await fetch(`${API_URL}/depuracion/exportar-limpiar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secciones })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Error al depurar');
+    localStorage.setItem('ultima_depuracion_id', data.id_depuracion);
+    downloadDepuracionBackup(data);
+    showToast('Backup generado y datos limpiados', 'success');
+    await loadDepuracionBackups();
+  } catch (error) {
+    console.error('Error en depuración:', error);
+    showToast(error.message || 'No se pudo depurar', 'error');
+  }
+}
+
+async function revertirUltimaDepuracion() {
+  const id = localStorage.getItem('ultima_depuracion_id');
+  if (!id) {
+    showToast('No hay una depuración reciente para revertir', 'error');
+    return;
+  }
+  await revertirDepuracion(id);
+}
+
+async function revertirDepuracion(id) {
+  const result = await Swal.fire({
+    title: 'Revertir depuración',
+    text: 'Solo se restaurarán registros del backup si todavía está dentro de las 24 horas.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Revertir',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#4a5259'
+  });
+  if (!result.isConfirmed) return;
+  try {
+    const res = await fetch(`${API_URL}/depuracion/${id}/revertir`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'No se pudo revertir');
+    showToast(`Restaurados ${data.registros_restaurados} registro(s)`, 'success');
+    await loadDepuracionBackups();
+  } catch (error) {
+    console.error('Error al revertir depuración:', error);
+    showToast(error.message || 'No se pudo revertir', 'error');
+  }
+}
+
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     cerrarPDFViewer();
@@ -13605,8 +13984,8 @@ async function renderRecuperacionSection() {
               <div style="background: white; border: 1px solid #e5e7eb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                 <div>
                   <p style="font-weight: 600; margin: 0 0 4px 0;">${s.nombre || ''} ${s.apellido || ''}</p>
-                  <p style="color: #666; font-size: 13px; margin: 0;">Email: ${s.email || ''} | DNI: ${s.dni || 'N/A'}</p>
-                  <p style="color: #999; font-size: 12px; margin: 4px 0 0 0;">Solicitado: ${s.fecha_solicitud ? new Date(s.fecha_solicitud).toLocaleString('es-AR') : 'N/A'}</p>
+                  <p style="color: #666; font-size: 13px; margin: 0;">Email: ${s.email || ''} | DNI: ${s.dni || 'Sin DNI'}</p>
+                  <p style="color: #999; font-size: 12px; margin: 4px 0 0 0;">Solicitado: ${s.fecha_solicitud ? new Date(s.fecha_solicitud).toLocaleString('es-AR') : 'Sin fecha'}</p>
                 </div>
                 <div style="display: flex; gap: 8px;">
                   <button onclick="aprobarSolicitud(${s.id_solicitud})" style="background: #22c55e; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;">
@@ -13752,7 +14131,7 @@ async function renderCodigosCemiSection() {
                   <p style="color: #666; font-size: 13px; margin: 4px 0 0 0;">
                     Para: ${c.nombre_destinatario || 'Sin asignar'} | Rol: <b style="text-transform: capitalize;">${c.rol}</b>
                   </p>
-                  <p style="color: #999; font-size: 12px; margin: 2px 0 0 0;">Generado: ${c.fecha_generacion ? new Date(c.fecha_generacion).toLocaleString('es-AR') : 'N/A'}</p>
+                  <p style="color: #999; font-size: 12px; margin: 2px 0 0 0;">Generado: ${c.fecha_generacion ? new Date(c.fecha_generacion).toLocaleString('es-AR') : 'Sin fecha'}</p>
                 </div>
                 <div style="display: flex; gap: 8px;">
                   <button onclick="navigator.clipboard.writeText('${c.codigo}').then(() => this.textContent = '✓ Copiado')" 
@@ -13783,7 +14162,7 @@ async function renderCodigosCemiSection() {
                   <span style="font-family: monospace; font-size: 14px; color: #666; text-decoration: line-through;">${c.codigo}</span>
                   <span style="font-size: 13px; color: #888; margin-left: 12px;">${c.nombre_destinatario || ''} (${c.rol})</span>
                 </div>
-                <span style="font-size: 12px; color: #999;">${c.fecha_uso ? new Date(c.fecha_uso).toLocaleDateString('es-AR') : 'N/A'}</span>
+                <span style="font-size: 12px; color: #999;">${c.fecha_uso ? new Date(c.fecha_uso).toLocaleDateString('es-AR') : 'Sin uso'}</span>
               </div>
             `).join('')}
           </div>

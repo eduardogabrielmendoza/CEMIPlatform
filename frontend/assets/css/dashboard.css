@@ -730,6 +730,17 @@
   height: 18px;
 }
 
+button:has([data-lucide="trash-2"]),
+[data-lucide="trash-2"],
+.btn-icon-danger,
+.btn-delete,
+.btn-delete-pago,
+.btn-delete-permanent,
+.panel-btn.danger,
+.incident-action-btn.delete {
+  display: none !important;
+}
+
 .btn-icon-docs {
   background: #cbd5e0;
   color: #718096;
@@ -1776,6 +1787,60 @@
   text-align: center;
   padding: 8px 0;
   margin: 0;
+}
+
+.curso-alumnos-label {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+.curso-alumnos-pagination {
+  display: grid;
+  grid-template-columns: 36px minmax(120px, 1fr) auto 36px;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px;
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.curso-alumnos-pagination input[type="range"] {
+  width: 100%;
+  accent-color: #4a5259;
+}
+
+.curso-alumnos-pagination span {
+  color: #4a5259;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pagination-icon-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #4a5259;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.pagination-icon-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pagination-icon-btn i {
+  width: 16px;
+  height: 16px;
 }
 
 .panel-actions {

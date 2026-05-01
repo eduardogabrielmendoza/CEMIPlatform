@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM aulas ORDER BY nombre_aula");
+    const [rows] = await pool.query("SELECT *, COALESCE(estado, 'activo') AS estado FROM aulas ORDER BY nombre_aula");
     res.json(rows);
   } catch (error) {
     console.error(error);
@@ -15,11 +15,14 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { nombre_aula, capacidad } = req.body;
+    const { nombre_aula, capacidad, estado = "activo" } = req.body;
+    if (!["activo", "inactivo"].includes(estado)) {
+      return res.status(400).json({ success: false, message: "Estado inválido" });
+    }
     
     const [result] = await pool.query(
-      "INSERT INTO aulas (nombre_aula, capacidad) VALUES (?, ?)",
-      [nombre_aula, capacidad]
+      "INSERT INTO aulas (nombre_aula, capacidad, estado) VALUES (?, ?, ?)",
+      [nombre_aula, capacidad, estado]
     );
     
     res.status(201).json({ 
@@ -38,11 +41,14 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const { nombre_aula, capacidad } = req.body;
+    const { nombre_aula, capacidad, estado = "activo" } = req.body;
+    if (!["activo", "inactivo"].includes(estado)) {
+      return res.status(400).json({ success: false, message: "Estado inválido" });
+    }
     
     await pool.query(
-      "UPDATE aulas SET nombre_aula = ?, capacidad = ? WHERE id_aula = ?",
-      [nombre_aula, capacidad, req.params.id]
+      "UPDATE aulas SET nombre_aula = ?, capacidad = ?, estado = ? WHERE id_aula = ?",
+      [nombre_aula, capacidad, estado, req.params.id]
     );
     
     res.json({ 
@@ -55,6 +61,29 @@ router.put("/:id", async (req, res) => {
       success: false,
       message: "Error al actualizar aula" 
     });
+  }
+});
+
+router.patch("/:id/estado", async (req, res) => {
+  try {
+    const { estado } = req.body;
+    if (!["activo", "inactivo"].includes(estado)) {
+      return res.status(400).json({ success: false, message: "Estado inválido" });
+    }
+
+    const [result] = await pool.query(
+      "UPDATE aulas SET estado = ? WHERE id_aula = ?",
+      [estado, req.params.id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Aula no encontrada" });
+    }
+
+    res.json({ success: true, message: "Estado actualizado", estado });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error al actualizar estado" });
   }
 });
 

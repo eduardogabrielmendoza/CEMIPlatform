@@ -5,9 +5,38 @@ import eventLogger from "../utils/eventLogger.js";
 
 const router = express.Router();
 
+function buildDateFilter(query, alias = "pa") {
+  const { rango, fecha_inicio, fecha_fin } = query;
+  const field = `${alias}.fecha_pago`;
+  const clauses = [];
+  const params = [];
+
+  if (rango === "semana") {
+    clauses.push(`${field} >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)`);
+  } else if (rango === "mes") {
+    clauses.push(`${field} >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)`);
+  }
+
+  if (fecha_inicio) {
+    clauses.push(`${field} >= ?`);
+    params.push(fecha_inicio);
+  }
+
+  if (fecha_fin) {
+    clauses.push(`${field} < DATE_ADD(?, INTERVAL 1 DAY)`);
+    params.push(fecha_fin);
+  }
+
+  return {
+    clause: clauses.length ? ` AND ${clauses.join(" AND ")}` : "",
+    params
+  };
+}
+
 router.get("/", async (req, res) => {
   try {
     const { archivo } = req.query; // archivo=true para pagos archivados
+    const dateFilter = buildDateFilter(req.query, "pa");
     
     const filtroArchivo = archivo === 'true' 
       ? "AND pa.archivado = 1" 
@@ -44,41 +73,46 @@ router.get("/", async (req, res) => {
       JOIN conceptos_pago cp ON pa.id_concepto = cp.id_concepto
       JOIN medios_pago mp ON pa.id_medio_pago = mp.id_medio_pago
       LEFT JOIN administrativos ad ON pa.id_administrativo = ad.id_administrativo
-      WHERE 1=1 ${filtroArchivo} ${filtroEstado}
+      WHERE 1=1 ${filtroArchivo} ${filtroEstado} ${dateFilter.clause}
       ORDER BY pa.fecha_pago DESC, pa.fecha_vencimiento DESC
-    `);
+    `, dateFilter.params);
 
     const mesActual = new Date().toISOString().slice(0, 7); // Formato: YYYY-MM
+    const statsDateFilter = buildDateFilter(req.query, "pa");
     
     const [totalMes] = await pool.query(`
       SELECT COALESCE(SUM(monto), 0) AS total
-      FROM pagos
-      WHERE DATE_FORMAT(fecha_pago, '%Y-%m') = ?
-        AND estado_pago = 'pagado'
-        AND archivado = 0
-    `, [mesActual]);
+      FROM pagos pa
+      WHERE ${statsDateFilter.clause ? "1=1" : "DATE_FORMAT(pa.fecha_pago, '%Y-%m') = ?"}
+        AND pa.estado_pago = 'pagado'
+        AND pa.archivado = 0
+        ${statsDateFilter.clause}
+    `, statsDateFilter.clause ? statsDateFilter.params : [mesActual]);
 
     const [cuotasCobradas] = await pool.query(`
       SELECT COUNT(*) AS total
-      FROM pagos
-      WHERE DATE_FORMAT(fecha_pago, '%Y-%m') = ?
-        AND estado_pago = 'pagado'
-        AND archivado = 0
-    `, [mesActual]);
+      FROM pagos pa
+      WHERE ${statsDateFilter.clause ? "1=1" : "DATE_FORMAT(pa.fecha_pago, '%Y-%m') = ?"}
+        AND pa.estado_pago = 'pagado'
+        AND pa.archivado = 0
+        ${statsDateFilter.clause}
+    `, statsDateFilter.clause ? statsDateFilter.params : [mesActual]);
 
     const [cuotasPendientes] = await pool.query(`
       SELECT COUNT(*) AS total
-      FROM pagos
-      WHERE estado_pago = 'en_proceso'
-        AND archivado = 0
-    `);
+      FROM pagos pa
+      WHERE pa.estado_pago = 'en_proceso'
+        AND pa.archivado = 0
+        ${statsDateFilter.clause}
+    `, statsDateFilter.params);
 
     const [promedio] = await pool.query(`
       SELECT COALESCE(AVG(monto), 0) AS promedio
-      FROM pagos
-      WHERE estado_pago = 'pagado'
-        AND archivado = 0
-    `);
+      FROM pagos pa
+      WHERE pa.estado_pago = 'pagado'
+        AND pa.archivado = 0
+        ${statsDateFilter.clause}
+    `, statsDateFilter.params);
 
     const stats = {
       total_mes: totalMes[0].total,
@@ -323,8 +357,10 @@ router.get("/alumno/:id/historial", async (req, res) => {
 // Obtener registros/auditoría de pagos (must be before /:id)
 router.get("/registros/audit", async (req, res) => {
   try {
+    const dateFilter = buildDateFilter(req.query, "rp");
     const [rows] = await pool.query(
-      `SELECT * FROM registros_pagos ORDER BY fecha DESC LIMIT 200`
+      `SELECT * FROM registros_pagos rp WHERE 1=1 ${dateFilter.clause.replaceAll("rp.fecha_pago", "rp.fecha")} ORDER BY fecha DESC LIMIT 200`,
+      dateFilter.params
     );
     res.json({ success: true, registros: rows });
   } catch (error) {
