@@ -8622,17 +8622,6 @@ async function loadRegistrosPagos() {
     const counts = {};
     registros.forEach(r => { counts[r.accion] = (counts[r.accion] || 0) + 1; });
 
-    if (registros.length === 0) {
-      container.innerHTML = `
-        <div style="text-align: center; padding: 60px 20px;">
-          <i data-lucide="scroll-text" style="width: 48px; height: 48px; color: #ccc; margin-bottom: 15px;"></i>
-          <p style="color: #999; font-size: 16px; margin: 0 0 4px 0;">No hay registros de auditoría</p>
-          <p style="color: #ccc; font-size: 14px; margin: 0;">Los movimientos de pagos aparecerán aquí</p>
-        </div>`;
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-      return;
-    }
-
     // Filter
     const filtered = activeFilter === 'todos' ? registros : registros.filter(r => r.accion === activeFilter);
 
@@ -8688,7 +8677,10 @@ async function loadRegistrosPagos() {
     }).join('');
 
     const emptyFiltered = filtered.length === 0
-      ? `<p style="text-align:center;color:#999;padding:30px 0;font-size:14px;">No hay registros con este filtro</p>`
+      ? `<div style="text-align:center;color:#999;padding:36px 0;font-size:14px;">
+          <i data-lucide="inbox" style="width:34px;height:34px;color:#d1d5db;margin-bottom:10px;"></i>
+          <p style="margin:0;font-weight:600;color:#6b7280;">Sin datos</p>
+        </div>`
       : items;
 
     container.innerHTML = `
@@ -13795,6 +13787,16 @@ async function renderDepuracionSection() {
         </div>
         <button class="btn-primary" onclick="loadDepuracionBackups()"><i data-lucide="refresh-cw"></i> Actualizar</button>
       </div>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div>
+            <h3 style="font-size:16px;color:#374151;margin:0 0 5px 0;">Script de Datos</h3>
+            <p style="color:#6b7280;margin:0;font-size:13px;">Puebla la base con 20 alumnos, 20 profesores, 10 cursos, 5 aulas, 3 idiomas, pagos y auditoría de prueba.</p>
+          </div>
+          <button class="btn-primary" id="btnEjecutarSeeder" onclick="ejecutarSeederDemo()"><i data-lucide="database"></i> Ejecutar Seeder</button>
+        </div>
+        <div id="seederDemoResult" style="display:none;margin-top:12px;color:#4a5259;font-size:13px;background:#f8f9fa;border:1px solid #e5e7eb;border-radius:8px;padding:10px;"></div>
+      </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;">
         <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
           <h3 style="font-size:16px;color:#374151;margin:0 0 14px 0;">Secciones</h3>
@@ -13815,6 +13817,52 @@ async function renderDepuracionSection() {
 
 async function initDepuracionSection() {
   await Promise.all([loadDepuracionOpciones(), loadDepuracionBackups()]);
+}
+
+async function ejecutarSeederDemo() {
+  const result = await Swal.fire({
+    title: 'Ejecutar Script de Datos',
+    text: 'Se insertarán o actualizarán datos demo completos para validar cursos, pagos, auditoría y filtros.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Ejecutar Seeder',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#4a5259'
+  });
+  if (!result.isConfirmed) return;
+
+  const button = document.getElementById('btnEjecutarSeeder');
+  const resultBox = document.getElementById('seederDemoResult');
+  if (button) {
+    button.disabled = true;
+    button.innerHTML = '<i data-lucide="loader"></i> Ejecutando...';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+  if (resultBox) {
+    resultBox.style.display = 'block';
+    resultBox.textContent = 'Ejecutando script de datos...';
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/depuracion/seed-demo`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'No se pudo ejecutar el seeder');
+
+    const summary = data.summary || {};
+    const message = `Seeder ejecutado: ${summary.alumnos || 0} alumnos, ${summary.profesores || 0} profesores, ${summary.cursos || 0} cursos, ${summary.aulas || 0} aulas y ${summary.idiomas || 0} idiomas.`;
+    if (resultBox) resultBox.textContent = message;
+    showToast('Script de datos ejecutado correctamente', 'success');
+  } catch (error) {
+    console.error('Error ejecutando seeder:', error);
+    if (resultBox) resultBox.textContent = error.message || 'Error al ejecutar el script de datos';
+    showToast(error.message || 'Error al ejecutar el seeder', 'error');
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.innerHTML = '<i data-lucide="database"></i> Ejecutar Seeder';
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  }
 }
 
 async function loadDepuracionOpciones() {

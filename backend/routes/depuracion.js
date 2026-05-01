@@ -1,5 +1,6 @@
 import express from "express";
 import pool from "../utils/db.js";
+import { runDemoSeed } from "../seeders/demo-data.js";
 
 const router = express.Router();
 
@@ -200,6 +201,24 @@ router.post("/exportar-limpiar", async (req, res) => {
     res.status(500).json({ success: false, message: "Error al exportar y limpiar datos" });
   } finally {
     conn.release();
+  }
+});
+
+router.post("/seed-demo", async (_req, res) => {
+  try {
+    const summary = await runDemoSeed();
+    res.json({
+      success: true,
+      message: "Script de datos ejecutado correctamente",
+      summary
+    });
+  } catch (error) {
+    console.error("Error ejecutando seeder demo:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al ejecutar el script de datos",
+      error: error.message
+    });
   }
 });
 

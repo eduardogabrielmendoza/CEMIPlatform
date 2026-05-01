@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import pool from "../utils/db.js";
+import { fileURLToPath } from "url";
 
 const password = "Cemi2026!";
 const today = new Date();
@@ -244,6 +245,9 @@ async function seedRelations(cursoIds, alumnoIds, profesorIds, idiomaIds) {
   await pool.query("INSERT IGNORE INTO conceptos_pago (id_concepto, descripcion, monto_sugerido) VALUES (2, 'Cuota Mensual', 15000)");
   const [mediosRows] = await pool.query("SELECT id_medio_pago, descripcion FROM medios_pago");
 
+  await pool.query("DELETE FROM registros_pagos WHERE nombre_admin = 'Seeder CEMI'");
+  await pool.query("DELETE FROM pagos WHERE detalle_pago LIKE '%Curso demo %'");
+
   const meses = ["Matricula", "Marzo", "Abril", "Mayo", "Junio", "Julio"];
   for (let c = 0; c < cursoIds.length; c++) {
     const alumnosCurso = Array.from({ length: 15 }, (_, idx) => alumnoIds[(c * 3 + idx) % alumnoIds.length]);
@@ -302,21 +306,36 @@ async function seedRelations(cursoIds, alumnoIds, profesorIds, idiomaIds) {
   }
 }
 
-async function main() {
+export async function runDemoSeed() {
   await ensureSchema();
   const idiomaIds = await seedIdiomas();
   const aulaIds = await seedAulas();
   const { alumnoIds, profesorIds } = await seedPersonas();
   const cursoIds = await seedCursos(idiomaIds, aulaIds, profesorIds);
   await seedRelations(cursoIds, alumnoIds, profesorIds, idiomaIds);
-  console.log("Seeder completado: 20 alumnos, 20 profesores, 10 cursos, 5 aulas, 3 idiomas, pagos y auditoría.");
+  return {
+    alumnos: alumnoIds.length,
+    profesores: profesorIds.length,
+    cursos: cursoIds.length,
+    aulas: aulaIds.length,
+    idiomas: Object.keys(idiomaIds).length
+  };
 }
 
-main()
-  .catch((error) => {
-    console.error("Error ejecutando seeder:", error);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await pool.end();
-  });
+const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+
+if (isDirectRun) {
+  runDemoSeed()
+    .then((summary) => {
+      console.log(
+        `Seeder completado: ${summary.alumnos} alumnos, ${summary.profesores} profesores, ${summary.cursos} cursos, ${summary.aulas} aulas, ${summary.idiomas} idiomas, pagos y auditoría.`
+      );
+    })
+    .catch((error) => {
+      console.error("Error ejecutando seeder:", error);
+      process.exitCode = 1;
+    })
+    .finally(async () => {
+      await pool.end();
+    });
+}
