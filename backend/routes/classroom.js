@@ -8,6 +8,51 @@ import eventLogger from "../utils/eventLogger.js";
 
 const router = express.Router();
 const isProduction = process.env.NODE_ENV === 'production';
+let bibliotecaIdiomaColumnReady = false;
+
+async function ensureBibliotecaIdiomaColumn() {
+  if (bibliotecaIdiomaColumnReady) return;
+
+  const [columns] = await pool.query(`
+    SELECT COLUMN_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'anuncios'
+      AND COLUMN_NAME = 'id_idioma'
+  `);
+
+  if (columns.length === 0) {
+    try {
+      await pool.query(`ALTER TABLE anuncios ADD COLUMN id_idioma INT NULL AFTER id_curso`);
+    } catch (error) {
+      if (error.code !== 'ER_DUP_FIELDNAME') throw error;
+    }
+  }
+
+  bibliotecaIdiomaColumnReady = true;
+}
+
+async function getProfesorIdiomas(idProfesor) {
+  const [idiomas] = await pool.query(`
+    SELECT DISTINCT i.id_idioma, i.nombre_idioma
+    FROM idiomas i
+    WHERE COALESCE(i.estado, 'activo') = 'activo'
+      AND i.id_idioma IN (
+        SELECT pi.id_idioma
+        FROM profesores_idiomas pi
+        WHERE pi.id_profesor = ?
+        UNION
+        SELECT c.id_idioma
+        FROM cursos c
+        WHERE c.id_profesor = ?
+          AND c.estado = 'activo'
+          AND c.id_idioma IS NOT NULL
+      )
+    ORDER BY i.nombre_idioma
+  `, [idProfesor, idProfesor]);
+
+  return idiomas;
+}
 
 // Helper para obtener nombre de usuario
 async function getUserName(tipo, id) {
@@ -1936,6 +1981,7 @@ router.delete("/poll/:id", async (req, res) => {
 router.get("/recursos/:tipo/:id", async (req, res) => {
   try {
     const { tipo, id } = req.params;
+    await ensureBibliotecaIdiomaColumn();
     
     console.log(` Obteniendo recursos para ${tipo} ID: ${id}`);
     
@@ -1994,6 +2040,17 @@ router.get("/recursos/:tipo/:id", async (req, res) => {
       recursosCursos = recursos;
     }
     
+    const [idiomas] = await pool.query(`
+      SELECT id_idioma, nombre_idioma
+      FROM idiomas
+      WHERE COALESCE(estado, 'activo') = 'activo'
+      ORDER BY nombre_idioma
+    `);
+
+    const idiomasPermitidos = tipo === 'profesor'
+      ? await getProfesorIdiomas(id)
+      : [];
+
     const [bibliotecaGeneral] = await pool.query(`
       SELECT 
         a.id_anuncio AS id_recurso,
@@ -2003,6 +2060,8 @@ router.get("/recursos/:tipo/:id", async (req, res) => {
         a.link_url AS url,
         a.archivo_recurso AS archivo,
         a.id_curso,
+        COALESCE(a.id_idioma, idioma_profesor.id_idioma) AS id_idioma,
+        COALESCE(i.nombre_idioma, idioma_fallback.nombre_idioma) AS nombre_idioma,
         a.id_profesor,
         a.fecha_creacion,
         a.descargas,
@@ -2010,6 +2069,17 @@ router.get("/recursos/:tipo/:id", async (req, res) => {
       FROM anuncios a
       LEFT JOIN profesores prof ON a.id_profesor = prof.id_profesor
       LEFT JOIN personas p ON prof.id_persona = p.id_persona
+      LEFT JOIN (
+        SELECT id_profesor, MIN(id_idioma) AS id_idioma
+        FROM (
+          SELECT id_profesor, id_idioma FROM profesores_idiomas
+          UNION
+          SELECT id_profesor, id_idioma FROM cursos WHERE id_idioma IS NOT NULL
+        ) profesor_idiomas
+        GROUP BY id_profesor
+      ) idioma_profesor ON a.id_profesor = idioma_profesor.id_profesor
+      LEFT JOIN idiomas i ON a.id_idioma = i.id_idioma
+      LEFT JOIN idiomas idioma_fallback ON idioma_profesor.id_idioma = idioma_fallback.id_idioma
       WHERE a.id_curso IS NULL AND a.es_recurso = 1
       ORDER BY a.fecha_creacion DESC
     `);
@@ -2029,7 +2099,9 @@ router.get("/recursos/:tipo/:id", async (req, res) => {
       success: true,
       cursos: cursosUsuario,
       recursosPorCurso: Object.values(recursosPorCurso),
-      bibliotecaGeneral
+      bibliotecaGeneral,
+      idiomas,
+      idiomasPermitidos
     });
     
   } catch (error) {
@@ -2044,7 +2116,8 @@ router.get("/recursos/:tipo/:id", async (req, res) => {
 
 router.post("/recursos", uploadRecursos.single('archivo'), async (req, res) => {
   try {
-    const { titulo, descripcion, tipo, url, id_curso, id_profesor } = req.body;
+    const { titulo, descripcion, tipo, url, id_curso, id_profesor, id_idioma } = req.body;
+    await ensureBibliotecaIdiomaColumn();
     
     console.log(` Subiendo recurso: ${titulo}`);
     
@@ -2079,10 +2152,30 @@ router.post("/recursos", uploadRecursos.single('archivo'), async (req, res) => {
     }
     
     const cursoValue = id_curso === 'null' || id_curso === '' || !id_curso ? null : id_curso;
+    const idiomaValue = id_idioma === 'null' || id_idioma === '' || !id_idioma ? null : Number(id_idioma);
+
+    if (!cursoValue) {
+      if (!idiomaValue) {
+        return res.status(400).json({
+          success: false,
+          message: "Debes seleccionar un idioma para la biblioteca general"
+        });
+      }
+
+      const idiomasPermitidos = await getProfesorIdiomas(id_profesor);
+      const puedeSubir = idiomasPermitidos.some(idioma => Number(idioma.id_idioma) === idiomaValue);
+
+      if (!puedeSubir) {
+        return res.status(403).json({
+          success: false,
+          message: "Solo puedes subir recursos a los idiomas que enseñas"
+        });
+      }
+    }
     
     const [result] = await pool.query(`
-      INSERT INTO anuncios (titulo, contenido, tipo_recurso, link_url, archivo_recurso, id_curso, id_profesor, es_recurso, importante, notificar, descargas)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0, 0, 0)
+      INSERT INTO anuncios (titulo, contenido, tipo_recurso, link_url, archivo_recurso, id_curso, id_idioma, id_profesor, es_recurso, importante, notificar, descargas)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, 0, 0)
     `, [
       titulo,
       descripcion || null,
@@ -2090,6 +2183,7 @@ router.post("/recursos", uploadRecursos.single('archivo'), async (req, res) => {
       url || null,
       archivoPath,
       cursoValue,
+      cursoValue ? null : idiomaValue,
       id_profesor
     ]);
     
@@ -2116,15 +2210,17 @@ router.post("/recursos", uploadRecursos.single('archivo'), async (req, res) => {
 router.put("/recursos/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { titulo, descripcion, tipo, url, id_curso } = req.body;
+    const { titulo, descripcion, tipo, url, id_curso, id_idioma } = req.body;
+    await ensureBibliotecaIdiomaColumn();
     
     console.log(`️ Actualizando recurso ${id}`);
     
     const cursoValue = id_curso === 'null' || id_curso === '' || !id_curso ? null : id_curso;
+    const idiomaValue = id_idioma === 'null' || id_idioma === '' || !id_idioma ? null : id_idioma;
     
     await pool.query(`
       UPDATE anuncios 
-      SET titulo = ?, contenido = ?, tipo_recurso = ?, link_url = ?, id_curso = ?
+      SET titulo = ?, contenido = ?, tipo_recurso = ?, link_url = ?, id_curso = ?, id_idioma = ?
       WHERE id_anuncio = ? AND es_recurso = 1
     `, [
       titulo,
@@ -2132,6 +2228,7 @@ router.put("/recursos/:id", async (req, res) => {
       tipo,
       url,
       cursoValue,
+      cursoValue ? null : idiomaValue,
       id
     ]);
     

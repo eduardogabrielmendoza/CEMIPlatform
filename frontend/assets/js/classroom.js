@@ -504,6 +504,11 @@ function setupEventListeners() {
     });
     console.log(' Event listener de filtro de cursos agregado');
   }
+
+  const btnCrearTarea = document.getElementById('btnCrearTarea');
+  if (btnCrearTarea) {
+    btnCrearTarea.addEventListener('click', mostrarFormularioTarea);
+  }
 }
 
 
@@ -6104,6 +6109,7 @@ function aplicarTamañoFuente(tamaño) {
 
 
 let recursosData = null;
+let selectedBibliotecaIdioma = 'all';
 
 async function loadRecursos() {
   try {
@@ -6133,37 +6139,92 @@ async function loadRecursos() {
 }
 
 function renderRecursos(data) {
-  const gridCursos = document.getElementById('gridRecursosCursos');
   const gridBiblioteca = document.getElementById('gridBibliotecaGeneral');
-  
-  if (data.recursosPorCurso && data.recursosPorCurso.length > 0) {
-    gridCursos.innerHTML = data.recursosPorCurso.map(curso => renderCursoCard(curso)).join('');
-  } else {
-    gridCursos.innerHTML = `
-      <div class="empty-resources">
-        <i data-lucide="folder-open"></i>
-        <p>No hay recursos disponibles en tus cursos</p>
-        ${userRol.toLowerCase() === 'profesor' ? '<span>Sube tu primer recurso usando el botón superior</span>' : ''}
-      </div>
-    `;
+  if (!gridBiblioteca) return;
+
+  renderBibliotecaIdiomas(data);
+  renderBibliotecaGeneral();
+  lucide.createIcons();
+}
+
+function renderBibliotecaIdiomas(data) {
+  const tabsContainer = document.getElementById('libraryLanguageTabs');
+  if (!tabsContainer) return;
+
+  const idiomas = data.idiomas || [];
+  const recursos = data.bibliotecaGeneral || [];
+  const idiomaIds = new Set(idiomas.map(i => String(i.id_idioma)));
+
+  recursos.forEach(recurso => {
+    if (recurso.id_idioma && !idiomaIds.has(String(recurso.id_idioma))) {
+      idiomas.push({
+        id_idioma: recurso.id_idioma,
+        nombre_idioma: recurso.nombre_idioma || 'Sin idioma'
+      });
+      idiomaIds.add(String(recurso.id_idioma));
+    }
+  });
+
+  if (selectedBibliotecaIdioma !== 'all' && !idiomaIds.has(String(selectedBibliotecaIdioma))) {
+    selectedBibliotecaIdioma = 'all';
   }
-  
-  if (data.bibliotecaGeneral && data.bibliotecaGeneral.length > 0) {
+
+  tabsContainer.innerHTML = `
+    <button class="library-language-tab ${selectedBibliotecaIdioma === 'all' ? 'active' : ''}" data-idioma="all">
+      <i data-lucide="layers"></i>
+      Todos
+    </button>
+    ${idiomas.map(idioma => `
+      <button class="library-language-tab ${String(selectedBibliotecaIdioma) === String(idioma.id_idioma) ? 'active' : ''}" data-idioma="${idioma.id_idioma}">
+        ${idioma.nombre_idioma}
+      </button>
+    `).join('')}
+  `;
+
+  tabsContainer.querySelectorAll('.library-language-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      selectedBibliotecaIdioma = tab.dataset.idioma;
+      renderBibliotecaIdiomas(recursosData);
+      renderBibliotecaGeneral();
+      lucide.createIcons();
+    });
+  });
+}
+
+function getBibliotecaFiltrada() {
+  const recursos = recursosData?.bibliotecaGeneral || [];
+  return selectedBibliotecaIdioma === 'all'
+    ? recursos
+    : recursos.filter(recurso => String(recurso.id_idioma || '') === String(selectedBibliotecaIdioma));
+}
+
+function renderBibliotecaGeneral() {
+  const gridBiblioteca = document.getElementById('gridBibliotecaGeneral');
+  if (!gridBiblioteca) return;
+
+  const biblioteca = getBibliotecaFiltrada();
+
+  if (biblioteca.length > 0) {
     gridBiblioteca.innerHTML = `
       <div class="resources-list">
-        ${data.bibliotecaGeneral.map(recurso => renderRecursoItem(recurso, true)).join('')}
+        ${biblioteca.map(recurso => renderRecursoItem(recurso, true)).join('')}
       </div>
     `;
   } else {
+    const idioma = selectedBibliotecaIdioma === 'all'
+      ? 'la biblioteca general'
+      : (recursosData?.idiomas || []).find(i => String(i.id_idioma) === String(selectedBibliotecaIdioma))?.nombre_idioma || 'este idioma';
     gridBiblioteca.innerHTML = `
       <div class="empty-resources">
         <i data-lucide="library"></i>
-        <p>La biblioteca general está vacía</p>
+        <p>No hay recursos disponibles en ${idioma}</p>
       </div>
     `;
   }
-  
-  lucide.createIcons();
+
+  const search = document.getElementById('searchRecursos')?.value || '';
+  const tipo = document.getElementById('filterTipoRecurso')?.value || '';
+  if (search || tipo) filtrarRecursos(search, tipo);
 }
 
 function renderCursoCard(curso) {
@@ -6244,6 +6305,7 @@ function renderRecursoItem(recurso, isBiblioteca = false) {
         ${recurso.descripcion ? `<p class="recurso-desc">${recurso.descripcion}</p>` : ''}
         <div class="recurso-meta">
           <span class="recurso-fecha"><i data-lucide="calendar"></i> ${fechaFormateada}</span>
+          ${recurso.nombre_idioma ? `<span class="recurso-idioma"><i data-lucide="languages"></i> ${recurso.nombre_idioma}</span>` : ''}
           ${recurso.descargas > 0 ? `<span class="recurso-descargas"><i data-lucide="download"></i> ${recurso.descargas}</span>` : ''}
         </div>
       </div>
@@ -6269,27 +6331,26 @@ function renderRecursoItem(recurso, isBiblioteca = false) {
 function setupRecursosEventListeners() {
   const searchInput = document.getElementById('searchRecursos');
   if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
+    searchInput.oninput = (e) => {
       filtrarRecursos(e.target.value, document.getElementById('filterTipoRecurso')?.value || '');
-    });
+    };
   }
   
   const filterTipo = document.getElementById('filterTipoRecurso');
   if (filterTipo) {
-    filterTipo.addEventListener('change', (e) => {
+    filterTipo.onchange = (e) => {
       filtrarRecursos(document.getElementById('searchRecursos')?.value || '', e.target.value);
-    });
+    };
   }
   
   const btnSubir = document.getElementById('btnSubirRecurso');
   if (btnSubir) {
-    btnSubir.addEventListener('click', () => abrirModalSubirRecurso(null, 'Biblioteca General'));
+    btnSubir.onclick = () => abrirModalSubirRecurso();
   }
 }
 
 function filtrarRecursos(busqueda, tipo) {
   const recursos = document.querySelectorAll('.recurso-item');
-  const carpetas = document.querySelectorAll('.curso-folder');
   
   const searchLower = busqueda.toLowerCase();
   
@@ -6303,19 +6364,24 @@ function filtrarRecursos(busqueda, tipo) {
     
     recurso.style.display = (matchSearch && matchTipo) ? 'flex' : 'none';
   });
-  
-  carpetas.forEach(carpeta => {
-    const recursosVisibles = carpeta.querySelectorAll('.recurso-item[style*="display: flex"], .recurso-item:not([style*="display"])');
-    const hayVisibles = Array.from(recursosVisibles).some(r => r.style.display !== 'none');
-  });
 }
 
-function abrirModalSubirRecurso(idCurso = null, nombreCurso = 'Biblioteca General') {
+function abrirModalSubirRecurso() {
   const existingModal = document.getElementById('modalSubirRecurso');
   if (existingModal) existingModal.remove();
-  
-  const cursosOptions = recursosData?.cursos?.map(c => 
-    `<option value="${c.id_curso}" ${c.id_curso === idCurso ? 'selected' : ''}>${c.nombre_curso}</option>`
+
+  const idiomasPermitidos = recursosData?.idiomasPermitidos?.length
+    ? recursosData.idiomasPermitidos
+    : [];
+
+  if (userRol.toLowerCase() === 'profesor' && idiomasPermitidos.length === 0) {
+    showNotification('Sin idiomas asignados', 'No tienes idiomas habilitados para subir recursos', 'info');
+    return;
+  }
+
+  const idiomaSeleccionado = selectedBibliotecaIdioma !== 'all' ? String(selectedBibliotecaIdioma) : '';
+  const idiomasOptions = idiomasPermitidos.map(idioma => 
+    `<option value="${idioma.id_idioma}" ${String(idioma.id_idioma) === idiomaSeleccionado ? 'selected' : ''}>${idioma.nombre_idioma}</option>`
   ).join('') || '';
   
   const modalHTML = `
@@ -6340,10 +6406,10 @@ function abrirModalSubirRecurso(idCurso = null, nombreCurso = 'Biblioteca Genera
           
           <div class="form-row">
             <div class="form-group">
-              <label for="recursoCurso">Asignar a curso</label>
-              <select id="recursoCurso">
-                <option value="">Biblioteca General (público)</option>
-                ${cursosOptions}
+              <label for="recursoIdioma">Idioma de la biblioteca *</label>
+              <select id="recursoIdioma" required>
+                <option value="">Seleccionar idioma</option>
+                ${idiomasOptions}
               </select>
             </div>
             
@@ -6389,10 +6455,6 @@ function abrirModalSubirRecurso(idCurso = null, nombreCurso = 'Biblioteca Genera
   
   document.body.insertAdjacentHTML('beforeend', modalHTML);
   lucide.createIcons();
-  
-  if (idCurso) {
-    document.getElementById('recursoCurso').value = idCurso;
-  }
   
   const form = document.getElementById('formSubirRecurso');
   form.addEventListener('submit', handleSubirRecurso);
@@ -6482,13 +6544,18 @@ async function handleSubirRecurso(e) {
   
   const titulo = document.getElementById('recursoTitulo').value.trim();
   const descripcion = document.getElementById('recursoDescripcion').value.trim();
-  const idCurso = document.getElementById('recursoCurso').value;
+  const idIdioma = document.getElementById('recursoIdioma')?.value || '';
   const tipo = document.getElementById('recursoTipo').value;
   const url = document.getElementById('recursoUrl')?.value?.trim() || '';
   const archivo = document.getElementById('recursoArchivo')?.files?.[0];
   
   if (!titulo) {
     showNotification('Error', 'El título es requerido', 'error');
+    return;
+  }
+
+  if (!idIdioma) {
+    showNotification('Error', 'Selecciona un idioma para la biblioteca', 'error');
     return;
   }
   
@@ -6505,7 +6572,8 @@ async function handleSubirRecurso(e) {
   const formData = new FormData();
   formData.append('titulo', titulo);
   formData.append('descripcion', descripcion);
-  formData.append('id_curso', idCurso || '');
+  formData.append('id_curso', '');
+  formData.append('id_idioma', idIdioma);
   formData.append('tipo', tipo);
   formData.append('id_profesor', userId);
   
@@ -6616,7 +6684,6 @@ async function eliminarRecurso(idRecurso) {
 }
 
 function mostrarErrorRecursos() {
-  const gridCursos = document.getElementById('gridRecursosCursos');
   const gridBiblioteca = document.getElementById('gridBibliotecaGeneral');
   
   const errorHTML = `
@@ -6629,7 +6696,6 @@ function mostrarErrorRecursos() {
     </div>
   `;
   
-  if (gridCursos) gridCursos.innerHTML = errorHTML;
   if (gridBiblioteca) gridBiblioteca.innerHTML = errorHTML;
   
   lucide.createIcons();

@@ -123,10 +123,6 @@
           <i data-lucide="library"></i>
           <span>Biblioteca</span>
         </a>
-        <a href="#" class="nav-item" data-view="classes">
-          <i data-lucide="book-open"></i>
-          <span>Mis Clases</span>
-        </a>
         <a href="#" class="nav-item" data-view="tasks">
           <i data-lucide="clipboard-list"></i>
           <span>Tareas</span>
@@ -139,10 +135,6 @@
         <div class="nav-divider"></div>
         
         <div id="profesorMenu" style="display: none;">
-          <a href="#" class="nav-item" data-view="create-task">
-            <i data-lucide="plus-circle"></i>
-            <span>Crear Tarea</span>
-          </a>
           <a href="#" class="nav-item" data-view="announcements">
             <i data-lucide="megaphone"></i>
             <span>Anuncios</span>
@@ -176,18 +168,6 @@
         </a>
       </nav>
       
-      <div class="sidebar-footer">
-        <div class="storage-info">
-          <div class="storage-header">
-            <i data-lucide="hard-drive"></i>
-            <span>Almacenamiento</span>
-          </div>
-          <div class="storage-bar">
-            <div class="storage-fill" style="width: 45%"></div>
-          </div>
-          <div class="storage-text">4.5 GB de 10 GB</div>
-        </div>
-      </div>
     </aside>
 
     <main class="classroom-main" id="mainContent">
@@ -224,25 +204,13 @@
         </div>
 
         <div class="resources-container" id="resourcesContainer">
-          <div class="resources-section" id="recursosPorCurso">
-            <div class="section-header">
-              <i data-lucide="graduation-cap"></i>
-              <h3>Mis Cursos</h3>
-            </div>
-            <div class="resources-grid" id="gridRecursosCursos">
-              <div class="loading-resources">
-                <div class="loading-spinner"></div>
-                <p>Cargando recursos...</p>
-              </div>
-            </div>
-          </div>
-
           <div class="resources-section" id="bibliotecaGeneral">
             <div class="section-header">
               <i data-lucide="library"></i>
               <h3>Biblioteca General CEMI</h3>
               <span class="section-badge">Público</span>
             </div>
+            <div class="library-language-tabs" id="libraryLanguageTabs"></div>
             <div class="resources-grid" id="gridBibliotecaGeneral">
               <div class="loading-resources">
                 <div class="loading-spinner"></div>
@@ -317,6 +285,10 @@
         <div class="view-header">
           <h2>Tareas</h2>
           <div class="view-actions" style="display: flex; gap: 12px; align-items: center;">
+            <button class="btn-primary profesor-only" id="btnCrearTarea" style="display: none;">
+              <i data-lucide="plus-circle"></i>
+              Crear tarea
+            </button>
             <div class="view-filters">
               <button class="filter-btn active" data-filter="all">Todas</button>
               <button class="filter-btn" data-filter="pending">Pendientes</button>

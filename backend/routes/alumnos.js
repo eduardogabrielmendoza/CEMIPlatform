@@ -53,9 +53,12 @@ router.get("/", async (req, res) => {
         a.legajo,
         a.estado,
         a.fecha_registro,
-        (SELECT COUNT(*) 
-         FROM inscripciones i 
-         WHERE i.id_alumno = a.id_alumno AND i.estado = 'activo') as cursos_inscritos
+        (SELECT COUNT(*)
+         FROM inscripciones i
+         JOIN cursos c ON i.id_curso = c.id_curso
+         WHERE i.id_alumno = a.id_alumno
+           AND i.estado = 'activo'
+           AND c.estado = 'activo') as cursos_inscritos
       FROM alumnos a
       JOIN personas p ON a.id_alumno = p.id_persona
       ${whereClause}

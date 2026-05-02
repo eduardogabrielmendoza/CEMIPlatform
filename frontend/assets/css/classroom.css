@@ -1497,7 +1497,7 @@ body {
   justify-content: center;
   cursor: pointer;
   transition: all 0.35s var(--ease-out-back);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .header-icon-btn::before {
@@ -1545,8 +1545,8 @@ body {
 
 .notification-badge {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: -5px;
+  right: -5px;
   background: var(--danger-color);
   color: white;
   font-size: 11px;
@@ -5609,6 +5609,51 @@ body.dark-mode .toggle-password-btn:hover {
 #bibliotecaGeneral .section-badge {
   background: rgba(147, 161, 173, 0.1);
   color: #93a1ad;
+}
+
+.library-language-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: -6px 0 22px;
+}
+
+.library-language-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  background: var(--hw-white);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.library-language-tab:hover {
+  border-color: var(--accent-border);
+  color: var(--text-primary);
+  background: var(--hw-off-white);
+}
+
+.library-language-tab.active {
+  background: var(--hw-charcoal);
+  border-color: var(--hw-charcoal);
+  color: var(--hw-white);
+}
+
+.library-language-tab i {
+  width: 16px;
+  height: 16px;
+}
+
+#gridBibliotecaGeneral {
+  display: block;
 }
 
 @keyframes fadeInUpSmooth {
