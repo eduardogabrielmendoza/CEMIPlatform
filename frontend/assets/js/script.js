@@ -438,9 +438,100 @@ async function goToPage(section, pageOrDir) {
 }
 
 function recargarSeccionActiva() {
+  const section = getActiveAdminSection();
+  recargarSeccion(section);
+}
+
+function getActiveAdminSection() {
   const activeBtn = document.querySelector('.sidebar-menu button.active');
-  if (activeBtn) {
-    activeBtn.click();
+  return activeBtn ? activeBtn.id.replace('btn', '').toLowerCase() : '';
+}
+
+function getAdminSearchInput(section) {
+  const ids = {
+    cursos: 'cursosSearch',
+    alumnos: 'alumnosSearch',
+    profesores: 'profesoresSearch',
+    administradores: 'administradoresSearch',
+    aulas: 'aulasSearch',
+    idiomas: 'idiomasSearch'
+  };
+  return document.getElementById(ids[section]);
+}
+
+function escapeAdminSelectorValue(value) {
+  if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(value);
+  return String(value).replace(/["\\]/g, '\\$&');
+}
+
+function captureAdminViewState(section = getActiveAdminSection()) {
+  if (!section) return null;
+  if (typeof saveFilterState === 'function') saveFilterState(section);
+  const searchInput = getAdminSearchInput(section);
+  const paginationState = window._adminPagination?.[section];
+  const cursoPanel = document.getElementById('cursoPanel');
+  const alumnoPanel = document.getElementById('alumnoPanel');
+  const profesorPanel = document.getElementById('profesorPanel');
+  const modalEditarCurso = document.getElementById('modalEditarCurso');
+  return {
+    section,
+    searchValue: searchInput ? searchInput.value : '',
+    page: paginationState?.currentPage || 1,
+    dropdownOpen: !!document.getElementById(section + 'FilterDropdown')?.classList.contains('show'),
+    cursosOpen: Array.from(document.querySelectorAll('.curso-accordion-item.open')).map(item => item.dataset.idioma || ''),
+    cursoAlumnosPage: cursoAlumnosPagination?.currentPage || 1,
+    cursoPanelId: cursoPanel?.classList.contains('active') ? cursoPanel.dataset.idCurso : modalEditarCurso?.dataset.returnCursoPanel,
+    alumnoPanelId: alumnoPanel?.classList.contains('active') ? alumnoPanel.dataset.idAlumno : '',
+    profesorPanelId: profesorPanel?.classList.contains('active') ? profesorPanel.dataset.idProfesor : ''
+  };
+}
+
+function restoreAdminViewState(state) {
+  if (!state || !state.section) return;
+  const section = state.section;
+  const searchInput = getAdminSearchInput(section);
+  if (searchInput && state.searchValue) {
+    searchInput.value = state.searchValue;
+  }
+
+  if (section === 'cursos') {
+    if (typeof filterCursosAccordion === 'function') filterCursosAccordion();
+    setTimeout(() => {
+      state.cursosOpen.forEach(idioma => {
+        const item = document.querySelector(`.curso-accordion-item[data-idioma="${escapeAdminSelectorValue(idioma)}"]`);
+        const header = item?.querySelector('.curso-accordion-header');
+        if (header && !item.classList.contains('open')) toggleCursoAccordion(header);
+      });
+    }, 250);
+  } else if (section === 'aulas') {
+    if (typeof filterAulas === 'function') filterAulas();
+  } else if (section === 'idiomas') {
+    if (typeof filterIdiomas === 'function') filterIdiomas();
+  } else if (searchInput && state.searchValue.trim().length >= 2 && typeof searchServerSide === 'function') {
+    searchServerSide(section, state.searchValue.trim());
+  } else if (['alumnos', 'profesores', 'administradores'].includes(section)) {
+    if (typeof filterTableRows === 'function') filterTableRows(section);
+    if (state.page > 1 && typeof goToPage === 'function') goToPage(section, state.page);
+  }
+
+  if (state.dropdownOpen) {
+    const dropdown = document.getElementById(section + 'FilterDropdown');
+    if (dropdown) dropdown.classList.add('show');
+  }
+
+  setTimeout(() => {
+    if (state.cursoPanelId) openCursoPanel(state.cursoPanelId).then(() => renderCursoAlumnosPage(state.cursoAlumnosPage || 1));
+    if (state.alumnoPanelId) openAlumnoPanel(state.alumnoPanelId);
+    if (state.profesorPanelId) openProfesorPanel(state.profesorPanelId);
+  }, 650);
+}
+
+function recargarSeccion(section = getActiveAdminSection(), viewState = null) {
+  const state = viewState || captureAdminViewState(section);
+  const btn = section ? document.getElementById('btn' + section.charAt(0).toUpperCase() + section.slice(1)) : document.querySelector('.sidebar-menu button.active');
+  if (btn) {
+    btn.click();
+    setTimeout(() => restoreAdminViewState(state), 700);
   }
 }
 
@@ -6067,8 +6158,7 @@ function handleEstadoExclusion(section, clicked) {
 function reloadSectionByEstado(section) {
   saveFilterState(section);
   updateFilterBadge(section);
-  const btn = document.getElementById('btn' + section.charAt(0).toUpperCase() + section.slice(1));
-  if (btn) btn.click();
+  recargarSeccion(section);
 }
 
 // Accordion toggle + filter for cursos section
@@ -6769,6 +6859,7 @@ async function openCursoPanel(idCurso) {
   const panel = document.getElementById('cursoPanel');
   const overlay = document.getElementById('cursoPanelOverlay');
   
+  panel.dataset.idCurso = idCurso;
   panel.classList.add('active');
   overlay.classList.add('active');
 
@@ -6987,6 +7078,7 @@ function ensureEditarCursoModal() {
 async function openEditarCursoModal(curso) {
   ensureEditarCursoModal();
   const modal = document.getElementById('modalEditarCurso');
+  modal.dataset.returnCursoPanel = curso.id_curso || '';
 
   try {
     const resCursoCompleto = await fetch(`${API_URL}/cursos/${curso.id_curso}`);
@@ -7055,9 +7147,10 @@ async function openEditarCursoModal(curso) {
         const data = await resp.json();
 
         if (resp.ok && data.success) {
+          const adminViewState = captureAdminViewState('cursos');
           alert('Curso actualizado correctamente');
           modal.classList.remove('active');
-          document.getElementById('btnCursos').click();
+          recargarSeccion('cursos', adminViewState);
         } else {
           alert(data.message || 'Error al actualizar el curso');
         }
@@ -7411,6 +7504,7 @@ async function openAlumnoPanel(idAlumno) {
   const panel = document.getElementById('alumnoPanel');
   const overlay = document.getElementById('alumnoPanelOverlay');
   
+  panel.dataset.idAlumno = idAlumno;
   panel.classList.add('active');
   overlay.classList.add('active');
 
@@ -7706,6 +7800,7 @@ async function openProfesorPanel(idProfesor) {
   const panel = document.getElementById('profesorPanel');
   const overlay = document.getElementById('profesorPanelOverlay');
   
+  panel.dataset.idProfesor = idProfesor;
   panel.classList.add('active');
   overlay.classList.add('active');
 
@@ -8169,12 +8264,13 @@ function ensureEditarProfesorModal() {
       const result = await resp.json();
 
       if (resp.ok) {
+        const adminViewState = captureAdminViewState('profesores');
         showToast('Profesor actualizado correctamente', 'success');
         modal.classList.remove('active');
         
         const section = document.querySelector('.sidebar-menu button.active').id.replace('btn', '').toLowerCase();
         if (section === 'profesores') {
-          document.getElementById('btnProfesores').click();
+          recargarSeccion('profesores', adminViewState);
         }
         
         if (document.getElementById('profesorPanel').classList.contains('active')) {
@@ -8490,7 +8586,7 @@ async function cambiarEstadoProfesor(idProfesor, estadoActual) {
     if (resp.ok) {
       showToast(`Estado cambiado a ${cambio.label}`, 'success');
       
-      document.getElementById('btnProfesores').click();
+      recargarSeccion('profesores');
       
       if (document.getElementById('profesorPanel').classList.contains('active')) {
         openProfesorPanel(idProfesor);
@@ -8663,7 +8759,7 @@ async function darDeBajaProfesor(idProfesor, nombre) {
       
       document.getElementById('profesorPanel').classList.remove('active');
       
-      document.getElementById('btnProfesores').click();
+      recargarSeccion('profesores');
     } else {
       showToast(result.message || 'Error al dar de baja', 'error');
     }
@@ -10572,6 +10668,7 @@ async function editarAlumno(id) {
     }
 
     if (formValues) {
+      const adminViewState = captureAdminViewState('alumnos');
       const updateRes = await fetch(`${API_URL}/alumnos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -10582,7 +10679,7 @@ async function editarAlumno(id) {
       
       if (updateRes.ok && data.success) {
         await Swal.fire('¡Listo!', 'Alumno actualizado correctamente', 'success');
-        document.getElementById('btnAlumnos').click();
+        recargarSeccion('alumnos', adminViewState);
       } else {
         Swal.fire('Error', data.message || 'Error al actualizar alumno', 'error');
       }
@@ -10850,7 +10947,7 @@ async function eliminarAlumno(id, nombre) {
       
       if (res.ok && data.success) {
         Swal.fire('¡Eliminado!', 'Alumno eliminado exitosamente', 'success');
-        document.getElementById('btnAlumnos').click();
+        recargarSeccion('alumnos');
       } else {
         Swal.fire('Error', data.message || 'Error al eliminar alumno', 'error');
       }
@@ -11282,6 +11379,7 @@ async function editarProfesor(id) {
     }
 
     if (formValues) {
+      const adminViewState = captureAdminViewState('profesores');
       const updateRes = await fetch(`${API_URL}/profesores/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -11292,7 +11390,7 @@ async function editarProfesor(id) {
       
       if (updateRes.ok && data.success) {
         Swal.fire('¡Actualizado!', 'Profesor actualizado exitosamente', 'success');
-        document.getElementById('btnProfesores').click();
+        recargarSeccion('profesores', adminViewState);
       } else {
         Swal.fire('Error', data.message || 'Error al actualizar profesor', 'error');
       }
@@ -11326,7 +11424,7 @@ async function eliminarProfesor(id, nombre) {
       
       if (res.ok && data.success) {
         Swal.fire('¡Eliminado!', 'Profesor eliminado exitosamente', 'success');
-        document.getElementById('btnProfesores').click();
+        recargarSeccion('profesores');
       } else {
         console.error('Error del servidor:', data);
         Swal.fire('Error', data.message || 'Error al eliminar profesor', 'error');
@@ -11453,7 +11551,7 @@ async function openNuevoAdministradorModal() {
           confirmButtonColor: '#000'
         });
 
-        document.getElementById('btnAdministradores').click();
+        recargarSeccion('administradores');
       } else {
         Swal.fire('Error', data.message || 'Error al crear administrador', 'error');
       }
@@ -11532,6 +11630,7 @@ async function editarAdministrador(id) {
     }
 
     if (formValues) {
+      const adminViewState = captureAdminViewState('administradores');
       const updateRes = await fetch(`${API_URL}/administradores/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -11542,7 +11641,7 @@ async function editarAdministrador(id) {
 
       if (updateRes.ok && data.success) {
         Swal.fire('¡Actualizado!', 'Administrador actualizado correctamente', 'success');
-        document.getElementById('btnAdministradores').click();
+        recargarSeccion('administradores', adminViewState);
       } else {
         Swal.fire('Error', data.message || 'Error al actualizar administrador', 'error');
       }
@@ -11922,7 +12021,7 @@ async function eliminarAdministrador(id, nombre) {
       
       if (res.ok && data.success) {
         Swal.fire('¡Eliminado!', 'Administrador eliminado exitosamente', 'success');
-        document.getElementById('btnAdministradores').click();
+        recargarSeccion('administradores');
       } else {
         Swal.fire('Error', data.message || 'Error al eliminar administrador', 'error');
       }
@@ -12047,7 +12146,7 @@ async function openNuevoCursoModal() {
       
       if (res.ok && data.success) {
         Swal.fire('¡Creado!', 'Curso creado exitosamente', 'success');
-        document.getElementById('btnCursos').click();
+        recargarSeccion('cursos');
       } else {
         Swal.fire('Error', data.message || 'Error al crear curso', 'error');
       }
@@ -12157,6 +12256,7 @@ async function editarCurso(id) {
     });
 
     if (formValues) {
+      const adminViewState = captureAdminViewState('cursos');
       const updateRes = await fetch(`${API_URL}/cursos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -12167,7 +12267,7 @@ async function editarCurso(id) {
       
       if (updateRes.ok && data.success) {
         Swal.fire('¡Actualizado!', 'Curso actualizado exitosamente', 'success');
-        document.getElementById('btnCursos').click();
+        recargarSeccion('cursos', adminViewState);
       } else {
         Swal.fire('Error', data.message || 'Error al actualizar curso', 'error');
       }
@@ -12198,7 +12298,7 @@ async function eliminarCurso(id, nombre) {
       
       if (res.ok && data.success) {
         Swal.fire('¡Eliminado!', 'Curso eliminado exitosamente', 'success');
-        document.getElementById('btnCursos').click();
+        recargarSeccion('cursos');
       } else {
         Swal.fire('Error', data.message || 'Error al eliminar curso', 'error');
       }
@@ -12276,7 +12376,7 @@ async function asignarProfesorACurso(idCurso, nombreCurso) {
           timer: 2000,
           showConfirmButton: false
         });
-        document.getElementById('btnCursos').click();
+        recargarSeccion('cursos');
       } else {
         Swal.fire('Error', data.message || 'Error al asignar profesor', 'error');
       }
