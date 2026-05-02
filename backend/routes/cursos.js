@@ -44,6 +44,115 @@ async function validateCursoAsignaciones({ id_idioma, id_profesor, id_aula }) {
   return null;
 }
 
+const DIAS_CURSO = [
+  { id: "lunes", nombre: "Lunes", aliases: ["lunes", "lun"] },
+  { id: "martes", nombre: "Martes", aliases: ["martes", "mar"] },
+  { id: "miercoles", nombre: "Miercoles", aliases: ["miercoles", "mie"] },
+  { id: "jueves", nombre: "Jueves", aliases: ["jueves", "jue"] },
+  { id: "viernes", nombre: "Viernes", aliases: ["viernes", "vie"] },
+  { id: "sabado", nombre: "Sabado", aliases: ["sabado", "sab"] }
+];
+
+function normalizeText(value = "") {
+  return String(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+
+function parseTimeToMinutes(hour, minute = "0") {
+  const h = Number(hour);
+  const m = Number(minute || 0);
+  if (!Number.isInteger(h) || !Number.isInteger(m) || h < 0 || h > 23 || m < 0 || m > 59) return null;
+  return h * 60 + m;
+}
+
+function formatMinutes(minutes) {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function parseHorario(horario) {
+  if (!horario || typeof horario !== "string") return null;
+  const normalized = normalizeText(horario);
+  const timeMatch = normalized.match(/(\d{1,2})(?::(\d{2}))?\s*(?:-| a | hasta )\s*(\d{1,2})(?::(\d{2}))?/);
+  if (!timeMatch) return null;
+
+  const start = parseTimeToMinutes(timeMatch[1], timeMatch[2]);
+  const end = parseTimeToMinutes(timeMatch[3], timeMatch[4]);
+  if (start === null || end === null || start >= end) return null;
+
+  const dias = DIAS_CURSO.filter((dia) => dia.aliases.some((alias) => {
+    const pattern = new RegExp(`(^|[^a-z])${alias}([^a-z]|$)`);
+    return pattern.test(normalized);
+  })).map((dia) => dia.id);
+
+  if (dias.length === 0) return null;
+  return { dias: [...new Set(dias)], start, end };
+}
+
+function isHorarioPermitido(parsed) {
+  if (!parsed) return false;
+  if (parsed.start % 30 !== 0 || parsed.end % 30 !== 0) return false;
+  return (parsed.start >= 420 && parsed.end <= 780) || (parsed.start >= 1020 && parsed.end <= 1320);
+}
+
+function horariosOverlap(a, b) {
+  return a.dias.some((dia) => b.dias.includes(dia)) && a.start < b.end && b.start < a.end;
+}
+
+async function findHorarioConflict(horario, excludeId = null) {
+  const parsed = parseHorario(horario);
+  if (!isHorarioPermitido(parsed)) {
+    return { invalid: true };
+  }
+
+  const params = [];
+  let excludeClause = "";
+  if (excludeId) {
+    excludeClause = "AND id_curso != ?";
+    params.push(excludeId);
+  }
+
+  const [rows] = await pool.query(
+    `SELECT id_curso, nombre_curso, horario FROM cursos WHERE estado = 'activo' ${excludeClause}`,
+    params
+  );
+
+  const conflict = rows.find((curso) => {
+    const existing = parseHorario(curso.horario);
+    return existing && horariosOverlap(parsed, existing);
+  });
+
+  return conflict ? { conflict, parsed } : null;
+}
+
+function getNivelOrden(nivel = "", idNivel = null) {
+  const text = normalizeText(nivel);
+  if (/\b(base|basico|basica|inicial|principiante|a1)\b/.test(text)) return 1;
+  if (/\b(elemental|a2)\b/.test(text)) return 2;
+  if (/\b(intermedio alto|b2)\b/.test(text)) return 4;
+  if (/\b(intermedio|b1)\b/.test(text)) return 3;
+  if (/\b(avanzado|c1|c2)\b/.test(text)) return 5;
+  const numeric = Number(idNivel);
+  return Number.isFinite(numeric) ? numeric : 999;
+}
+
+function getBloqueoNivel(curso, cursosActivosAlumno) {
+  const activosMismoIdioma = cursosActivosAlumno.filter((activo) => String(activo.id_idioma) === String(curso.id_idioma));
+  if (activosMismoIdioma.length === 0) return null;
+
+  const cursoOrden = getNivelOrden(curso.nivel_descripcion, curso.id_nivel);
+  const pendiente = activosMismoIdioma
+    .map((activo) => ({
+      ...activo,
+      orden: getNivelOrden(activo.nivel_descripcion, activo.id_nivel)
+    }))
+    .filter((activo) => activo.orden < cursoOrden)
+    .sort((a, b) => a.orden - b.orden)[0];
+
+  if (!pendiente) return null;
+  return `Debe finalizar el cursado de ${pendiente.nombre_idioma} ${pendiente.nivel_descripcion || pendiente.nombre_curso} para inscribirse.`;
+}
+
 // Get distinct ciclo_lectivo values
 router.get("/ciclos-lectivos", async (req, res) => {
   try {
@@ -226,6 +335,23 @@ router.get('/catalogo', async (req, res) => {
         const [cursos] = await pool.query(query, params);
         console.log('[CATALOGO] Cursos encontrados:', cursos.length);
 
+        const [cursosActivosAlumno] = await pool.query(`
+            SELECT
+                c.id_curso,
+                c.nombre_curso,
+                c.id_idioma,
+                c.id_nivel,
+                i.nombre_idioma,
+                n.descripcion as nivel_descripcion
+            FROM inscripciones ins
+            INNER JOIN cursos c ON ins.id_curso = c.id_curso
+            INNER JOIN idiomas i ON c.id_idioma = i.id_idioma
+            LEFT JOIN niveles n ON c.id_nivel = n.id_nivel
+            WHERE ins.id_alumno = ?
+              AND ins.estado = 'activo'
+              AND c.estado = 'activo'
+        `, [id_alumno]);
+
         const cursosDisponibles = cursos.filter(curso => curso.ya_inscrito === 0);
         console.log('[CATALOGO] Cursos disponibles (sin inscripción):', cursosDisponibles.length);
 
@@ -243,6 +369,8 @@ router.get('/catalogo', async (req, res) => {
                 estado = 'cupos_limitados';
             }
 
+            const bloqueoNivel = getBloqueoNivel(curso, cursosActivosAlumno);
+
             return {
                 id_curso: curso.id_curso,
                 nombre_curso: curso.nombre_curso,
@@ -252,7 +380,9 @@ router.get('/catalogo', async (req, res) => {
                 cupos_disponibles: curso.cupo_maximo - curso.inscriptos_actuales,
                 porcentaje_ocupacion: Math.round(porcentajeOcupacion),
                 porcentaje_disponible: Math.round(porcentajeDisponible),
-                estado: estado,
+                estado: bloqueoNivel ? 'bloqueado_nivel' : estado,
+                bloqueado: Boolean(bloqueoNivel),
+                motivo_bloqueo: bloqueoNivel,
                 
                 idioma: {
                     id_idioma: curso.id_idioma,
@@ -350,6 +480,54 @@ router.get('/filtros/opciones', async (req, res) => {
             details: error.message 
         });
     }
+});
+
+router.get("/horarios-disponibles", async (req, res) => {
+  try {
+    const { exclude_id } = req.query;
+    const params = [];
+    let excludeClause = "";
+
+    if (exclude_id) {
+      excludeClause = "AND id_curso != ?";
+      params.push(exclude_id);
+    }
+
+    const [rows] = await pool.query(
+      `SELECT id_curso, nombre_curso, horario FROM cursos WHERE estado = 'activo' ${excludeClause} ORDER BY horario`,
+      params
+    );
+
+    const ocupados = rows
+      .map((curso) => {
+        const parsed = parseHorario(curso.horario);
+        if (!parsed) return null;
+        return {
+          id_curso: curso.id_curso,
+          nombre_curso: curso.nombre_curso,
+          horario: curso.horario,
+          dias: parsed.dias,
+          inicio: formatMinutes(parsed.start),
+          fin: formatMinutes(parsed.end),
+          start: parsed.start,
+          end: parsed.end
+        };
+      })
+      .filter(Boolean);
+
+    res.json({
+      success: true,
+      dias: DIAS_CURSO.map(({ id, nombre }) => ({ id, nombre })),
+      ventanas: [
+        { inicio: "07:00", fin: "13:00" },
+        { inicio: "17:00", fin: "22:00" }
+      ],
+      ocupados
+    });
+  } catch (error) {
+    console.error("Error al obtener horarios disponibles:", error);
+    res.status(500).json({ success: false, message: "Error al obtener horarios disponibles" });
+  }
 });
 
 router.get('/mis-cursos/:id_alumno', async (req, res) => {
@@ -687,6 +865,13 @@ router.put("/:id", async (req, res) => {
     if (validationError) {
       return res.status(400).json({ success: false, message: validationError });
     }
+    const horarioConflict = await findHorarioConflict(horario, id);
+    if (horarioConflict?.invalid) {
+      return res.status(400).json({ success: false, message: "Debe seleccionar dias y un rango horario valido entre 07:00 y 13:00 o entre 17:00 y 22:00" });
+    }
+    if (horarioConflict?.conflict) {
+      return res.status(400).json({ success: false, message: `El horario se superpone con ${horarioConflict.conflict.nombre_curso} (${horarioConflict.conflict.horario})` });
+    }
 
     const query = `
       UPDATE cursos 
@@ -743,6 +928,13 @@ router.post("/", async (req, res) => {
     const validationError = await validateCursoAsignaciones({ id_idioma, id_profesor, id_aula });
     if (validationError) {
       return res.status(400).json({ success: false, message: validationError });
+    }
+    const horarioConflict = await findHorarioConflict(horario);
+    if (horarioConflict?.invalid) {
+      return res.status(400).json({ success: false, message: "Debe seleccionar dias y un rango horario valido entre 07:00 y 13:00 o entre 17:00 y 22:00" });
+    }
+    if (horarioConflict?.conflict) {
+      return res.status(400).json({ success: false, message: `El horario se superpone con ${horarioConflict.conflict.nombre_curso} (${horarioConflict.conflict.horario})` });
     }
 
     const [result] = await pool.query(

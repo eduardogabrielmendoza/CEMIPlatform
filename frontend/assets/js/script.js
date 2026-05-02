@@ -5734,6 +5734,179 @@ async function cargarProfesoresActivosPorIdioma(idIdioma, selectedProfesorId = '
   }
 }
 
+const HORARIO_DIAS_CURSO = [
+  { id: "lunes", nombre: "Lunes" },
+  { id: "martes", nombre: "Martes" },
+  { id: "miercoles", nombre: "Miercoles" },
+  { id: "jueves", nombre: "Jueves" },
+  { id: "viernes", nombre: "Viernes" },
+  { id: "sabado", nombre: "Sabado" }
+];
+
+function minutosAHoraCurso(minutos) {
+  const h = Math.floor(minutos / 60);
+  const m = minutos % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function horaAMinutosCurso(hora) {
+  const partes = String(hora || "").split(":").map(Number);
+  if (partes.length < 2 || partes.some(Number.isNaN)) return null;
+  return partes[0] * 60 + partes[1];
+}
+
+function normalizarTextoCurso(value) {
+  return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+function parseHorarioCurso(horario) {
+  const normalized = normalizarTextoCurso(horario);
+  const match = normalized.match(/(\d{1,2})(?::(\d{2}))?\s*(?:-| a | hasta )\s*(\d{1,2})(?::(\d{2}))?/);
+  if (!match) return null;
+  const start = Number(match[1]) * 60 + Number(match[2] || 0);
+  const end = Number(match[3]) * 60 + Number(match[4] || 0);
+  const dias = HORARIO_DIAS_CURSO.filter((dia) => normalized.includes(dia.id)).map((dia) => dia.id);
+  if (!dias.length || start >= end) return null;
+  return { dias, start, end };
+}
+
+function getOpcionesHoraCurso(inicio, fin, includeFin = false) {
+  const opciones = [];
+  const start = horaAMinutosCurso(inicio);
+  const end = horaAMinutosCurso(fin);
+  const limite = includeFin ? end : end - 30;
+  for (let m = start; m <= limite; m += 30) {
+    opciones.push(minutosAHoraCurso(m));
+  }
+  return opciones;
+}
+
+function getHorarioSelectorHtml() {
+  const inicios = [...getOpcionesHoraCurso("07:00", "13:00"), ...getOpcionesHoraCurso("17:00", "22:00")];
+  const fines = [...getOpcionesHoraCurso("07:00", "13:00", true), ...getOpcionesHoraCurso("17:00", "22:00", true)];
+  return `
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Dias</label>
+      <div id="horarioDiasCurso" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+        ${HORARIO_DIAS_CURSO.map((dia) => `
+          <label style="display: flex; align-items: center; gap: 8px; border: 1px solid #d1d5db; border-radius: 8px; padding: 9px 10px; cursor: pointer; font-size: 13px; color: #374151;">
+            <input type="checkbox" value="${dia.id}" data-dia-nombre="${dia.nombre}" style="margin: 0;">
+            <span>${dia.nombre}</span>
+          </label>
+        `).join("")}
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px;">
+      <div>
+        <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Inicio</label>
+        <select id="horarioInicio" class="swal2-input" style="width: 100%; margin: 0;">
+          <option value="">Seleccionar inicio</option>
+          ${inicios.map((hora) => `<option value="${hora}">${hora}</option>`).join("")}
+        </select>
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Fin</label>
+        <select id="horarioFin" class="swal2-input" style="width: 100%; margin: 0;">
+          <option value="">Seleccionar fin</option>
+          ${fines.map((hora) => `<option value="${hora}">${hora}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+    <div id="horarioFeedback" style="min-height: 18px; font-size: 12px; color: #6b7280;"></div>
+  `;
+}
+
+function getHorariosOcupadosCurso(horariosData) {
+  return (horariosData?.ocupados || []).map((item) => ({
+    ...item,
+    start: Number(item.start ?? horaAMinutosCurso(item.inicio)),
+    end: Number(item.end ?? horaAMinutosCurso(item.fin))
+  })).filter((item) => item.dias?.length && Number.isFinite(item.start) && Number.isFinite(item.end));
+}
+
+function haySolapamientoHorario(a, b) {
+  return a.dias.some((dia) => b.dias.includes(dia)) && a.start < b.end && b.start < a.end;
+}
+
+function actualizarDisponibilidadHorario(horariosData) {
+  const dias = [...document.querySelectorAll('#horarioDiasCurso input:checked')].map((input) => input.value);
+  const inicioSelect = document.getElementById('horarioInicio');
+  const finSelect = document.getElementById('horarioFin');
+  const feedback = document.getElementById('horarioFeedback');
+  if (!inicioSelect || !finSelect || !feedback) return;
+
+  const inicio = horaAMinutosCurso(inicioSelect.value);
+  const fin = horaAMinutosCurso(finSelect.value);
+  const mismoTurno = (inicio >= 420 && fin <= 780) || (inicio >= 1020 && fin <= 1320);
+  const seleccionado = { dias, start: inicio, end: fin };
+  const conflicto = getHorariosOcupadosCurso(horariosData).find((ocupado) => dias.length && inicio !== null && fin !== null && haySolapamientoHorario(seleccionado, ocupado));
+
+  [...finSelect.options].forEach((option) => {
+    if (!option.value || inicio === null) {
+      option.disabled = false;
+      return;
+    }
+    const value = horaAMinutosCurso(option.value);
+    const validEnd = value > inicio && (((inicio >= 420 && inicio < 780) && value <= 780) || ((inicio >= 1020 && inicio < 1320) && value <= 1320));
+    const optionConflict = getHorariosOcupadosCurso(horariosData).some((ocupado) => dias.length && haySolapamientoHorario({ dias, start: inicio, end: value }, ocupado));
+    option.disabled = !validEnd || optionConflict;
+  });
+
+  if (!dias.length) {
+    feedback.textContent = 'Selecciona al menos un dia.';
+    feedback.style.color = '#6b7280';
+  } else if (inicio === null || fin === null) {
+    feedback.textContent = 'Selecciona inicio y fin.';
+    feedback.style.color = '#6b7280';
+  } else if (inicio >= fin || !mismoTurno) {
+    feedback.textContent = 'El horario debe estar dentro de 07:00-13:00 o 17:00-22:00.';
+    feedback.style.color = '#dc2626';
+  } else if (conflicto) {
+    feedback.textContent = `No disponible: se superpone con ${conflicto.nombre_curso} (${conflicto.horario}).`;
+    feedback.style.color = '#dc2626';
+  } else {
+    feedback.textContent = 'Horario disponible.';
+    feedback.style.color = '#16a34a';
+  }
+}
+
+function inicializarSelectorHorario(horariosData, horarioActual = '') {
+  const parsed = parseHorarioCurso(horarioActual);
+  if (parsed) {
+    parsed.dias.forEach((dia) => {
+      const checkbox = document.querySelector(`#horarioDiasCurso input[value="${dia}"]`);
+      if (checkbox) checkbox.checked = true;
+    });
+    const inicioSelect = document.getElementById('horarioInicio');
+    const finSelect = document.getElementById('horarioFin');
+    if (inicioSelect) inicioSelect.value = minutosAHoraCurso(parsed.start);
+    if (finSelect) finSelect.value = minutosAHoraCurso(parsed.end);
+  }
+
+  document.querySelectorAll('#horarioDiasCurso input, #horarioInicio, #horarioFin').forEach((element) => {
+    element.addEventListener('change', () => actualizarDisponibilidadHorario(horariosData));
+  });
+  actualizarDisponibilidadHorario(horariosData);
+}
+
+function getHorarioCursoSeleccionado(horariosData) {
+  actualizarDisponibilidadHorario(horariosData);
+  const dias = [...document.querySelectorAll('#horarioDiasCurso input:checked')].map((input) => ({
+    id: input.value,
+    nombre: input.dataset.diaNombre
+  }));
+  const inicio = document.getElementById('horarioInicio')?.value;
+  const fin = document.getElementById('horarioFin')?.value;
+  const start = horaAMinutosCurso(inicio);
+  const end = horaAMinutosCurso(fin);
+  const selected = { dias: dias.map((dia) => dia.id), start, end };
+  const conflicto = getHorariosOcupadosCurso(horariosData).find((ocupado) => haySolapamientoHorario(selected, ocupado));
+  const valido = dias.length && start !== null && end !== null && start < end && (((start >= 420 && end <= 780) || (start >= 1020 && end <= 1320))) && !conflicto;
+
+  if (!valido) return null;
+  return `${dias.map((dia) => dia.nombre).join(', ')} ${inicio}-${fin}`;
+}
+
 // Debounce helper
 var _searchTimers = {};
 function debounceSearch(section, fn, delay) {
@@ -11762,15 +11935,17 @@ async function eliminarAdministrador(id, nombre) {
 
 async function openNuevoCursoModal() {
   try {
-    const [idiomasRes, nivelesRes, aulasRes] = await Promise.all([
+    const [idiomasRes, nivelesRes, aulasRes, horariosRes] = await Promise.all([
       fetch(`${API_URL}/idiomas?estado=activo`),
       fetch(`${API_URL}/niveles`),
-      fetch(`${API_URL}/aulas?estado=activo`)
+      fetch(`${API_URL}/aulas?estado=activo`),
+      fetch(`${API_URL}/cursos/horarios-disponibles`)
     ]);
 
     const idiomas = await idiomasRes.json();
     const allNiveles = await nivelesRes.json();
     const aulas = await aulasRes.json();
+    const horariosData = await horariosRes.json();
 
     const { value: formValues } = await Swal.fire({
       title: 'Nuevo Curso',
@@ -11799,10 +11974,7 @@ async function openNuevoCursoModal() {
               <option value="">Seleccionar idioma primero</option>
             </select>
           </div>
-          <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Horario (opcional)</label>
-            <input id="horario" class="swal2-input" placeholder="Ej: Lun-Mie 18:00-20:00" style="width: 100%; margin: 0;">
-          </div>
+          ${getHorarioSelectorHtml()}
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Cupo Máximo</label>
             <input id="cupo_maximo" type="number" class="swal2-input" value="30" style="width: 100%; margin: 0;">
@@ -11827,6 +11999,7 @@ async function openNuevoCursoModal() {
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#4a5259',
       didOpen: function() {
+        inicializarSelectorHorario(horariosData);
         var idiomaSelect = document.getElementById('id_idioma');
         idiomaSelect.addEventListener('change', function() {
           filterNivelesByIdioma(allNiveles, this.value, document.getElementById('id_nivel'), '');
@@ -11838,7 +12011,7 @@ async function openNuevoCursoModal() {
         const id_idioma = document.getElementById('id_idioma').value;
         const id_nivel = document.getElementById('id_nivel').value;
         const id_profesor = document.getElementById('id_profesor').value;
-        const horario = document.getElementById('horario').value;
+        const horario = getHorarioCursoSeleccionado(horariosData);
         const cupo_maximo = document.getElementById('cupo_maximo').value;
         const id_aula = document.getElementById('id_aula').value;
         const ciclo_lectivo = document.getElementById('ciclo_lectivo').value;
@@ -11853,6 +12026,10 @@ async function openNuevoCursoModal() {
         }
         if (!id_profesor) {
           Swal.showValidationMessage('Debe seleccionar un profesor');
+          return false;
+        }
+        if (!horario) {
+          Swal.showValidationMessage('Debe seleccionar un horario disponible');
           return false;
         }
         return { nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula, ciclo_lectivo };
@@ -11883,17 +12060,19 @@ async function openNuevoCursoModal() {
 
 async function editarCurso(id) {
   try {
-    const [cursoRes, idiomasRes, nivelesRes, aulasRes] = await Promise.all([
+    const [cursoRes, idiomasRes, nivelesRes, aulasRes, horariosRes] = await Promise.all([
       fetch(`${API_URL}/cursos/${id}`),
       fetch(`${API_URL}/idiomas?estado=activo`),
       fetch(`${API_URL}/niveles`),
-      fetch(`${API_URL}/aulas?estado=activo`)
+      fetch(`${API_URL}/aulas?estado=activo`),
+      fetch(`${API_URL}/cursos/horarios-disponibles?exclude_id=${encodeURIComponent(id)}`)
     ]);
 
     const curso = await cursoRes.json();
     const idiomas = await idiomasRes.json();
     const allNiveles = await nivelesRes.json();
     const aulas = await aulasRes.json();
+    const horariosData = await horariosRes.json();
 
     const { value: formValues } = await Swal.fire({
       title: 'Editar Curso',
@@ -11921,10 +12100,7 @@ async function editarCurso(id) {
               <option value="">Cargando profesores...</option>
             </select>
           </div>
-          <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Horario</label>
-            <input id="horario" class="swal2-input" value="${curso.horario || ''}" style="width: 100%; margin: 0;">
-          </div>
+          ${getHorarioSelectorHtml()}
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Cupo Máximo</label>
             <input id="cupo_maximo" type="number" class="swal2-input" value="${curso.cupo_maximo}" style="width: 100%; margin: 0;">
@@ -11951,6 +12127,7 @@ async function editarCurso(id) {
       didOpen: function() {
         filterNivelesByIdioma(allNiveles, curso.id_idioma, document.getElementById('id_nivel'), curso.id_nivel);
         cargarProfesoresActivosPorIdioma(curso.id_idioma, curso.id_profesor);
+        inicializarSelectorHorario(horariosData, curso.horario || '');
         var idiomaSelect = document.getElementById('id_idioma');
         idiomaSelect.addEventListener('change', function() {
           filterNivelesByIdioma(allNiveles, this.value, document.getElementById('id_nivel'), '');
@@ -11962,13 +12139,17 @@ async function editarCurso(id) {
         const id_idioma = document.getElementById('id_idioma').value;
         const id_nivel = document.getElementById('id_nivel').value;
         const id_profesor = document.getElementById('id_profesor').value;
-        const horario = document.getElementById('horario').value;
+        const horario = getHorarioCursoSeleccionado(horariosData);
         const cupo_maximo = document.getElementById('cupo_maximo').value;
         const id_aula = document.getElementById('id_aula').value;
         const ciclo_lectivo = document.getElementById('ciclo_lectivo').value;
         
         if (!nombre_curso || !id_idioma || !id_profesor) {
           Swal.showValidationMessage('Nombre del curso, idioma y profesor son obligatorios');
+          return false;
+        }
+        if (!horario) {
+          Swal.showValidationMessage('Debe seleccionar un horario disponible');
           return false;
         }
         return { nombre_curso, id_idioma, id_nivel, id_profesor, horario, cupo_maximo, id_aula, ciclo_lectivo };

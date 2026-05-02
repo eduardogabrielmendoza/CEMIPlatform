@@ -3,6 +3,7 @@ class CursadoManager {
     constructor() {
         this.API_URL = window.API_BASE_URL || window.API_URL || 'http://localhost:3000/api';
         this.cursosDisponibles = [];
+        this.cursosCatalogo = [];
         this.misCursos = [];
         this.filtros = {
             idiomas: [],
@@ -87,6 +88,7 @@ class CursadoManager {
             const data = await response.json();
 
             if (data.success) {
+                this.cursosCatalogo = data.cursos;
                 this.cursosDisponibles = data.cursos;
                 this.aplicarFiltroBusqueda();
             } else {
@@ -160,8 +162,17 @@ class CursadoManager {
         
         if (!container) return;
 
+        const grupos = this.cursosDisponibles.reduce((acc, curso) => {
+            const idioma = curso.idioma?.nombre || 'Sin idioma';
+            if (!acc[idioma]) acc[idioma] = [];
+            acc[idioma].push(curso);
+            return acc;
+        }, {});
+        const idiomas = Object.keys(grupos).sort((a, b) => a.localeCompare(b));
+        const disponibles = this.cursosDisponibles.filter(curso => !curso.bloqueado).length;
+
         if (contador) {
-            contador.textContent = `Mostrando ${this.cursosDisponibles.length} ${this.cursosDisponibles.length === 1 ? 'curso' : 'cursos'}`;
+            contador.textContent = `${idiomas.length} ${idiomas.length === 1 ? 'idioma' : 'idiomas'} - ${disponibles} ${disponibles === 1 ? 'curso disponible' : 'cursos disponibles'}`;
         }
 
         if (this.cursosDisponibles.length === 0) {
@@ -176,53 +187,90 @@ class CursadoManager {
         }
 
         container.innerHTML = `
-            <div style="border-radius: 12px;">
-                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-                    <thead>
-                        <tr style="background: #f9fafb;">
-                            <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Curso</th>
-                            <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Idioma</th>
-                            <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Nivel</th>
-                            <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Horario</th>
-                            <th style="padding: 14px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Profesor</th>
-                            <th style="padding: 14px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb;">Cupos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${this.cursosDisponibles.map(curso => {
-                            const cuposColor = curso.porcentaje_disponible >= 50 ? '#22c55e' : curso.porcentaje_disponible >= 25 ? '#f59e0b' : '#ef4444';
-                            
-                            return `
-                                <tr style="border-bottom: 1px solid #f3f4f6;">
-                                    <td style="padding: 14px 16px; color: #1e1e1e; font-size: 14px;">
-                                        <div style="display: flex; align-items: center; gap: 10px;">
-                                            <i data-lucide="book-open" style="width: 16px; height: 16px; color: #6b7280;"></i>
-                                            <span style="font-weight: 500;">${curso.nombre_curso}</span>
-                                        </div>
-                                    </td>
-                                    <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">${curso.idioma.nombre}</td>
-                                    <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center;">${curso.nivel.descripcion}</td>
-                                    <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">
-                                        <div style="display: flex; align-items: center; gap: 6px;">
-                                            <i data-lucide="clock" style="width: 14px; height: 14px; color: #9ca3af;"></i>
-                                            ${curso.horario}
-                                        </div>
-                                    </td>
-                                    <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">${curso.profesor.nombre}</td>
-                                    <td style="padding: 14px 16px; text-align: center;">
-                                        <span style="color: ${cuposColor}; font-weight: 600; font-size: 14px;">${curso.cupos_disponibles}/${curso.cupo_maximo}</span>
-                                    </td>
-                                </tr>
-                            `;
-                        }).join('')}
-                    </tbody>
-                </table>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                ${idiomas.map((idioma, index) => {
+                    const cursos = grupos[idioma].sort((a, b) => (a.nivel?.descripcion || '').localeCompare(b.nivel?.descripcion || ''));
+                    const disponiblesIdioma = cursos.filter(curso => !curso.bloqueado).length;
+                    const panelId = `catalogo-idioma-${index}`;
+
+                    return `
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: #ffffff;">
+                            <button type="button" onclick="cursadoManager.toggleIdiomaCatalogo('${panelId}', this)" style="width: 100%; border: 0; background: #f9fafb; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #1f2937;">
+                                <span style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600;">
+                                    <i data-lucide="languages" style="width: 17px; height: 17px; color: #4a5259;"></i>
+                                    ${idioma}
+                                </span>
+                                <span style="display: flex; align-items: center; gap: 10px; color: #6b7280; font-size: 13px;">
+                                    ${disponiblesIdioma}/${cursos.length} disponibles
+                                    <i data-lucide="chevron-down" style="width: 17px; height: 17px; transition: transform 0.2s ease;"></i>
+                                </span>
+                            </button>
+                            <div id="${panelId}" style="display: none; overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse; min-width: 760px;">
+                                    <thead>
+                                        <tr style="background: #ffffff;">
+                                            <th style="padding: 12px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid #e5e7eb;">Curso</th>
+                                            <th style="padding: 12px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid #e5e7eb;">Nivel</th>
+                                            <th style="padding: 12px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid #e5e7eb;">Horario</th>
+                                            <th style="padding: 12px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid #e5e7eb;">Profesor</th>
+                                            <th style="padding: 12px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid #e5e7eb;">Cupos</th>
+                                            <th style="padding: 12px 16px; text-align: center; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid #e5e7eb;">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${cursos.map(curso => this.renderizarFilaCatalogo(curso)).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
             </div>
         `;
         
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
+    }
+
+    renderizarFilaCatalogo(curso) {
+        const cuposColor = curso.porcentaje_disponible >= 50 ? '#22c55e' : curso.porcentaje_disponible >= 25 ? '#f59e0b' : '#ef4444';
+        const rowOpacity = curso.bloqueado ? '0.48' : '1';
+        const accion = curso.bloqueado
+            ? `<span style="display: inline-block; max-width: 230px; color: #6b7280; font-size: 12px; line-height: 1.35;">${curso.motivo_bloqueo}</span>`
+            : `<button type="button" onclick="cursadoManager.mostrarModalDetalle(cursadoManager.cursosDisponibles.find(c => c.id_curso === ${curso.id_curso}))" style="border: 1px solid #d1d5db; background: #ffffff; color: #374151; border-radius: 8px; padding: 7px 10px; font-size: 12px; cursor: pointer;">Ver curso</button>`;
+
+        return `
+            <tr style="border-bottom: 1px solid #f3f4f6; opacity: ${rowOpacity};">
+                <td style="padding: 14px 16px; color: #1e1e1e; font-size: 14px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="${curso.bloqueado ? 'lock' : 'book-open'}" style="width: 16px; height: 16px; color: #6b7280;"></i>
+                        <span style="font-weight: 500;">${curso.nombre_curso}</span>
+                    </div>
+                </td>
+                <td style="padding: 14px 16px; color: #4a5259; font-size: 14px; text-align: center;">${curso.nivel.descripcion}</td>
+                <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="clock" style="width: 14px; height: 14px; color: #9ca3af;"></i>
+                        ${curso.horario}
+                    </div>
+                </td>
+                <td style="padding: 14px 16px; color: #6b7280; font-size: 14px;">${curso.profesor.nombre}</td>
+                <td style="padding: 14px 16px; text-align: center;">
+                    <span style="color: ${cuposColor}; font-weight: 600; font-size: 14px;">${curso.cupos_disponibles}/${curso.cupo_maximo}</span>
+                </td>
+                <td style="padding: 14px 16px; text-align: center;">${accion}</td>
+            </tr>
+        `;
+    }
+
+    toggleIdiomaCatalogo(panelId, button) {
+        const panel = document.getElementById(panelId);
+        if (!panel) return;
+        const isOpen = panel.style.display === 'block';
+        panel.style.display = isOpen ? 'none' : 'block';
+        const icon = button.querySelector('[data-lucide="chevron-down"]');
+        if (icon) icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
     }
 
     crearCursoCard(curso) {
@@ -416,14 +464,15 @@ class CursadoManager {
     }
 
     aplicarFiltroBusqueda() {
-        let cursosFiltrados = [...this.cursosDisponibles];
+        let cursosFiltrados = [...this.cursosCatalogo];
 
         if (this.filtrosActivos.busqueda) {
             const busqueda = this.filtrosActivos.busqueda.toLowerCase();
             cursosFiltrados = cursosFiltrados.filter(curso => 
                 curso.nombre_curso.toLowerCase().includes(busqueda) ||
                 curso.idioma.nombre.toLowerCase().includes(busqueda) ||
-                curso.profesor.nombre.toLowerCase().includes(busqueda)
+                curso.profesor.nombre.toLowerCase().includes(busqueda) ||
+                curso.nivel.descripcion.toLowerCase().includes(busqueda)
             );
         }
 
