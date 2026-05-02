@@ -850,7 +850,7 @@ button:has([data-lucide="trash-2"]),
 .modal-content {
   background: #ffffff;
   width: 100%;
-  max-width: 600px;
+  max-width: min(1120px, calc(100vw - 40px));
   border-radius: 16px;
   position: relative;
   padding: 0;
@@ -9545,6 +9545,67 @@ button:has([data-lucide="trash-2"]),
 .swal2-popup {
   border-radius: 16px !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.admin .swal2-popup {
+  width: min(1120px, calc(100vw - 32px)) !important;
+  max-height: calc(100vh - 32px) !important;
+}
+
+body.admin .swal2-html-container {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+body.admin .swal2-html-container > div:has(.swal2-input) {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px 18px !important;
+  align-items: start !important;
+}
+
+body.admin .swal2-html-container > div:has(.swal2-input) > div {
+  margin-bottom: 0 !important;
+}
+
+body.admin .swal2-html-container .swal2-input,
+body.admin .swal2-html-container .swal2-select,
+body.admin .swal2-html-container input,
+body.admin .swal2-html-container select {
+  min-width: 0 !important;
+}
+
+body.admin .modal-content {
+  max-width: min(1120px, calc(100vw - 40px)) !important;
+  max-height: calc(100vh - 40px) !important;
+}
+
+body.admin #formEditarCurso > div {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body.admin #formEditarProfesor {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px 18px !important;
+}
+
+body.admin #formEditarProfesor > div,
+body.admin #formEditarProfesor > input[type="hidden"] {
+  margin-bottom: 0 !important;
+}
+
+body.admin #formEditarProfesor > div:nth-last-child(2),
+body.admin #formEditarProfesor .form-actions {
+  grid-column: 1 / -1 !important;
+}
+
+@media (max-width: 760px) {
+  body.admin .swal2-html-container > div:has(.swal2-input),
+  body.admin #formEditarCurso > div,
+  body.admin #formEditarProfesor {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 .swal2-title {

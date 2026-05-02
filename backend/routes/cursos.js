@@ -141,6 +141,10 @@ function getBloqueoNivel(curso, cursosActivosAlumno) {
   if (activosMismoIdioma.length === 0) return null;
 
   const cursoOrden = getNivelOrden(curso.nivel_descripcion, curso.id_nivel);
+  if (cursoOrden >= 5) {
+    return "Debe finalizar el cursado intermedio primero para inscribirse.";
+  }
+
   const pendiente = activosMismoIdioma
     .map((activo) => ({
       ...activo,

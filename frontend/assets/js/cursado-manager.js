@@ -205,8 +205,8 @@ class CursadoManager {
                                     <i data-lucide="chevron-down" style="width: 17px; height: 17px; transition: transform 0.2s ease;"></i>
                                 </span>
                             </button>
-                            <div id="${panelId}" style="display: none; overflow-x: auto;">
-                                <table style="width: 100%; border-collapse: collapse; min-width: 760px;">
+                            <div id="${panelId}" style="display: none; overflow: hidden;">
+                                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                                     <thead>
                                         <tr style="background: #ffffff;">
                                             <th style="padding: 12px 16px; text-align: left; color: #4a5259; font-size: 12px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid #e5e7eb;">Curso</th>
