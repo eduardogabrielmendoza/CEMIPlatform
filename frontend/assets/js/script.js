@@ -7248,6 +7248,11 @@ async function openAlumnoPanel(idAlumno) {
     ]);
     const alumno = await resAlumno.json();
     const historial = await resHistorial.json();
+    const historialActivo = Array.isArray(historial)
+      ? historial.filter(function(item) {
+          return item.estado_inscripcion === 'activo' && (item.estado_curso || 'activo') === 'activo';
+        })
+      : [];
 
     const iniciales = `${alumno.nombre.charAt(0)}${alumno.apellido.charAt(0)}`.toUpperCase();
     document.getElementById('panelAlumnoAvatar').textContent = iniciales;
@@ -7327,7 +7332,7 @@ async function openAlumnoPanel(idAlumno) {
       <!-- Historial Académico -->
       <div class="info-section">
         <h3><i data-lucide="history"></i> Historial Académico</h3>
-        ${renderHistorialAcademico(historial)}
+        ${renderHistorialAcademico(historialActivo)}
       </div>
     `;
 

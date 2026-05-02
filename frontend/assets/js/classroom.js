@@ -1586,45 +1586,6 @@ async function abrirCourseRoom(idCurso) {
   });
 }
 
-async function verAlumnosCurso(idCurso) {
-  try {
-    const res = await fetch(`${API_URL}/classroom/curso/${idCurso}/alumnos`);
-    const alumnos = await res.json();
-    
-    const htmlAlumnos = alumnos.length === 0 ? 
-      '<p style="text-align: center; color: #999; padding: 20px;">No hay alumnos inscritos</p>' :
-      `
-        <div style="display: grid; gap: 12px; max-height: 400px; overflow-y: auto;">
-          ${alumnos.map(alumno => `
-            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
-              <div style="width: 40px; height: 40px; border-radius: 50%; background: #4a5259; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
-                ${alumno.nombre.charAt(0)}${alumno.apellido.charAt(0)}
-              </div>
-              <div style="flex: 1;">
-                <div style="font-weight: 600; color: #2c3e50;">${alumno.nombre} ${alumno.apellido}</div>
-                <div style="font-size: 13px; color: #777;">${alumno.email || 'Sin email'}</div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `;
-    
-    Swal.fire({
-      title: `<div style="display: flex; align-items: center; gap: 12px;"><i data-lucide="users" style="width: 24px; height: 24px; color: #4a5259;"></i><span>Alumnos del Curso</span></div>`,
-      html: htmlAlumnos,
-      showCloseButton: true,
-      showConfirmButton: false,
-      width: '600px',
-      didOpen: () => {
-        lucide.createIcons();
-      }
-    });
-  } catch (error) {
-    console.error('Error al cargar alumnos:', error);
-    showNotification('Error al cargar los alumnos', 'error');
-  }
-}
-
 async function verEstadisticasCurso(idCurso) {
   Swal.fire({
     title: 'Estadísticas del Curso',
@@ -4927,21 +4888,6 @@ async function marcarTodasLeidas() {
     console.error('Error al marcar todas como leídas:', error);
   }
 }
-
-function calcularTiempoTranscurrido(fecha) {
-  const ahora = new Date();
-  const diff = ahora - fecha;
-  const minutos = Math.floor(diff / 60000);
-  const horas = Math.floor(diff / 3600000);
-  const dias = Math.floor(diff / 86400000);
-  
-  if (minutos < 1) return 'Ahora';
-  if (minutos < 60) return `Hace ${minutos} min`;
-  if (horas < 24) return `Hace ${horas} h`;
-  if (dias < 7) return `Hace ${dias} d`;
-  return fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
-}
-
 
 async function eliminarAnuncioAdmin(idAnuncio) {
   const result = await Swal.fire({

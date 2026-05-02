@@ -157,7 +157,7 @@ router.get("/:id",
       LEFT JOIN niveles n ON c.id_nivel = n.id_nivel
       LEFT JOIN aulas a ON c.id_aula = a.id_aula
       LEFT JOIN calificaciones cal ON (cal.id_alumno = ? AND cal.id_curso = c.id_curso)
-      WHERE insc.id_alumno = ? AND insc.estado = 'activo'
+      WHERE insc.id_alumno = ? AND insc.estado = 'activo' AND c.estado = 'activo'
     `, [req.params.id, req.params.id, req.params.id]);
 
     const [pagosRows] = await pool.query(`

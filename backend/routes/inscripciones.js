@@ -69,6 +69,7 @@ router.get("/alumno/:id/historial", async (req, res) => {
         i.fecha_inscripcion,
         i.estado AS estado_inscripcion,
         c.nombre_curso,
+        c.estado AS estado_curso,
         c.ciclo_lectivo,
         idioma.nombre_idioma AS idioma,
         nivel.descripcion AS nivel,

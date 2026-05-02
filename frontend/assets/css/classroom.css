@@ -3796,6 +3796,7 @@ body.dark-mode .research-banner-close:hover {
   flex-direction: column;
   z-index: 9999;
   overflow: hidden;
+  overflow-x: hidden;
 }
 
 .notifications-dropdown.active {
@@ -3853,6 +3854,7 @@ body.dark-mode .research-banner-close:hover {
 
 .notifications-list {
   flex: 1;
+  overflow-x: hidden;
   overflow-y: auto;
   max-height: 440px;
 }
@@ -3863,6 +3865,9 @@ body.dark-mode .research-banner-close:hover {
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-smooth);
   position: relative;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .notification-item:hover {
@@ -3939,6 +3944,7 @@ body.dark-mode .research-banner-close:hover {
   font-size: 14px;
   color: #2c3e50;
   margin-bottom: 4px;
+  overflow-wrap: anywhere;
 }
 
 .notification-message {
@@ -3946,11 +3952,13 @@ body.dark-mode .research-banner-close:hover {
   color: #666;
   margin-bottom: 6px;
   line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .notification-time {
   font-size: 11px;
   color: #999;
+  overflow-wrap: anywhere;
 }
 
 .empty-notifications {
@@ -5502,20 +5510,21 @@ body.dark-mode .toggle-password-btn:hover {
   position: relative;
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .search-box-resources i {
-  position: absolute;
-  left: 24px;
+  position: static;
   width: 18px;
   height: 18px;
   color: var(--text-light);
   pointer-events: none;
   transition: var(--transition);
+  flex-shrink: 0;
 }
 
 .search-box-resources input {
-  padding: 12px 16px 12px 58px;
+  padding: 12px 16px;
   border: 2px solid var(--border-color);
   border-radius: 14px;
   font-size: 14px;
@@ -5559,7 +5568,7 @@ body.dark-mode .toggle-password-btn:hover {
   align-items: center;
   gap: 8px;
   padding: 10px 18px;
-  background: var#5d646b;
+  background: #4b5563;
   color: var(--hw-white);
   border: none;
   border-radius: 6px;
@@ -5570,7 +5579,7 @@ body.dark-mode .toggle-password-btn:hover {
 }
 
 .btn-upload-resource:hover {
-  background: var(--hw-wrought-iron);
+  background: #374151;
 }
 
 .btn-upload-resource i {
@@ -6136,7 +6145,7 @@ body.dark-mode .toggle-password-btn:hover {
   align-items: center;
   justify-content: space-between;
   padding: 22px 28px;
-  background: var#5d646b;
+  background: #4b5563;
   color: white;
   position: relative;
   overflow: hidden;
@@ -6349,7 +6358,7 @@ body.dark-mode .toggle-password-btn:hover {
 
 .btn-submit {
   padding: 14px 28px;
-  background: var#5d646b;
+  background: #4b5563;
   border: 1px solid transparent;
   border-radius: 6px;
   font-family: var(--font-body);
