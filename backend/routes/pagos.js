@@ -37,6 +37,10 @@ router.get("/", async (req, res) => {
   try {
     const { archivo } = req.query; // archivo=true para pagos archivados
     const dateFilter = buildDateFilter(req.query, "pa");
+    const limitRaw = parseInt(req.query.limit, 10);
+    const offsetRaw = parseInt(req.query.offset, 10);
+    const limit = Number.isInteger(limitRaw) && limitRaw > 0 ? Math.min(limitRaw, 100) : null;
+    const offset = Number.isInteger(offsetRaw) && offsetRaw >= 0 ? offsetRaw : 0;
     
     const filtroArchivo = archivo === 'true' 
       ? "AND pa.archivado = 1" 
@@ -45,6 +49,42 @@ router.get("/", async (req, res) => {
     const filtroEstado = archivo === 'true'
       ? "AND pa.estado_pago = 'anulado'"
       : "";
+
+    const filterClauses = [];
+    const filterParams = [];
+
+    if (req.query.search) {
+      const search = `%${req.query.search}%`;
+      filterClauses.push(`(
+        CONCAT(p.nombre, ' ', p.apellido) LIKE ?
+        OR a.legajo LIKE ?
+        OR cp.descripcion LIKE ?
+        OR pa.periodo LIKE ?
+      )`);
+      filterParams.push(search, search, search, search);
+    }
+
+    if (req.query.medio) {
+      filterClauses.push("mp.descripcion = ?");
+      filterParams.push(req.query.medio);
+    }
+
+    const extraFilterClause = filterClauses.length ? ` AND ${filterClauses.join(" AND ")}` : "";
+    const whereClause = `WHERE 1=1 ${filtroArchivo} ${filtroEstado} ${dateFilter.clause}${extraFilterClause}`;
+    const queryParamsBase = [...dateFilter.params, ...filterParams];
+    const paginationSql = limit ? " LIMIT ? OFFSET ?" : "";
+    const paginationParams = limit ? [limit, offset] : [];
+
+    const [totalRows] = await pool.query(`
+      SELECT COUNT(*) AS total
+      FROM pagos pa
+      JOIN alumnos a ON pa.id_alumno = a.id_alumno
+      JOIN personas p ON a.id_persona = p.id_persona
+      JOIN conceptos_pago cp ON pa.id_concepto = cp.id_concepto
+      JOIN medios_pago mp ON pa.id_medio_pago = mp.id_medio_pago
+      LEFT JOIN administrativos ad ON pa.id_administrativo = ad.id_administrativo
+      ${whereClause}
+    `, queryParamsBase);
     
     const [rows] = await pool.query(`
       SELECT 
@@ -73,8 +113,21 @@ router.get("/", async (req, res) => {
       JOIN conceptos_pago cp ON pa.id_concepto = cp.id_concepto
       JOIN medios_pago mp ON pa.id_medio_pago = mp.id_medio_pago
       LEFT JOIN administrativos ad ON pa.id_administrativo = ad.id_administrativo
-      WHERE 1=1 ${filtroArchivo} ${filtroEstado} ${dateFilter.clause}
+      ${whereClause}
       ORDER BY pa.fecha_pago DESC, pa.fecha_vencimiento DESC
+      ${paginationSql}
+    `, [...queryParamsBase, ...paginationParams]);
+
+    const [mediosRows] = await pool.query(`
+      SELECT DISTINCT mp.descripcion AS medio_pago
+      FROM pagos pa
+      JOIN alumnos a ON pa.id_alumno = a.id_alumno
+      JOIN personas p ON a.id_persona = p.id_persona
+      JOIN conceptos_pago cp ON pa.id_concepto = cp.id_concepto
+      JOIN medios_pago mp ON pa.id_medio_pago = mp.id_medio_pago
+      LEFT JOIN administrativos ad ON pa.id_administrativo = ad.id_administrativo
+      WHERE 1=1 ${filtroArchivo} ${filtroEstado} ${dateFilter.clause}
+      ORDER BY mp.descripcion
     `, dateFilter.params);
 
     const mesActual = new Date().toISOString().slice(0, 7); // Formato: YYYY-MM
@@ -123,7 +176,11 @@ router.get("/", async (req, res) => {
 
     res.json({
       pagos: rows,
-      estadisticas: stats
+      estadisticas: stats,
+      total: totalRows[0]?.total || 0,
+      limit: limit || rows.length,
+      offset,
+      medios_pago: mediosRows.map(row => row.medio_pago).filter(Boolean)
     });
   } catch (error) {
     console.error("Error al obtener pagos:", error);

@@ -210,7 +210,7 @@ function initAdminSPA() {
           endpoint = `${API_URL}/administradores?limit=${PAGE_SIZE}&offset=0`;
           break;
         case "pagos":
-          endpoint = `${API_URL}/pagos`;
+          endpoint = `${API_URL}/pagos?limit=10&offset=0`;
           break;
         case "aulas":
           endpoint = `${API_URL}/aulas`;
@@ -374,20 +374,27 @@ function initAdminSPA() {
 // Page navigation for paginated tables
 function generatePaginationDots(current, totalPages, section) {
   let html = '';
+  const clickHandler = section === 'pagos' ? 'goToPagosPage' : 'goToPage';
   const maxVisible = 5;
   let start = Math.max(1, current - Math.floor(maxVisible / 2));
   let end = Math.min(totalPages, start + maxVisible - 1);
   if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
   if (start > 1) {
-    html += `<button class="pagination-dot" onclick="goToPage('${section}', 1)">1</button>`;
+    html += section === 'pagos'
+      ? `<button class="pagination-dot" onclick="${clickHandler}(1)">1</button>`
+      : `<button class="pagination-dot" onclick="${clickHandler}('${section}', 1)">1</button>`;
     if (start > 2) html += '<span class="pagination-ellipsis">\u2026</span>';
   }
   for (let i = start; i <= end; i++) {
-    html += `<button class="pagination-dot ${i === current ? 'active' : ''}" onclick="goToPage('${section}', ${i})">${i}</button>`;
+    html += section === 'pagos'
+      ? `<button class="pagination-dot ${i === current ? 'active' : ''}" onclick="${clickHandler}(${i})">${i}</button>`
+      : `<button class="pagination-dot ${i === current ? 'active' : ''}" onclick="${clickHandler}('${section}', ${i})">${i}</button>`;
   }
   if (end < totalPages) {
     if (end < totalPages - 1) html += '<span class="pagination-ellipsis">\u2026</span>';
-    html += `<button class="pagination-dot" onclick="goToPage('${section}', ${totalPages})">${totalPages}</button>`;
+    html += section === 'pagos'
+      ? `<button class="pagination-dot" onclick="${clickHandler}(${totalPages})">${totalPages}</button>`
+      : `<button class="pagination-dot" onclick="${clickHandler}('${section}', ${totalPages})">${totalPages}</button>`;
   }
   return html;
 }
@@ -5295,7 +5302,7 @@ function generateTable(section, data, total) {
 
 case "pagos":
   const pagosArray = data && data.pagos ? data.pagos : [];
-  const pagosCount = pagosArray.length;
+  const pagosCount = data && typeof data.total === 'number' ? data.total : pagosArray.length;
   return `
     <h2 style="color: #4a5259; margin: 0 0 5px 0;">Gestión de Pagos</h2>
     <p style="color: #666; margin: 0 0 15px 0; font-size: 14px;">${pagosCount} pago${pagosCount !== 1 ? 's' : ''} registrado${pagosCount !== 1 ? 's' : ''}</p>
@@ -5403,6 +5410,18 @@ case "pagos":
           <tr><td colspan="8" style="text-align: center; padding: 40px; color: #999;">Cargando pagos...</td></tr>
         </tbody>
       </table>
+    </div>
+    <div class="pagination-slider-container" id="pagosPaginationContainer" style="display: none;">
+      <div class="pagination-meta" id="pagosPaginationMeta"></div>
+      <div class="pagination-slider-wrapper">
+        <button class="pagination-arrow" id="pagosPrevPage" onclick="goToPagosPage('prev')">
+          <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+        </button>
+        <div class="pagination-pages" id="pagosPaginationPages"></div>
+        <button class="pagination-arrow" id="pagosNextPage" onclick="goToPagosPage('next')">
+          <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+        </button>
+      </div>
     </div>
 
     <div class="cuotas-gestion-container" id="cuotasGestionContainer" style="display: none;">
@@ -8819,6 +8838,9 @@ function showConfirm(title, message, icon = 'alert-circle', isDanger = false) {
 let allPagos = [];
 let pagosStats = {};
 let currentPagosQuery = '';
+let currentPagosPage = 1;
+let pagosTotal = 0;
+const PAGOS_PAGE_SIZE = 10;
 let registrosDateFilter = { preset: '', inicio: '', fin: '' };
 
 function buildDateQuery(prefix) {
@@ -8860,11 +8882,64 @@ function buildDateQueryFromState(state) {
   return query ? `?${query}` : '';
 }
 
-async function loadPagosData(queryParams = '') {
+function buildPagosFilterQuery() {
+  const params = new URLSearchParams();
+  const search = document.getElementById('pagoSearchAlumno')?.value.trim();
+  const medio = document.getElementById('pagoFilterMedio')?.value || '';
+  if (search) params.set('search', search);
+  if (medio) params.set('medio', medio);
+  const query = params.toString();
+  return query ? `?${query}` : '';
+}
+
+function buildPagosPageQuery(queryParams, page) {
+  const finalQuery = mergeQueryStrings(queryParams, buildDateQuery('pago'), buildPagosFilterQuery());
+  const params = new URLSearchParams(finalQuery.startsWith('?') ? finalQuery.slice(1) : finalQuery);
+  params.set('limit', PAGOS_PAGE_SIZE);
+  params.set('offset', (Math.max(1, page) - 1) * PAGOS_PAGE_SIZE);
+  return `?${params.toString()}`;
+}
+
+function renderPagosPagination() {
+  const container = document.getElementById('pagosPaginationContainer');
+  const meta = document.getElementById('pagosPaginationMeta');
+  const pages = document.getElementById('pagosPaginationPages');
+  const prev = document.getElementById('pagosPrevPage');
+  const next = document.getElementById('pagosNextPage');
+  if (!container || !meta || !pages || !prev || !next) return;
+
+  if (!pagosTotal) {
+    container.style.display = 'none';
+    return;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(pagosTotal / PAGOS_PAGE_SIZE));
+  currentPagosPage = Math.min(Math.max(1, currentPagosPage), totalPages);
+  const showFrom = (currentPagosPage - 1) * PAGOS_PAGE_SIZE + 1;
+  const showTo = Math.min(currentPagosPage * PAGOS_PAGE_SIZE, pagosTotal);
+
+  container.style.display = 'flex';
+  meta.innerHTML = `Mostrando <strong>${showFrom}-${showTo}</strong> de <strong>${pagosTotal}</strong>`;
+  pages.innerHTML = generatePaginationDots(currentPagosPage, totalPages, 'pagos');
+  prev.disabled = currentPagosPage <= 1;
+  next.disabled = currentPagosPage >= totalPages;
+}
+
+async function goToPagosPage(pageOrDir) {
+  const totalPages = Math.max(1, Math.ceil(pagosTotal / PAGOS_PAGE_SIZE));
+  let targetPage;
+  if (pageOrDir === 'prev') targetPage = Math.max(1, currentPagosPage - 1);
+  else if (pageOrDir === 'next') targetPage = Math.min(totalPages, currentPagosPage + 1);
+  else targetPage = parseInt(pageOrDir, 10);
+  if (!targetPage || targetPage === currentPagosPage) return;
+  await loadPagosData(currentPagosQuery, targetPage);
+}
+
+async function loadPagosData(queryParams = '', page = 1) {
   try {
     currentPagosQuery = queryParams;
-    const dateQuery = buildDateQuery('pago');
-    const finalQuery = mergeQueryStrings(queryParams, dateQuery);
+    currentPagosPage = Math.max(1, page);
+    const finalQuery = buildPagosPageQuery(queryParams, currentPagosPage);
     console.log('Cargando datos de pagos con query:', finalQuery);
     const resp = await fetch(`${API_URL}/pagos${finalQuery}`);
     console.log('Response status:', resp.status);
@@ -8874,6 +8949,7 @@ async function loadPagosData(queryParams = '') {
     
     allPagos = data.pagos || [];
     pagosStats = data.estadisticas || {};
+    pagosTotal = data.total || allPagos.length;
 
     console.log('Pagos:', allPagos.length, 'Stats:', pagosStats);
 
@@ -8882,12 +8958,15 @@ async function loadPagosData(queryParams = '') {
     document.getElementById('metricPendientes').textContent = pagosStats.cuotas_pendientes || 0;
     document.getElementById('metricPromedio').textContent = parseFloat(pagosStats.promedio_pago || 0).toLocaleString('es-AR', {minimumFractionDigits: 0});
 
-    const mediosPago = [...new Set(allPagos.map(p => normalizeMedioPago(p.medio_pago)))];
+    const mediosPago = [...new Set(data.medios_pago || allPagos.map(p => p.medio_pago).filter(Boolean))];
     const selectMedio = document.getElementById('pagoFilterMedio');
+    const medioActual = selectMedio?.value || '';
     selectMedio.innerHTML = '<option value="">Todos</option>' + 
-      mediosPago.map(m => `<option value="${m}">${m}</option>`).join('');
+      mediosPago.map(m => `<option value="${m}">${normalizeMedioPago(m)}</option>`).join('');
+    if (medioActual && mediosPago.includes(medioActual)) selectMedio.value = medioActual;
 
     renderPagosTable(allPagos);
+    renderPagosPagination();
 
     setupPagosFilters();
 
@@ -9037,6 +9116,7 @@ function switchPagosTab(tab) {
   const metricsContainer = document.getElementById('pagosMetrics');
   const filtersContainer = document.getElementById('pagosFilters');
   const tableContainer = document.getElementById('pagosTableContainer');
+  const paginationContainer = document.getElementById('pagosPaginationContainer');
   const cuotasContainer = document.getElementById('cuotasGestionContainer');
   const registrosContainer = document.getElementById('registrosPagosContainer');
 
@@ -9044,6 +9124,7 @@ function switchPagosTab(tab) {
     if (metricsContainer) metricsContainer.style.display = 'none';
     if (filtersContainer) filtersContainer.style.display = 'none';
     if (tableContainer) tableContainer.style.display = 'none';
+    if (paginationContainer) paginationContainer.style.display = 'none';
     if (cuotasContainer) {
       cuotasContainer.style.display = 'block';
       loadCuotasGestion();
@@ -9053,6 +9134,7 @@ function switchPagosTab(tab) {
     if (metricsContainer) metricsContainer.style.display = 'none';
     if (filtersContainer) filtersContainer.style.display = 'none';
     if (tableContainer) tableContainer.style.display = 'none';
+    if (paginationContainer) paginationContainer.style.display = 'none';
     if (cuotasContainer) cuotasContainer.style.display = 'none';
     if (registrosContainer) {
       registrosContainer.style.display = 'block';
@@ -9062,13 +9144,14 @@ function switchPagosTab(tab) {
     if (metricsContainer) metricsContainer.style.display = 'grid';
     if (filtersContainer) filtersContainer.style.display = 'flex';
     if (tableContainer) tableContainer.style.display = 'block';
+    if (paginationContainer) paginationContainer.style.display = 'flex';
     if (cuotasContainer) cuotasContainer.style.display = 'none';
     if (registrosContainer) registrosContainer.style.display = 'none';
 
     if (tab === 'archivo') {
-      loadPagosData('?archivo=true');
+      loadPagosData('?archivo=true', 1);
     } else {
-      loadPagosData();
+      loadPagosData('', 1);
     }
   }
 
@@ -9082,11 +9165,11 @@ function setupPagosFilters() {
   const fechaInicio = document.getElementById('pagoFechaInicio');
   const fechaFin = document.getElementById('pagoFechaFin');
 
-  if (searchInput) searchInput.addEventListener('input', filterPagos);
-  if (medioFilter) medioFilter.addEventListener('change', filterPagos);
-  if (datePreset) datePreset.addEventListener('change', handlePagosDatePresetChange);
-  if (fechaInicio) fechaInicio.addEventListener('change', () => loadPagosData(currentPagosQuery));
-  if (fechaFin) fechaFin.addEventListener('change', () => loadPagosData(currentPagosQuery));
+  if (searchInput) searchInput.oninput = filterPagos;
+  if (medioFilter) medioFilter.onchange = filterPagos;
+  if (datePreset) datePreset.onchange = handlePagosDatePresetChange;
+  if (fechaInicio) fechaInicio.onchange = () => loadPagosData(currentPagosQuery, 1);
+  if (fechaFin) fechaFin.onchange = () => loadPagosData(currentPagosQuery, 1);
 }
 
 function handlePagosDatePresetChange() {
@@ -9100,25 +9183,11 @@ function handlePagosDatePresetChange() {
     if (inicio) inicio.value = '';
     if (fin) fin.value = '';
   }
-  loadPagosData(currentPagosQuery);
+  loadPagosData(currentPagosQuery, 1);
 }
 
 function filterPagos() {
-  const searchTerm = document.getElementById('pagoSearchAlumno')?.value.toLowerCase() || '';
-  const medioFilter = document.getElementById('pagoFilterMedio')?.value || '';
-
-  const filtered = allPagos.filter(p => {
-    const matchesSearch = 
-      p.alumno.toLowerCase().includes(searchTerm) ||
-      p.legajo.toLowerCase().includes(searchTerm) ||
-      (p.concepto && p.concepto.toLowerCase().includes(searchTerm));
-    
-    const matchesMedio = !medioFilter || normalizeMedioPago(p.medio_pago) === medioFilter;
-
-    return matchesSearch && matchesMedio;
-  });
-
-  renderPagosTable(filtered);
+  loadPagosData(currentPagosQuery, 1);
 }
 
 async function loadRegistrosPagos() {

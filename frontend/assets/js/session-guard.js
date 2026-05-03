@@ -3,7 +3,7 @@
   const rol = localStorage.getItem('rol');
   
   if (!token || !rol) {
-    window.location.replace('index.html');
+    window.location.replace('login.html?session=expired');
     return;
   }
   
@@ -15,14 +15,14 @@
       const cp = localStorage.getItem('cemi_cookies_accepted');
       localStorage.clear();
       if (cp) localStorage.setItem('cemi_cookies_accepted', cp);
-      window.location.replace('index.html');
+      window.location.replace('login.html?session=expired');
       return;
     }
   } catch (e) {
     const cp = localStorage.getItem('cemi_cookies_accepted');
     localStorage.clear();
     if (cp) localStorage.setItem('cemi_cookies_accepted', cp);
-    window.location.replace('index.html');
+    window.location.replace('login.html?session=expired');
     return;
   }
   
@@ -30,17 +30,17 @@
   const rolLower = rol.toLowerCase();
   
   if (path.includes('dashboard_admin') && rolLower !== 'admin' && rolLower !== 'administrador') {
-    window.location.replace('index.html');
+    window.location.replace('login.html?session=expired');
     return;
   }
   
   if (path.includes('dashboard_profesor') && rolLower !== 'profesor') {
-    window.location.replace('index.html');
+    window.location.replace('login.html?session=expired');
     return;
   }
   
   if (path.includes('dashboard_alumno') && rolLower !== 'alumno') {
-    window.location.replace('index.html');
+    window.location.replace('login.html?session=expired');
     return;
   }
 })();
