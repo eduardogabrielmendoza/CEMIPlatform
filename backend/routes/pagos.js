@@ -415,11 +415,42 @@ router.get("/alumno/:id/historial", async (req, res) => {
 router.get("/registros/audit", async (req, res) => {
   try {
     const dateFilter = buildDateFilter(req.query, "rp");
-    const [rows] = await pool.query(
-      `SELECT * FROM registros_pagos rp WHERE 1=1 ${dateFilter.clause.replaceAll("rp.fecha_pago", "rp.fecha")} ORDER BY fecha DESC LIMIT 200`,
+    const limitRaw = parseInt(req.query.limit, 10);
+    const offsetRaw = parseInt(req.query.offset, 10);
+    const limit = Number.isInteger(limitRaw) && limitRaw > 0 ? Math.min(limitRaw, 100) : 10;
+    const offset = Number.isInteger(offsetRaw) && offsetRaw >= 0 ? offsetRaw : 0;
+    const accion = req.query.accion ? String(req.query.accion) : "";
+    const accionClause = accion ? " AND rp.accion = ?" : "";
+    const accionParams = accion ? [accion] : [];
+    const dateClause = dateFilter.clause.replaceAll("rp.fecha_pago", "rp.fecha");
+    const params = [...dateFilter.params, ...accionParams];
+
+    const [totalRows] = await pool.query(
+      `SELECT COUNT(*) AS total FROM registros_pagos rp WHERE 1=1 ${dateClause}${accionClause}`,
+      params
+    );
+
+    const [countRows] = await pool.query(
+      `SELECT rp.accion, COUNT(*) AS total FROM registros_pagos rp WHERE 1=1 ${dateClause} GROUP BY rp.accion`,
       dateFilter.params
     );
-    res.json({ success: true, registros: rows });
+
+    const [rows] = await pool.query(
+      `SELECT * FROM registros_pagos rp WHERE 1=1 ${dateClause}${accionClause} ORDER BY fecha DESC LIMIT ? OFFSET ?`,
+      [...params, limit, offset]
+    );
+
+    res.json({
+      success: true,
+      registros: rows,
+      total: totalRows[0]?.total || 0,
+      limit,
+      offset,
+      counts: countRows.reduce((acc, row) => {
+        acc[row.accion] = row.total;
+        return acc;
+      }, {})
+    });
   } catch (error) {
     console.error("Error al obtener registros de pagos:", error);
     res.status(500).json({ success: false, message: "Error al obtener registros" });

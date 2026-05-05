@@ -1034,14 +1034,14 @@ router.put("/:id/cuotas", async (req, res) => {
     }
 
     const [curso] = await pool.query(
-      'SELECT id_curso, nombre_curso FROM cursos WHERE id_curso = ?',
+      "SELECT id_curso, nombre_curso FROM cursos WHERE id_curso = ? AND estado = 'activo' AND ciclo_lectivo = YEAR(CURDATE())",
       [id]
     );
 
     if (curso.length === 0) {
       return res.status(404).json({ 
         success: false, 
-        message: "Curso no encontrado" 
+        message: "Curso no encontrado o fuera del ciclo lectivo actual" 
       });
     }
 
@@ -1112,7 +1112,7 @@ router.put("/cuotas/todos", async (req, res) => {
     const valor = cuotas.length > 0 ? JSON.stringify(cuotas) : null;
     
     const [result] = await pool.query(
-      'UPDATE cursos SET cuotas_habilitadas = ?',
+      "UPDATE cursos SET cuotas_habilitadas = ? WHERE estado = 'activo' AND ciclo_lectivo = YEAR(CURDATE())",
       [valor]
     );
     

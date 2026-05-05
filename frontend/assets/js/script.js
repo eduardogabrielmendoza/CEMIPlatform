@@ -374,25 +374,31 @@ function initAdminSPA() {
 // Page navigation for paginated tables
 function generatePaginationDots(current, totalPages, section) {
   let html = '';
-  const clickHandler = section === 'pagos' ? 'goToPagosPage' : 'goToPage';
+  const directHandlers = {
+    pagos: 'goToPagosPage',
+    cuotasPagos: 'goToCuotasPage',
+    registrosPagos: 'goToRegistrosPage'
+  };
+  const directHandler = directHandlers[section];
+  const clickHandler = directHandler || 'goToPage';
   const maxVisible = 5;
   let start = Math.max(1, current - Math.floor(maxVisible / 2));
   let end = Math.min(totalPages, start + maxVisible - 1);
   if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
   if (start > 1) {
-    html += section === 'pagos'
+    html += directHandler
       ? `<button class="pagination-dot" onclick="${clickHandler}(1)">1</button>`
       : `<button class="pagination-dot" onclick="${clickHandler}('${section}', 1)">1</button>`;
     if (start > 2) html += '<span class="pagination-ellipsis">\u2026</span>';
   }
   for (let i = start; i <= end; i++) {
-    html += section === 'pagos'
+    html += directHandler
       ? `<button class="pagination-dot ${i === current ? 'active' : ''}" onclick="${clickHandler}(${i})">${i}</button>`
       : `<button class="pagination-dot ${i === current ? 'active' : ''}" onclick="${clickHandler}('${section}', ${i})">${i}</button>`;
   }
   if (end < totalPages) {
     if (end < totalPages - 1) html += '<span class="pagination-ellipsis">\u2026</span>';
-    html += section === 'pagos'
+    html += directHandler
       ? `<button class="pagination-dot" onclick="${clickHandler}(${totalPages})">${totalPages}</button>`
       : `<button class="pagination-dot" onclick="${clickHandler}('${section}', ${totalPages})">${totalPages}</button>`;
   }
@@ -6464,14 +6470,15 @@ function ensureInscribirModal() {
   if (document.getElementById('modalInscribir')) return;
 
   const modalHtml = `
-    <div id="modalInscribir" class="modal">
-      <div class="modal-content" style="max-width: 900px; max-height: 90vh;">
-        <div class="modal-header">
+    <div id="modalInscribir" class="modal inscribir-modal">
+      <div class="modal-content inscribir-modal-content">
+        <div class="modal-header inscribir-modal-header">
+          <span class="inscribir-kicker">Curso</span>
           <h3 id="modalInscribirTitle">Gestión de Alumnos</h3>
           <button type="button" class="close-modal" aria-label="Cerrar">&times;</button>
         </div>
         
-        <div class="tabs-container">
+        <div class="tabs-container inscribir-tabs">
           <button class="tab-btn active" data-tab="inscritos">
             <i data-lucide="users"></i>
             Alumnos Inscritos
@@ -6489,9 +6496,21 @@ function ensureInscribirModal() {
         </div>
         
         <div class="tab-content" id="tabInscribir">
-          <div class="search-box-wrapper">
-            <i data-lucide="search" class="search-icon"></i>
-            <input type="text" id="searchAlumnos" placeholder="Buscar por nombre, apellido o email..." class="search-input-with-icon">
+          <div class="inscribir-toolbar">
+            <div class="search-box-wrapper">
+              <i data-lucide="search" class="search-icon"></i>
+              <input type="text" id="searchAlumnos" placeholder="Buscar alumno por nombre, legajo o email" class="search-input-with-icon">
+            </div>
+            <div class="inscribir-toolbar-actions">
+              <button type="button" class="inscribir-secondary-btn" onclick="selectVisibleAlumnos()">
+                <i data-lucide="check-square"></i>
+                Seleccionar visibles
+              </button>
+              <button type="button" class="inscribir-secondary-btn" onclick="clearSelectedAlumnos()">
+                <i data-lucide="square"></i>
+                Limpiar
+              </button>
+            </div>
           </div>
           <div id="alumnosDisponiblesList"></div>
         </div>
@@ -6569,26 +6588,22 @@ async function cargarAlumnosInscritos(idCurso) {
     }
 
     container.innerHTML = `
-      <div class="alumnos-grid">
+      <div class="inscribir-student-list">
         ${inscritos.map(a => {
           const iniciales = `${(a.nombre || 'A')[0]}${(a.apellido || 'A')[0]}`.toUpperCase();
           return `
-            <div class="alumno-card">
-              <div class="alumno-card-header">
-                <div class="alumno-card-avatar">${iniciales}</div>
-                <div class="alumno-card-info">
-                  <h4>${a.nombre} ${a.apellido}</h4>
+            <div class="inscribir-student-row">
+              <div class="inscribir-avatar">${iniciales}</div>
+              <div class="inscribir-student-main">
+                <div class="inscribir-student-name">${a.nombre} ${a.apellido}</div>
+                <div class="inscribir-student-meta">
+                  <span><i data-lucide="mail"></i>${a.mail || 'Sin email'}</span>
                 </div>
               </div>
-              <div class="alumno-card-email">
-                <i data-lucide="mail"></i>
-                ${a.mail || 'Sin email'}
-              </div>
-              <div class="alumno-card-actions">
-                <button class="btn-small btn-baja" onclick="darDeBajaAlumno(${idCurso}, ${a.id_alumno}, '${a.nombre} ${a.apellido}')">
-                  <i data-lucide="user-minus"></i> Dar de Baja
-                </button>
-              </div>
+              <button class="inscribir-danger-btn" onclick="darDeBajaAlumno(${idCurso}, ${a.id_alumno}, '${a.nombre} ${a.apellido}')">
+                <i data-lucide="user-minus"></i>
+                Dar de baja
+              </button>
             </div>
           `;
         }).join('')}
@@ -6628,22 +6643,19 @@ async function cargarAlumnosDisponibles(idCurso) {
     }
 
     container.innerHTML = `
-      <div class="alumnos-grid" id="alumnosGridDisponibles">
+      <div class="inscribir-student-list" id="alumnosGridDisponibles">
         ${disponibles.map(a => {
           const iniciales = `${(a.nombre || 'A')[0]}${(a.apellido || 'A')[0]}`.toUpperCase();
           return `
-            <div class="alumno-card" data-alumno-id="${a.id_alumno}" data-search="${(a.nombre + ' ' + a.apellido + ' ' + (a.mail || '')).toLowerCase()}" onclick="toggleSelectAlumno(this)">
+            <div class="inscribir-student-row selectable" data-alumno-id="${a.id_alumno}" data-search="${(a.nombre + ' ' + a.apellido + ' ' + (a.legajo || '') + ' ' + (a.mail || '')).toLowerCase()}" onclick="toggleSelectAlumno(this)">
               <input type="checkbox" class="checkbox-card" value="${a.id_alumno}" onclick="event.stopPropagation(); toggleSelectAlumno(this.parentElement)">
-              <div class="alumno-card-header">
-                <div class="alumno-card-avatar">${iniciales}</div>
-                <div class="alumno-card-info">
-                  <h4>${a.nombre} ${a.apellido}</h4>
-                  <span class="legajo">${a.legajo || 'Sin legajo'}</span>
+              <div class="inscribir-avatar">${iniciales}</div>
+              <div class="inscribir-student-main">
+                <div class="inscribir-student-name">${a.nombre} ${a.apellido}</div>
+                <div class="inscribir-student-meta">
+                  <span><i data-lucide="badge-check"></i>${a.legajo || 'Sin legajo'}</span>
+                  <span><i data-lucide="mail"></i>${a.mail || 'Sin email'}</span>
                 </div>
-              </div>
-              <div class="alumno-card-email">
-                <i data-lucide="mail"></i>
-                ${a.mail || 'Sin email'}
               </div>
             </div>
           `;
@@ -6652,17 +6664,19 @@ async function cargarAlumnosDisponibles(idCurso) {
     `;
 
     lucide.createIcons();
+    updateSelectedCount();
 
     document.getElementById('searchAlumnos').oninput = (e) => {
       const search = e.target.value.toLowerCase();
-      document.querySelectorAll('#alumnosGridDisponibles .alumno-card').forEach(card => {
+      document.querySelectorAll('#alumnosGridDisponibles .inscribir-student-row').forEach(card => {
         const searchText = card.dataset.search;
-        card.style.display = searchText.includes(search) ? 'block' : 'none';
+        card.style.display = searchText.includes(search) ? 'flex' : 'none';
       });
+      updateSelectedCount();
     };
 
     document.getElementById('btnConfirmInscribir').onclick = async () => {
-      const seleccionados = Array.from(document.querySelectorAll('#alumnosGridDisponibles .alumno-card.selected'))
+      const seleccionados = Array.from(document.querySelectorAll('#alumnosGridDisponibles .inscribir-student-row.selected'))
         .map(card => card.dataset.alumnoId);
 
       if (seleccionados.length === 0) {
@@ -6709,8 +6723,33 @@ function toggleSelectAlumno(card) {
 }
 
 function updateSelectedCount() {
-  const count = document.querySelectorAll('#alumnosGridDisponibles .alumno-card.selected').length;
-  document.getElementById('selectedCount').textContent = `${count} alumno(s) seleccionado(s)`;
+  const count = document.querySelectorAll('#alumnosGridDisponibles .inscribir-student-row.selected').length;
+  const totalVisible = Array.from(document.querySelectorAll('#alumnosGridDisponibles .inscribir-student-row'))
+    .filter(card => card.style.display !== 'none').length;
+  const selectedCount = document.getElementById('selectedCount');
+  const confirmButton = document.getElementById('btnConfirmInscribir');
+  if (selectedCount) selectedCount.textContent = `${count} seleccionado${count !== 1 ? 's' : ''} de ${totalVisible} visible${totalVisible !== 1 ? 's' : ''}`;
+  if (confirmButton) confirmButton.disabled = count === 0;
+}
+
+function selectVisibleAlumnos() {
+  document.querySelectorAll('#alumnosGridDisponibles .inscribir-student-row').forEach(card => {
+    if (card.style.display !== 'none') {
+      card.classList.add('selected');
+      const checkbox = card.querySelector('.checkbox-card');
+      if (checkbox) checkbox.checked = true;
+    }
+  });
+  updateSelectedCount();
+}
+
+function clearSelectedAlumnos() {
+  document.querySelectorAll('#alumnosGridDisponibles .inscribir-student-row').forEach(card => {
+    card.classList.remove('selected');
+    const checkbox = card.querySelector('.checkbox-card');
+    if (checkbox) checkbox.checked = false;
+  });
+  updateSelectedCount();
 }
 
 async function darDeBajaAlumno(idCurso, idAlumno, nombreAlumno) {
@@ -8841,6 +8880,12 @@ let currentPagosQuery = '';
 let currentPagosPage = 1;
 let pagosTotal = 0;
 const PAGOS_PAGE_SIZE = 10;
+let currentCuotasPage = 1;
+let cuotasTotal = 0;
+const CUOTAS_PAGE_SIZE = 10;
+let currentRegistrosPage = 1;
+let registrosTotal = 0;
+const REGISTROS_PAGE_SIZE = 10;
 let registrosDateFilter = { preset: '', inicio: '', fin: '' };
 
 function buildDateQuery(prefix) {
@@ -8880,6 +8925,17 @@ function buildDateQueryFromState(state) {
   }
   const query = params.toString();
   return query ? `?${query}` : '';
+}
+
+function buildRegistrosPageQuery(page = 1) {
+  const container = document.getElementById('registrosPagosContainer');
+  const activeFilter = container?.dataset.filter || 'todos';
+  const finalQuery = buildDateQueryFromState(registrosDateFilter);
+  const params = new URLSearchParams(finalQuery.startsWith('?') ? finalQuery.slice(1) : finalQuery);
+  if (activeFilter !== 'todos') params.set('accion', activeFilter);
+  params.set('limit', REGISTROS_PAGE_SIZE);
+  params.set('offset', (Math.max(1, page) - 1) * REGISTROS_PAGE_SIZE);
+  return `?${params.toString()}`;
 }
 
 function buildPagosFilterQuery() {
@@ -9190,17 +9246,19 @@ function filterPagos() {
   loadPagosData(currentPagosQuery, 1);
 }
 
-async function loadRegistrosPagos() {
+async function loadRegistrosPagos(page = 1) {
   const container = document.getElementById('registrosPagosContainer');
   if (!container) return;
+  currentRegistrosPage = Math.max(1, page);
 
   container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Cargando registros...</div>';
 
   try {
-    const resp = await fetch(`${API_URL}/pagos/registros/audit${buildDateQueryFromState(registrosDateFilter)}`);
+    const resp = await fetch(`${API_URL}/pagos/registros/audit${buildRegistrosPageQuery(currentRegistrosPage)}`);
     const data = await resp.json();
 
     const registros = data.registros || [];
+    registrosTotal = data.total || registros.length;
     const activeFilter = container.dataset.filter || 'todos';
 
     const accionConfig = {
@@ -9212,11 +9270,10 @@ async function loadRegistrosPagos() {
     };
 
     // Count by action
-    const counts = {};
-    registros.forEach(r => { counts[r.accion] = (counts[r.accion] || 0) + 1; });
+    const counts = data.counts || {};
 
     // Filter
-    const filtered = activeFilter === 'todos' ? registros : registros.filter(r => r.accion === activeFilter);
+    const filtered = registros;
 
     // Group by date
     const grouped = {};
@@ -9233,8 +9290,9 @@ async function loadRegistrosPagos() {
     });
 
     // Build filter tabs
+    const totalRegistrosFiltrados = Object.values(counts).reduce((sum, value) => sum + Number(value || 0), 0);
     const filterTabs = ['todos', 'registrado', 'archivado', 'desarchivado', 'eliminado'].map(key => {
-      const count = key === 'todos' ? registros.length : (counts[key] || 0);
+      const count = key === 'todos' ? totalRegistrosFiltrados : (counts[key] || 0);
       const cfg = accionConfig[key] || { color: '#6b7280', label: 'Todos' };
       const isActive = activeFilter === key;
       const label = key === 'todos' ? 'Todos' : cfg.label;
@@ -9280,9 +9338,9 @@ async function loadRegistrosPagos() {
       <div style="margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
         <div>
           <h3 style="color: #4a5259; margin: 0 0 2px 0; font-size: 15px; font-weight: 600;">Auditoría de Pagos</h3>
-          <p style="color: #9ca3af; font-size: 12px; margin: 0;">${registros.length} movimiento${registros.length !== 1 ? 's' : ''} registrado${registros.length !== 1 ? 's' : ''}</p>
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">${registrosTotal} movimiento${registrosTotal !== 1 ? 's' : ''} registrado${registrosTotal !== 1 ? 's' : ''}</p>
         </div>
-        <button onclick="loadRegistrosPagos()" style="background:none;border:1px solid #e5e7eb;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;color:#6b7280;display:flex;align-items:center;gap:5px;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Actualizar</button>
+        <button onclick="loadRegistrosPagos(currentRegistrosPage)" style="background:none;border:1px solid #e5e7eb;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;color:#6b7280;display:flex;align-items:center;gap:5px;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Actualizar</button>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:end; margin-bottom:14px; background:#f8f9fa; border:1px solid #e5e7eb; border-radius:10px; padding:12px;">
         <div class="filter-group" style="min-width:180px;">
@@ -9304,8 +9362,21 @@ async function loadRegistrosPagos() {
         </div>
       </div>
       <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">${filterTabs}</div>
-      ${emptyFiltered}`;
+      ${emptyFiltered}
+      <div class="pagination-slider-container" id="registrosPaginationContainer" style="display: none; margin-top: 18px;">
+        <div class="pagination-meta" id="registrosPaginationMeta"></div>
+        <div class="pagination-slider-wrapper">
+          <button class="pagination-arrow" id="registrosPrevPage" onclick="goToRegistrosPage('prev')">
+            <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+          </button>
+          <div class="pagination-pages" id="registrosPaginationPages"></div>
+          <button class="pagination-arrow" id="registrosNextPage" onclick="goToRegistrosPage('next')">
+            <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+          </button>
+        </div>
+      </div>`;
 
+    renderRegistrosPagination();
     if (typeof lucide !== 'undefined') lucide.createIcons();
   } catch (error) {
     console.error('Error al cargar registros de pagos:', error);
@@ -9316,11 +9387,46 @@ async function loadRegistrosPagos() {
   }
 }
 
+function renderRegistrosPagination() {
+  const container = document.getElementById('registrosPaginationContainer');
+  const meta = document.getElementById('registrosPaginationMeta');
+  const pages = document.getElementById('registrosPaginationPages');
+  const prev = document.getElementById('registrosPrevPage');
+  const next = document.getElementById('registrosNextPage');
+  if (!container || !meta || !pages || !prev || !next) return;
+
+  if (!registrosTotal) {
+    container.style.display = 'none';
+    return;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(registrosTotal / REGISTROS_PAGE_SIZE));
+  currentRegistrosPage = Math.min(Math.max(1, currentRegistrosPage), totalPages);
+  const showFrom = (currentRegistrosPage - 1) * REGISTROS_PAGE_SIZE + 1;
+  const showTo = Math.min(currentRegistrosPage * REGISTROS_PAGE_SIZE, registrosTotal);
+
+  container.style.display = 'flex';
+  meta.innerHTML = `Mostrando <strong>${showFrom}-${showTo}</strong> de <strong>${registrosTotal}</strong>`;
+  pages.innerHTML = generatePaginationDots(currentRegistrosPage, totalPages, 'registrosPagos');
+  prev.disabled = currentRegistrosPage <= 1;
+  next.disabled = currentRegistrosPage >= totalPages;
+}
+
+async function goToRegistrosPage(pageOrDir) {
+  const totalPages = Math.max(1, Math.ceil(registrosTotal / REGISTROS_PAGE_SIZE));
+  let targetPage;
+  if (pageOrDir === 'prev') targetPage = Math.max(1, currentRegistrosPage - 1);
+  else if (pageOrDir === 'next') targetPage = Math.min(totalPages, currentRegistrosPage + 1);
+  else targetPage = parseInt(pageOrDir, 10);
+  if (!targetPage || targetPage === currentRegistrosPage) return;
+  await loadRegistrosPagos(targetPage);
+}
+
 function setRegistrosFilter(filter) {
   const container = document.getElementById('registrosPagosContainer');
   if (container) {
     container.dataset.filter = filter;
-    loadRegistrosPagos();
+    loadRegistrosPagos(1);
   }
 }
 
@@ -9331,7 +9437,7 @@ function handleRegistrosDatePresetChange() {
     inicio: preset === 'custom' ? (document.getElementById('registroFechaInicio')?.value || '') : '',
     fin: preset === 'custom' ? (document.getElementById('registroFechaFin')?.value || '') : ''
   };
-  loadRegistrosPagos();
+  loadRegistrosPagos(1);
 }
 
 function ensurePagoPanel() {
@@ -12643,9 +12749,11 @@ buttons.forEach(button => {
 });
 
 
-async function loadCuotasGestion() {
+async function loadCuotasGestion(page = 1) {
   const container = document.getElementById('cuotasGestionContainer');
   if (!container) return;
+  currentCuotasPage = Math.max(1, page);
+  const cicloLectivoActual = new Date().getFullYear();
 
   container.innerHTML = `
     <div style="max-width: 1400px; margin: 0 auto;">
@@ -12665,21 +12773,42 @@ async function loadCuotasGestion() {
     </div>
   `;
 
+  const cuotasList = document.getElementById('cursosListaCuotas');
+  if (cuotasList) {
+    cuotasList.insertAdjacentHTML('afterend', `
+      <div class="pagination-slider-container" id="cuotasPaginationContainer" style="display: none; margin-top: 22px;">
+        <div class="pagination-meta" id="cuotasPaginationMeta"></div>
+        <div class="pagination-slider-wrapper">
+          <button class="pagination-arrow" id="cuotasPrevPage" onclick="goToCuotasPage('prev')">
+            <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+          </button>
+          <div class="pagination-pages" id="cuotasPaginationPages"></div>
+          <button class="pagination-arrow" id="cuotasNextPage" onclick="goToCuotasPage('next')">
+            <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+          </button>
+        </div>
+      </div>
+    `);
+  }
+
   if (typeof lucide !== 'undefined') lucide.createIcons();
 
   try {
-    const response = await fetch(`${API_URL}/cursos`);
+    const offset = (currentCuotasPage - 1) * CUOTAS_PAGE_SIZE;
+    const response = await fetch(`${API_URL}/cursos?estado=activo&ciclo_lectivo=${cicloLectivoActual}&limit=${CUOTAS_PAGE_SIZE}&offset=${offset}`);
     const cursosResp = await response.json();
     const cursos = cursosResp.data || cursosResp;
+    cuotasTotal = typeof cursosResp.total === 'number' ? cursosResp.total : cursos.length;
 
     const listaCursos = document.getElementById('cursosListaCuotas');
     if (cursos.length === 0) {
       listaCursos.innerHTML = `
         <div style="text-align: center; padding: 60px; color: #9ca3af;">
           <i data-lucide="inbox" style="width: 48px; height: 48px;"></i>
-          <p style="margin-top: 16px;">No hay cursos disponibles</p>
+          <p style="margin-top: 16px;">No hay cursos activos para el ciclo lectivo ${cicloLectivoActual}</p>
         </div>
       `;
+      renderCuotasPagination();
       if (typeof lucide !== 'undefined') lucide.createIcons();
       return;
     }
@@ -12757,6 +12886,7 @@ async function loadCuotasGestion() {
         console.error('Error al cargar preview de cuotas:', error);
       }
     });
+    renderCuotasPagination();
 
   } catch (error) {
     console.error('Error al cargar cursos:', error);
@@ -12768,6 +12898,42 @@ async function loadCuotasGestion() {
     `;
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
+}
+
+function renderCuotasPagination() {
+  const container = document.getElementById('cuotasPaginationContainer');
+  const meta = document.getElementById('cuotasPaginationMeta');
+  const pages = document.getElementById('cuotasPaginationPages');
+  const prev = document.getElementById('cuotasPrevPage');
+  const next = document.getElementById('cuotasNextPage');
+  if (!container || !meta || !pages || !prev || !next) return;
+
+  if (!cuotasTotal) {
+    container.style.display = 'none';
+    return;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(cuotasTotal / CUOTAS_PAGE_SIZE));
+  currentCuotasPage = Math.min(Math.max(1, currentCuotasPage), totalPages);
+  const showFrom = (currentCuotasPage - 1) * CUOTAS_PAGE_SIZE + 1;
+  const showTo = Math.min(currentCuotasPage * CUOTAS_PAGE_SIZE, cuotasTotal);
+
+  container.style.display = 'flex';
+  meta.innerHTML = `Mostrando <strong>${showFrom}-${showTo}</strong> de <strong>${cuotasTotal}</strong>`;
+  pages.innerHTML = generatePaginationDots(currentCuotasPage, totalPages, 'cuotasPagos');
+  prev.disabled = currentCuotasPage <= 1;
+  next.disabled = currentCuotasPage >= totalPages;
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+async function goToCuotasPage(pageOrDir) {
+  const totalPages = Math.max(1, Math.ceil(cuotasTotal / CUOTAS_PAGE_SIZE));
+  let targetPage;
+  if (pageOrDir === 'prev') targetPage = Math.max(1, currentCuotasPage - 1);
+  else if (pageOrDir === 'next') targetPage = Math.min(totalPages, currentCuotasPage + 1);
+  else targetPage = parseInt(pageOrDir, 10);
+  if (!targetPage || targetPage === currentCuotasPage) return;
+  await loadCuotasGestion(targetPage);
 }
 
 async function gestionarCuotasCurso(idCurso, nombreCurso) {
@@ -12927,7 +13093,7 @@ async function gestionarCuotasCurso(idCurso, nombreCurso) {
           showConfirmButton: false
         });
 
-        loadCuotasGestion();
+        loadCuotasGestion(currentCuotasPage);
       } else {
         throw new Error(saveData.message || 'Error al guardar');
       }
@@ -13009,7 +13175,7 @@ async function liberarCuotasTodasLosCursos() {
           showConfirmButton: false
         });
 
-        loadCuotasGestion();
+        loadCuotasGestion(currentCuotasPage);
       } else {
         throw new Error(data.message || 'Error al guardar');
       }
