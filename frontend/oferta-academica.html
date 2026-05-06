@@ -485,32 +485,25 @@
     const API_URL = window.API_URL || "http://localhost:3000/api";
     const list = document.getElementById('languagesList');
     const languageMeta = {
-      Aleman: { name: 'Alemán', emoji: '🇩🇪', intro: 'Una opción sólida para perfiles técnicos, académicos y profesionales con proyección internacional.', focus: 'Lectura, conversación progresiva y vocabulario aplicado.' },
-      Frances: { name: 'Francés', emoji: '🇫🇷', intro: 'Ideal para cultura, turismo, comunicación internacional y trayectos académicos.', focus: 'Pronunciación, estructuras cotidianas y comprensión oral.' },
-      Ingles: { name: 'Inglés', emoji: '🇬🇧', intro: 'El idioma clave para estudio, trabajo, tecnología y comunicación global.', focus: 'Comunicación práctica, gramática funcional y vocabulario moderno.' },
-      Italiano: { name: 'Italiano', emoji: '🇮🇹', intro: 'Un recorrido cercano a la cultura, la conversación y la expresión cotidiana.', focus: 'Conversación, escucha activa y bases gramaticales.' },
-      Japones: { name: 'Japonés', emoji: '🇯🇵', intro: 'Un aprendizaje gradual para acercarse a su escritura, cultura y comunicación básica.', focus: 'Introducción a escritura, pronunciación y frases esenciales.' },
-      Portugues: { name: 'Portugués', emoji: '🇧🇷', intro: 'Una alternativa práctica para viajes, trabajo regional y comunicación en Sudamérica.', focus: 'Conversación regional, comprensión y vocabulario cotidiano.' },
-      'Chino Mandarin': { name: 'Chino Mandarín', emoji: '🇨🇳', intro: 'Un acercamiento progresivo a uno de los idiomas más influyentes del mundo.', focus: 'Tonos, vocabulario inicial y comunicación básica.' },
-      Coreano: { name: 'Coreano', emoji: '🇰🇷', intro: 'Una propuesta para iniciar lectura, pronunciación y comunicación cotidiana.', focus: 'Hangul, pronunciación y expresiones frecuentes.' },
-      Ruso: { name: 'Ruso', emoji: '🇷🇺', intro: 'Una base para explorar su alfabeto, estructura y conversación inicial.', focus: 'Alfabeto cirílico, lectura inicial y frases útiles.' }
+      Aleman: { name: 'Alemán', emoji: '🥨', intro: 'Una opción sólida para perfiles técnicos, académicos y profesionales con proyección internacional.', focus: 'Lectura, conversación progresiva y vocabulario aplicado.' },
+      Frances: { name: 'Francés', emoji: '🗼', intro: 'Ideal para cultura, turismo, comunicación internacional y trayectos académicos.', focus: 'Pronunciación, estructuras cotidianas y comprensión oral.' },
+      Ingles: { name: 'Inglés', emoji: '💂', intro: 'El idioma clave para estudio, trabajo, tecnología y comunicación global.', focus: 'Comunicación práctica, gramática funcional y vocabulario moderno.' },
+      Italiano: { name: 'Italiano', emoji: '🍝', intro: 'Un recorrido cercano a la cultura, la conversación y la expresión cotidiana.', focus: 'Conversación, escucha activa y bases gramaticales.' },
+      Japones: { name: 'Japonés', emoji: '🌸', intro: 'Un aprendizaje gradual para acercarse a su escritura, cultura y comunicación básica.', focus: 'Introducción a escritura, pronunciación y frases esenciales.' },
+      Portugues: { name: 'Portugués', emoji: '🎶', intro: 'Una alternativa práctica para viajes, trabajo regional y comunicación en Sudamérica.', focus: 'Conversación regional, comprensión y vocabulario cotidiano.' },
+      'Chino Mandarin': { name: 'Chino Mandarín', emoji: '🏮', intro: 'Un acercamiento progresivo a uno de los idiomas más influyentes del mundo.', focus: 'Tonos, vocabulario inicial y comunicación básica.' },
+      Coreano: { name: 'Coreano', emoji: '🎧', intro: 'Una propuesta para iniciar lectura, pronunciación y comunicación cotidiana.', focus: 'Hangul, pronunciación y expresiones frecuentes.' },
+      Ruso: { name: 'Ruso', emoji: '🪆', intro: 'Una base para explorar su alfabeto, estructura y conversación inicial.', focus: 'Alfabeto cirílico, lectura inicial y frases útiles.' }
     };
 
     function normalizeLevel(level) {
       return level.descripcion || level.nombre || level.nivel || 'Nivel general';
     }
 
-    function formatFlag(value) {
-      if (!value) return '🌐';
-      const clean = String(value).trim();
-      if (clean.length !== 2 || !/^[a-z]{2}$/i.test(clean)) return clean;
-      return clean.toUpperCase().replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt(0)));
-    }
-
     function getLanguageMeta(idioma) {
       return languageMeta[idioma.nombre_idioma] || {
         name: idioma.nombre_idioma,
-        emoji: formatFlag(idioma.bandera),
+        emoji: '🌐',
         intro: 'Propuesta de idioma disponible para consulta presencial en CEMI.',
         focus: 'Niveles y orientación académica según disponibilidad institucional.'
       };
