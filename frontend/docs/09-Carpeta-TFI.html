@@ -11,253 +11,302 @@
     <a href="../documentacion.html" class="back-link">← Volver a Documentación</a>
     <div class="container">
         <div class="cover">
-            <img src="../images/logolong.png" alt="CEMI Logo" style="max-width:220px;margin-bottom:25px;filter:brightness(0);">
+            <div class="cover-logos">
+                <img src="../images/logolong.png" alt="Logo CEMI" class="cover-logo cemi-logo">
+                <img src="../images/LogoUTN.png" alt="Logo UTN" class="cover-logo utn-logo">
+            </div>
             <h1>Carpeta TFI</h1>
-            <p class="subtitle">Sistema de Gestión Académica CEMI</p>
-            <p>Centro de Estudios Multilingüe Internacional</p>
+            <p class="subtitle">CEMI Sistema Gestor</p>
+            <p>Centro Municipal de Idiomas</p>
             <div class="cover-tags">Gómez Micaela • Lucena Carlos • Ruiz Mendoza Eduardo • Sergio Bautista Bareiro</div>
             <span class="version">Versión 1.0 - Mayo 2026</span>
-            <p class="institution">UTN - Tecnicatura Universitaria en Programación - Bella Vista</p>
+            <p class="institution">UTN Facultad Regional Tucumán - Tecnicatura Superior en Programación</p>
         </div>
 
         <nav class="toc">
             <h2>Índice</h2>
             <ul>
-                <li><a href="#resumen">3. Resumen Ejecutivo</a></li>
-                <li><a href="#intro">4. Introducción</a></li>
-                <li><a href="#estado-arte">5. Estado del Arte</a></li>
-                <li><a href="#descripcion">6. Descripción del Proyecto</a></li>
-                <li><a href="#metodologia">7. Metodología</a></li>
-                <li><a href="#recursos">8. Recursos Necesarios</a></li>
-                <li><a href="#plan">9. Plan de Trabajo</a></li>
-                <li><a href="#resultados">10. Resultados Esperados</a></li>
-                <li><a href="#referencias">11. Referencias</a></li>
+                <li><a href="#caratula">1. Carátula y Datos del Proyecto</a></li>
+                <li><a href="#resumen">2. Resumen Ejecutivo e Introducción</a></li>
+                <li><a href="#estado-arte">3. Estado del Arte</a></li>
+                <li><a href="#descripcion">4. Descripción y Análisis</a></li>
+                <li><a href="#metodologia">5. Metodología y Desarrollo</a></li>
+                <li><a href="#recursos">6. Recursos y Plan de Trabajo</a></li>
+                <li><a href="#resultados">7. Resultados, Impacto y Cierre</a></li>
+                <li><a href="#anexo">8. Anexo del Documento</a></li>
             </ul>
         </nav>
 
-        <h1 id="resumen">3. Resumen Ejecutivo</h1>
-        <h2>3.1 Breve descripción del proyecto</h2>
-        <p>El presente Trabajo Final Integrador consiste en el diseño y desarrollo de un Sistema de Gestión Académica Integral para el Centro de Estudios Multilingüe Internacional (CEMI), implementado como aplicación web con arquitectura cliente-servidor.</p>
-        <p>El sistema tiene como finalidad digitalizar y optimizar los procesos académicos, administrativos, financieros y comunicacionales del centro, permitiendo gestionar alumnos, profesores, cursos, idiomas, niveles, aulas, inscripciones, pagos, calificaciones, asistencias, classroom, comunidad y soporte en tiempo real desde una plataforma centralizada.</p>
-        <p>La solución incorpora persistencia real mediante base de datos MySQL, autenticación con JWT, contraseñas cifradas, control de acceso por roles, generación de comprobantes PDF, chat con Socket.IO y despliegue en Railway.</p>
+        <h1 id="caratula">1. Carátula y Datos del Proyecto</h1>
+        <table>
+            <tr><th>Campo</th><th>Detalle</th></tr>
+            <tr><td>Título del sistema</td><td>CEMI Sistema Gestor</td></tr>
+            <tr><td>Entidad destinataria</td><td>CEMI - Centro Municipal de Idiomas</td></tr>
+            <tr><td>Institución académica</td><td>UTN Facultad Regional Tucumán</td></tr>
+            <tr><td>Carrera</td><td>Tecnicatura Superior en Programación</td></tr>
+            <tr><td>Tutor académico</td><td>Ing. Prado</td></tr>
+            <tr><td>Autores / integrantes</td><td>Gómez Micaela, Lucena Carlos, Ruiz Mendoza Eduardo y Sergio Bautista Bareiro</td></tr>
+            <tr><td>Fecha de presentación</td><td>Noviembre 2025 / actualización documental Mayo 2026</td></tr>
+            <tr><td>Repositorio de trabajo</td><td>CEMIPlatform</td></tr>
+            <tr><td>Dominio de producción</td><td>https://cemi.up.railway.app</td></tr>
+        </table>
 
-        <h2>3.2 Objetivos principales</h2>
-        <p>El objetivo general del proyecto es desarrollar un sistema web que permita automatizar la gestión operativa de una institución de idiomas, reduciendo tareas manuales y mejorando la trazabilidad de la información.</p>
+        <h1 id="resumen">2. Resumen Ejecutivo y Marco Introductorio</h1>
+        <h2>2.1 Resumen ejecutivo</h2>
+        <p>CEMI Sistema Gestor es una aplicación web integral destinada a digitalizar la gestión del Centro Municipal de Idiomas. El proyecto permite centralizar procesos académicos, administrativos, financieros y comunicacionales que, de otro modo, quedarían distribuidos entre planillas, mensajes, registros físicos o herramientas inconexas.</p>
+        <p>La solución fue diseñada con una arquitectura cliente-servidor, backend Node.js/Express, base de datos MySQL, frontend HTML/CSS/JavaScript y comunicación en tiempo real mediante Socket.IO. Además, integra funcionalidades de seguridad, recuperación de cuenta, privacidad, comprobantes PDF, chat, notificaciones y classroom.</p>
+
+        <h2>2.2 Breve descripción del proyecto</h2>
+        <p>El sistema administra alumnos, profesores, administradores, cursos, idiomas, niveles, aulas, inscripciones, pagos, calificaciones, asistencias y recursos de aula virtual. También permite que profesores publiquen tareas, anuncios, encuestas y materiales, mientras los alumnos consultan información académica y realizan entregas desde su perfil.</p>
+        <p>En términos documentales, el proyecto toma como referencia modelos tradicionales de sistemas de gestión comercial, pero adapta sus conceptos al ámbito educativo: las ventas se transforman en pagos de matrícula/cuotas, el stock se transforma en cupos y recursos, los productos se transforman en cursos y materiales, y la caja se interpreta como seguimiento administrativo de pagos.</p>
+
+        <h2>2.3 Objetivos principales y metodología</h2>
         <ul>
-            <li>Diseñar una base de datos relacional normalizada para las entidades académicas y administrativas.</li>
-            <li>Implementar operaciones CRUD para alumnos, profesores, cursos, idiomas, niveles, aulas e inscripciones.</li>
-            <li>Desarrollar autenticación, recuperación de cuentas y control de acceso mediante roles.</li>
-            <li>Automatizar pagos, conceptos, cuotas, estados y comprobantes PDF.</li>
-            <li>Implementar un entorno Classroom con tareas, anuncios, encuestas, entregas, calendario, recursos y chat.</li>
-            <li>Registrar calificaciones y asistencias por curso.</li>
-            <li>Incorporar soporte en tiempo real y notificaciones.</li>
-            <li>Aplicar metodología ágil y documentar el proceso de desarrollo.</li>
+            <li>Digitalizar la gestión académica de un centro municipal de idiomas.</li>
+            <li>Implementar una base de datos relacional normalizada con integridad de datos.</li>
+            <li>Diseñar una API REST que separe lógica de negocio, rutas, middleware y utilidades.</li>
+            <li>Desarrollar una interfaz web responsive para administración, profesores y alumnos.</li>
+            <li>Incorporar seguridad mediante autenticación, roles, JWT y contraseñas cifradas.</li>
+            <li>Aplicar metodología ágil con planificación por fases y sprints.</li>
         </ul>
 
-        <h2>3.3 Metodología utilizada</h2>
-        <p>El proyecto fue desarrollado con una metodología ágil basada en sprints. El proceso incluyó relevamiento, análisis, diseño de base de datos, implementación backend, implementación frontend, integración, pruebas funcionales, despliegue y documentación final.</p>
-        <p>Se utilizaron Node.js, Express, MySQL, HTML5, CSS3, JavaScript, Socket.IO, JWT, bcrypt, PDFKit, Cloudinary, SendGrid/Nodemailer, GitHub y Railway.</p>
+        <h2>2.4 Resultados esperados y conclusiones</h2>
+        <p>Se espera que el sistema permita reducir la carga manual, mejorar la calidad de información, agilizar consultas, documentar pagos y centralizar la comunicación educativa. Como conclusión general, CEMI Sistema Gestor demuestra la integración de conocimientos de programación, base de datos, seguridad, despliegue, documentación y experiencia de usuario en un producto funcional y evaluable.</p>
 
-        <h2>3.4 Resultados esperados</h2>
+        <h2>2.5 Introducción</h2>
+        <p>La transformación digital de instituciones educativas municipales exige herramientas que permitan administrar información de forma clara, segura y disponible. Un centro de idiomas trabaja con datos sensibles, calendarios académicos, pagos, docentes, cursos y alumnos. La falta de una plataforma centralizada puede generar pérdidas de tiempo, errores de carga y dificultad para obtener información confiable.</p>
+
+        <h2>2.6 Contexto y antecedentes del rubro</h2>
+        <p>Si bien el modelo documental original menciona el rubro minorista y los sistemas POS, en CEMI la problemática equivalente se encuentra en la gestión operativa educativa. Al igual que un comercio necesita controlar productos, ventas y stock, un centro de idiomas necesita controlar cursos, inscripciones, pagos, cupos y recursos académicos. La lógica de trazabilidad se mantiene, pero se aplica a un dominio institucional y educativo.</p>
+
+        <h2>2.7 Justificación académica y profesional</h2>
+        <p>El proyecto se justifica académicamente porque integra programación web, modelado de datos, arquitectura cliente-servidor, seguridad, diseño de interfaces y documentación formal. Profesionalmente, representa una solución real para una institución que necesita mejorar procesos internos y ofrecer una experiencia más ordenada a alumnos y docentes.</p>
+
+        <h2>2.8 Objetivo general del sistema</h2>
+        <p>Implementar un sistema web integral para el Centro Municipal de Idiomas que centralice la administración académica, financiera y comunicacional, garantizando trazabilidad, seguridad, disponibilidad y facilidad de uso.</p>
+
+        <h2>2.9 Objetivos específicos de implementación</h2>
         <ul>
-            <li>Gestionar datos institucionales desde un panel administrativo.</li>
-            <li>Centralizar alumnos, profesores, cursos e inscripciones.</li>
-            <li>Permitir seguimiento de pagos, cuotas y comprobantes.</li>
-            <li>Facilitar la comunicación académica mediante Classroom y chat.</li>
-            <li>Consultar calificaciones, asistencias, tareas y anuncios desde perfiles diferenciados.</li>
-            <li>Mantener integridad, seguridad y disponibilidad de la información.</li>
+            <li>Gestionar personas, usuarios, perfiles y permisos.</li>
+            <li>Administrar alumnos, profesores, cursos, idiomas, niveles y aulas.</li>
+            <li>Controlar inscripciones, cupos y estados académicos.</li>
+            <li>Registrar pagos, conceptos, estados y comprobantes.</li>
+            <li>Implementar classroom con tareas, entregas, anuncios, encuestas y calendario.</li>
+            <li>Permitir comunicación con chat de soporte y notificaciones.</li>
+            <li>Incluir páginas de seguridad, privacidad y recuperación de cuenta.</li>
         </ul>
 
-        <h2>3.5 Conclusiones generales</h2>
-        <p>El desarrollo de CEMI permitió integrar conocimientos de programación, base de datos, arquitectura web, seguridad, experiencia de usuario y despliegue en la nube. El resultado es una solución académica completa, documentada y evaluable, alineada con las competencias de la Tecnicatura Universitaria en Programación.</p>
+        <h1 id="estado-arte">3. Estado del Arte y Fundamentación Técnica</h1>
+        <h2>3.1 Contexto tecnológico actual</h2>
+        <p>Las aplicaciones web de gestión educativa se han consolidado como una alternativa flexible frente a sistemas de escritorio aislados o plataformas externas cerradas. Herramientas como Moodle, Google Classroom y sistemas administrativos SaaS ofrecen soluciones parciales, pero no siempre cubren la combinación específica de gestión académica, pagos, soporte, seguridad y documentación requerida por una institución local.</p>
 
-        <h1 id="intro">4. Introducción</h1>
-        <h2>4.1 Contexto y antecedentes</h2>
-        <p>La digitalización de procesos educativos es una necesidad creciente para instituciones que administran cursos, docentes, alumnos, pagos y comunicación diaria. En centros de idiomas, el uso de registros dispersos o canales informales dificulta la trazabilidad y demora la toma de decisiones.</p>
-        <p>CEMI se ubica en este contexto como una solución web orientada a centralizar la gestión académica y ofrecer un entorno virtual propio para alumnos, profesores y administración.</p>
-
-        <h2>4.2 Justificación</h2>
-        <p>La implementación de un sistema integral responde a la necesidad de unificar información en una única plataforma, evitando duplicidad de registros, errores manuales y pérdida de datos. Desde una perspectiva académica, el proyecto permite aplicar de manera articulada:</p>
-        <ul>
-            <li>Programación modular en backend y frontend.</li>
-            <li>Diseño y normalización de bases de datos relacionales.</li>
-            <li>Arquitectura cliente-servidor con API REST.</li>
-            <li>Seguridad mediante autenticación, roles y cifrado.</li>
-            <li>Comunicación en tiempo real mediante WebSockets.</li>
-            <li>Metodologías ágiles y documentación técnica.</li>
-        </ul>
-
-        <h2>4.3 Objetivo General</h2>
-        <p>Implementar un Sistema de Gestión Académica Integral para CEMI, destinado a digitalizar, centralizar y optimizar los procesos académicos, administrativos, financieros y de comunicación del centro, fortaleciendo la organización institucional y la experiencia de alumnos y profesores.</p>
-
-        <h2>4.4 Objetivos Específicos</h2>
-        <ul>
-            <li><strong>Digitalizar la gestión académica:</strong> centralizar alumnos, profesores, cursos, niveles, idiomas y aulas en una base de datos estructurada.</li>
-            <li><strong>Optimizar inscripciones:</strong> vincular alumnos y cursos con estados, cupos y fechas.</li>
-            <li><strong>Automatizar pagos:</strong> registrar cuotas, medios de pago, estados y comprobantes PDF.</li>
-            <li><strong>Implementar Classroom:</strong> administrar tareas, entregas, anuncios, encuestas, calendario, recursos y conversaciones.</li>
-            <li><strong>Controlar rendimiento académico:</strong> gestionar calificaciones y asistencias por curso.</li>
-            <li><strong>Mejorar comunicación:</strong> incorporar chat de soporte, chat de classroom y notificaciones.</li>
-            <li><strong>Asegurar escalabilidad:</strong> permitir futuras ampliaciones de módulos, cursos y servicios.</li>
-        </ul>
-
-        <h1 id="estado-arte">5. Estado del Arte</h1>
-        <h2>5.1 Contexto tecnológico actual</h2>
-        <p>Las instituciones educativas utilizan cada vez más sistemas web para administrar información académica, pagos y entornos virtuales. Plataformas como Moodle, Google Classroom y sistemas administrativos SaaS resuelven partes del problema, pero suelen requerir integración externa, suscripciones, configuración compleja o no se adaptan completamente a la operatoria local de un centro de idiomas.</p>
-
-        <h2>5.2 Sistemas existentes y comparativa</h2>
-        <p>Las soluciones disponibles suelen incluir gestión de cursos, aulas virtuales, comunicación o reportes, pero no siempre integran administración académica, pagos, comprobantes, soporte, comunidad y seguridad en una misma plataforma.</p>
+        <h2>3.2 Sistemas existentes y enfoques tecnológicos</h2>
         <div class="tech-stack">
-            <div class="tech-item"><h4>SaaS educativos</h4><ul><li>Acceso remoto</li><li>Actualizaciones externas</li><li>Costos recurrentes</li><li>Menor control del código</li></ul></div>
-            <div class="tech-item"><h4>Aulas virtuales aisladas</h4><ul><li>Buen manejo de tareas</li><li>Poca gestión financiera</li><li>Integración administrativa limitada</li><li>Dependencia de cuentas externas</li></ul></div>
-            <div class="tech-item"><h4>Aplicación web CEMI</h4><ul><li>Gestión académica integrada</li><li>Pagos y comprobantes</li><li>Classroom propio</li><li>Código evaluable y modular</li></ul></div>
+            <div class="tech-item"><h4>SaaS</h4><ul><li>Acceso remoto</li><li>Actualizaciones externas</li><li>Costos recurrentes</li><li>Menor control del código</li></ul></div>
+            <div class="tech-item"><h4>Escritorio</h4><ul><li>Funcionamiento local</li><li>Dependencia de una PC</li><li>Dificultad de acceso remoto</li><li>Escalabilidad limitada</li></ul></div>
+            <div class="tech-item"><h4>Web modular</h4><ul><li>Multiplataforma</li><li>Backend y frontend separados</li><li>Base centralizada</li><li>Escalable y evaluable</li></ul></div>
         </div>
 
-        <h2>5.3 Enfoques tecnológicos actuales</h2>
-        <p>El proyecto adopta una aplicación web modular porque permite acceso multiplataforma, separación de responsabilidades, escalabilidad y mantenimiento ordenado. El backend expone rutas API, el frontend consume los servicios y la base de datos preserva la integridad de la información.</p>
+        <h2>3.3 Modelado de datos y normalización</h2>
+        <p>El proyecto utiliza una base relacional MySQL. La normalización permite representar entidades como personas, usuarios, alumnos, profesores, cursos, inscripciones, pagos, calificaciones, asistencias, tareas y chats sin duplicar información crítica. Este enfoque reduce inconsistencias y facilita consultas cruzadas entre módulos.</p>
 
-        <h2>5.4 Modelado de datos y normalización</h2>
-        <p>El uso de MySQL permite modelar entidades con relaciones claras entre personas, usuarios, alumnos, profesores, cursos, pagos, calificaciones, asistencias, classroom y chat. La normalización reduce redundancias, evita inconsistencias y facilita consultas confiables.</p>
+        <h2>3.4 Seguridad en aplicaciones web</h2>
+        <p>La autenticación con JWT permite validar sesiones de usuario sin almacenar credenciales en el cliente. Las contraseñas se protegen con bcrypt, mientras que Helmet, CORS y rate limiting reducen riesgos básicos de exposición. La separación de roles limita acciones sensibles y evita que alumnos o profesores accedan a funciones administrativas no autorizadas.</p>
 
-        <h2>5.5 Seguridad y control de acceso</h2>
-        <p>La seguridad se aborda con JWT para sesiones, bcrypt para contraseñas, Helmet para encabezados, CORS configurado, rate limiting y roles diferenciados. El sistema también incorpora páginas de seguridad, privacidad, recuperación de cuenta, datos personales y reportes.</p>
-
-        <h2>5.6 Fundamentación del aporte del proyecto</h2>
+        <h2>3.5 Fundamentación del aporte técnico y académico</h2>
         <ul>
-            <li>Integra gestión académica, financiera y classroom en una sola plataforma.</li>
-            <li>Permite evaluar código, arquitectura, base de datos y documentación.</li>
-            <li>Se adapta a un centro de idiomas con múltiples cursos, niveles e idiomas.</li>
-            <li>Incorpora comunicación en tiempo real y soporte con adjuntos.</li>
-            <li>Contempla despliegue real en Railway y servicios externos.</li>
+            <li>Integra administración académica y classroom en un mismo ecosistema.</li>
+            <li>Aplica arquitectura cliente-servidor con persistencia real.</li>
+            <li>Incluye despliegue en producción y verificación de health check.</li>
+            <li>Documenta requisitos, manuales, plan de trabajo y criterios de aceptación.</li>
+            <li>Adapta modelos de gestión tradicional a una institución educativa municipal.</li>
         </ul>
 
-        <h1 id="descripcion">6. Descripción del Proyecto</h1>
-        <h2>6.1 Problemática detectada</h2>
+        <h1 id="descripcion">4. Descripción y Análisis del Proyecto</h1>
+        <h2>4.1 Problemática detectada</h2>
+        <p>La gestión manual o fragmentada genera baja trazabilidad, consultas lentas, duplicidad de datos y dependencia de conocimientos personales de quienes administran la información. En CEMI esto afecta inscripciones, pagos, control de cursos, comunicación con alumnos y seguimiento académico.</p>
+
+        <h2>4.2 Solución propuesta</h2>
+        <p>Se propone una aplicación web modular con frontend estático, backend Express, base MySQL y comunicación en tiempo real. La solución centraliza procesos y permite que cada usuario interactúe con funcionalidades acordes a su rol.</p>
+
+        <h2>4.3 Alcance del proyecto</h2>
+        <table>
+            <tr><th>Incluido</th><th>Excluido / futuro</th></tr>
+            <tr><td>Gestión de usuarios, alumnos, profesores y administradores.</td><td>Facturación fiscal externa automatizada.</td></tr>
+            <tr><td>Cursos, idiomas, niveles, aulas e inscripciones.</td><td>Conciliación bancaria automática.</td></tr>
+            <tr><td>Pagos, cuotas, estados y comprobantes PDF.</td><td>App móvil nativa separada.</td></tr>
+            <tr><td>Classroom, chat, comunidad, seguridad y privacidad.</td><td>Firma digital oficial de certificados.</td></tr>
+        </table>
+
+        <h2>4.4 Análisis del mercado y oportunidad tecnológica</h2>
+        <p>El mercado ofrece plataformas educativas robustas, pero muchas requieren configuración compleja, suscripciones o integración con sistemas externos. CEMI Sistema Gestor aprovecha tecnologías web accesibles para producir una solución propia, adaptable y documentada, con control sobre código, datos y despliegue.</p>
+
+        <h2>4.5 Diagrama de Entidad-Relación detallado</h2>
+        <p>El modelo entidad-relación se organiza alrededor de personas y usuarios. Desde personas derivan alumnos, profesores y administradores; desde cursos se relacionan idiomas, niveles, aulas, profesores e inscripciones; desde alumnos y cursos se vinculan pagos, calificaciones, asistencias y classroom. Las tablas de chat y notificaciones agregan trazabilidad comunicacional.</p>
+        <table>
+            <tr><th>Relación</th><th>Descripción</th></tr>
+            <tr><td>personas → usuarios</td><td>Una persona puede tener credenciales y perfil de acceso.</td></tr>
+            <tr><td>personas → alumnos/profesores/administradores</td><td>Especialización según rol institucional.</td></tr>
+            <tr><td>cursos → idiomas/niveles/aulas/profesores</td><td>Cada curso se configura académicamente.</td></tr>
+            <tr><td>alumnos ↔ cursos</td><td>Relación mediante inscripciones.</td></tr>
+            <tr><td>alumnos/cursos → pagos/calificaciones/asistencias</td><td>Seguimiento financiero y académico.</td></tr>
+            <tr><td>cursos → tareas/anuncios/encuestas/eventos</td><td>Contenido de classroom.</td></tr>
+            <tr><td>usuarios → chats/notificaciones</td><td>Comunicación y eventos persistentes.</td></tr>
+        </table>
+
+        <h2>4.6 Historias de usuario</h2>
+        <table>
+            <tr><th>HU</th><th>Descripción adaptada a CEMI</th><th>Prioridad</th></tr>
+            <tr><td>HU1</td><td>Como administrador, quiero registrar alumnos para mantener un padrón actualizado.</td><td>Alta</td></tr>
+            <tr><td>HU2</td><td>Como administrador, quiero registrar cursos para organizar la oferta académica.</td><td>Alta</td></tr>
+            <tr><td>HU3</td><td>Como administrador, quiero inscribir alumnos para vincularlos a cursos activos.</td><td>Alta</td></tr>
+            <tr><td>HU4</td><td>Como administrador, quiero consultar cupos para evitar sobreinscripciones.</td><td>Media</td></tr>
+            <tr><td>HU5</td><td>Como profesor, quiero recibir alertas o listados de alumnos para gestionar mi curso.</td><td>Media</td></tr>
+            <tr><td>HU6</td><td>Como administrador, quiero gestionar usuarios y roles para proteger información.</td><td>Alta</td></tr>
+            <tr><td>HU7</td><td>Como usuario, quiero iniciar sesión de forma segura para acceder a mi panel.</td><td>Alta</td></tr>
+            <tr><td>HU8</td><td>Como administrador, quiero consultar reportes de pagos e inscripciones.</td><td>Media</td></tr>
+            <tr><td>HU9</td><td>Como profesor, quiero publicar tareas y calificar entregas.</td><td>Alta</td></tr>
+            <tr><td>HU10</td><td>Como alumno, quiero consultar pagos, tareas, anuncios y calificaciones.</td><td>Alta</td></tr>
+        </table>
+
+        <h2>4.7 Reglas de negocio</h2>
         <ul>
-            <li>Falta de centralización de datos académicos y administrativos.</li>
-            <li>Dificultad para controlar inscripciones, cupos, pagos y comprobantes.</li>
-            <li>Ausencia de una plataforma classroom propia integrada al sistema administrativo.</li>
-            <li>Necesidad de comunicación ordenada entre alumnos, profesores y administración.</li>
-            <li>Falta de trazabilidad en consultas, tareas, anuncios, calificaciones y asistencias.</li>
+            <li>Un alumno debe existir antes de inscribirse a un curso.</li>
+            <li>Un curso debe tener idioma, nivel, profesor, aula y cupo definido cuando corresponda.</li>
+            <li>Un pago debe estar asociado a alumno, curso, concepto y medio de pago.</li>
+            <li>Solo usuarios autenticados pueden acceder a paneles privados.</li>
+            <li>Los profesores solo deben operar sobre cursos asignados.</li>
+            <li>Los comprobantes y estados de pago deben preservar trazabilidad.</li>
+            <li>Las publicaciones de classroom deben vincularse a cursos reales.</li>
         </ul>
 
-        <h2>6.2 Solución propuesta</h2>
-        <p>Se propone el desarrollo de CEMI como sistema web integral con módulos conectados entre sí y base de datos centralizada.</p>
-        <div class="tech-stack">
-            <div class="tech-item"><h4>Gestión Académica</h4><ul><li>Alumnos y legajos</li><li>Profesores y especialidades</li><li>Idiomas y niveles</li><li>Cursos, aulas e inscripciones</li></ul></div>
-            <div class="tech-item"><h4>Gestión Financiera</h4><ul><li>Pagos por curso</li><li>Matrícula y cuotas</li><li>Medios de pago</li><li>Comprobantes PDF</li></ul></div>
-            <div class="tech-item"><h4>Evaluación</h4><ul><li>Parcial 1</li><li>Parcial 2</li><li>Final</li><li>Asistencias por fecha</li></ul></div>
-            <div class="tech-item"><h4>Classroom</h4><ul><li>Tareas y entregas</li><li>Anuncios y comentarios</li><li>Encuestas</li><li>Calendario y recursos</li></ul></div>
-            <div class="tech-item"><h4>Comunicación</h4><ul><li>Chat de soporte</li><li>Chat alumno-profesor</li><li>Chat entre alumnos</li><li>Notificaciones</li></ul></div>
-            <div class="tech-item"><h4>Seguridad</h4><ul><li>JWT y roles</li><li>Recuperación de cuenta</li><li>Privacidad y datos</li><li>Protección de rutas</li></ul></div>
-        </div>
+        <h2>4.8 Especificación de requisitos</h2>
+        <p>Los requisitos funcionales RF01 a RF10 y no funcionales RNF01 a RNF09 se encuentran detallados en el Anexo TFI. En esta carpeta se sintetiza su propósito: asegurar que el sistema permita gestionar los módulos centrales, responder correctamente a los roles, preservar datos en MySQL y ofrecer una experiencia web estable y responsive.</p>
 
-        <h2>6.3 Historias de Usuario</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>HU1 - Inscribir alumno</h4><p>Como administrador, quiero inscribir un alumno a un curso para organizar su cursado y habilitar su acceso académico.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>HU2 - Registrar pago</h4><p>Como administrador, quiero registrar pagos con concepto, medio y comprobante para mantener control financiero.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>HU3 - Publicar tarea</h4><p>Como profesor, quiero publicar tareas con fecha límite para que mis alumnos puedan entregarlas en el classroom.</p></div></div>
-        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>HU4 - Calificar alumno</h4><p>Como profesor, quiero registrar calificaciones parciales y finales para realizar seguimiento académico.</p></div></div>
-        <div class="step"><span class="step-number">5</span><div class="step-content"><h4>HU5 - Consultar progreso</h4><p>Como alumno, quiero consultar tareas, calificaciones, pagos y anuncios para conocer mi estado académico.</p></div></div>
-        <div class="step"><span class="step-number">6</span><div class="step-content"><h4>HU6 - Chatear con soporte</h4><p>Como usuario, quiero comunicarme en tiempo real con administración para resolver consultas.</p></div></div>
+        <h2>4.9 Matriz de trazabilidad y restricciones</h2>
+        <p>La trazabilidad conecta historias de usuario con reglas de negocio y requisitos. Las principales restricciones son: disponibilidad de Internet, uso de navegador moderno, configuración correcta de variables de entorno, carga responsable de datos por administración y capacitación básica a usuarios.</p>
 
-        <h1 id="metodologia">7. Metodología</h1>
-        <h2>7.1 Enfoque metodológico</h2>
-        <p>Se adoptó un enfoque ágil e iterativo, organizando el trabajo en fases funcionales y revisiones progresivas. Cada etapa integró análisis, diseño, implementación, validación y documentación.</p>
+        <h2>4.10 Mejoras a futuro y escalabilidad</h2>
+        <ul>
+            <li>Certificados digitales y constancias académicas.</li>
+            <li>Reportes analíticos avanzados.</li>
+            <li>Integración bancaria o conciliación automática.</li>
+            <li>Aplicación móvil nativa.</li>
+            <li>Panel de auditoría extendido.</li>
+            <li>Gestión avanzada de becas, descuentos o planes de pago.</li>
+        </ul>
 
-        <h2>7.2 Técnicas y herramientas utilizadas</h2>
-        <div class="tech-stack">
-            <div class="tech-item"><h4>Backend</h4><ul><li>Node.js</li><li>Express</li><li>MySQL2</li><li>JWT</li><li>Bcryptjs</li><li>Socket.IO</li><li>Helmet y CORS</li><li>PDFKit y ExcelJS</li></ul></div>
-            <div class="tech-item"><h4>Frontend</h4><ul><li>HTML5</li><li>CSS3</li><li>JavaScript</li><li>Lucide Icons</li><li>Diseño responsive</li><li>PWA</li></ul></div>
-            <div class="tech-item"><h4>Servicios</h4><ul><li>Railway</li><li>Cloudinary</li><li>SendGrid/Nodemailer</li><li>GitHub</li><li>Visual Studio Code</li></ul></div>
-        </div>
+        <h1 id="metodologia">5. Metodología y Desarrollo Técnico</h1>
+        <h2>5.1 Enfoque metodológico</h2>
+        <p>El proyecto se desarrolló con un enfoque ágil, distribuido en sprints y tareas incrementales. Esta metodología permitió comenzar con una base funcional, validar módulos por separado y luego integrar pagos, classroom, chat, seguridad y documentación.</p>
 
-        <h2>7.3 Diseño del sistema y arquitectura</h2>
+        <h2>5.2 Técnicas y herramientas utilizadas</h2>
+        <table>
+            <tr><th>Área</th><th>Herramientas</th><th>Uso</th></tr>
+            <tr><td>Backend</td><td>Node.js, Express, MySQL2, JWT, bcryptjs, Socket.IO</td><td>API, seguridad, persistencia y tiempo real.</td></tr>
+            <tr><td>Frontend</td><td>HTML5, CSS3, JavaScript, Lucide Icons</td><td>Interfaz, paneles, páginas públicas y documentación.</td></tr>
+            <tr><td>Base de datos</td><td>MySQL</td><td>Modelo relacional y datos persistentes.</td></tr>
+            <tr><td>Servicios</td><td>Railway, Cloudinary, SendGrid/Nodemailer</td><td>Deploy, archivos y correo.</td></tr>
+            <tr><td>Gestión</td><td>Git, GitHub, Visual Studio Code</td><td>Versionado y desarrollo colaborativo.</td></tr>
+        </table>
+
+        <h2>5.3 Diseño de arquitectura</h2>
         <div class="info-box">
-            <p><strong>Frontend:</strong> páginas HTML, CSS y JavaScript que consumen la API y presentan dashboards, classroom, perfiles, seguridad y documentación.</p>
-            <p><strong>Backend:</strong> servidor Express con rutas para auth, alumnos, profesores, cursos, pagos, classroom, chat, comunidad, seguridad y estado del sistema.</p>
-            <p><strong>Base de datos:</strong> MySQL con entidades relacionadas para gestión académica, pagos, comunicación y auditoría funcional.</p>
+            <p><strong>Cliente:</strong> páginas HTML, CSS y JavaScript servidas desde frontend.</p>
+            <p><strong>Servidor:</strong> Express con rutas por dominio: auth, alumnos, profesores, cursos, pagos, classroom, chat, seguridad, comunidad y estado.</p>
+            <p><strong>Base de datos:</strong> MySQL con relaciones académicas, financieras y comunicacionales.</p>
         </div>
 
-        <h2>7.4 Desarrollo e implementación</h2>
-        <p>El desarrollo se realizó de forma incremental. Primero se definió la base de datos y autenticación; luego se implementaron dashboards y CRUD; posteriormente pagos, classroom, chat, seguridad, comunidad, documentación y despliegue.</p>
+        <h2>5.4 Desarrollo e implementación por capas</h2>
+        <p>La capa de presentación contiene páginas públicas, dashboards, perfiles, classroom, seguridad y documentación. La capa de aplicación contiene rutas, middleware, validaciones y lógica de negocio. La capa de datos contiene tablas relacionales, migraciones y consultas mediante el pool de conexión.</p>
 
-        <h2>7.5 Pruebas e integración</h2>
-        <p>Se validaron flujos principales: inicio de sesión, registro y activación de cuenta, administración de alumnos y profesores, cursos, pagos, classroom, notificaciones, chats, rutas API y visualización de documentación.</p>
+        <h2>5.5 Gestión de base de datos y consistencia</h2>
+        <p>La consistencia se logra vinculando entidades mediante claves y relaciones lógicas. Los pagos se asocian a alumnos y cursos; las inscripciones vinculan alumnos con cursos; las calificaciones y asistencias dependen de alumno y curso; classroom se organiza alrededor de cursos y profesores; y las notificaciones se relacionan con usuarios.</p>
 
-        <h1 id="recursos">8. Recursos Necesarios</h1>
-        <h2>8.1 Recursos Humanos</h2>
-        <table>
-            <tr><th>Integrante</th><th>Rol</th><th>Descripción</th></tr>
-            <tr><td>Gómez Micaela</td><td>Frontend / UI Design</td><td>Diseño de interfaces, experiencia visual, estructura de pantallas y apoyo documental.</td></tr>
-            <tr><td>Lucena Carlos</td><td>Backend / Base de Datos</td><td>Rutas, lógica de servidor, modelado de datos, consultas y persistencia.</td></tr>
-            <tr><td>Ruiz Mendoza Eduardo</td><td>Backend / DevOps</td><td>Integración backend, configuración, despliegue, servicios externos y soporte técnico del proyecto.</td></tr>
-            <tr><td>Sergio Bautista Bareiro</td><td>Frontend / QA Testing</td><td>Implementación frontend, pruebas funcionales, revisión de flujos y validación de interfaz.</td></tr>
-        </table>
+        <h2>5.6 Gestión de versiones y trabajo colaborativo</h2>
+        <p>Git y GitHub permiten conservar historial de cambios, coordinar avances y desplegar nuevas versiones. El deploy automático en Railway facilita validar el sistema en un entorno público.</p>
 
-        <h2>8.2 Recursos Materiales</h2>
+        <h2>5.7 Pruebas, integración y seguridad</h2>
         <ul>
-            <li>Computadoras personales con Windows.</li>
-            <li>Visual Studio Code como entorno de desarrollo.</li>
-            <li>Node.js y npm para dependencias.</li>
-            <li>MySQL como motor de base de datos.</li>
-            <li>Git y GitHub para control de versiones.</li>
-            <li>Railway para despliegue.</li>
-            <li>Cloudinary y SendGrid/Nodemailer como servicios complementarios.</li>
+            <li>Validación de sintaxis de servidor y scripts principales.</li>
+            <li>Pruebas de rutas y health check.</li>
+            <li>Validación de navegación entre documentos.</li>
+            <li>Control de referencias antiguas y recursos inexistentes.</li>
+            <li>Verificación de despliegue en producción.</li>
         </ul>
 
-        <h1 id="plan">9. Plan de Trabajo</h1>
-        <h2>9.1 Versión descriptiva</h2>
-        <p>El trabajo se organizó entre el 23 de septiembre y el 20 de noviembre de 2025, con una duración total estimada de 95 horas distribuidas entre análisis, arquitectura, autenticación, dashboard, CRUD, pagos, classroom, chat, despliegue y documentación.</p>
+        <h2>5.8 Implantación y plan de capacitación</h2>
+        <p>La implantación se realiza en Railway con variables de entorno y base MySQL. Para capacitación se propone una guía breve por rol: administración aprende altas, pagos y reportes; profesores aprenden classroom, calificaciones y asistencias; alumnos aprenden acceso, tareas, pagos, comunidad y soporte.</p>
 
-        <h2>9.2 Calendarización de actividades</h2>
+        <h1 id="recursos">6. Gestión de Recursos y Plan de Trabajo</h1>
+        <h2>6.1 Recursos necesarios</h2>
         <table>
-            <tr><th>Actividad</th><th>Inicio</th><th>Fin</th><th>Responsable principal</th></tr>
-            <tr><td>Inicio y relevamiento</td><td>23-Sep-2025</td><td>29-Sep-2025</td><td>Equipo completo</td></tr>
-            <tr><td>Arquitectura y base de datos</td><td>30-Sep-2025</td><td>13-Oct-2025</td><td>Lucena Carlos / Ruiz Mendoza Eduardo</td></tr>
-            <tr><td>Autenticación y seguridad inicial</td><td>07-Oct-2025</td><td>20-Oct-2025</td><td>Ruiz Mendoza Eduardo</td></tr>
-            <tr><td>Dashboard e interfaces base</td><td>14-Oct-2025</td><td>27-Oct-2025</td><td>Gómez Micaela / Sergio Bautista Bareiro</td></tr>
-            <tr><td>CRUD académico</td><td>21-Oct-2025</td><td>10-Nov-2025</td><td>Lucena Carlos / Equipo completo</td></tr>
-            <tr><td>Pagos y Classroom</td><td>04-Nov-2025</td><td>17-Nov-2025</td><td>Equipo completo</td></tr>
-            <tr><td>Pruebas, despliegue y documentación</td><td>18-Nov-2025</td><td>20-Nov-2025</td><td>Equipo completo</td></tr>
+            <tr><th>Tipo</th><th>Recursos</th></tr>
+            <tr><td>Humanos</td><td>Equipo de desarrollo, tutor académico, referente institucional y usuarios de prueba.</td></tr>
+            <tr><td>Materiales</td><td>Computadoras, conexión a Internet, navegadores modernos y entorno de desarrollo.</td></tr>
+            <tr><td>Software</td><td>Node.js, npm, MySQL, Visual Studio Code, Git y navegador.</td></tr>
+            <tr><td>Servicios</td><td>Railway, Cloudinary, correo transaccional y repositorio GitHub.</td></tr>
         </table>
 
-        <h2>9.3 Etapas y entregables</h2>
+        <h2>6.2 Roles del equipo de trabajo</h2>
         <table>
-            <tr><th>Etapa</th><th>Actividades principales</th><th>Entregable</th></tr>
-            <tr><td>Análisis</td><td>Relevamiento, reglas de negocio y requerimientos.</td><td>Documento de requerimientos.</td></tr>
-            <tr><td>Diseño</td><td>Modelo de datos, arquitectura y pantallas.</td><td>Base técnica y estructura del sistema.</td></tr>
-            <tr><td>Backend</td><td>API, seguridad, rutas y lógica de negocio.</td><td>Servidor funcional.</td></tr>
-            <tr><td>Frontend</td><td>Dashboards, classroom, perfiles, comunidad y documentación.</td><td>Interfaz completa.</td></tr>
-            <tr><td>Pruebas</td><td>Validación funcional e integración.</td><td>Sistema estable.</td></tr>
-            <tr><td>Documentación</td><td>Manual, carpeta, anexo y Gantt.</td><td>Carpeta final lista.</td></tr>
+            <tr><th>Integrante</th><th>Rol principal</th><th>Responsabilidades</th></tr>
+            <tr><td>Gómez Micaela</td><td>Frontend / UI Design</td><td>Diseño visual, estructura de pantallas, experiencia de usuario y apoyo documental.</td></tr>
+            <tr><td>Lucena Carlos</td><td>Backend / Base de Datos</td><td>Rutas, consultas, modelado de datos, persistencia y consistencia.</td></tr>
+            <tr><td>Ruiz Mendoza Eduardo</td><td>Backend / DevOps</td><td>Integración, despliegue, configuración, servicios externos y soporte técnico.</td></tr>
+            <tr><td>Sergio Bautista Bareiro</td><td>Frontend / QA Testing</td><td>Interfaces, pruebas funcionales, revisión de flujos y validación de pantallas.</td></tr>
         </table>
 
-        <h1 id="resultados">10. Resultados Esperados</h1>
-        <h2>10.1 Resultados y beneficios</h2>
-        <p>El Sistema de Gestión Académica CEMI permite digitalizar y centralizar las operaciones de una institución de idiomas, reduciendo errores administrativos y mejorando la disponibilidad de información para alumnos, profesores y administración.</p>
+        <h2>6.3 Plan de trabajo detallado</h2>
+        <table>
+            <tr><th>Sprint</th><th>Período</th><th>Objetivo</th><th>Actividades</th></tr>
+            <tr><td>Primer Sprint</td><td>23-Sep-2025 al 13-Oct-2025</td><td>Análisis y estructura base.</td><td>Relevamiento, arquitectura, modelo de datos, configuración inicial, autenticación base.</td></tr>
+            <tr><td>Segundo Sprint</td><td>14-Oct-2025 al 10-Nov-2025</td><td>Módulos principales.</td><td>Dashboards, CRUD académico, cursos, inscripciones, pagos, roles y validaciones.</td></tr>
+            <tr><td>Tercer Sprint</td><td>11-Nov-2025 al 20-Nov-2025</td><td>Optimización y cierre.</td><td>Classroom, chat, seguridad, documentación, pruebas, deploy y ajustes finales.</td></tr>
+        </table>
+
+        <h2>6.4 Calendarización y Gantt</h2>
+        <p>El cronograma interactivo se encuentra disponible desde la sección Documentación como Diagrama de Gantt. Allí se visualizan fases, tareas, tiempos estimados y distribución por integrante.</p>
+
+        <h2>6.5 Etapas y entregables finales</h2>
+        <table>
+            <tr><th>Etapa</th><th>Entregable</th></tr>
+            <tr><td>Análisis</td><td>Relevamiento, diagnóstico y requisitos.</td></tr>
+            <tr><td>Diseño</td><td>Arquitectura, modelo de datos y estructura de interfaz.</td></tr>
+            <tr><td>Implementación</td><td>Sistema funcional con backend, frontend y base de datos.</td></tr>
+            <tr><td>Pruebas</td><td>Validación de flujos principales y correcciones.</td></tr>
+            <tr><td>Documentación</td><td>Anexo TFI, Carpeta TFI, Manual de Usuario, manual técnico y documentos complementarios.</td></tr>
+            <tr><td>Despliegue</td><td>Sistema publicado en Railway.</td></tr>
+        </table>
+
+        <h1 id="resultados">7. Resultados, Impacto y Cierre</h1>
+        <h2>7.1 Resultados y beneficios obtenidos</h2>
         <ul>
-            <li>Información académica consolidada y accesible.</li>
-            <li>Mejor control de inscripciones, pagos y comprobantes.</li>
-            <li>Seguimiento de rendimiento mediante calificaciones y asistencias.</li>
-            <li>Classroom integrado para actividades, anuncios y recursos.</li>
-            <li>Comunicación en tiempo real mediante chats y notificaciones.</li>
-            <li>Mayor seguridad y trazabilidad de operaciones.</li>
+            <li>Sistema web funcional orientado al Centro Municipal de Idiomas.</li>
+            <li>Centralización de información académica y administrativa.</li>
+            <li>Gestión de pagos, cuotas y comprobantes.</li>
+            <li>Classroom institucional con tareas y comunicación académica.</li>
+            <li>Chat de soporte y notificaciones.</li>
+            <li>Documentación formal y navegable desde el sistema.</li>
         </ul>
 
-        <h2>10.2 Impacto académico</h2>
-        <p>El proyecto evidencia la aplicación práctica de conocimientos de ingeniería de software, programación web, bases de datos, seguridad, despliegue y documentación. Además, permite evaluar una solución real con arquitectura completa y alcance institucional.</p>
+        <h2>7.2 Impacto académico, institucional y profesional</h2>
+        <p>Académicamente, el proyecto evidencia dominio de tecnologías web, base de datos y documentación. Institucionalmente, ofrece a CEMI una herramienta que mejora la organización interna. Profesionalmente, el equipo demuestra capacidad de análisis, implementación, validación, despliegue y mantenimiento de una aplicación real.</p>
 
-        <h1 id="referencias">11. Referencias</h1>
+        <h2>7.3 Referencias bibliográficas técnicas</h2>
         <div class="reference">Sommerville, I. (2016). <em>Software engineering</em> (10th ed.). Pearson Education.</div>
         <div class="reference">Pressman, R. S., & Maxim, B. R. (2020). <em>Software engineering: A practitioner's approach</em>. McGraw-Hill.</div>
-        <div class="reference">Mozilla Developer Network. (2025). <em>HTML, CSS and JavaScript documentation</em>.</div>
         <div class="reference">Node.js Foundation. (2025). <em>Node.js documentation</em>.</div>
         <div class="reference">Express.js. (2025). <em>Express web framework documentation</em>.</div>
         <div class="reference">Oracle. (2025). <em>MySQL documentation</em>.</div>
+        <div class="reference">Mozilla Developer Network. (2025). <em>HTML, CSS and JavaScript documentation</em>.</div>
+
+        <h1 id="anexo">8. Anexo del Documento</h1>
+        <p>Forman parte complementaria de esta carpeta: Anexo TFI, Manual de Usuario TFI, Manual Técnico, Diagramas UML, Plan de Pruebas, Arquitectura del Sistema, Bibliografía APA7 y Diagrama de Gantt. Estos documentos permiten auditar el proceso completo desde el relevamiento hasta el despliegue.</p>
 
         <footer>
-            <p>Carpeta TFI - Sistema de Gestión Académica CEMI</p>
-            <p>Gómez Micaela • Lucena Carlos • Ruiz Mendoza Eduardo • Sergio Bautista Bareiro</p>
+            <p>Carpeta TFI - CEMI Sistema Gestor</p>
+            <p>Centro Municipal de Idiomas - UTN Facultad Regional Tucumán</p>
         </footer>
     </div>
 </body>

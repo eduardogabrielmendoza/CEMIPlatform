@@ -78,6 +78,29 @@ body {
     border-bottom: 1px solid var(--hw-border);
 }
 
+.cover-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 34px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.cover-logo {
+    max-height: 74px;
+    max-width: 220px;
+    object-fit: contain;
+}
+
+.cover-logo.cemi-logo {
+    filter: brightness(0);
+}
+
+.cover-logo.utn-logo {
+    max-height: 82px;
+}
+
 .cover::after {
     content: '';
     position: absolute;
