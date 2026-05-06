@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anexo TFI - CEMI</title>
-    <link rel="icon" type="image/png" href="../images/logocuadrado.png">
+    <link rel="icon" type="image/png" href="../images/logo.png">
     <link rel="stylesheet" href="harvard-doc-styles.css">
 </head>
 <body>
@@ -15,9 +15,9 @@
             <h1>Anexo TFI</h1>
             <p class="subtitle">Sistema de Gestión Académica CEMI</p>
             <p>Centro de Estudios Multilingüe Internacional</p>
-            <div class="cover-tags">Mendoza, Eduardo Gabriel</div>
-            <span class="version">Versión 1.0 — Mayo 2026</span>
-            <p class="institution">UTN — Tecnicatura Universitaria en Programación — Bella Vista</p>
+            <div class="cover-tags">Gómez Micaela • Lucena Carlos • Ruiz Mendoza Eduardo • Sergio Bautista Bareiro</div>
+            <span class="version">Versión 1.0 - Mayo 2026</span>
+            <p class="institution">UTN - Tecnicatura Universitaria en Programación - Bella Vista</p>
         </div>
 
         <nav class="toc">
@@ -25,252 +25,292 @@
             <ul>
                 <li><a href="#entrevista-plan">Planificación de Reunión</a></li>
                 <li><a href="#entrevista-valid">Validación de Entrevista</a></li>
-                <li><a href="#entrevista-analisis">Análisis de Entrevista</a></li>
-                <li><a href="#entrevista-doc">Documentación de Entrevista</a></li>
+                <li><a href="#entrevista-analisis">Análisis y Documentación de Entrevista</a></li>
                 <li><a href="#requisitos-datos">Requisitos de Datos</a></li>
-                <li><a href="#ers">Especificación de Requisitos (ERS)</a></li>
+                <li><a href="#ers">Especificación de Requisitos de Software</a></li>
             </ul>
         </nav>
 
-        <!-- PLANIFICACIÓN DE REUNIÓN -->
         <h1 id="entrevista-plan">Planificación de Reunión</h1>
         <table>
             <tr><th>Campo</th><th>Detalle</th></tr>
-            <tr><td>Proyecto</td><td>Sistema de Gestión Académica: CEMI</td></tr>
+            <tr><td>Proyecto</td><td>Sistema de Gestión Académica CEMI</td></tr>
             <tr><td>ID</td><td>1</td></tr>
             <tr><td>Institución</td><td>Centro de Estudios Multilingüe Internacional</td></tr>
-            <tr><td>Confeccionó</td><td>Mendoza, Eduardo Gabriel</td></tr>
-            <tr><td>Documento</td><td>Planificación de Entrevista</td></tr>
-            <tr><td>Fecha</td><td>15-Mar-2025</td></tr>
+            <tr><td>Confeccionó</td><td>Gómez Micaela, Lucena Carlos, Ruiz Mendoza Eduardo y Sergio Bautista Bareiro</td></tr>
+            <tr><td>Documento</td><td>Planificación de entrevista</td></tr>
+            <tr><td>Fecha</td><td>23-Sep-2025</td></tr>
         </table>
 
         <h2>A. Reunión</h2>
         <table>
             <tr><th>Dato</th><th>Valor</th></tr>
-            <tr><td>Fecha</td><td>15-Mar-2025</td></tr>
-            <tr><td>Hora</td><td>09:00 a 11:30</td></tr>
-            <tr><td>Lugar</td><td>Sede CEMI, Bella Vista, Tucumán</td></tr>
+            <tr><td>Fecha</td><td>23-Sep-2025</td></tr>
+            <tr><td>Hora</td><td>09:00 a 11:00</td></tr>
+            <tr><td>Lugar</td><td>Sede CEMI / Bella Vista, Tucumán</td></tr>
         </table>
 
         <h2>B. Participantes</h2>
         <table>
             <tr><th>Nombre</th><th>Participación</th></tr>
-            <tr><td>Director Académico CEMI</td><td>Cliente / Responsable institucional</td></tr>
-            <tr><td>Mendoza, Eduardo Gabriel</td><td>Desarrollador Full-Stack / Líder del Proyecto</td></tr>
+            <tr><td>Responsable institucional CEMI</td><td>Cliente / referente académico</td></tr>
+            <tr><td>Gómez Micaela</td><td>Frontend / UI Design</td></tr>
+            <tr><td>Lucena Carlos</td><td>Backend / Base de Datos</td></tr>
+            <tr><td>Ruiz Mendoza Eduardo</td><td>Backend / DevOps</td></tr>
+            <tr><td>Sergio Bautista Bareiro</td><td>Frontend / QA Testing</td></tr>
         </table>
 
         <h2>C. Tipo de Entrevista y Objetivos</h2>
         <div class="info-box">
-            <p><strong>Tipo:</strong> Investigación y relevamiento de requerimientos funcionales y no funcionales.</p>
+            <p><strong>Tipo:</strong> investigación, relevamiento de requerimientos funcionales y no funcionales.</p>
         </div>
-        <h3>Objetivos</h3>
         <ul>
-            <li>Conocer las necesidades y problemas actuales en la gestión académica del centro de idiomas.</li>
-            <li>Identificar los procesos a informatizar (inscripciones, pagos, calificaciones, asistencias, classroom).</li>
-            <li>Determinar los usuarios que interactuarán con el sistema (alumnos, profesores, administradores).</li>
-            <li>Definir los primeros requerimientos del sistema de gestión.</li>
+            <li>Conocer las necesidades actuales de gestión académica, administrativa y comunicacional del centro.</li>
+            <li>Identificar procesos a informatizar: alumnos, profesores, cursos, inscripciones, pagos, calificaciones, asistencias y classroom.</li>
+            <li>Determinar los usuarios que interactúan con el sistema: administradores, profesores, alumnos e invitados.</li>
+            <li>Definir los requerimientos iniciales del sistema y sus límites operativos.</li>
         </ul>
 
         <h2>D. Cuestionario</h2>
         <ul>
-            <li>¿Qué idiomas se dictan y cómo se organizan los cursos?</li>
-            <li>¿Cómo se gestionan actualmente las inscripciones y los pagos?</li>
-            <li>¿Qué problemas o dificultades tienen con el método actual?</li>
-            <li>¿Quiénes deberían utilizar el sistema (dirección, profesores, alumnos)?</li>
-            <li>¿Se necesita un entorno virtual de aprendizaje (classroom)?</li>
-            <li>¿Se requiere control de asistencias y calificaciones en línea?</li>
-            <li>¿Qué nivel de acceso debería tener cada tipo de usuario?</li>
-            <li>¿El sistema será accesible desde dispositivos móviles?</li>
-            <li>¿Se desea incluir chat de soporte en tiempo real?</li>
-            <li>¿Hay algún otro requerimiento que considere importante?</li>
+            <li>¿Qué idiomas, niveles y cursos administra CEMI?</li>
+            <li>¿Cómo se registran actualmente alumnos, profesores e inscripciones?</li>
+            <li>¿Qué dificultades existen en el seguimiento de pagos y cuotas?</li>
+            <li>¿Qué información necesita consultar cada perfil de usuario?</li>
+            <li>¿Se requiere una plataforma virtual para tareas, anuncios, encuestas y calendario?</li>
+            <li>¿Cómo deben registrarse calificaciones y asistencias?</li>
+            <li>¿Qué nivel de acceso debe tener cada rol?</li>
+            <li>¿El sistema debe funcionar en computadoras y dispositivos móviles?</li>
+            <li>¿Se necesita comunicación en tiempo real entre alumnos, profesores y administración?</li>
+            <li>¿Qué reportes, comprobantes o exportaciones deben generarse?</li>
         </ul>
 
-        <!-- VALIDACIÓN -->
         <h1 id="entrevista-valid">Validación de Entrevista</h1>
         <h2>A. Metodología</h2>
-        <p>Cada idea rescatada de la entrevista está representada por un ítem. Se coloca "S" si fue validado correctamente o "N" si hay diferencias. En "Notas o aclaraciones" se detallan observaciones.</p>
+        <p>Cada idea relevada se presenta como un ítem. Se marca "S" cuando fue validada correctamente y se registran notas o aclaraciones para conservar trazabilidad documental.</p>
 
         <h2>B. Ideas Rescatadas</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>El centro necesita un sistema para gestionar inscripciones y cursos de idiomas. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> El director confirma que el objetivo principal es centralizar la gestión académica completa.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Se requiere control de pagos y cuotas mensuales. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Se necesitan múltiples medios de pago (efectivo, transferencia, tarjeta) y generación de comprobantes.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>El sistema debe permitir gestionar calificaciones y asistencias. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Confirmado. Parcial 1, Parcial 2 y Final por alumno/curso.</p></div></div>
-        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Se necesita un entorno virtual tipo Classroom. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Debe incluir tareas, anuncios, encuestas, calendario y chat alumno-profesor.</p></div></div>
-        <div class="step"><span class="step-number">5</span><div class="step-content"><h4>Se implementarán niveles de acceso: administrador, profesor y alumno. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Administradores con niveles superadmin y admin. Profesores y alumnos con accesos diferenciados.</p></div></div>
-        <div class="step"><span class="step-number">6</span><div class="step-content"><h4>El sistema será accesible vía web desde cualquier dispositivo. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Interfaz responsive. Despliegue en Railway con dominio propio.</p></div></div>
-        <div class="step"><span class="step-number">7</span><div class="step-content"><h4>Se incluirá chat de soporte en tiempo real. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Chat con Socket.IO, soporte para archivos adjuntos y estados de conversación.</p></div></div>
-        <div class="step"><span class="step-number">8</span><div class="step-content"><h4>El diseño debe ser moderno, profesional y con branding institucional. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Se solicita paleta oscura, animaciones fluidas y logo CEMI prominente.</p></div></div>
+        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>CEMI necesita centralizar la gestión de alumnos, profesores y cursos. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Se valida la necesidad de administrar datos personales, legajos, especialidades, idiomas, niveles, aulas y estados.</p></div></div>
+        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>El sistema debe controlar inscripciones y cupos por curso. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Cada inscripción debe vincular alumno, curso, fecha y estado para permitir seguimiento académico.</p></div></div>
+        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Se requiere gestión de pagos, cuotas y comprobantes. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Se validan conceptos como matrícula y cuotas mensuales, medios de pago y comprobantes PDF.</p></div></div>
+        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Los profesores necesitan registrar calificaciones y asistencias. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Se deben registrar parciales, final y estados de asistencia: presente, ausente, tardanza y justificado.</p></div></div>
+        <div class="step"><span class="step-number">5</span><div class="step-content"><h4>Se requiere un entorno Classroom integrado. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Debe incluir tareas, entregas, anuncios, comentarios, encuestas, calendario, recursos y chats por curso.</p></div></div>
+        <div class="step"><span class="step-number">6</span><div class="step-content"><h4>El acceso debe estar protegido por autenticación y roles. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Se valida el uso de usuarios, perfiles, JWT, contraseñas cifradas y permisos diferenciados.</p></div></div>
+        <div class="step"><span class="step-number">7</span><div class="step-content"><h4>Se necesita soporte en tiempo real. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> El sistema debe incluir chat de soporte con conversaciones, mensajes, adjuntos, estados y métricas.</p></div></div>
+        <div class="step"><span class="step-number">8</span><div class="step-content"><h4>El sistema debe ser web, responsive y desplegable en la nube. <span class="test-result pass">S</span></h4><p><strong>Notas:</strong> Se valida arquitectura cliente-servidor con Node.js, Express, MySQL, Socket.IO y Railway.</p></div></div>
 
-        <!-- ANÁLISIS -->
-        <h1 id="entrevista-analisis">Análisis de Entrevista</h1>
+        <h1 id="entrevista-analisis">Análisis y Documentación de Entrevista</h1>
         <h2>Conclusiones</h2>
         <ul>
-            <li>El proyecto tiene como objetivo principal desarrollar un sistema informático para la gestión integral del centro de idiomas, abarcando inscripciones, pagos, calificaciones, asistencias y entorno virtual.</li>
-            <li>La entrevista con la dirección permitió identificar los principales problemas: falta de centralización de datos, procesos manuales, ausencia de plataforma de comunicación alumno-profesor.</li>
-            <li>Se definió que el sistema deberá incluir módulos de gestión académica, financiera, classroom y comunicación, además de distintos niveles de acceso según el tipo de usuario.</li>
-            <li>El sistema se desarrollará como aplicación web, con interfaz responsive y despliegue en la nube, priorizando la accesibilidad desde cualquier dispositivo.</li>
-            <li>Se acordó que los reportes y comprobantes podrán exportarse en PDF, y que la comunicación se realizará mediante chat en tiempo real y notificaciones.</li>
+            <li>El proyecto tiene como objetivo desarrollar un sistema informático para la gestión integral del centro de idiomas CEMI.</li>
+            <li>La entrevista permitió identificar problemas de centralización, trazabilidad, comunicación y disponibilidad de información académica.</li>
+            <li>Se definieron módulos de administración, classroom, pagos, calificaciones, asistencias, comunidad, seguridad y chat.</li>
+            <li>La solución se implementa como aplicación web responsive, con persistencia en MySQL y despliegue en Railway.</li>
+            <li>El sistema contempla roles diferenciados para alumnos, profesores, administradores e invitados.</li>
         </ul>
 
-        <!-- DOCUMENTACIÓN -->
-        <h1 id="entrevista-doc">Documentación de Entrevista</h1>
         <h2>Definición del Problema</h2>
-        <p>El Centro de Estudios Multilingüe Internacional (CEMI) es una institución educativa dedicada a la enseñanza de idiomas. Actualmente, el centro no cuenta con un sistema informático unificado que permita gestionar inscripciones, pagos, calificaciones ni la comunicación entre profesores y alumnos, lo que genera diversos inconvenientes en la gestión diaria.</p>
-        <p>Las inscripciones se realizan de manera presencial, los pagos se registran manualmente, y la comunicación académica depende de canales informales. Esto provoca errores, pérdida de información y falta de trazabilidad en las operaciones.</p>
+        <p>El Centro de Estudios Multilingüe Internacional requiere una plataforma que unifique procesos académicos, administrativos y de comunicación. Sin un sistema centralizado, la información de alumnos, cursos, inscripciones, pagos, calificaciones y comunicaciones queda dispersa, generando demoras, errores de registro y dificultad para consultar el estado real de cada operación.</p>
+        <p>La ausencia de un entorno virtual propio también limita el seguimiento de tareas, anuncios, encuestas, recursos y conversaciones entre profesores y alumnos.</p>
 
-        <h2>Elemento – Descripción</h2>
+        <h2>Elemento - Descripción</h2>
         <table>
             <tr><th>Elemento</th><th>Descripción</th></tr>
-            <tr><td>El problema</td><td>Falta de un sistema centralizado para la gestión académica, administrativa y financiera del centro de idiomas.</td></tr>
-            <tr><td>Afecta a</td><td>Dirección del centro, profesores, alumnos y personal administrativo.</td></tr>
-            <tr><td>Resultados actuales</td><td>Procesos manuales, errores en registros de pagos, dificultad para seguimiento de alumnos, ausencia de plataforma virtual.</td></tr>
-            <tr><td>Beneficios esperados</td><td>Centralización de datos, automatización de procesos, plataforma virtual de aprendizaje, generación de reportes y comprobantes automáticos.</td></tr>
+            <tr><td>El problema</td><td>Falta de un sistema web unificado para gestionar información académica, financiera y comunicacional de CEMI.</td></tr>
+            <tr><td>Afecta a</td><td>Dirección, administración, profesores, alumnos e invitados que solicitan soporte o inscripción.</td></tr>
+            <tr><td>Resultados actuales</td><td>Procesos fragmentados, baja trazabilidad, dificultad para consultar pagos, inscripciones, tareas y novedades.</td></tr>
+            <tr><td>Beneficios esperados</td><td>Centralización de datos, automatización operativa, classroom integrado, comprobantes, reportes, comunicación en tiempo real y mejor experiencia de usuario.</td></tr>
         </table>
 
         <h2>Identificación de Clientes y Usuarios</h2>
         <ul>
-            <li><strong>Cliente principal:</strong> Dirección del Centro de Estudios Multilingüe Internacional (CEMI).</li>
-            <li><strong>Usuarios finales — Alumnos:</strong> Consultan inscripciones, pagos, calificaciones, tareas y se comunican con profesores.</li>
-            <li><strong>Usuarios finales — Profesores:</strong> Gestionan cursos, publican tareas, califican y registran asistencias.</li>
-            <li><strong>Usuarios administrativos:</strong> Administradores con acceso total a gestión de cursos, inscripciones, pagos y configuración del sistema.</li>
+            <li><strong>Cliente principal:</strong> Centro de Estudios Multilingüe Internacional.</li>
+            <li><strong>Usuarios administrativos:</strong> gestionan alumnos, profesores, cursos, inscripciones, pagos, reportes, soporte y configuración.</li>
+            <li><strong>Profesores:</strong> administran classroom, anuncios, tareas, calificaciones, asistencias, recursos y comunicación con alumnos.</li>
+            <li><strong>Alumnos:</strong> consultan cursos, pagos, calificaciones, tareas, anuncios, calendario, comunidad y chats.</li>
+            <li><strong>Invitados:</strong> pueden consultar información pública y contactar soporte.</li>
         </ul>
 
-        <!-- REQUISITOS DE DATOS -->
-        <h1 id="requisitos-datos">Requisitos de Datos</h1>
+        <h2>Límites de la Solución</h2>
+        <p>La solución informatiza la gestión académica y administrativa del centro, incluyendo autenticación, roles, alumnos, profesores, cursos, idiomas, niveles, aulas, inscripciones, pagos, comprobantes, calificaciones, asistencias, classroom, comunidad, notificaciones, chat y módulos de seguridad. Quedan fuera de alcance inicial la facturación fiscal externa, la emisión oficial de certificados con firma digital y una aplicación móvil nativa independiente.</p>
 
-        <h2>Entidad: PERSONA</h2>
-        <table><tr><th>Identificador</th><th>Tipo</th><th>Descripción</th></tr>
-        <tr><td>id_persona</td><td>INT (PK)</td><td>Identificador único de la persona</td></tr>
-        <tr><td>nombre</td><td>VARCHAR(100)</td><td>Nombre de la persona</td></tr>
-        <tr><td>apellido</td><td>VARCHAR(100)</td><td>Apellido de la persona</td></tr>
-        <tr><td>mail</td><td>VARCHAR(100) UNIQUE</td><td>Correo electrónico</td></tr>
-        <tr><td>telefono</td><td>VARCHAR(20)</td><td>Teléfono de contacto</td></tr>
-        <tr><td>dni</td><td>VARCHAR(20)</td><td>Documento Nacional de Identidad</td></tr>
-        <tr><td>avatar</td><td>VARCHAR(255)</td><td>Ruta de imagen de perfil</td></tr></table>
-
-        <h2>Entidad: USUARIO</h2>
-        <table><tr><th>Identificador</th><th>Tipo</th><th>Descripción</th></tr>
-        <tr><td>id_usuario</td><td>INT (PK)</td><td>Identificador único del usuario</td></tr>
-        <tr><td>id_persona</td><td>INT (FK)</td><td>Referencia a la persona</td></tr>
-        <tr><td>id_perfil</td><td>INT (FK)</td><td>Perfil: admin, profesor, alumno</td></tr>
-        <tr><td>password</td><td>VARCHAR(255)</td><td>Contraseña encriptada con bcrypt</td></tr>
-        <tr><td>estado</td><td>ENUM</td><td>activo / inactivo / pendiente</td></tr></table>
-
-        <h2>Entidad: ALUMNO</h2>
-        <table><tr><th>Identificador</th><th>Tipo</th><th>Descripción</th></tr>
-        <tr><td>id_alumno</td><td>INT (PK/FK)</td><td>Referencia a persona</td></tr>
-        <tr><td>legajo</td><td>VARCHAR(50) UNIQUE</td><td>Número de legajo</td></tr>
-        <tr><td>domicilio</td><td>VARCHAR(200)</td><td>Dirección</td></tr>
-        <tr><td>estado</td><td>ENUM</td><td>activo / inactivo</td></tr></table>
-
-        <h2>Entidad: PROFESOR</h2>
-        <table><tr><th>Identificador</th><th>Tipo</th><th>Descripción</th></tr>
-        <tr><td>id_profesor</td><td>INT (PK/FK)</td><td>Referencia a persona</td></tr>
-        <tr><td>especialidad</td><td>VARCHAR(100)</td><td>Idioma de especialidad</td></tr>
-        <tr><td>fecha_ingreso</td><td>DATE</td><td>Fecha de incorporación</td></tr>
-        <tr><td>estado</td><td>ENUM</td><td>activo / inactivo / licencia</td></tr></table>
-
-        <h2>Entidad: CURSO</h2>
-        <table><tr><th>Identificador</th><th>Tipo</th><th>Descripción</th></tr>
-        <tr><td>id_curso</td><td>INT (PK)</td><td>Identificador del curso</td></tr>
-        <tr><td>nombre_curso</td><td>VARCHAR(100)</td><td>Nombre del curso</td></tr>
-        <tr><td>id_idioma</td><td>INT (FK)</td><td>Idioma del curso</td></tr>
-        <tr><td>id_nivel</td><td>INT (FK)</td><td>Nivel del curso</td></tr>
-        <tr><td>id_profesor</td><td>INT (FK)</td><td>Profesor asignado</td></tr>
-        <tr><td>horario</td><td>VARCHAR(100)</td><td>Horario de dictado</td></tr>
-        <tr><td>cupo_maximo</td><td>INT</td><td>Capacidad máxima</td></tr>
-        <tr><td>cuotas_habilitadas</td><td>JSON</td><td>Cuotas habilitadas para pago</td></tr></table>
-
-        <h2>Entidad: INSCRIPCIÓN</h2>
-        <table><tr><th>Identificador</th><th>Tipo</th><th>Descripción</th></tr>
-        <tr><td>id_inscripcion</td><td>INT (PK)</td><td>Identificador único</td></tr>
-        <tr><td>id_alumno</td><td>INT (FK)</td><td>Alumno inscripto</td></tr>
-        <tr><td>id_curso</td><td>INT (FK)</td><td>Curso al que se inscribe</td></tr>
-        <tr><td>fecha_inscripcion</td><td>DATE</td><td>Fecha de inscripción</td></tr>
-        <tr><td>estado</td><td>VARCHAR(50)</td><td>Estado: activo, baja</td></tr></table>
-
-        <h2>Entidad: PAGO</h2>
-        <table><tr><th>Identificador</th><th>Tipo</th><th>Descripción</th></tr>
-        <tr><td>id_pago</td><td>INT (PK)</td><td>Identificador del pago</td></tr>
-        <tr><td>id_alumno</td><td>INT (FK)</td><td>Alumno que realiza el pago</td></tr>
-        <tr><td>id_curso</td><td>INT (FK)</td><td>Curso asociado al pago</td></tr>
-        <tr><td>monto</td><td>DECIMAL(10,2)</td><td>Monto del pago</td></tr>
-        <tr><td>mes_cuota</td><td>ENUM</td><td>Matrícula, Marzo, Abril... Noviembre</td></tr>
-        <tr><td>estado_pago</td><td>ENUM</td><td>en_proceso / pagado / anulado</td></tr></table>
-
-        <h2>Entidad: CALIFICACIÓN</h2>
-        <table><tr><th>Identificador</th><th>Tipo</th><th>Descripción</th></tr>
-        <tr><td>id_calificacion</td><td>INT (PK)</td><td>Identificador único</td></tr>
-        <tr><td>id_alumno</td><td>INT (FK)</td><td>Alumno calificado</td></tr>
-        <tr><td>id_curso</td><td>INT (FK)</td><td>Curso correspondiente</td></tr>
-        <tr><td>parcial1</td><td>DECIMAL(4,2)</td><td>Nota parcial 1 (0-10)</td></tr>
-        <tr><td>parcial2</td><td>DECIMAL(4,2)</td><td>Nota parcial 2 (0-10)</td></tr>
-        <tr><td>final</td><td>DECIMAL(4,2)</td><td>Nota final (0-10)</td></tr></table>
-
-        <!-- ERS -->
-        <h1 id="ers">Especificación de Requisitos de Software (ERS)</h1>
-        <div class="info-box"><p>Basado en el estándar IEEE 830-1998.</p></div>
-
-        <h2>1. Propósito</h2>
-        <p>Especificar de manera completa los requisitos funcionales y no funcionales del Sistema de Gestión Académica CEMI, desarrollado para el Centro de Estudios Multilingüe Internacional.</p>
-
-        <h2>2. Funciones Principales</h2>
+        <h2>Limitaciones</h2>
         <ul>
-            <li>Gestionar inscripciones de alumnos a cursos de idiomas.</li>
-            <li>Registrar y controlar pagos con múltiples medios de pago.</li>
-            <li>Administrar calificaciones (parciales y finales) por curso.</li>
-            <li>Controlar asistencias con estados: presente, ausente, tardanza, justificado.</li>
-            <li>Proveer entorno virtual Classroom con tareas, anuncios, encuestas y chat.</li>
-            <li>Chat de soporte en tiempo real con Socket.IO.</li>
-            <li>Sistema de notificaciones en tiempo real.</li>
-            <li>Generación de comprobantes de pago en PDF.</li>
-            <li>Panel administrativo con estadísticas y reportes.</li>
+            <li><strong>Técnicas:</strong> requiere conexión a Internet y disponibilidad del servicio Railway y base de datos MySQL.</li>
+            <li><strong>Operativas:</strong> la carga inicial de datos debe ser realizada por usuarios administrativos autorizados.</li>
+            <li><strong>Humanas:</strong> los usuarios necesitan una capacitación básica para operar correctamente los módulos.</li>
+            <li><strong>Temporales:</strong> el proyecto se planificó en etapas iterativas durante el período académico 2025.</li>
         </ul>
+
+        <h1 id="requisitos-datos">Requisitos de Datos</h1>
+        <h2>Entidades principales</h2>
+        <table>
+            <tr><th>Entidad</th><th>Identificadores relevantes</th><th>Descripción</th></tr>
+            <tr><td>PERSONAS</td><td>id_persona, nombre, apellido, mail, telefono, dni, avatar</td><td>Registro base de datos personales para alumnos, profesores y administradores.</td></tr>
+            <tr><td>USUARIOS</td><td>id_usuario, id_persona, id_perfil, password, estado, email_verificado</td><td>Credenciales y estado de acceso al sistema.</td></tr>
+            <tr><td>PERFILES</td><td>id_perfil, nombre_perfil</td><td>Roles del sistema: administrador, profesor, alumno y perfiles relacionados.</td></tr>
+            <tr><td>ALUMNOS</td><td>id_alumno, legajo, id_persona, domicilio, fecha_nacimiento, estado</td><td>Información académica propia de estudiantes.</td></tr>
+            <tr><td>PROFESORES</td><td>id_profesor, especialidad, fecha_ingreso, estado</td><td>Plantel docente y especialidades.</td></tr>
+            <tr><td>ADMINISTRADORES</td><td>id_admin, id_persona, nivel_acceso, departamento</td><td>Usuarios con permisos administrativos.</td></tr>
+            <tr><td>IDIOMAS</td><td>id_idioma, nombre, codigo, estado</td><td>Catálogo de idiomas dictados.</td></tr>
+            <tr><td>NIVELES</td><td>id_nivel, nombre, descripcion, orden</td><td>Niveles académicos asociados a los cursos.</td></tr>
+            <tr><td>AULAS</td><td>id_aula, nombre, capacidad, ubicacion, estado</td><td>Espacios disponibles para dictado.</td></tr>
+            <tr><td>CURSOS</td><td>id_curso, nombre_curso, id_idioma, id_nivel, id_profesor, id_aula, horario, cupo_maximo, cuotas_habilitadas</td><td>Cursos activos con cupo, profesor, aula y configuración de cuotas.</td></tr>
+        </table>
+
+        <h2>Entidades académicas y financieras</h2>
+        <table>
+            <tr><th>Entidad</th><th>Identificadores relevantes</th><th>Descripción</th></tr>
+            <tr><td>INSCRIPCIONES</td><td>id_inscripcion, id_alumno, id_curso, fecha_inscripcion, estado</td><td>Vinculación de alumnos con cursos.</td></tr>
+            <tr><td>PAGOS</td><td>id_pago, id_alumno, id_curso, monto, id_medio_pago, mes_cuota, estado_pago, comprobante_pdf</td><td>Registro de pagos, cuotas y comprobantes.</td></tr>
+            <tr><td>CONCEPTOS_PAGO</td><td>id_concepto, nombre, descripcion, activo</td><td>Conceptos como matrícula y cuotas mensuales.</td></tr>
+            <tr><td>CALIFICACIONES</td><td>id_calificacion, id_alumno, id_curso, parcial1, parcial2, final</td><td>Notas por alumno y curso.</td></tr>
+            <tr><td>ASISTENCIAS</td><td>id_asistencia, id_curso, id_alumno, fecha, estado</td><td>Registro diario de asistencia.</td></tr>
+        </table>
+
+        <h2>Entidades Classroom, comunicación y soporte</h2>
+        <table>
+            <tr><th>Entidad</th><th>Identificadores relevantes</th><th>Descripción</th></tr>
+            <tr><td>TAREAS</td><td>id_tarea, id_curso, id_profesor, titulo, descripcion, fecha_limite</td><td>Actividades publicadas por profesores.</td></tr>
+            <tr><td>ENTREGAS_TAREAS</td><td>id_entrega, id_tarea, id_alumno, contenido, archivo_adjunto, calificacion</td><td>Entregas realizadas por alumnos.</td></tr>
+            <tr><td>ANUNCIOS</td><td>id_anuncio, id_curso, id_profesor, titulo, contenido, importante</td><td>Comunicaciones del profesor al curso.</td></tr>
+            <tr><td>ENCUESTAS</td><td>id_encuesta, id_anuncio, pregunta, opciones, activa</td><td>Encuestas asociadas a anuncios.</td></tr>
+            <tr><td>EVENTOS_CALENDARIO</td><td>id_evento, id_curso, id_profesor, titulo, fecha_inicio, fecha_fin</td><td>Eventos académicos y recordatorios.</td></tr>
+            <tr><td>NOTIFICACIONES</td><td>id_notificacion, id_usuario, tipo_usuario, tipo, titulo, mensaje, leida</td><td>Avisos de tareas, inscripciones, comentarios y calificaciones.</td></tr>
+            <tr><td>CHAT_CONVERSACIONES</td><td>id_conversacion, tipo_usuario, id_usuario, estado, atendido_por</td><td>Conversaciones de soporte general.</td></tr>
+            <tr><td>CHAT_MENSAJES</td><td>id_mensaje, id_conversacion, tipo_remitente, mensaje, archivo_adjunto</td><td>Mensajes y archivos del soporte.</td></tr>
+            <tr><td>CLASSROOM_CONVERSACIONES</td><td>id_conversacion, id_curso, id_alumno_usuario, id_profesor_usuario</td><td>Chats internos por curso.</td></tr>
+            <tr><td>COMUNIDAD</td><td>publicaciones, comentarios, likes, reportes</td><td>Interacción comunitaria y moderación.</td></tr>
+        </table>
+
+        <h1 id="ers">Especificación de Requisitos de Software</h1>
+        <h2>Ficha del Documento</h2>
+        <table>
+            <tr><th>Fecha</th><th>Revisión</th><th>Autor</th><th>Validación</th></tr>
+            <tr><td>20-Nov-2025</td><td>1.0</td><td>Gómez Micaela, Lucena Carlos, Ruiz Mendoza Eduardo y Sergio Bautista Bareiro</td><td>Proyecto validado para entrega TFI</td></tr>
+        </table>
+
+        <h2>1. Introducción</h2>
+        <p>Este documento se basa en la estructura de una Especificación de Requisitos de Software. Define los requisitos funcionales, no funcionales, reglas de negocio, trazabilidad y criterios de aceptación del Sistema de Gestión Académica CEMI.</p>
+
+        <h2>1.1 Propósito</h2>
+        <p>Especificar de manera clara, verificable y completa las condiciones que debe cumplir el sistema para resolver la gestión académica, administrativa, financiera y comunicacional del Centro de Estudios Multilingüe Internacional.</p>
+
+        <h2>1.2 Alcance</h2>
+        <ul>
+            <li>Gestión de alumnos, profesores, administradores, cursos, idiomas, niveles y aulas.</li>
+            <li>Registro de inscripciones, pagos, cuotas y comprobantes PDF.</li>
+            <li>Administración de calificaciones, asistencias y reportes.</li>
+            <li>Classroom con tareas, entregas, anuncios, encuestas, calendario, recursos y chats.</li>
+            <li>Chat de soporte con invitados, alumnos y profesores.</li>
+            <li>Autenticación, recuperación de cuenta, seguridad, privacidad y roles.</li>
+        </ul>
+
+        <h2>1.3 Objetivo General</h2>
+        <p>Desarrollar una plataforma web que permita gestionar de forma eficiente e integrada las operaciones académicas y administrativas de CEMI, garantizando persistencia, trazabilidad, seguridad y accesibilidad desde distintos dispositivos.</p>
+
+        <h2>1.4 Definiciones</h2>
+        <table>
+            <tr><th>Término</th><th>Definición</th></tr>
+            <tr><td>CEMI</td><td>Centro de Estudios Multilingüe Internacional.</td></tr>
+            <tr><td>Classroom</td><td>Entorno virtual de aprendizaje integrado al sistema.</td></tr>
+            <tr><td>JWT</td><td>Token utilizado para autenticación y autorización.</td></tr>
+            <tr><td>RF</td><td>Requisito funcional.</td></tr>
+            <tr><td>RNF</td><td>Requisito no funcional.</td></tr>
+            <tr><td>RN</td><td>Regla de negocio.</td></tr>
+        </table>
+
+        <h2>2. Descripción General</h2>
+        <p>CEMI es una aplicación web con arquitectura cliente-servidor. El frontend se desarrolla con HTML, CSS y JavaScript; el backend utiliza Node.js y Express; la base de datos es MySQL; la comunicación en tiempo real se implementa con Socket.IO y el despliegue se realiza en Railway.</p>
+
+        <h2>2.1 Características de Usuarios</h2>
+        <table>
+            <tr><th>Usuario</th><th>Descripción</th><th>Permisos</th></tr>
+            <tr><td>Administrador</td><td>Gestiona datos institucionales, usuarios, pagos, cursos y soporte.</td><td>Acceso total o avanzado según nivel.</td></tr>
+            <tr><td>Profesor</td><td>Dicta cursos y administra el aula virtual.</td><td>Classroom, calificaciones, asistencias, anuncios, recursos y chats.</td></tr>
+            <tr><td>Alumno</td><td>Estudiante inscrito en cursos de idiomas.</td><td>Consulta de cursos, pagos, calificaciones, tareas, anuncios y comunidad.</td></tr>
+            <tr><td>Invitado</td><td>Visitante no autenticado.</td><td>Consulta pública y chat de soporte inicial.</td></tr>
+        </table>
 
         <h2>3. Requisitos Funcionales</h2>
         <table>
             <tr><th>Código</th><th>Descripción</th><th>Prioridad</th></tr>
-            <tr><td>RF01</td><td>Registrar, modificar y gestionar alumnos con legajo y datos personales.</td><td>Alta</td></tr>
-            <tr><td>RF02</td><td>Gestionar profesores con especialidades e idiomas asignados.</td><td>Alta</td></tr>
-            <tr><td>RF03</td><td>Administrar cursos con idioma, nivel, profesor, horario y cupo.</td><td>Alta</td></tr>
-            <tr><td>RF04</td><td>Inscribir alumnos a cursos con validación de cupo y estado.</td><td>Alta</td></tr>
-            <tr><td>RF05</td><td>Registrar pagos con concepto, medio de pago y generación de comprobante PDF.</td><td>Alta</td></tr>
-            <tr><td>RF06</td><td>Registrar calificaciones parciales y finales con validación 0-10.</td><td>Alta</td></tr>
-            <tr><td>RF07</td><td>Controlar asistencias por curso y fecha.</td><td>Alta</td></tr>
-            <tr><td>RF08</td><td>Entorno Classroom: tareas, anuncios, encuestas, calendario, recursos.</td><td>Alta</td></tr>
-            <tr><td>RF09</td><td>Chat de soporte en tiempo real (invitados, alumnos, profesores).</td><td>Media</td></tr>
-            <tr><td>RF10</td><td>Sistema de notificaciones por tipo (tarea, inscripción, calificación, anuncio).</td><td>Media</td></tr>
-            <tr><td>RF11</td><td>Autenticación JWT con roles diferenciados y recuperación de contraseña.</td><td>Alta</td></tr>
-            <tr><td>RF12</td><td>Panel administrativo con estadísticas, gestión de usuarios y depuración.</td><td>Alta</td></tr>
+            <tr><td>RF01</td><td>Registrar, modificar, consultar y cambiar estado de alumnos.</td><td>Alta</td></tr>
+            <tr><td>RF02</td><td>Registrar, modificar y consultar profesores con especialidades e idiomas.</td><td>Alta</td></tr>
+            <tr><td>RF03</td><td>Gestionar cursos, idiomas, niveles, aulas, cupos y cuotas habilitadas.</td><td>Alta</td></tr>
+            <tr><td>RF04</td><td>Registrar inscripciones de alumnos a cursos.</td><td>Alta</td></tr>
+            <tr><td>RF05</td><td>Registrar pagos con medios de pago, estado y comprobante PDF.</td><td>Alta</td></tr>
+            <tr><td>RF06</td><td>Registrar calificaciones parciales y finales por alumno y curso.</td><td>Alta</td></tr>
+            <tr><td>RF07</td><td>Registrar asistencias con estados diferenciados.</td><td>Alta</td></tr>
+            <tr><td>RF08</td><td>Implementar Classroom con tareas, entregas, anuncios, encuestas, calendario y recursos.</td><td>Alta</td></tr>
+            <tr><td>RF09</td><td>Implementar chats de soporte y classroom en tiempo real.</td><td>Alta</td></tr>
+            <tr><td>RF10</td><td>Emitir notificaciones por eventos académicos y administrativos.</td><td>Media</td></tr>
+            <tr><td>RF11</td><td>Administrar comunidad, publicaciones, comentarios y reportes.</td><td>Media</td></tr>
+            <tr><td>RF12</td><td>Gestionar seguridad, privacidad, recuperación de cuenta y datos personales.</td><td>Alta</td></tr>
         </table>
 
-        <h2>4. Requisitos No Funcionales</h2>
+        <h2>3.2 Requisitos No Funcionales</h2>
         <table>
             <tr><th>Código</th><th>Descripción</th></tr>
-            <tr><td>RNF01</td><td>Disponibilidad mínima del sistema: 99% (deploy en Railway).</td></tr>
-            <tr><td>RNF02</td><td>Tiempo de respuesta de API inferior a 2 segundos.</td></tr>
-            <tr><td>RNF03</td><td>Interfaz responsive compatible con móviles, tablets y escritorio.</td></tr>
-            <tr><td>RNF04</td><td>Seguridad mediante JWT, bcrypt, Helmet y rate limiting.</td></tr>
-            <tr><td>RNF05</td><td>Base de datos relacional MySQL con integridad referencial.</td></tr>
-            <tr><td>RNF06</td><td>Soporte para envío de emails transaccionales (SendGrid).</td></tr>
-            <tr><td>RNF07</td><td>Almacenamiento de archivos en la nube (Cloudinary).</td></tr>
-            <tr><td>RNF08</td><td>Cumplimiento GDPR para protección de datos personales.</td></tr>
+            <tr><td>RNF01</td><td>El sistema debe ser accesible desde navegadores modernos.</td></tr>
+            <tr><td>RNF02</td><td>La interfaz debe ser responsive para escritorio, tablet y móvil.</td></tr>
+            <tr><td>RNF03</td><td>La autenticación debe utilizar JWT y contraseñas cifradas.</td></tr>
+            <tr><td>RNF04</td><td>La base de datos debe mantener integridad referencial en MySQL.</td></tr>
+            <tr><td>RNF05</td><td>Las operaciones principales deben responder en tiempos adecuados para uso administrativo diario.</td></tr>
+            <tr><td>RNF06</td><td>El sistema debe permitir comunicación en tiempo real mediante WebSockets.</td></tr>
+            <tr><td>RNF07</td><td>El sistema debe desplegarse en la nube con variables de entorno protegidas.</td></tr>
+            <tr><td>RNF08</td><td>La documentación y manual de usuario deben estar disponibles desde el sistema.</td></tr>
         </table>
 
-        <h2>5. Atributos de Calidad</h2>
+        <h2>3.3 Reglas de Negocio</h2>
+        <ul>
+            <li>RN1. Un alumno debe existir antes de registrar una inscripción.</li>
+            <li>RN2. Una inscripción debe asociarse a un curso válido y activo.</li>
+            <li>RN3. Un pago debe asociarse a un alumno, curso, concepto y medio de pago.</li>
+            <li>RN4. Las cuotas disponibles pueden limitarse por curso mediante configuración.</li>
+            <li>RN5. Solo profesores autorizados pueden publicar tareas y anuncios en sus cursos.</li>
+            <li>RN6. Solo usuarios autenticados pueden acceder a dashboards privados.</li>
+            <li>RN7. Un profesor solo debe gestionar calificaciones y asistencias de cursos asignados.</li>
+            <li>RN8. Los mensajes de chat deben conservar historial y estado de lectura.</li>
+            <li>RN9. Las cuentas de staff deben respetar el dominio institucional reservado.</li>
+            <li>RN10. Las operaciones sensibles deben quedar protegidas por rol y token.</li>
+        </ul>
+
+        <h2>3.4 Matriz de Trazabilidad</h2>
+        <table>
+            <tr><th>Historia de Usuario</th><th>Regla de Negocio</th><th>Requisito Funcional</th></tr>
+            <tr><td>HU01 - Inscribir alumno</td><td>RN1, RN2</td><td>RF01, RF03, RF04</td></tr>
+            <tr><td>HU02 - Registrar pago</td><td>RN3, RN4</td><td>RF05</td></tr>
+            <tr><td>HU03 - Publicar tarea</td><td>RN5, RN6</td><td>RF08, RF10</td></tr>
+            <tr><td>HU04 - Calificar alumno</td><td>RN6, RN7</td><td>RF06</td></tr>
+            <tr><td>HU05 - Chatear con soporte</td><td>RN8</td><td>RF09</td></tr>
+            <tr><td>HU06 - Administrar usuarios</td><td>RN9, RN10</td><td>RF12</td></tr>
+        </table>
+
+        <h2>3.5 Atributos de Calidad</h2>
         <table>
             <tr><th>Atributo</th><th>Descripción</th></tr>
-            <tr><td>Seguridad</td><td>Acceso restringido mediante JWT, roles y contraseñas encriptadas con bcrypt.</td></tr>
-            <tr><td>Fiabilidad</td><td>Validación de datos, constraints en BD y migraciones automáticas.</td></tr>
-            <tr><td>Usabilidad</td><td>Interfaz moderna con animaciones, dark mode y diseño profesional.</td></tr>
-            <tr><td>Mantenibilidad</td><td>Código modular con separación frontend/backend/routes/middleware.</td></tr>
-            <tr><td>Escalabilidad</td><td>Arquitectura preparada para nuevos módulos e idiomas.</td></tr>
-            <tr><td>Portabilidad</td><td>Aplicación web accesible desde cualquier navegador moderno.</td></tr>
+            <tr><td>Seguridad</td><td>Autenticación JWT, roles, cifrado de contraseñas, Helmet, CORS y rate limiting.</td></tr>
+            <tr><td>Usabilidad</td><td>Interfaz web clara, responsive, con navegación por módulos.</td></tr>
+            <tr><td>Fiabilidad</td><td>Persistencia en MySQL, relaciones entre entidades y validaciones de datos.</td></tr>
+            <tr><td>Mantenibilidad</td><td>Estructura separada en rutas, middleware, utilidades, frontend estático y módulos JavaScript.</td></tr>
+            <tr><td>Escalabilidad</td><td>Arquitectura preparada para ampliar idiomas, cursos, roles y servicios externos.</td></tr>
         </table>
 
-        <div class="footer">
-            <p>Anexo TFI — Sistema de Gestión Académica CEMI</p>
-            <p>© 2025 CEMI — UTN Tecnicatura en Programación, Bella Vista</p>
-        </div>
+        <h2>3.6 Criterios de Aceptación</h2>
+        <ul>
+            <li>El sistema permite iniciar sesión y redirigir según el rol correspondiente.</li>
+            <li>Los alumnos, profesores, cursos e inscripciones persisten correctamente en la base de datos.</li>
+            <li>Los pagos generan estado, concepto y comprobante asociado.</li>
+            <li>Classroom permite publicar tareas, anuncios, entregas, comentarios y eventos.</li>
+            <li>El chat conserva conversaciones, mensajes, adjuntos y estados.</li>
+            <li>La documentación del sistema se visualiza correctamente desde Documentación.</li>
+        </ul>
+
+        <footer>
+            <p>Anexo TFI - Sistema de Gestión Académica CEMI</p>
+            <p>Gómez Micaela • Lucena Carlos • Ruiz Mendoza Eduardo • Sergio Bautista Bareiro</p>
+        </footer>
     </div>
 </body>
 </html>
