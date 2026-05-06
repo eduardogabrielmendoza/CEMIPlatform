@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario TFI - CEMI</title>
+    <link rel="icon" type="image/png" href="../images/logocuadrado.png">
+    <link rel="stylesheet" href="harvard-doc-styles.css">
+</head>
+<body>
+    <a href="../documentacion.html" class="back-link">← Volver a Documentación</a>
+    <div class="container">
+        <div class="cover">
+            <img src="../images/logolong.png" alt="CEMI Logo" style="max-width:220px;margin-bottom:25px;filter:brightness(0);">
+            <h1>Manual de Usuario</h1>
+            <p class="subtitle">Sistema de Gestión Académica CEMI</p>
+            <p>Centro de Estudios Multilingüe Internacional</p>
+            <div class="cover-tags">Mendoza, Eduardo Gabriel</div>
+            <span class="version">Versión 1.0 — Mayo 2026</span>
+            <p class="institution">UTN — Tecnicatura Universitaria en Programación — Bella Vista</p>
+        </div>
+
+        <nav class="toc">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#intro">1. Introducción</a></li>
+                <li><a href="#requisitos">2. Requisitos de Acceso</a></li>
+                <li><a href="#login">3. Inicio de Sesión</a></li>
+                <li><a href="#admin">4. Panel Administrativo</a></li>
+                <li><a href="#alumnos">5. Módulo Alumnos</a></li>
+                <li><a href="#profesores">6. Módulo Profesores</a></li>
+                <li><a href="#cursos">7. Módulo Cursos</a></li>
+                <li><a href="#pagos">8. Módulo Pagos</a></li>
+                <li><a href="#classroom">9. Módulo Classroom</a></li>
+                <li><a href="#chat">10. Chat de Soporte</a></li>
+                <li><a href="#navbar">11. Barra de Navegación</a></li>
+            </ul>
+        </nav>
+
+        <!-- INTRODUCCIÓN -->
+        <h1 id="intro">1. Introducción</h1>
+        <p>El presente manual de usuario tiene como objetivo brindar una guía clara, ordenada y accesible para el uso del Sistema de Gestión Académica CEMI. Este sistema fue desarrollado con el fin de optimizar y digitalizar los procesos académicos, administrativos y de comunicación del Centro de Estudios Multilingüe Internacional.</p>
+        <p>A través de este manual, el usuario podrá comprender el funcionamiento de cada módulo, identificar las acciones disponibles y realizar todas las operaciones necesarias de manera segura y eficiente.</p>
+
+        <h2>1.1 Propósito del Manual</h2>
+        <ul>
+            <li>Explicar detalladamente cómo navegar y utilizar cada sección del sistema.</li>
+            <li>Ofrecer instrucciones paso a paso para la correcta gestión de alumnos, cursos, pagos y calificaciones.</li>
+            <li>Facilitar el aprendizaje de nuevos usuarios y servir como material de consulta.</li>
+            <li>Garantizar que el uso del sistema se realice siguiendo las buenas prácticas establecidas.</li>
+        </ul>
+
+        <h2>1.2 Audiencia</h2>
+        <div class="tech-stack">
+            <div class="tech-item"><h4>Administradores</h4><ul><li>Configurar datos principales</li><li>Gestionar usuarios</li><li>Revisar estadísticas</li><li>Administrar pagos</li><li>Control total del sistema</li></ul></div>
+            <div class="tech-item"><h4>Profesores</h4><ul><li>Gestionar cursos asignados</li><li>Publicar tareas y anuncios</li><li>Calificar alumnos</li><li>Registrar asistencias</li><li>Chat con alumnos</li></ul></div>
+            <div class="tech-item"><h4>Alumnos</h4><ul><li>Consultar inscripciones</li><li>Ver calificaciones</li><li>Entregar tareas</li><li>Ver pagos y comprobantes</li><li>Chat con profesores</li></ul></div>
+        </div>
+
+        <!-- REQUISITOS -->
+        <h1 id="requisitos">2. Requisitos para Acceder al Sistema</h1>
+        <div class="info-box">
+            <p>Antes de ingresar al sistema, el usuario debe cumplir con los siguientes requisitos:</p>
+        </div>
+        <ul>
+            <li>Poseer un <strong>usuario y contraseña</strong> registrados con email institucional (@cemi.com para staff).</li>
+            <li>Contar con <strong>conexión a Internet</strong>.</li>
+            <li>Tener acceso a un <strong>dispositivo compatible</strong> (PC, Notebook, Tablet o Smartphone) con navegador actualizado (Google Chrome recomendado).</li>
+            <li>Haber <strong>activado la cuenta</strong> mediante el enlace enviado por email tras el registro.</li>
+        </ul>
+
+        <!-- LOGIN -->
+        <h1 id="login">3. Pantalla de Inicio de Sesión</h1>
+        <h2>3.1 Descripción General</h2>
+        <p>La pantalla de inicio de sesión permite al usuario autenticarse mediante sus credenciales personales. El acceso está protegido mediante un mecanismo de autenticación basado en JWT (JSON Web Token).</p>
+
+        <h2>3.2 Elementos de la Interfaz</h2>
+        <ul>
+            <li><strong>Campo "Correo electrónico"</strong> — Permite ingresar el email registrado. Es obligatorio.</li>
+            <li><strong>Campo "Contraseña"</strong> — Incluye ícono para mostrar/ocultar la contraseña.</li>
+            <li><strong>Botón "Ingresar"</strong> — Ejecuta la validación de credenciales y redirige según el rol.</li>
+            <li><strong>Enlace "¿Olvidaste tu contraseña?"</strong> — Inicia el proceso de recuperación por email con código.</li>
+            <li><strong>Botón "Crear Cuenta"</strong> — Redirige al formulario de registro.</li>
+        </ul>
+
+        <h2>3.3 Procedimiento de Inicio de Sesión</h2>
+        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Ingresar correo electrónico</h4><p>Escribir el email registrado en el campo correspondiente.</p></div></div>
+        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Ingresar contraseña</h4><p>Escribir la contraseña asociada al usuario.</p></div></div>
+        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Presionar "Ingresar"</h4><p>El sistema valida las credenciales y genera un token JWT.</p></div></div>
+        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Redirección automática</h4><p>Si las credenciales son válidas, se redirige al dashboard correspondiente: admin, profesor o alumno.</p></div></div>
+
+        <h2>3.4 Registro de Usuario</h2>
+        <p>Para crear una nueva cuenta, el usuario debe completar:</p>
+        <ul>
+            <li><strong>Nombre completo</strong> — Nombre y apellido.</li>
+            <li><strong>Correo electrónico</strong> — Debe ser válido y no estar previamente registrado. El dominio @cemi.com está reservado para staff.</li>
+            <li><strong>Contraseña</strong> — Debe cumplir requisitos mínimos de seguridad.</li>
+            <li><strong>Confirmar contraseña</strong> — Debe coincidir con la anterior.</li>
+        </ul>
+        <div class="success-box"><p>Tras el registro exitoso, se enviará un email con enlace de activación. El usuario debe hacer clic en el botón verde "ACTIVAR CUENTA" para completar el proceso.</p></div>
+
+        <h2>3.5 Recuperar Contraseña</h2>
+        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Hacer clic en "¿Olvidaste tu contraseña?"</h4><p>Se abre el modal de recuperación de acceso.</p></div></div>
+        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Ingresar email registrado</h4><p>Hacer clic en "Enviar código".</p></div></div>
+        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Revisar correo</h4><p>Se recibe un código de verificación.</p></div></div>
+        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Ingresar código + nueva contraseña</h4><p>Hacer clic en "Confirmar" para restablecer el acceso.</p></div></div>
+
+        <!-- PANEL ADMINISTRATIVO -->
+        <h1 id="admin">4. Panel Administrativo</h1>
+        <h2>4.1 Descripción General</h2>
+        <p>El panel administrativo es el centro de control del sistema. Solo accesible para usuarios con rol <strong>admin</strong> o <strong>superadmin</strong>. Desde aquí se gestionan todos los módulos del sistema.</p>
+
+        <h2>4.2 Dashboard</h2>
+        <p>Al ingresar, el administrador visualiza un dashboard con estadísticas generales:</p>
+        <ul>
+            <li>Total de alumnos activos.</li>
+            <li>Total de profesores activos.</li>
+            <li>Total de cursos disponibles.</li>
+            <li>Inscripciones recientes.</li>
+            <li>Pagos pendientes y completados.</li>
+            <li>Conversaciones de chat activas.</li>
+        </ul>
+
+        <h2>4.3 Menú de Navegación</h2>
+        <table>
+            <tr><th>Sección</th><th>Funcionalidad</th></tr>
+            <tr><td>Alumnos</td><td>CRUD completo, asignación de legajo, historial</td></tr>
+            <tr><td>Profesores</td><td>CRUD, asignación de especialidades e idiomas</td></tr>
+            <tr><td>Cursos</td><td>Gestión de cursos, idiomas, niveles y aulas</td></tr>
+            <tr><td>Inscripciones</td><td>Alta/baja de inscripciones por alumno y curso</td></tr>
+            <tr><td>Pagos</td><td>Registro, anulación, comprobantes PDF</td></tr>
+            <tr><td>Chat</td><td>Atención de conversaciones de soporte</td></tr>
+            <tr><td>Estadísticas</td><td>Métricas generales del sistema</td></tr>
+        </table>
+
+        <!-- MÓDULO ALUMNOS -->
+        <h1 id="alumnos">5. Módulo Alumnos</h1>
+        <h2>5.1 Descripción General</h2>
+        <p>Permite gestionar el registro completo de alumnos del centro. Cada alumno tiene un legajo único generado automáticamente, datos personales vinculados a la tabla <code>personas</code> y estado activo/inactivo.</p>
+
+        <h2>5.2 Operaciones Disponibles</h2>
+        <div class="step"><span class="step-number">+</span><div class="step-content"><h4>Registrar nuevo alumno</h4><p>Completar nombre, apellido, email, DNI, teléfono. El sistema genera legajo automáticamente (A001, A002...).</p></div></div>
+        <div class="step"><span class="step-number">✎</span><div class="step-content"><h4>Editar datos del alumno</h4><p>Modificar datos personales, domicilio, fecha de nacimiento, biografía.</p></div></div>
+        <div class="step"><span class="step-number">👁</span><div class="step-content"><h4>Ver perfil completo</h4><p>Visualizar inscripciones, pagos, calificaciones y asistencias del alumno.</p></div></div>
+        <div class="step"><span class="step-number">⊘</span><div class="step-content"><h4>Cambiar estado</h4><p>Activar o desactivar alumno sin eliminar su historial.</p></div></div>
+
+        <!-- MÓDULO PROFESORES -->
+        <h1 id="profesores">6. Módulo Profesores</h1>
+        <p>Gestión del plantel docente con asignación de especialidades e idiomas. Cada profesor puede dictar múltiples cursos en diferentes idiomas.</p>
+        <table>
+            <tr><th>Campo</th><th>Descripción</th></tr>
+            <tr><td>Especialidad</td><td>Idioma principal del profesor</td></tr>
+            <tr><td>Idiomas asignados</td><td>Tabla relacional profesores_idiomas</td></tr>
+            <tr><td>Cursos activos</td><td>Cursos que dicta actualmente</td></tr>
+            <tr><td>Estado</td><td>activo / inactivo / licencia</td></tr>
+        </table>
+
+        <!-- MÓDULO CURSOS -->
+        <h1 id="cursos">7. Módulo Cursos</h1>
+        <p>Administración de cursos con asignación de idioma, nivel, profesor, aula, horario y cupo máximo. Los cursos tienen cuotas habilitadas configurables en formato JSON.</p>
+        <div class="warning-box"><p><strong>Importante:</strong> El campo <code>cuotas_habilitadas</code> define qué conceptos de pago están disponibles para cada curso (Matrícula, Marzo, Abril, etc.). Si es null, todas las cuotas están habilitadas.</p></div>
+
+        <h3>Idiomas disponibles en el sistema</h3>
+        <table>
+            <tr><th>ID</th><th>Idioma</th><th>Cursos activos</th></tr>
+            <tr><td>1</td><td>Inglés</td><td>Ingles Base, Ingles Intermedio</td></tr>
+            <tr><td>2</td><td>Francés</td><td>Frances Base</td></tr>
+            <tr><td>3</td><td>Alemán</td><td>Aleman Base</td></tr>
+            <tr><td>5</td><td>Japonés</td><td>Japones Basico, Japones Intermedio</td></tr>
+            <tr><td>6</td><td>Italiano</td><td>Italiano Base</td></tr>
+            <tr><td>7</td><td>Chino Mandarín</td><td>Chino Mandarin Base</td></tr>
+            <tr><td>8</td><td>Latín</td><td>Latin Base</td></tr>
+        </table>
+
+        <!-- MÓDULO PAGOS -->
+        <h1 id="pagos">8. Módulo Pagos</h1>
+        <h2>8.1 Descripción General</h2>
+        <p>El módulo de pagos permite registrar, consultar y gestionar los pagos de los alumnos. Soporta múltiples medios de pago y genera comprobantes en PDF automáticamente.</p>
+
+        <h2>8.2 Medios de Pago</h2>
+        <table>
+            <tr><th>ID</th><th>Medio de Pago</th></tr>
+            <tr><td>1</td><td>Efectivo</td></tr>
+            <tr><td>2</td><td>Transferencia</td></tr>
+            <tr><td>3</td><td>Tarjeta de Crédito</td></tr>
+        </table>
+
+        <h2>8.3 Procedimiento de Registro de Pago</h2>
+        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Seleccionar alumno y curso</h4><p>Buscar al alumno y elegir el curso al que corresponde el pago.</p></div></div>
+        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Seleccionar concepto</h4><p>Elegir entre Matrícula o Cuota Mensual según las cuotas habilitadas.</p></div></div>
+        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Indicar monto y medio de pago</h4><p>Ingresar el monto y seleccionar efectivo, transferencia o tarjeta.</p></div></div>
+        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Confirmar pago</h4><p>El sistema registra el pago y genera un comprobante PDF descargable.</p></div></div>
+
+        <h2>8.4 Estados de Pago</h2>
+        <table>
+            <tr><th>Estado</th><th>Descripción</th></tr>
+            <tr><td><span class="test-result" style="background:#fff3cd;color:#856404;">en_proceso</span></td><td>Pago pendiente de confirmación</td></tr>
+            <tr><td><span class="test-result pass">pagado</span></td><td>Pago confirmado y registrado</td></tr>
+            <tr><td><span class="test-result fail">anulado</span></td><td>Pago anulado por administrador</td></tr>
+        </table>
+
+        <!-- CLASSROOM -->
+        <h1 id="classroom">9. Módulo Classroom</h1>
+        <h2>9.1 Descripción General</h2>
+        <p>El módulo Classroom constituye el entorno virtual de aprendizaje del sistema. Permite a los profesores publicar contenido académico y a los alumnos interactuar con el material de sus cursos.</p>
+
+        <h2>9.2 Funcionalidades del Profesor</h2>
+        <div class="tech-stack">
+            <div class="tech-item"><h4>Tareas</h4><ul><li>Crear tareas con descripción</li><li>Establecer fecha límite</li><li>Adjuntar archivos/enlaces</li><li>Revisar entregas</li><li>Calificar y comentar</li></ul></div>
+            <div class="tech-item"><h4>Anuncios</h4><ul><li>Publicar anuncios al curso</li><li>Marcar como importante</li><li>Adjuntar enlaces</li><li>Crear encuestas</li><li>Ver comentarios</li></ul></div>
+            <div class="tech-item"><h4>Evaluación</h4><ul><li>Registrar calificaciones</li><li>Parcial 1, Parcial 2, Final</li><li>Tomar asistencia diaria</li><li>4 estados de asistencia</li><li>Historial completo</li></ul></div>
+        </div>
+
+        <h2>9.3 Funcionalidades del Alumno</h2>
+        <ul>
+            <li><strong>Ver tareas asignadas</strong> — Listado de tareas con fecha límite y estado de entrega.</li>
+            <li><strong>Entregar tareas</strong> — Subir archivos o escribir contenido de entrega.</li>
+            <li><strong>Ver calificaciones</strong> — Consultar notas de entregas, parciales y final.</li>
+            <li><strong>Leer anuncios</strong> — Ver anuncios del curso y comentar.</li>
+            <li><strong>Responder encuestas</strong> — Participar en encuestas creadas por el profesor.</li>
+            <li><strong>Chat con profesor</strong> — Comunicación directa mediante el chat de Classroom.</li>
+            <li><strong>Chat entre alumnos</strong> — Comunicación con compañeros del mismo curso.</li>
+            <li><strong>Calendario</strong> — Ver eventos y notas personales del calendario.</li>
+        </ul>
+
+        <!-- CHAT -->
+        <h1 id="chat">10. Chat de Soporte</h1>
+        <h2>10.1 Descripción General</h2>
+        <p>El sistema de chat permite la comunicación en tiempo real entre usuarios y administradores. Implementado con Socket.IO para conexiones bidireccionales instantáneas.</p>
+
+        <h2>10.2 Tipos de Usuario en el Chat</h2>
+        <table>
+            <tr><th>Tipo</th><th>Descripción</th></tr>
+            <tr><td>Invitado</td><td>Puede iniciar conversación sin estar registrado</td></tr>
+            <tr><td>Alumno</td><td>Chat vinculado a su cuenta de alumno</td></tr>
+            <tr><td>Profesor</td><td>Chat vinculado a su cuenta de profesor</td></tr>
+            <tr><td>Admin</td><td>Atiende las conversaciones entrantes</td></tr>
+        </table>
+
+        <h2>10.3 Estados de Conversación</h2>
+        <table>
+            <tr><th>Estado</th><th>Descripción</th></tr>
+            <tr><td>Pendiente</td><td>Conversación iniciada, esperando atención</td></tr>
+            <tr><td>Activa</td><td>Conversación siendo atendida por un admin</td></tr>
+            <tr><td>Resuelta</td><td>Consulta resuelta satisfactoriamente</td></tr>
+            <tr><td>Cerrada</td><td>Conversación finalizada</td></tr>
+        </table>
+
+        <h2>10.4 Funcionalidades</h2>
+        <ul>
+            <li>Mensajes en tiempo real con Socket.IO.</li>
+            <li>Soporte para archivos adjuntos (imágenes y PDF).</li>
+            <li>Contador de mensajes no leídos.</li>
+            <li>Estadísticas de atención (tiempo de respuesta, calificación).</li>
+            <li>Historial de conversaciones persistente.</li>
+        </ul>
+
+        <!-- BARRA DE NAVEGACIÓN -->
+        <h1 id="navbar">11. Barra de Navegación</h1>
+        <p>La barra superior del sistema contiene los siguientes elementos según el rol del usuario:</p>
+
+        <h2>Elementos Comunes</h2>
+        <ul>
+            <li><strong>Logo CEMI</strong> — Enlace a la página principal.</li>
+            <li><strong>Notificaciones</strong> — Campana con contador de notificaciones no leídas.</li>
+            <li><strong>Perfil de usuario</strong> — Menú desplegable con opciones de cuenta.</li>
+            <li><strong>Cerrar sesión</strong> — Elimina el token JWT y redirige al login.</li>
+        </ul>
+
+        <h2>Tipos de Notificaciones</h2>
+        <table>
+            <tr><th>Tipo</th><th>Destinatario</th><th>Descripción</th></tr>
+            <tr><td>entrega_tarea</td><td>Profesor</td><td>Un alumno entregó una tarea</td></tr>
+            <tr><td>nueva_inscripcion</td><td>Profesor</td><td>Un alumno se inscribió en su curso</td></tr>
+            <tr><td>comentario</td><td>Profesor/Alumno</td><td>Nuevo comentario en un anuncio</td></tr>
+            <tr><td>calificacion</td><td>Alumno</td><td>Su entrega fue calificada</td></tr>
+            <tr><td>anuncio_importante</td><td>Alumno</td><td>Anuncio marcado como importante</td></tr>
+            <tr><td>nueva_tarea</td><td>Alumno</td><td>Nueva tarea asignada en su curso</td></tr>
+        </table>
+
+        <div class="footer">
+            <p>Manual de Usuario TFI — Sistema de Gestión Académica CEMI</p>
+            <p>© 2025 CEMI — UTN Tecnicatura en Programación, Bella Vista</p>
+        </div>
+    </div>
+</body>
+</html>
