@@ -177,10 +177,26 @@ app.get("/api/oferta-academica", async (req, res) => {
         ? "SELECT id_nivel, id_idioma, descripcion FROM niveles ORDER BY id_nivel"
         : "SELECT id_nivel, descripcion FROM niveles ORDER BY id_nivel"
     );
+    const [cursos] = await pool.query(`
+      SELECT
+        c.id_curso,
+        c.nombre_curso,
+        c.id_idioma,
+        c.horario,
+        c.cupo_maximo,
+        c.ciclo_lectivo,
+        COALESCE(c.estado, 'activo') AS estado,
+        n.descripcion AS nivel
+      FROM cursos c
+      LEFT JOIN niveles n ON c.id_nivel = n.id_nivel
+      WHERE COALESCE(c.estado, 'activo') = 'activo'
+      ORDER BY c.id_idioma, n.id_nivel, c.nombre_curso
+    `);
     const nivelesUniversales = nivelesHasIdioma ? [] : niveles;
     const idiomasConNiveles = idiomas.map(idioma => ({
       ...idioma,
-      niveles: nivelesHasIdioma ? niveles.filter(nivel => String(nivel.id_idioma) === String(idioma.id_idioma)) : nivelesUniversales
+      niveles: nivelesHasIdioma ? niveles.filter(nivel => String(nivel.id_idioma) === String(idioma.id_idioma)) : nivelesUniversales,
+      cursos: cursos.filter(curso => String(curso.id_idioma) === String(idioma.id_idioma))
     }));
     res.json({
       success: true,

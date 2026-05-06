@@ -29,8 +29,7 @@
       margin: 0;
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
-      background:
-        linear-gradient(180deg, rgba(246,241,232,0.95) 0%, rgba(248,246,242,1) 42%, rgba(238,234,227,1) 100%);
+      background: linear-gradient(180deg, rgba(246,241,232,0.95) 0%, rgba(248,246,242,1) 42%, rgba(238,234,227,1) 100%);
       min-height: 100vh;
     }
     .topbar {
@@ -50,7 +49,6 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
       text-decoration: none;
       color: inherit;
       font-weight: 800;
@@ -83,7 +81,7 @@
       border-color: rgba(74,82,89,0.32);
     }
     .hero {
-      min-height: calc(82vh - 74px);
+      min-height: calc(78vh - 74px);
       padding: clamp(42px, 7vw, 86px) clamp(18px, 5vw, 70px) 42px;
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(300px, 440px);
@@ -180,7 +178,6 @@
     }
     .panel-content strong {
       display: block;
-      font-family: Georgia, "Times New Roman", serif;
       font-size: 29px;
       font-weight: 700;
       line-height: 1.08;
@@ -191,84 +188,147 @@
       line-height: 1.5;
     }
     .content {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 18px clamp(18px, 5vw, 70px) 84px;
+      width: min(1280px, 100%);
+      margin: 0;
+      padding: 24px clamp(18px, 5vw, 70px) 92px;
+    }
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: clamp(22px, 4vw, 54px);
+      align-items: start;
+    }
+    .catalog-sidebar {
+      display: grid;
+      gap: 20px;
     }
     .section-head {
-      margin-bottom: 22px;
+      text-align: left;
+      max-width: 360px;
     }
     .section-head h2 {
       margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-weight: 700;
-      font-size: clamp(25px, 3vw, 36px);
+      font-size: clamp(24px, 2.4vw, 34px);
+      font-weight: 800;
       color: var(--ink);
       letter-spacing: 0;
     }
     .section-head p {
       margin: 9px 0 0;
       color: var(--muted);
-      max-width: 720px;
       line-height: 1.58;
     }
     .language-list {
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
     .language-item {
-      background: rgba(255,255,255,0.9);
+      width: 100%;
+      min-height: 74px;
+      padding: 15px 16px;
       border: 1px solid rgba(222,216,207,0.98);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 12px 36px rgba(40,38,34,0.08);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.84);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      box-shadow: 0 12px 30px rgba(40,38,34,0.06);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease, opacity 0.22s ease;
     }
     .language-item:hover {
-      transform: translateY(-2px);
+      transform: translateX(4px);
       border-color: var(--line-dark);
-      box-shadow: 0 20px 48px rgba(40,38,34,0.12);
+      background: rgba(255,255,255,0.96);
+      box-shadow: 0 18px 42px rgba(40,38,34,0.1);
+    }
+    .language-item.active {
+      border-color: #bdb4a7;
+      background: linear-gradient(90deg, rgba(255,255,255,0.98), rgba(246,241,232,0.78));
+      box-shadow: 0 20px 48px rgba(40,38,34,0.13);
     }
     .language-item.inactive {
-      background: rgba(248,246,242,0.88);
+      opacity: 0.58;
+      background: rgba(248,246,242,0.8);
     }
-    .language-button {
-      width: 100%;
-      min-height: 86px;
-      padding: 18px 20px;
-      border: none;
-      background: linear-gradient(90deg, rgba(255,255,255,0.96), rgba(246,241,232,0.52));
-      cursor: pointer;
-      text-align: left;
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      align-items: center;
-      gap: 16px;
-      color: inherit;
-    }
-    .language-item.inactive .language-button {
-      background: linear-gradient(90deg, rgba(250,248,244,0.9), rgba(235,231,224,0.68));
-    }
-    .language-title {
+    .language-main {
       min-width: 0;
     }
-    .language-title h3 {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-weight: 700;
+    .language-main strong {
+      display: block;
       color: #242321;
-      font-size: 21px;
+      font-size: 18px;
+      font-weight: 800;
       letter-spacing: 0;
     }
-    .language-title span {
+    .language-main span {
       display: block;
-      margin-top: 5px;
+      margin-top: 4px;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
     }
+    .language-item i {
+      width: 18px;
+      height: 18px;
+      color: var(--soft-ink);
+      transition: transform 0.22s ease;
+    }
+    .language-item.active i {
+      transform: translateX(2px);
+    }
+    .language-detail-panel {
+      min-height: 560px;
+      border: 1px solid rgba(222,216,207,0.98);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.76);
+      box-shadow: 0 26px 76px rgba(40,38,34,0.12);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+      opacity: 1;
+      transform: translateX(0);
+      transition: opacity 0.24s ease, transform 0.24s ease;
+    }
+    .language-detail-panel.is-changing {
+      opacity: 0;
+      transform: translateX(18px);
+    }
+    .detail-shell {
+      padding: clamp(24px, 4vw, 44px);
+      display: grid;
+      gap: 24px;
+    }
+    .detail-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(222,216,207,0.9);
+      padding-bottom: 22px;
+    }
+    .detail-title {
+      display: grid;
+      gap: 10px;
+    }
+    .detail-title h3 {
+      margin: 0;
+      color: #242321;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height: 0.98;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .detail-title p {
+      margin: 0;
+      color: #5c5852;
+      max-width: 690px;
+      line-height: 1.68;
+      font-size: 15px;
+    }
     .status {
-      justify-self: end;
       color: var(--success);
       background: #edf2ee;
       border: 1px solid #d4ded6;
@@ -283,92 +343,100 @@
       background: #ece8e0;
       border-color: #d9d2c8;
     }
-    .chevron {
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
+    .detail-metrics {
       display: grid;
-      place-items: center;
-      color: var(--soft-ink);
-      background: rgba(255,255,255,0.78);
-      border: 1px solid var(--line);
-      transition: transform 0.24s cubic-bezier(.2,.7,.2,1), background 0.2s ease;
-    }
-    .language-item.open .chevron {
-      transform: rotate(180deg);
-      background: #f4efe7;
-    }
-    .language-details {
-      display: grid;
-      grid-template-rows: 0fr;
-      opacity: 0;
-      transform: translateY(-6px);
-      transition:
-        grid-template-rows 0.26s cubic-bezier(.2,.7,.2,1),
-        opacity 0.18s ease,
-        transform 0.22s ease;
-      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,247,242,0.96));
-      border-top: 1px solid transparent;
-    }
-    .language-details > div {
-      overflow: hidden;
-    }
-    .language-item.open .language-details {
-      grid-template-rows: 1fr;
-      opacity: 1;
-      transform: translateY(0);
-      border-top-color: var(--line);
-    }
-    .details-inner {
-      padding: 0 20px 20px;
-      display: grid;
-      gap: 16px;
-    }
-    .details-copy {
-      color: #595651;
-      line-height: 1.58;
-      margin: 18px 0 0;
-      max-width: 760px;
-    }
-    .levels {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-    }
-    .level {
-      padding: 8px 12px;
-      border: 1px solid #d8d1c6;
-      border-radius: 999px;
-      color: #3e3b37;
-      background: #f5efe6;
-      font-size: 13px;
-      font-weight: 800;
-    }
-    .detail-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
     }
-    .detail-box {
+    .metric {
+      min-height: 94px;
       border: 1px solid #e0d9cf;
-      border-radius: 14px;
-      padding: 13px;
-      background: rgba(255,255,255,0.78);
+      border-radius: 16px;
+      padding: 15px;
+      background: rgba(250,248,244,0.8);
     }
-    .detail-box small {
+    .metric span {
       display: block;
       color: #807970;
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      margin-bottom: 5px;
+      margin-bottom: 7px;
     }
-    .detail-box strong {
-      font-family: Georgia, "Times New Roman", serif;
-      font-weight: 700;
+    .metric strong {
       color: #2c2a27;
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.35;
+      font-weight: 800;
+    }
+    .detail-copy {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .copy-block {
+      border: 1px solid #e0d9cf;
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(255,255,255,0.72);
+    }
+    .copy-block h4 {
+      margin: 0 0 8px;
+      color: #272420;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .copy-block p {
+      margin: 0;
+      color: #5f5a53;
+      line-height: 1.62;
+      font-size: 14px;
+    }
+    .courses-section {
+      display: grid;
+      gap: 14px;
+    }
+    .courses-section h4 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      color: #242321;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid #ded8cf;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.82);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      padding: 13px 14px;
+      color: #6d665e;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      background: rgba(246,241,232,0.84);
+      border-bottom: 1px solid #ded8cf;
+    }
+    td {
+      padding: 15px 14px;
+      color: #36322d;
+      border-bottom: 1px solid rgba(222,216,207,0.68);
+      vertical-align: top;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    td strong {
+      font-weight: 800;
+      color: #23211e;
     }
     .empty, .error {
       min-height: 220px;
@@ -382,7 +450,7 @@
       padding: 28px;
       box-shadow: 0 16px 40px rgba(40,38,34,0.08);
     }
-    @media (max-width: 920px) {
+    @media (max-width: 1020px) {
       .hero {
         min-height: auto;
         grid-template-columns: 1fr;
@@ -393,35 +461,37 @@
       .hero-panel img {
         min-height: 320px;
       }
-      .detail-grid {
+      .catalog-grid {
         grid-template-columns: 1fr;
+      }
+      .section-head {
+        max-width: 720px;
+      }
+      .detail-copy,
+      .detail-metrics {
+        grid-template-columns: 1fr 1fr;
       }
     }
     @media (max-width: 640px) {
       .topbar {
         padding-inline: 16px;
       }
-      .brand span {
-        display: none;
+      .brand img {
+        width: 168px;
+        height: auto;
       }
       .back-link {
         font-size: 13px;
       }
-      .language-button {
-        grid-template-columns: 1fr auto;
-        gap: 12px;
+      .detail-top {
+        display: grid;
       }
-      .status {
-        grid-column: 1 / -1;
-        justify-self: start;
-        white-space: normal;
+      .detail-copy,
+      .detail-metrics {
+        grid-template-columns: 1fr;
       }
-      .chevron {
-        grid-column: 2;
-        grid-row: 1;
-      }
-      .details-inner {
-        padding-left: 20px;
+      .language-detail-panel {
+        min-height: auto;
       }
     }
   </style>
@@ -446,15 +516,15 @@
           Oferta académica CEMI
         </div>
         <h1>Idiomas y niveles</h1>
-        <p>Conocé la propuesta del Centro de Enseñanza de Múltiples Idiomas. Cada idioma muestra su estado actual y despliega niveles, modalidad e información institucional al seleccionarlo.</p>
+        <p>Conocé la propuesta del Centro de Enseñanza de Múltiples Idiomas. Cada idioma muestra su estado actual, niveles publicados y cursos disponibles para consulta presencial.</p>
         <div class="hero-actions">
           <div class="hero-note">
             <i data-lucide="map-pin"></i>
             Inscripción únicamente por ventanilla
           </div>
           <div class="hero-pill">
-            <i data-lucide="mouse-pointer-click"></i>
-            Tocá un idioma para ver detalles
+            <i data-lucide="panel-right-open"></i>
+            Seleccioná un idioma para ver detalles
           </div>
         </div>
       </div>
@@ -469,12 +539,19 @@
     </section>
 
     <section class="content">
-      <div class="section-head">
-        <h2>Explorá los idiomas</h2>
-        <p>Los idiomas activos figuran como disponibles para consulta presencial. Los inactivos se muestran como parte del catálogo institucional del ciclo lectivo.</p>
-      </div>
-      <div id="languagesList" class="language-list">
-        <div class="empty">Cargando información académica...</div>
+      <div class="catalog-grid">
+        <aside class="catalog-sidebar">
+          <div class="section-head">
+            <h2>Explorá los idiomas</h2>
+            <p>Los idiomas activos figuran como disponibles para consulta presencial. Los inactivos permanecen visibles como parte del catálogo institucional.</p>
+          </div>
+          <div id="languagesList" class="language-list">
+            <div class="empty">Cargando información académica...</div>
+          </div>
+        </aside>
+        <section id="languageDetail" class="language-detail-panel">
+          <div class="empty">Seleccioná un idioma para ver su información completa.</div>
+        </section>
       </div>
     </section>
   </main>
@@ -482,6 +559,10 @@
   <script>
     const API_URL = window.API_URL || "http://localhost:3000/api";
     const list = document.getElementById('languagesList');
+    const detail = document.getElementById('languageDetail');
+    let currentData = [];
+    let selectedId = null;
+
     const languageMeta = {
       Aleman: { name: 'Alemán', intro: 'Una opción sólida para perfiles técnicos, académicos y profesionales con proyección internacional.', focus: 'Lectura, conversación progresiva y vocabulario aplicado.' },
       Frances: { name: 'Francés', intro: 'Ideal para cultura, turismo, comunicación internacional y trayectos académicos.', focus: 'Pronunciación, estructuras cotidianas y comprensión oral.' },
@@ -493,6 +574,15 @@
       Coreano: { name: 'Coreano', intro: 'Una propuesta para iniciar lectura, pronunciación y comunicación cotidiana.', focus: 'Hangul, pronunciación y expresiones frecuentes.' },
       Ruso: { name: 'Ruso', intro: 'Una base para explorar su alfabeto, estructura y conversación inicial.', focus: 'Alfabeto cirílico, lectura inicial y frases útiles.' }
     };
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
 
     function normalizeLevel(level) {
       return level.descripcion || level.nombre || level.nivel || 'Nivel general';
@@ -506,72 +596,183 @@
       };
     }
 
-    function toggleLanguageItem(id, button) {
-      document.querySelectorAll('.language-item').forEach(item => {
-        const isTarget = item.dataset.id === String(id);
-        item.classList.toggle('open', isTarget && !item.classList.contains('open'));
-        const itemButton = item.querySelector('.language-button');
-        if (itemButton) itemButton.setAttribute('aria-expanded', item.classList.contains('open') ? 'true' : 'false');
-      });
-      if (button) button.blur();
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
+    function getCourseRows(idioma) {
+      const meta = getLanguageMeta(idioma);
+      const cursos = Array.isArray(idioma.cursos) ? idioma.cursos : [];
+      const niveles = Array.isArray(idioma.niveles) ? idioma.niveles : [];
 
-    function renderOffer(data) {
-      const idiomas = data.idiomas || [];
-      const nivelesUniversales = data.niveles_universales || [];
-
-      if (!idiomas.length) {
-        list.innerHTML = '<div class="empty">No hay idiomas registrados en este momento.</div>';
-        return;
+      if (idioma.estado !== 'activo') {
+        return [{
+          nombre: `${meta.name} general`,
+          nivel: 'No disponible',
+          horario: 'Sin cursado publicado',
+          duracion: '4 años',
+          orientacion: 'Inactivo durante este ciclo lectivo'
+        }];
       }
 
-      list.innerHTML = idiomas.map(idioma => {
-        const disponible = idioma.estado === 'activo';
-        const niveles = idioma.niveles && idioma.niveles.length ? idioma.niveles : nivelesUniversales;
+      if (cursos.length) {
+        return cursos.map(curso => ({
+          nombre: curso.nombre_curso || `${meta.name} ${curso.nivel || 'General'}`,
+          nivel: curso.nivel || 'Nivel general',
+          horario: curso.horario || 'Consultar en ventanilla',
+          duracion: '4 años',
+          orientacion: curso.cupo_maximo ? `${curso.cupo_maximo} cupos publicados` : 'Consulta presencial'
+        }));
+      }
+
+      if (niveles.length) {
+        return niveles.map(nivel => ({
+          nombre: `${meta.name} ${normalizeLevel(nivel)}`,
+          nivel: normalizeLevel(nivel),
+          horario: 'Consultar en ventanilla',
+          duracion: '4 años',
+          orientacion: 'Disponibilidad sujeta a ciclo lectivo'
+        }));
+      }
+
+      return [{
+        nombre: `${meta.name} general`,
+        nivel: 'A confirmar',
+        horario: 'Consultar en ventanilla',
+        duracion: '4 años',
+        orientacion: 'Información administrativa'
+      }];
+    }
+
+    function renderLanguageList() {
+      list.innerHTML = currentData.map(idioma => {
         const meta = getLanguageMeta(idioma);
-        const nivelesHTML = niveles.length
-          ? niveles.map(nivel => `<span class="level">${normalizeLevel(nivel)}</span>`).join('')
-          : '<span class="level">Consultar en ventanilla</span>';
-        const statusText = disponible ? 'Disponible' : 'Inactivo durante este ciclo lectivo';
+        const disponible = idioma.estado === 'activo';
+        const niveles = Array.isArray(idioma.niveles) ? idioma.niveles : [];
+        const cursos = Array.isArray(idioma.cursos) ? idioma.cursos : [];
+        const selected = String(idioma.id_idioma) === String(selectedId);
+        const summary = !disponible
+          ? 'Inactivo durante este ciclo lectivo'
+          : cursos.length
+          ? `${cursos.length} curso${cursos.length !== 1 ? 's' : ''} disponible${cursos.length !== 1 ? 's' : ''}`
+          : `${niveles.length} nivel${niveles.length !== 1 ? 'es' : ''} publicados para consulta`;
 
         return `
-          <article class="language-item ${disponible ? 'active' : 'inactive'}" data-id="${idioma.id_idioma}">
-            <button class="language-button" type="button" onclick="toggleLanguageItem(${idioma.id_idioma}, this)" aria-expanded="false">
-              <span class="language-title">
-                <h3>${meta.name}</h3>
-                <span>${niveles.length || nivelesUniversales.length || 0} nivel${(niveles.length || nivelesUniversales.length) !== 1 ? 'es' : ''} publicados para consulta</span>
-              </span>
-              <span class="status ${disponible ? '' : 'inactive'}">${statusText}</span>
-              <span class="chevron"><i data-lucide="chevron-down"></i></span>
-            </button>
-            <div class="language-details">
-              <div>
-                <div class="details-inner">
-                  <p class="details-copy">${meta.intro} La propuesta se dicta con enfoque presencial y acompañamiento de CEMI.</p>
-                  <div class="levels">${nivelesHTML}</div>
-                  <div class="detail-grid">
-                    <div class="detail-box">
-                      <small>Enfoque</small>
-                      <strong>${meta.focus}</strong>
-                    </div>
-                    <div class="detail-box">
-                      <small>Modalidad</small>
-                      <strong>Presencial en la institución</strong>
-                    </div>
-                    <div class="detail-box">
-                      <small>Inscripción</small>
-                      <strong>Solo por ventanilla administrativa</strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
+          <button class="language-item ${selected ? 'active' : ''} ${disponible ? '' : 'inactive'}" type="button" onclick="selectLanguage(${idioma.id_idioma})">
+            <span class="language-main">
+              <strong>${escapeHtml(meta.name)}</strong>
+              <span>${escapeHtml(summary)}</span>
+            </span>
+            <i data-lucide="arrow-right"></i>
+          </button>
         `;
       }).join('');
 
       if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function renderLanguageDetail(idioma) {
+      const meta = getLanguageMeta(idioma);
+      const disponible = idioma.estado === 'activo';
+      const cursos = Array.isArray(idioma.cursos) ? idioma.cursos : [];
+      const niveles = Array.isArray(idioma.niveles) ? idioma.niveles : [];
+      const rows = getCourseRows(idioma);
+      const statusText = disponible ? 'Disponible' : 'Inactivo durante este ciclo lectivo';
+
+      detail.innerHTML = `
+        <div class="detail-shell">
+          <div class="detail-top">
+            <div class="detail-title">
+              <h3>${escapeHtml(meta.name)}</h3>
+              <p>${escapeHtml(meta.intro)} La propuesta se organiza para consulta presencial, sin inscripción online.</p>
+            </div>
+            <span class="status ${disponible ? '' : 'inactive'}">${escapeHtml(statusText)}</span>
+          </div>
+
+          <div class="detail-metrics">
+            <div class="metric">
+              <span>Duración</span>
+              <strong>4 años</strong>
+            </div>
+            <div class="metric">
+              <span>Modalidad</span>
+              <strong>Presencial en la institución</strong>
+            </div>
+            <div class="metric">
+              <span>Niveles</span>
+              <strong>${niveles.length || rows.length} publicados</strong>
+            </div>
+            <div class="metric">
+              <span>Cursos</span>
+              <strong>${disponible ? (cursos.length ? `${cursos.length} disponibles` : 'A consultar') : 'No disponible'}</strong>
+            </div>
+          </div>
+
+          <div class="detail-copy">
+            <div class="copy-block">
+              <h4>Enfoque académico</h4>
+              <p>${escapeHtml(meta.focus)} El recorrido prioriza continuidad, acompañamiento docente y una progresión clara durante el ciclo lectivo.</p>
+            </div>
+            <div class="copy-block">
+              <h4>Inscripción</h4>
+              <p>La inscripción se realiza únicamente por ventanilla administrativa. Los horarios, cupos y condiciones finales se confirman en CEMI.</p>
+            </div>
+          </div>
+
+          <div class="courses-section">
+            <h4>Cursos disponibles</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Curso</th>
+                    <th>Nivel</th>
+                    <th>Horario</th>
+                    <th>Duración</th>
+                    <th>Consulta</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map(row => `
+                    <tr>
+                      <td><strong>${escapeHtml(row.nombre)}</strong></td>
+                      <td>${escapeHtml(row.nivel)}</td>
+                      <td>${escapeHtml(row.horario)}</td>
+                      <td>${escapeHtml(row.duracion)}</td>
+                      <td>${escapeHtml(row.orientacion)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function selectLanguage(id) {
+      const idioma = currentData.find(item => String(item.id_idioma) === String(id));
+      if (!idioma || String(selectedId) === String(id)) return;
+
+      selectedId = id;
+      renderLanguageList();
+      detail.classList.add('is-changing');
+      window.setTimeout(() => {
+        renderLanguageDetail(idioma);
+        detail.classList.remove('is-changing');
+      }, 150);
+    }
+
+    function renderOffer(data) {
+      currentData = data.idiomas || [];
+
+      if (!currentData.length) {
+        list.innerHTML = '<div class="empty">No hay idiomas registrados en este momento.</div>';
+        detail.innerHTML = '<div class="empty">No hay información académica disponible.</div>';
+        return;
+      }
+
+      selectedId = currentData[0].id_idioma;
+      renderLanguageList();
+      renderLanguageDetail(currentData[0]);
     }
 
     async function loadOffer() {
@@ -582,10 +783,11 @@
         renderOffer(data);
       } catch (error) {
         list.innerHTML = '<div class="error">No se pudo cargar la información. Intentá nuevamente más tarde.</div>';
+        detail.innerHTML = '<div class="error">La información detallada no está disponible en este momento.</div>';
       }
     }
 
-    window.toggleLanguageItem = toggleLanguageItem;
+    window.selectLanguage = selectLanguage;
     if (typeof lucide !== 'undefined') lucide.createIcons();
     loadOffer();
   </script>
