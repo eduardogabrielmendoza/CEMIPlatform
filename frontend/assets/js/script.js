@@ -210,7 +210,7 @@ function initAdminSPA() {
           endpoint = `${API_URL}/administradores?limit=${PAGE_SIZE}&offset=0`;
           break;
         case "pagos":
-          endpoint = `${API_URL}/pagos?limit=10&offset=0`;
+          endpoint = `${API_URL}/pagos?rango=mes&limit=10&offset=0`;
           break;
         case "aulas":
           endpoint = `${API_URL}/aulas`;
@@ -854,7 +854,7 @@ function renderAdminAyuda() {
               <div class="accordion-title-text"><span>Gestión de Pagos</span><small>Control de cuotas y comprobantes</small></div>
             </div>
             <div class="accordion-meta">
-              <span class="accordion-count">3 guías</span>
+              <span class="accordion-count">2 guías</span>
               <i data-lucide="chevron-down" class="accordion-icon"></i>
             </div>
           </div>
@@ -875,14 +875,6 @@ function renderAdminAyuda() {
                     <h4>Confirmar Pago en Efectivo</h4>
                     <p>Cuando un alumno paga con ticket, busca el pago pendiente y confírmalo para actualizarlo.</p>
                     <div class="guia-tags"><span class="guia-tag">Confirmar</span><span class="guia-tag">Efectivo</span></div>
-                  </div>
-                </div>
-                <div class="guia-item" data-keywords="archivo archivar pagos ocultar antiguos limpiar">
-                  <div class="guia-icon"><i data-lucide="archive"></i></div>
-                  <div class="guia-content">
-                    <h4>Archivo de Pagos</h4>
-                    <p>Archiva pagos antiguos para mantener la lista limpia. Se pueden consultar en la sección de archivo.</p>
-                    <div class="guia-tags"><span class="guia-tag">Archivar</span><span class="guia-tag">Organizar</span></div>
                   </div>
                 </div>
               </div>
@@ -1285,16 +1277,6 @@ const guiasDetalladas = {
       { titulo: 'Confirma el pago', desc: 'Haz clic en el botón de confirmación.' }
     ],
     tip: 'Guarda los tickets físicos por al menos 30 días para cualquier reclamo.'
-  },
-  'Archivo de Pagos': {
-    descripcion: 'Mantén la lista de pagos organizada archivando los pagos antiguos ya procesados.',
-    pasos: [
-      { titulo: 'Identifica pagos antiguos', desc: 'Pagos de meses anteriores ya confirmados.' },
-      { titulo: 'Selecciona para archivar', desc: 'Usa la opción de archivar en cada pago.' },
-      { titulo: 'Confirma la acción', desc: 'Los pagos pasan a la sección de archivo.' },
-      { titulo: 'Consulta cuando necesites', desc: 'El archivo está siempre disponible.' }
-    ],
-    tip: 'Archiva mensualmente para mantener un historial ordenado y fácil de consultar.'
   },
   'Crear Nueva Aula': {
     descripcion: 'Registra los espacios físicos disponibles para dictar clases en el instituto.',
@@ -5316,9 +5298,6 @@ case "pagos":
       <button class="pagos-tab active" data-tab="activos" onclick="switchPagosTab('activos')" style="padding: 12px 24px; background: none; border: none; border-bottom: 3px solid #4a5259; color: #4a5259; font-weight: 600; cursor: pointer; transition: all 0.3s;">
         <i data-lucide="list"></i> Pagos Activos
       </button>
-      <button class="pagos-tab" data-tab="archivo" onclick="switchPagosTab('archivo')" style="padding: 12px 24px; background: none; border: none; border-bottom: 3px solid transparent; color: #666; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-        <i data-lucide="archive"></i> Archivo
-      </button>
       <button class="pagos-tab" data-tab="cuotas" onclick="switchPagosTab('cuotas')" style="padding: 12px 24px; background: none; border: none; border-bottom: 3px solid transparent; color: #666; font-weight: 600; cursor: pointer; transition: all 0.3s;">
         <i data-lucide="unlock"></i> Gestionar Cuotas
       </button>
@@ -5376,9 +5355,8 @@ case "pagos":
       <div class="filter-group">
         <label>Fecha</label>
         <select id="pagoDatePreset">
-          <option value="">Todo el historial</option>
+          <option value="mes" selected>Último mes</option>
           <option value="semana">Última semana</option>
-          <option value="mes">Último mes</option>
           <option value="custom">Rango personalizado</option>
         </select>
       </div>
@@ -5431,11 +5409,9 @@ case "pagos":
     </div>
 
     <div class="cuotas-gestion-container" id="cuotasGestionContainer" style="display: none;">
-      <!-- Contenedor para la gestión de cuotas -->
     </div>
 
     <div class="registros-pagos-container" id="registrosPagosContainer" style="display: none;">
-      <!-- Contenedor para los registros/auditoría de pagos -->
     </div>
   `;
   
@@ -8886,7 +8862,7 @@ const CUOTAS_PAGE_SIZE = 10;
 let currentRegistrosPage = 1;
 let registrosTotal = 0;
 const REGISTROS_PAGE_SIZE = 10;
-let registrosDateFilter = { preset: '', inicio: '', fin: '' };
+let registrosDateFilter = { preset: 'mes', inicio: '', fin: '' };
 
 function buildDateQuery(prefix) {
   const preset = document.getElementById(`${prefix}DatePreset`)?.value || '';
@@ -9014,11 +8990,11 @@ async function loadPagosData(queryParams = '', page = 1) {
     document.getElementById('metricPendientes').textContent = pagosStats.cuotas_pendientes || 0;
     document.getElementById('metricPromedio').textContent = parseFloat(pagosStats.promedio_pago || 0).toLocaleString('es-AR', {minimumFractionDigits: 0});
 
-    const mediosPago = [...new Set(data.medios_pago || allPagos.map(p => p.medio_pago).filter(Boolean))];
+    const mediosPago = [...new Set((data.medios_pago || allPagos.map(p => p.medio_pago).filter(Boolean)).map(normalizeMedioPago))];
     const selectMedio = document.getElementById('pagoFilterMedio');
     const medioActual = selectMedio?.value || '';
     selectMedio.innerHTML = '<option value="">Todos</option>' + 
-      mediosPago.map(m => `<option value="${m}">${normalizeMedioPago(m)}</option>`).join('');
+      mediosPago.map(m => `<option value="${m}">${m}</option>`).join('');
     if (medioActual && mediosPago.includes(medioActual)) selectMedio.value = medioActual;
 
     renderPagosTable(allPagos);
@@ -9035,10 +9011,10 @@ async function loadPagosData(queryParams = '', page = 1) {
   }
 }
 
-// Normaliza medio de pago con encoding roto
 function normalizeMedioPago(medio) {
   if (!medio) return medio;
-  if (/tarjeta\s+de\s+cr/i.test(medio)) return 'Tarjeta de Débito';
+  if (/tarjeta\s+de\s+cr/i.test(medio)) return 'Tarjeta de Credito';
+  if (/tarjeta\s+de\s+d/i.test(medio)) return 'Tarjeta de Debito';
   return medio;
 }
 
@@ -9346,9 +9322,8 @@ async function loadRegistrosPagos(page = 1) {
         <div class="filter-group" style="min-width:180px;">
           <label>Fecha</label>
           <select id="registroDatePreset" onchange="handleRegistrosDatePresetChange()" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:8px;">
-            <option value="" ${registrosDateFilter.preset === '' ? 'selected' : ''}>Todo el historial</option>
-            <option value="semana" ${registrosDateFilter.preset === 'semana' ? 'selected' : ''}>Última semana</option>
             <option value="mes" ${registrosDateFilter.preset === 'mes' ? 'selected' : ''}>Último mes</option>
+            <option value="semana" ${registrosDateFilter.preset === 'semana' ? 'selected' : ''}>Última semana</option>
             <option value="custom" ${registrosDateFilter.preset === 'custom' ? 'selected' : ''}>Rango personalizado</option>
           </select>
         </div>
@@ -9556,7 +9531,7 @@ async function openPagoPanel(idAlumno) {
                   </div>
                   <div class="historial-item-detail">
                     <i data-lucide="credit-card"></i>
-                    <span>${h.medio_pago}</span>
+                    <span>${normalizeMedioPago(h.medio_pago)}</span>
                   </div>
                   <div class="historial-item-detail">
                     <i data-lucide="check-circle"></i>
@@ -9830,7 +9805,8 @@ async function openRegistrarPagoModal() {
             <select id="swal-medio-pago" class="swal2-input" style="width: 100%; margin: 0;">
               <option value="Efectivo">Efectivo</option>
               <option value="Transferencia">Transferencia</option>
-              <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+              <option value="Tarjeta de Credito">Tarjeta de Credito</option>
+              <option value="Tarjeta de Debito">Tarjeta de Debito</option>
             </select>
           </div>
 

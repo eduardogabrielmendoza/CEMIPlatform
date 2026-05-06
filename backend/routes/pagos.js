@@ -5,6 +5,24 @@ import eventLogger from "../utils/eventLogger.js";
 
 const router = express.Router();
 
+function normalizeMedioPago(medio) {
+  if (!medio) return medio;
+  if (/tarjeta\s+de\s+cr/i.test(medio)) return "Tarjeta de Credito";
+  if (/tarjeta\s+de\s+d/i.test(medio)) return "Tarjeta de Debito";
+  return medio;
+}
+
+function getMedioPagoVariants(medio) {
+  const normalized = normalizeMedioPago(medio);
+  if (normalized === "Tarjeta de Credito") {
+    return ["Tarjeta de Credito", "Tarjeta de Crédito", "Tarjeta de Cr\u00c3\u00a9dito"];
+  }
+  if (normalized === "Tarjeta de Debito") {
+    return ["Tarjeta de Debito", "Tarjeta de Débito", "Tarjeta de D\u00c3\u00a9bito"];
+  }
+  return [medio];
+}
+
 function buildDateFilter(query, alias = "pa") {
   const { rango, fecha_inicio, fecha_fin } = query;
   const field = `${alias}.fecha_pago`;
@@ -65,8 +83,9 @@ router.get("/", async (req, res) => {
     }
 
     if (req.query.medio) {
-      filterClauses.push("mp.descripcion = ?");
-      filterParams.push(req.query.medio);
+      const medios = getMedioPagoVariants(req.query.medio);
+      filterClauses.push(`mp.descripcion IN (${medios.map(() => "?").join(",")})`);
+      filterParams.push(...medios);
     }
 
     const extraFilterClause = filterClauses.length ? ` AND ${filterClauses.join(" AND ")}` : "";
@@ -174,13 +193,19 @@ router.get("/", async (req, res) => {
       promedio_pago: promedio[0].promedio
     };
 
+    const pagos = rows.map(row => ({
+      ...row,
+      medio_pago: normalizeMedioPago(row.medio_pago)
+    }));
+    const mediosPago = [...new Set(mediosRows.map(row => normalizeMedioPago(row.medio_pago)).filter(Boolean))];
+
     res.json({
-      pagos: rows,
+      pagos,
       estadisticas: stats,
       total: totalRows[0]?.total || 0,
       limit: limit || rows.length,
       offset,
-      medios_pago: mediosRows.map(row => row.medio_pago).filter(Boolean)
+      medios_pago: mediosPago
     });
   } catch (error) {
     console.error("Error al obtener pagos:", error);
@@ -395,7 +420,10 @@ router.get("/alumno/:id/historial", async (req, res) => {
     `, [id]);
 
     res.json({
-      pagos_realizados: pagosRealizados,
+      pagos_realizados: pagosRealizados.map(pago => ({
+        ...pago,
+        medio_pago: normalizeMedioPago(pago.medio_pago)
+      })),
       estadisticas: {
         total_pagado: totalPagado,
         cantidad_pagos: cantidadPagos
@@ -494,7 +522,10 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    res.json(rows[0]);
+    res.json({
+      ...rows[0],
+      medio_pago: normalizeMedioPago(rows[0].medio_pago)
+    });
   } catch (error) {
     console.error("Error al obtener pago:", error);
     res.status(500).json({ 
@@ -560,9 +591,10 @@ router.post("/realizar",
       });
     }
 
+    const mediosPago = getMedioPagoVariants(medio_pago);
     const [medios] = await pool.query(
-      'SELECT id_medio_pago FROM medios_pago WHERE descripcion = ?',
-      [medio_pago]
+      `SELECT id_medio_pago FROM medios_pago WHERE descripcion IN (${mediosPago.map(() => "?").join(",")}) LIMIT 1`,
+      mediosPago
     );
 
     if (medios.length === 0) {

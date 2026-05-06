@@ -152,6 +152,47 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+async function tableHasColumn(table, column) {
+  const [rows] = await pool.query(
+    "SELECT COUNT(*) AS total FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?",
+    [table, column]
+  );
+  return Number(rows[0]?.total || 0) > 0;
+}
+
+app.get("/api/oferta-academica", async (req, res) => {
+  try {
+    const idiomasHasEstado = await tableHasColumn("idiomas", "estado");
+    const idiomasHasBandera = await tableHasColumn("idiomas", "bandera");
+    const nivelesHasIdioma = await tableHasColumn("niveles", "id_idioma");
+    const idiomaColumns = [
+      "id_idioma",
+      "nombre_idioma",
+      idiomasHasBandera ? "bandera" : "NULL AS bandera",
+      idiomasHasEstado ? "COALESCE(estado, 'activo') AS estado" : "'activo' AS estado"
+    ].join(", ");
+    const [idiomas] = await pool.query(`SELECT ${idiomaColumns} FROM idiomas ORDER BY nombre_idioma`);
+    const [niveles] = await pool.query(
+      nivelesHasIdioma
+        ? "SELECT id_nivel, id_idioma, descripcion FROM niveles ORDER BY id_nivel"
+        : "SELECT id_nivel, descripcion FROM niveles ORDER BY id_nivel"
+    );
+    const nivelesUniversales = nivelesHasIdioma ? [] : niveles;
+    const idiomasConNiveles = idiomas.map(idioma => ({
+      ...idioma,
+      niveles: nivelesHasIdioma ? niveles.filter(nivel => String(nivel.id_idioma) === String(idioma.id_idioma)) : nivelesUniversales
+    }));
+    res.json({
+      success: true,
+      idiomas: idiomasConNiveles,
+      niveles_universales: nivelesUniversales
+    });
+  } catch (error) {
+    console.error("Error al obtener oferta académica:", error);
+    res.status(500).json({ success: false, message: "Error al obtener oferta académica" });
+  }
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/status", statusRoutes);
 app.use("/api/config", configRoutes);
