@@ -6,6 +6,175 @@
     <title>Manual de Usuario TFI - CEMI</title>
     <link rel="icon" type="image/png" href="../images/logo.png">
     <link rel="stylesheet" href="harvard-doc-styles.css">
+    <style>
+        .manual-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 22px;
+            padding-bottom: 18px;
+            margin: 26px 0 34px;
+            border-bottom: 3px solid #0b2d66;
+        }
+        .manual-head img {
+            max-height: 72px;
+            max-width: 220px;
+            object-fit: contain;
+        }
+        .manual-head .cemi {
+            filter: brightness(0);
+        }
+        .screen {
+            margin: 22px 0 28px;
+            border: 1px solid #d4dce8;
+            background: #f7f9fc;
+            box-shadow: 0 10px 24px rgba(15, 35, 65, 0.08);
+        }
+        .screen-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #0b2d66;
+            color: #fff;
+            font-weight: 700;
+        }
+        .screen-body {
+            padding: 18px;
+        }
+        .mock-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        .mock-card {
+            border: 1px solid #d6dfed;
+            background: #fff;
+            padding: 14px;
+            min-height: 92px;
+        }
+        .mock-card strong {
+            display: block;
+            color: #0b2d66;
+            margin-bottom: 8px;
+        }
+        .mock-line {
+            height: 8px;
+            background: #dce6f5;
+            margin: 8px 0;
+            border-radius: 0;
+        }
+        .mock-line.short { width: 55%; }
+        .mock-line.mid { width: 75%; }
+        .mock-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .mock-button {
+            padding: 8px 12px;
+            background: #0b3b85;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .mock-button.secondary {
+            background: #e8eef7;
+            color: #0b2d66;
+        }
+        .mock-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .mock-field {
+            border: 1px solid #cad5e6;
+            background: #fff;
+            padding: 10px;
+        }
+        .mock-field span {
+            display: block;
+            color: #5f6f86;
+            font-size: 0.78rem;
+            margin-bottom: 6px;
+        }
+        .mock-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            font-size: 0.86rem;
+        }
+        .mock-table th {
+            background: #e6eef9;
+            color: #0b2d66;
+            text-align: left;
+        }
+        .mock-table th, .mock-table td {
+            border: 1px solid #d6dfed;
+            padding: 9px;
+        }
+        .status {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #e7f7ed;
+            color: #1f6b3a;
+            font-size: 0.76rem;
+            font-weight: 700;
+        }
+        .status.warn {
+            background: #fff4d8;
+            color: #8a5c00;
+        }
+        .status.info {
+            background: #e8f2ff;
+            color: #0b4d8c;
+        }
+        .step-flow {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 16px 0;
+        }
+        .flow-item {
+            border: 1px solid #d6dfed;
+            background: #fff;
+            padding: 12px;
+            text-align: center;
+            font-weight: 700;
+            color: #0b2d66;
+        }
+        .callout {
+            border-left: 4px solid #0b3b85;
+            background: #f3f7fd;
+            padding: 14px 16px;
+            margin: 18px 0;
+        }
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        .role-card {
+            border: 1px solid #d6dfed;
+            background: #fff;
+            padding: 14px;
+        }
+        .role-card h4 {
+            color: #0b2d66;
+            margin-top: 0;
+        }
+        @media (max-width: 760px) {
+            .manual-head, .mock-form, .mock-grid, .role-grid, .step-flow {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+            .mock-table {
+                font-size: 0.76rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <a href="../documentacion.html" class="back-link">← Volver a Documentación</a>
@@ -23,333 +192,541 @@
             <p class="institution">UTN Facultad Regional Tucumán - Tecnicatura Superior en Programación - Tutor: Ing. Prado</p>
         </div>
 
+        <div class="manual-head">
+            <img src="../images/logolong.png" alt="Logo CEMI" class="cemi">
+            <img src="../images/LogoUTN.png" alt="Logo UTN">
+        </div>
+
         <nav class="toc">
-            <h2>Índice</h2>
+            <h2>Contenido</h2>
             <ul>
-                <li><a href="#identificacion">1. Identificación y Carátula</a></li>
-                <li><a href="#introduccion">2. Introducción y Acceso</a></li>
-                <li><a href="#autenticacion">3. Autenticación y Cuentas</a></li>
-                <li><a href="#ventas-caja">4. Pagos y Caja Administrativa</a></li>
-                <li><a href="#productos">5. Cursos, Recursos e Inventario Académico</a></li>
-                <li><a href="#devoluciones">6. Anulaciones y Devoluciones</a></li>
-                <li><a href="#informes">7. Informes, Auditoría y Exportación</a></li>
-                <li><a href="#utilidades">8. Utilidades y Usuarios</a></li>
-                <li><a href="#classroom">9. Classroom y Operación Académica</a></li>
-                <li><a href="#salida">10. Salida Segura</a></li>
+                <li><a href="#identificacion">1. Identificación y carátula del manual</a></li>
+                <li><a href="#introduccion">2. Introducción y acceso al sistema</a></li>
+                <li><a href="#autenticacion">3. Gestión de autenticación y cuentas</a></li>
+                <li><a href="#panel">4. Panel principal y navegación</a></li>
+                <li><a href="#academico">5. Gestión académica: alumnos, profesores y cursos</a></li>
+                <li><a href="#inscripciones">6. Inscripciones y cupos</a></li>
+                <li><a href="#pagos">7. Pagos, cuotas y comprobantes</a></li>
+                <li><a href="#classroom">8. Classroom CEMI</a></li>
+                <li><a href="#seguimiento">9. Calificaciones, asistencias y reportes</a></li>
+                <li><a href="#comunicacion">10. Comunicación, comunidad y soporte</a></li>
+                <li><a href="#usuarios">11. Administración de usuarios y seguridad</a></li>
+                <li><a href="#salida">12. Salida segura y buenas prácticas</a></li>
             </ul>
         </nav>
 
-        <h1 id="identificacion">1. Identificación y Carátula del Manual</h1>
-        <table>
-            <tr><th>Campo</th><th>Detalle</th></tr>
-            <tr><td>Título del proyecto</td><td>CEMI Sistema Gestor</td></tr>
-            <tr><td>Versión del software</td><td>1.0</td></tr>
-            <tr><td>Institución</td><td>UTN Facultad Regional Tucumán</td></tr>
-            <tr><td>Carrera</td><td>Tecnicatura Superior en Programación</td></tr>
-            <tr><td>Tutor académico</td><td>Ing. Prado</td></tr>
-            <tr><td>Entidad destinataria</td><td>CEMI - Centro Municipal de Idiomas</td></tr>
-            <tr><td>Integrantes del equipo</td><td>Gómez Micaela, Lucena Carlos, Ruiz Mendoza Eduardo y Sergio Bautista Bareiro</td></tr>
-            <tr><td>Propósito del documento</td><td>Guiar el uso operativo del sistema por rol y por módulo.</td></tr>
-        </table>
+        <section id="identificacion">
+            <h1>1. Identificación y carátula del manual</h1>
+            <table>
+                <tr><th>Campo</th><th>Detalle</th></tr>
+                <tr><td>Título del proyecto</td><td>CEMI Sistema Gestor</td></tr>
+                <tr><td>Versión del software</td><td>1.0</td></tr>
+                <tr><td>Institución académica</td><td>UTN Facultad Regional Tucumán</td></tr>
+                <tr><td>Carrera</td><td>Tecnicatura Superior en Programación</td></tr>
+                <tr><td>Tutor académico</td><td>Ing. Prado</td></tr>
+                <tr><td>Entidad destinataria</td><td>CEMI - Centro Municipal de Idiomas</td></tr>
+                <tr><td>Integrantes</td><td>Gómez Micaela, Lucena Carlos, Ruiz Mendoza Eduardo y Sergio Bautista Bareiro</td></tr>
+                <tr><td>Finalidad</td><td>Guiar el uso operativo del sistema por módulo, perfil y procedimiento.</td></tr>
+            </table>
+            <p>Este manual está dirigido a usuarios que interactúan con CEMI Sistema Gestor. Su propósito es explicar el funcionamiento de la plataforma en lenguaje operativo, con pasos concretos, advertencias y representaciones visuales de cada módulo.</p>
+        </section>
 
-        <h1 id="introduccion">2. Introducción y Acceso al Sistema</h1>
-        <h2>2.1 Introducción general</h2>
-        <p>CEMI Sistema Gestor es una plataforma web desarrollada para administrar procesos del Centro Municipal de Idiomas. Permite organizar alumnos, profesores, cursos, inscripciones, pagos, calificaciones, asistencias, classroom, comunicación y seguridad desde un entorno unificado.</p>
-        <p>El presente manual explica cómo utilizar el sistema, qué datos completar, qué validaciones esperar y cómo interpretar los módulos. Aunque algunos títulos conservan la estructura del modelo de manual basado en ventas, stock y caja, en CEMI esos conceptos se adaptan a pagos, cupos, cursos, recursos académicos y control administrativo.</p>
+        <section id="introduccion">
+            <h1>2. Introducción y acceso al sistema</h1>
+            <h2>2.1 Introducción general</h2>
+            <p>CEMI Sistema Gestor es una plataforma web para administrar el Centro Municipal de Idiomas. Integra gestión de alumnos, profesores, cursos, idiomas, niveles, aulas, inscripciones, pagos, comprobantes, calificaciones, asistencias, classroom, chat, notificaciones, comunidad, documentación y seguridad.</p>
+            <p>El sistema se utiliza desde un navegador web y muestra funciones distintas según el perfil del usuario. Un administrador accede a datos institucionales y operaciones de gestión; un profesor opera cursos, tareas, asistencias y calificaciones; un alumno consulta su información académica; y un invitado accede a páginas públicas o soporte inicial.</p>
 
-        <h2>2.2 Propósito del manual</h2>
-        <ul>
-            <li>Orientar a administradores, profesores y alumnos en el uso del sistema.</li>
-            <li>Describir los procedimientos básicos de acceso, registro, pagos, cursos y classroom.</li>
-            <li>Reducir errores de operación mediante pasos claros y advertencias.</li>
-            <li>Servir como documento de consulta durante capacitación y evaluación del TFI.</li>
-        </ul>
+            <h2>2.2 Audiencia y perfiles de usuario</h2>
+            <div class="role-grid">
+                <div class="role-card"><h4>Administrador</h4><p>Gestiona alumnos, profesores, cursos, pagos, usuarios, soporte, reportes y configuración.</p></div>
+                <div class="role-card"><h4>Profesor</h4><p>Administra classroom, tareas, recursos, anuncios, asistencias, calificaciones y comunicación académica.</p></div>
+                <div class="role-card"><h4>Alumno</h4><p>Consulta cursos, pagos, comprobantes, tareas, entregas, anuncios, notas y comunidad.</p></div>
+                <div class="role-card"><h4>Invitado</h4><p>Consulta información pública, oferta académica y puede iniciar contacto por soporte.</p></div>
+            </div>
 
-        <h2>2.3 Audiencia y perfiles de usuario</h2>
-        <table>
-            <tr><th>Perfil</th><th>Uso principal</th><th>Módulos habituales</th></tr>
-            <tr><td>Administrador</td><td>Gestionar la operación institucional.</td><td>Alumnos, profesores, cursos, inscripciones, pagos, reportes, chat, seguridad.</td></tr>
-            <tr><td>Profesor</td><td>Gestionar actividad académica.</td><td>Classroom, tareas, anuncios, asistencias, calificaciones, chats.</td></tr>
-            <tr><td>Alumno</td><td>Consultar información y participar del curso.</td><td>Perfil, pagos, comprobantes, classroom, tareas, anuncios, comunidad, soporte.</td></tr>
-            <tr><td>Invitado</td><td>Consultar información pública y solicitar asistencia.</td><td>Páginas públicas y chat de soporte.</td></tr>
-        </table>
+            <h2>2.3 Requisitos para acceder</h2>
+            <table>
+                <tr><th>Recurso</th><th>Requisito recomendado</th></tr>
+                <tr><td>Dispositivo</td><td>PC, notebook, tablet o teléfono con pantalla compatible.</td></tr>
+                <tr><td>Navegador</td><td>Chrome, Edge, Firefox o Safari actualizado.</td></tr>
+                <tr><td>Conexión</td><td>Internet estable para paneles, chat, archivos y classroom.</td></tr>
+                <tr><td>Cuenta</td><td>Usuario registrado, activo y con perfil asignado.</td></tr>
+                <tr><td>Seguridad</td><td>Contraseña personal y cierre de sesión al finalizar.</td></tr>
+            </table>
 
-        <h2>2.4 Requisitos para acceder</h2>
-        <table>
-            <tr><th>Recurso</th><th>Requisito recomendado</th></tr>
-            <tr><td>Dispositivo</td><td>PC, notebook, tablet o smartphone.</td></tr>
-            <tr><td>Navegador</td><td>Chrome, Edge, Firefox o Safari actualizado.</td></tr>
-            <tr><td>Conexión</td><td>Internet estable para operar paneles, chat y classroom.</td></tr>
-            <tr><td>Cuenta</td><td>Usuario registrado, activado y con rol asignado.</td></tr>
-            <tr><td>Seguridad</td><td>No compartir contraseña y cerrar sesión al finalizar.</td></tr>
-        </table>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: acceso inicial</span><span>CEMI</span></div>
+                <div class="screen-body">
+                    <div class="mock-grid">
+                        <div class="mock-card"><strong>Página pública</strong><div class="mock-line"></div><div class="mock-line mid"></div><div class="mock-button">Conocer oferta</div></div>
+                        <div class="mock-card"><strong>Ingreso al sistema</strong><div class="mock-line"></div><div class="mock-line short"></div><div class="mock-button">Iniciar sesión</div></div>
+                        <div class="mock-card"><strong>Soporte</strong><div class="mock-line"></div><div class="mock-line mid"></div><div class="mock-button secondary">Abrir chat</div></div>
+                    </div>
+                </div>
+            </div>
 
-        <h2>2.5 Procedimiento de acceso inicial</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Abrir el sitio</h4><p>Ingresar a <strong>https://cemi.up.railway.app</strong> desde un navegador compatible.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Elegir el acceso</h4><p>Seleccionar acceso general, acceso administrativo o acceso CEMI Key según el perfil y flujo requerido.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Autenticarse</h4><p>Completar email y contraseña. Si la cuenta no está activada, realizar primero la validación por correo.</p></div></div>
-        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Usar el panel</h4><p>El sistema redirige al dashboard correspondiente según el rol asignado.</p></div></div>
+            <h2>2.4 Procedimiento de acceso inicial</h2>
+            <div class="step-flow">
+                <div class="flow-item">Abrir sitio</div>
+                <div class="flow-item">Elegir acceso</div>
+                <div class="flow-item">Ingresar credenciales</div>
+                <div class="flow-item">Entrar al panel</div>
+            </div>
+            <ol>
+                <li>Ingresar a <strong>https://cemi.up.railway.app</strong>.</li>
+                <li>Seleccionar el acceso correspondiente: general, administrativo o CEMI Key.</li>
+                <li>Completar usuario/correo y contraseña.</li>
+                <li>Confirmar el ingreso y esperar la redirección al panel correspondiente.</li>
+            </ol>
+        </section>
 
-        <h1 id="autenticacion">3. Gestión de Autenticación y Cuentas</h1>
-        <h2>3.1 Pantalla de inicio de sesión</h2>
-        <p>La pantalla de login protege el acceso a secciones privadas. Su objetivo es verificar identidad mediante correo y contraseña. El sistema valida formato, campos obligatorios, existencia del usuario, contraseña y estado de la cuenta.</p>
+        <section id="autenticacion">
+            <h1>3. Gestión de autenticación y cuentas</h1>
+            <h2>3.1 Pantalla de inicio de sesión</h2>
+            <p>La pantalla de inicio de sesión valida la identidad del usuario. Protege las secciones privadas y permite que cada perfil acceda únicamente a las funciones habilitadas. El sistema revisa formato de datos, existencia de cuenta, contraseña, estado del usuario y perfil asignado.</p>
 
-        <h2>3.2 Elementos de la interfaz</h2>
-        <table>
-            <tr><th>Elemento</th><th>Descripción</th></tr>
-            <tr><td>Correo electrónico</td><td>Campo obligatorio para ingresar el email registrado.</td></tr>
-            <tr><td>Contraseña</td><td>Campo protegido con opción de mostrar u ocultar.</td></tr>
-            <tr><td>Ingresar</td><td>Botón que ejecuta la validación de credenciales.</td></tr>
-            <tr><td>Olvidaste tu contraseña</td><td>Abre el flujo de recuperación mediante código por correo.</td></tr>
-            <tr><td>Crear cuenta</td><td>Permite iniciar el registro de un nuevo usuario.</td></tr>
-        </table>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: login</span><span>Acceso seguro</span></div>
+                <div class="screen-body">
+                    <div class="mock-form">
+                        <div class="mock-field"><span>Correo o usuario</span><div class="mock-line mid"></div></div>
+                        <div class="mock-field"><span>Contraseña</span><div class="mock-line short"></div></div>
+                    </div>
+                    <div class="mock-actions">
+                        <span class="mock-button">Ingresar</span>
+                        <span class="mock-button secondary">Crear cuenta</span>
+                        <span class="mock-button secondary">Recuperar contraseña</span>
+                    </div>
+                </div>
+            </div>
 
-        <h2>3.3 Procedimiento de inicio de sesión</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Completar correo</h4><p>Ingresar el correo exacto con el que fue creada la cuenta.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Completar contraseña</h4><p>Escribir la contraseña respetando mayúsculas, números y símbolos si corresponde.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Confirmar ingreso</h4><p>Presionar Ingresar. Si los datos son correctos, se genera la sesión y se redirige al panel.</p></div></div>
-        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Revisar mensajes</h4><p>Si hay error, verificar credenciales, activación de cuenta o solicitar recuperación.</p></div></div>
+            <h2>3.2 Elementos de la interfaz</h2>
+            <table>
+                <tr><th>Elemento</th><th>Función</th></tr>
+                <tr><td>Campo usuario/correo</td><td>Permite ingresar la identificación de acceso registrada.</td></tr>
+                <tr><td>Campo contraseña</td><td>Recibe la clave privada del usuario.</td></tr>
+                <tr><td>Mostrar u ocultar contraseña</td><td>Permite verificar lo escrito antes de enviar.</td></tr>
+                <tr><td>Botón ingresar</td><td>Ejecuta la autenticación y genera la sesión si los datos son válidos.</td></tr>
+                <tr><td>Crear cuenta</td><td>Abre el registro para usuarios habilitados.</td></tr>
+                <tr><td>Recuperar contraseña</td><td>Inicia el flujo de código por correo y cambio de clave.</td></tr>
+            </table>
 
-        <h2>3.4 Validaciones y mensajes de error</h2>
-        <ul>
-            <li>Correo obligatorio o formato inválido.</li>
-            <li>Contraseña obligatoria.</li>
-            <li>Usuario inexistente.</li>
-            <li>Contraseña incorrecta.</li>
-            <li>Cuenta pendiente de activación.</li>
-            <li>Acceso restringido por perfil o estado.</li>
-        </ul>
+            <h2>3.3 Procedimiento de inicio de sesión</h2>
+            <ol>
+                <li>Verificar que se está usando el sitio oficial de CEMI.</li>
+                <li>Ingresar usuario o correo registrado.</li>
+                <li>Ingresar contraseña respetando mayúsculas, minúsculas y símbolos.</li>
+                <li>Presionar <strong>Ingresar</strong>.</li>
+                <li>Si el sistema muestra un mensaje de error, revisar los datos o usar recuperación de contraseña.</li>
+            </ol>
 
-        <h2>3.5 Registro de nuevo usuario</h2>
-        <p>El formulario de creación de cuenta solicita nombre, correo, contraseña y confirmación de contraseña. El sistema valida que el correo no esté previamente registrado y que las contraseñas coincidan. Las cuentas de staff pueden requerir dominio institucional y aprobación administrativa.</p>
+            <h2>3.4 Validaciones y mensajes frecuentes</h2>
+            <table>
+                <tr><th>Mensaje</th><th>Causa probable</th><th>Acción recomendada</th></tr>
+                <tr><td>Campo obligatorio</td><td>Falta completar usuario o contraseña.</td><td>Completar todos los campos.</td></tr>
+                <tr><td>Credenciales inválidas</td><td>Usuario o contraseña incorrectos.</td><td>Revisar escritura o recuperar contraseña.</td></tr>
+                <tr><td>Cuenta inactiva</td><td>El perfil no está habilitado.</td><td>Contactar a administración.</td></tr>
+                <tr><td>Acceso no autorizado</td><td>El perfil no tiene permiso para ese módulo.</td><td>Volver al panel correspondiente.</td></tr>
+            </table>
 
-        <h2>3.6 Validación por correo y activación</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Registrar datos</h4><p>Completar formulario y enviar solicitud de cuenta.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Revisar correo</h4><p>Abrir el email recibido desde el sistema CEMI.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Activar cuenta</h4><p>Presionar el enlace o botón de activación. El sistema confirma la cuenta y habilita el inicio de sesión.</p></div></div>
+            <h2>3.5 Registro de nuevo usuario</h2>
+            <p>El registro de cuenta permite crear un acceso inicial. Según la política institucional, el usuario puede quedar pendiente de validación o ser asociado luego a un perfil de alumno, profesor o administrador.</p>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: registro</span><span>Nueva cuenta</span></div>
+                <div class="screen-body">
+                    <div class="mock-form">
+                        <div class="mock-field"><span>Nombre</span><div class="mock-line"></div></div>
+                        <div class="mock-field"><span>Apellido</span><div class="mock-line"></div></div>
+                        <div class="mock-field"><span>Correo</span><div class="mock-line mid"></div></div>
+                        <div class="mock-field"><span>Contraseña</span><div class="mock-line short"></div></div>
+                    </div>
+                    <div class="mock-actions"><span class="mock-button">Crear cuenta</span><span class="mock-button secondary">Cancelar</span></div>
+                </div>
+            </div>
 
-        <h2>3.7 Recuperación de contraseña</h2>
-        <p>Cuando el usuario no recuerda su contraseña, debe utilizar la opción de recuperación. El sistema solicita el correo registrado, envía un código, permite ingresar una nueva contraseña y valida el cambio antes de permitir el nuevo acceso.</p>
+            <h2>3.6 Recuperación de contraseña</h2>
+            <ol>
+                <li>Seleccionar <strong>Recuperar contraseña</strong>.</li>
+                <li>Ingresar el correo asociado a la cuenta.</li>
+                <li>Revisar el mensaje recibido y copiar el código de verificación.</li>
+                <li>Escribir la nueva contraseña y confirmarla.</li>
+                <li>Iniciar sesión nuevamente con la clave actualizada.</li>
+            </ol>
+            <div class="callout"><strong>Advertencia:</strong> nunca compartir códigos de recuperación ni enviarlos por chat. Si un usuario sospecha que su cuenta fue expuesta, debe informar a administración.</div>
+        </section>
 
-        <h1 id="ventas-caja">4. Módulo de Pagos y Operaciones de Caja Administrativa</h1>
-        <h2>4.1 Descripción general del núcleo operativo</h2>
-        <p>En el modelo original esta sección corresponde a ventas y caja. En CEMI se interpreta como el núcleo financiero-administrativo: registro de pagos de matrícula, cuotas mensuales, medios de pago, estados y comprobantes. No se trata de una caja contable completa, sino de un control de operaciones económicas vinculadas a alumnos y cursos.</p>
+        <section id="panel">
+            <h1>4. Panel principal y navegación</h1>
+            <h2>4.1 Descripción general</h2>
+            <p>El panel principal es la pantalla de trabajo posterior al inicio de sesión. Presenta accesos rápidos, indicadores y módulos permitidos según el rol. La navegación puede variar entre administrador, profesor y alumno, pero mantiene una estructura común: barra superior, menú lateral o tarjetas de acceso, área de contenido y acciones del usuario.</p>
 
-        <h2>4.2 Gestión de caja administrativa</h2>
-        <p>La gestión de caja administrativa registra movimientos de cobro y permite identificar qué alumno pagó, por qué curso, qué concepto abonó, qué medio utilizó y en qué estado quedó la operación. Este flujo reemplaza el concepto de "venta" tradicional por el concepto de "pago académico".</p>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: dashboard</span><span>Panel CEMI</span></div>
+                <div class="screen-body">
+                    <div class="mock-grid">
+                        <div class="mock-card"><strong>Alumnos</strong><div class="mock-line"></div><span class="status info">Gestión</span></div>
+                        <div class="mock-card"><strong>Cursos activos</strong><div class="mock-line"></div><span class="status">Disponible</span></div>
+                        <div class="mock-card"><strong>Pagos</strong><div class="mock-line"></div><span class="status warn">Pendientes</span></div>
+                        <div class="mock-card"><strong>Classroom</strong><div class="mock-line"></div><span class="status">Tareas</span></div>
+                        <div class="mock-card"><strong>Soporte</strong><div class="mock-line"></div><span class="status info">Chat</span></div>
+                        <div class="mock-card"><strong>Documentación</strong><div class="mock-line"></div><span class="status">Manual</span></div>
+                    </div>
+                </div>
+            </div>
 
-        <h2>4.3 Apertura de caja y fondo inicial</h2>
-        <p>El sistema actual no implementa apertura física de caja como un POS. Para documentación y mejora futura, se considera que una jornada administrativa podría iniciarse con un fondo o período de control. En la versión implementada, el control se realiza a partir de pagos registrados y sus estados.</p>
+            <h2>4.2 Barra superior</h2>
+            <table>
+                <tr><th>Elemento</th><th>Uso</th></tr>
+                <tr><td>Logo CEMI</td><td>Identifica el sistema y puede funcionar como retorno al inicio.</td></tr>
+                <tr><td>Buscador o accesos rápidos</td><td>Permite localizar módulos o registros cuando está disponible.</td></tr>
+                <tr><td>Notificaciones</td><td>Muestra avisos de tareas, pagos, soporte o actividad académica.</td></tr>
+                <tr><td>Menú de usuario</td><td>Acceso a perfil, seguridad, ayuda y cierre de sesión.</td></tr>
+            </table>
 
-        <h2>4.4 Registro de movimientos rápidos</h2>
-        <table>
-            <tr><th>Movimiento</th><th>Equivalente en CEMI</th><th>Impacto</th></tr>
-            <tr><td>Entrada</td><td>Pago de matrícula o cuota.</td><td>Incrementa el total cobrado del período.</td></tr>
-            <tr><td>Salida</td><td>Anulación, devolución o ajuste administrativo.</td><td>Reduce o corrige el total válido.</td></tr>
-            <tr><td>Observación</td><td>Nota interna de administración.</td><td>Permite justificar cambios o estados.</td></tr>
-        </table>
+            <h2>4.3 Menú por perfil</h2>
+            <ul>
+                <li><strong>Administrador:</strong> alumnos, profesores, administradores, cursos, aulas, inscripciones, pagos, reportes, usuarios, soporte y documentación.</li>
+                <li><strong>Profesor:</strong> cursos asignados, classroom, tareas, entregas, anuncios, calificaciones, asistencias y chat académico.</li>
+                <li><strong>Alumno:</strong> perfil, cursos, tareas, pagos, comprobantes, calificaciones, anuncios, comunidad y soporte.</li>
+            </ul>
+        </section>
 
-        <h2>4.5 Procedimiento de cierre de caja</h2>
-        <p>El cierre de caja se documenta como cierre de período de pagos. Administración debe consultar pagos registrados, separar operaciones pagadas, en proceso y anuladas, y verificar que los comprobantes correspondan a los movimientos válidos.</p>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Filtrar período</h4><p>Seleccionar fecha o rango a revisar.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Revisar estados</h4><p>Controlar pagado, en proceso y anulado.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Verificar comprobantes</h4><p>Confirmar que cada pago válido tenga datos correctos.</p></div></div>
-        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Registrar observaciones</h4><p>Documentar diferencias o ajustes para revisión institucional.</p></div></div>
+        <section id="academico">
+            <h1>5. Gestión académica: alumnos, profesores y cursos</h1>
+            <h2>5.1 Descripción general</h2>
+            <p>La gestión académica permite mantener los datos centrales de CEMI. Administración puede registrar alumnos, profesores, cursos, idiomas, niveles, aulas, horarios, cupos y estados. Estos datos alimentan otros módulos: inscripciones, pagos, classroom, asistencias y calificaciones.</p>
 
-        <h2>4.6 Resumen de arqueo y conciliación</h2>
-        <table>
-            <tr><th>Indicador</th><th>Interpretación en CEMI</th></tr>
-            <tr><td>Faltante</td><td>Existe diferencia entre pagos esperados y pagos registrados como pagados.</td></tr>
-            <tr><td>Sobrante</td><td>Existe un pago registrado que no corresponde al concepto o alumno esperado.</td></tr>
-            <tr><td>Caja cuadrada</td><td>Los pagos registrados coinciden con comprobantes, conceptos y período revisado.</td></tr>
-        </table>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: gestión académica</span><span>Administrador</span></div>
+                <div class="screen-body">
+                    <table class="mock-table">
+                        <tr><th>Entidad</th><th>Datos principales</th><th>Estado</th><th>Acciones</th></tr>
+                        <tr><td>Alumno</td><td>Nombre, DNI, correo, legajo</td><td><span class="status">Activo</span></td><td>Ver / Editar</td></tr>
+                        <tr><td>Profesor</td><td>Nombre, especialidad, correo</td><td><span class="status">Activo</span></td><td>Asignar curso</td></tr>
+                        <tr><td>Curso</td><td>Idioma, nivel, aula, horario</td><td><span class="status info">Con cupo</span></td><td>Inscribir</td></tr>
+                    </table>
+                </div>
+            </div>
 
-        <h2>4.7 Registro de nueva operación de pago</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Buscar alumno</h4><p>Seleccionar el alumno registrado en el sistema.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Seleccionar curso</h4><p>Elegir el curso asociado al pago.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Seleccionar concepto</h4><p>Elegir matrícula o cuota habilitada.</p></div></div>
-        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Cargar monto y medio</h4><p>Completar importe, medio de pago y referencia si corresponde.</p></div></div>
-        <div class="step"><span class="step-number">5</span><div class="step-content"><h4>Confirmar</h4><p>Guardar el pago y generar comprobante PDF.</p></div></div>
+            <h2>5.2 Alta de alumno</h2>
+            <ol>
+                <li>Ingresar al panel administrativo.</li>
+                <li>Abrir el módulo <strong>Alumnos</strong>.</li>
+                <li>Seleccionar <strong>Nuevo alumno</strong>.</li>
+                <li>Completar nombre, apellido, DNI, correo, teléfono, domicilio y datos académicos requeridos.</li>
+                <li>Verificar que el legajo o identificación no esté duplicado.</li>
+                <li>Guardar el registro y revisar que figure en el listado.</li>
+            </ol>
 
-        <h2>4.8 Métodos de pago</h2>
-        <table>
-            <tr><th>Método</th><th>Datos recomendados</th><th>Observación</th></tr>
-            <tr><td>Efectivo</td><td>Monto recibido, concepto y fecha.</td><td>Puede requerir cálculo manual de vuelto si se cobra presencialmente.</td></tr>
-            <tr><td>Tarjeta</td><td>Referencia, cupón, lote o autorización.</td><td>Documentar referencia para auditoría.</td></tr>
-            <tr><td>Transferencia</td><td>Número de operación, cuenta origen o comprobante.</td><td>Puede quedar en proceso hasta validación.</td></tr>
-        </table>
+            <h2>5.3 Alta de profesor</h2>
+            <ol>
+                <li>Abrir el módulo <strong>Profesores</strong>.</li>
+                <li>Completar datos personales y correo.</li>
+                <li>Indicar especialidad o idioma principal.</li>
+                <li>Definir estado inicial del profesor.</li>
+                <li>Guardar y, si corresponde, asociar credenciales de acceso.</li>
+            </ol>
 
-        <h1 id="productos">5. Módulo de Gestión de Cursos, Recursos e Inventario Académico</h1>
-        <h2>5.1 Descripción general</h2>
-        <p>En el modelo original se habla de productos e inventario. En CEMI, el catálogo principal está formado por cursos, idiomas, niveles, aulas, cupos, conceptos de pago y recursos académicos. El objetivo es controlar qué se ofrece, quién lo dicta, cuántos alumnos puede recibir y qué materiales se publican.</p>
+            <h2>5.4 Creación de curso</h2>
+            <p>Un curso reúne idioma, nivel, profesor, aula, horario, cupo y estado. Antes de crearlo conviene tener cargados los catálogos de idiomas, niveles, aulas y profesores.</p>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: formulario de curso</span><span>Nuevo curso</span></div>
+                <div class="screen-body">
+                    <div class="mock-form">
+                        <div class="mock-field"><span>Idioma</span><div class="mock-line short"></div></div>
+                        <div class="mock-field"><span>Nivel</span><div class="mock-line short"></div></div>
+                        <div class="mock-field"><span>Profesor</span><div class="mock-line mid"></div></div>
+                        <div class="mock-field"><span>Aula y horario</span><div class="mock-line mid"></div></div>
+                        <div class="mock-field"><span>Cupo máximo</span><div class="mock-line short"></div></div>
+                        <div class="mock-field"><span>Estado</span><div class="mock-line short"></div></div>
+                    </div>
+                    <div class="mock-actions"><span class="mock-button">Guardar curso</span><span class="mock-button secondary">Volver</span></div>
+                </div>
+            </div>
 
-        <h2>5.2 Secciones del catálogo académico</h2>
-        <table>
-            <tr><th>Sección</th><th>Descripción</th></tr>
-            <tr><td>Idiomas</td><td>Catálogo de lenguas disponibles: inglés, francés, alemán, japonés, italiano, chino mandarín, latín u otras.</td></tr>
-            <tr><td>Niveles</td><td>Clasificación académica de dificultad o etapa.</td></tr>
-            <tr><td>Aulas</td><td>Espacios físicos o virtuales con capacidad y estado.</td></tr>
-            <tr><td>Cursos</td><td>Combinan idioma, nivel, profesor, aula, horario, cupo y cuotas habilitadas.</td></tr>
-            <tr><td>Recursos</td><td>Materiales, archivos o enlaces publicados en classroom.</td></tr>
-        </table>
+            <h2>5.5 Edición e inactivación</h2>
+            <p>La edición permite corregir datos sin eliminar historial. Si un alumno, profesor o curso deja de estar disponible, se recomienda cambiar su estado a inactivo en lugar de borrar registros vinculados a pagos, inscripciones o actividad académica.</p>
+        </section>
 
-        <h2>5.3 Indicadores visuales de disponibilidad</h2>
-        <ul>
-            <li>Curso activo o inactivo.</li>
-            <li>Cupo máximo y alumnos inscriptos.</li>
-            <li>Profesor asignado o pendiente.</li>
-            <li>Aula disponible o no disponible.</li>
-            <li>Cuotas habilitadas por curso.</li>
-        </ul>
+        <section id="inscripciones">
+            <h1>6. Inscripciones y cupos</h1>
+            <h2>6.1 Descripción general</h2>
+            <p>La inscripción vincula un alumno con un curso activo. Permite controlar cupos, estados académicos y asociación posterior con pagos, calificaciones y asistencias. Es una operación administrativa crítica porque define qué alumno pertenece a qué curso.</p>
 
-        <h2>5.4 Registro de ingreso de mercadería adaptado</h2>
-        <p>El ingreso de mercadería se adapta al ingreso de recursos académicos o configuración de cursos. Cuando un profesor carga un material, el sistema debe conservar archivo, curso, autor, fecha y referencia. Cuando administración crea un curso, debe conservar idioma, nivel, cupo, profesor, aula y horario.</p>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: inscripción</span><span>Alumno → Curso</span></div>
+                <div class="screen-body">
+                    <div class="step-flow">
+                        <div class="flow-item">Buscar alumno</div>
+                        <div class="flow-item">Elegir curso</div>
+                        <div class="flow-item">Validar cupo</div>
+                        <div class="flow-item">Confirmar inscripción</div>
+                    </div>
+                    <table class="mock-table">
+                        <tr><th>Alumno</th><th>Curso</th><th>Cupo</th><th>Estado</th></tr>
+                        <tr><td>Alumno seleccionado</td><td>Inglés A1</td><td>18/25</td><td><span class="status">Disponible</span></td></tr>
+                    </table>
+                </div>
+            </div>
 
-        <h2>5.5 Asociación de remitos o facturas</h2>
-        <p>En CEMI, esta sección se adapta a referencias de comprobantes, archivos adjuntos o documentación administrativa. Por ejemplo, un comprobante de transferencia puede asociarse a un pago, y un archivo académico puede asociarse a una tarea o recurso de classroom.</p>
+            <h2>6.2 Procedimiento de inscripción</h2>
+            <ol>
+                <li>Abrir el módulo <strong>Inscripciones</strong>.</li>
+                <li>Buscar al alumno por nombre, DNI, correo o legajo.</li>
+                <li>Seleccionar curso activo.</li>
+                <li>Revisar cupo, horario, aula, profesor y nivel.</li>
+                <li>Confirmar inscripción.</li>
+                <li>Verificar que el alumno aparezca en la lista del curso.</li>
+            </ol>
 
-        <h2>5.6 Edición y actualización de cursos existentes</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Seleccionar curso</h4><p>Buscar el curso en el panel administrativo.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Modificar datos</h4><p>Actualizar horario, cupo, profesor, aula o cuotas habilitadas.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Guardar cambios</h4><p>Confirmar la operación y verificar que los datos se reflejen en listados y perfiles.</p></div></div>
+            <h2>6.3 Estados de inscripción</h2>
+            <table>
+                <tr><th>Estado</th><th>Significado</th></tr>
+                <tr><td>Activa</td><td>El alumno cursa normalmente y aparece en listados académicos.</td></tr>
+                <tr><td>Pendiente</td><td>La inscripción requiere revisión administrativa o pago asociado.</td></tr>
+                <tr><td>Inactiva</td><td>El alumno ya no participa del curso, pero se conserva historial.</td></tr>
+                <tr><td>Anulada</td><td>La inscripción fue creada por error y debe quedar documentada.</td></tr>
+            </table>
 
-        <h2>5.7 Libro de movimientos de stock adaptado</h2>
-        <p>El libro de movimientos se interpreta como historial de cambios académicos y administrativos: inscripciones, bajas, cambios de cupo, carga de recursos, pagos, anulaciones y modificaciones relevantes. Este historial permite auditar quién realizó una acción, cuándo y sobre qué entidad impactó.</p>
+            <h2>6.4 Control de cupos</h2>
+            <p>El cupo evita sobrecargar cursos. Antes de confirmar una inscripción, administración debe verificar alumnos inscritos, capacidad del aula y disponibilidad del profesor. Si el cupo está completo, se recomienda crear lista de espera o derivar a otro curso.</p>
+        </section>
 
-        <h2>5.8 Filtros de búsqueda y tipos de movimiento</h2>
-        <table>
-            <tr><th>Filtro</th><th>Uso</th></tr>
-            <tr><td>Fecha</td><td>Consultar movimientos por día, mes o rango.</td></tr>
-            <tr><td>Alumno</td><td>Ver operaciones asociadas a un estudiante.</td></tr>
-            <tr><td>Curso</td><td>Ver inscripciones, pagos o actividad de classroom.</td></tr>
-            <tr><td>Tipo</td><td>Pago, inscripción, calificación, asistencia, tarea, anuncio, chat.</td></tr>
-            <tr><td>Estado</td><td>Activo, pagado, en proceso, anulado, pendiente.</td></tr>
-        </table>
+        <section id="pagos">
+            <h1>7. Pagos, cuotas y comprobantes</h1>
+            <h2>7.1 Descripción general</h2>
+            <p>El módulo de pagos registra operaciones financieras asociadas a alumnos y cursos. Permite documentar matrícula, cuotas, medios de pago, referencias, estados y comprobantes PDF. No funciona como caja comercial; su finalidad es mantener trazabilidad administrativa de pagos académicos.</p>
 
-        <h2>5.9 Ajuste manual de cupos o datos</h2>
-        <p>Cuando administración detecta inconsistencias, puede ajustar datos del curso, estado del alumno, inscripción o cuotas habilitadas. Toda corrección debe realizarse con criterio institucional y evitando borrar historial académico relevante.</p>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: pagos</span><span>Administración</span></div>
+                <div class="screen-body">
+                    <div class="mock-form">
+                        <div class="mock-field"><span>Alumno</span><div class="mock-line mid"></div></div>
+                        <div class="mock-field"><span>Curso</span><div class="mock-line mid"></div></div>
+                        <div class="mock-field"><span>Concepto</span><div class="mock-line short"></div></div>
+                        <div class="mock-field"><span>Monto</span><div class="mock-line short"></div></div>
+                        <div class="mock-field"><span>Medio de pago</span><div class="mock-line short"></div></div>
+                        <div class="mock-field"><span>Estado</span><div class="mock-line short"></div></div>
+                    </div>
+                    <div class="mock-actions"><span class="mock-button">Registrar pago</span><span class="mock-button secondary">Generar comprobante</span></div>
+                </div>
+            </div>
 
-        <h1 id="devoluciones">6. Módulo de Gestión de Devoluciones</h1>
-        <h2>6.1 Descripción y requisitos operativos</h2>
-        <p>El sistema no opera devoluciones comerciales de productos. En CEMI, el equivalente funcional es la anulación o corrección de pagos e inscripciones. Esta operación debe realizarla administración y debe quedar documentada para evitar inconsistencias financieras o académicas.</p>
+            <h2>7.2 Registro de pago</h2>
+            <ol>
+                <li>Abrir el módulo <strong>Pagos</strong>.</li>
+                <li>Buscar y seleccionar alumno.</li>
+                <li>Seleccionar curso o concepto correspondiente.</li>
+                <li>Indicar monto, medio de pago y referencia si existe.</li>
+                <li>Elegir estado: pagado, en proceso o anulado.</li>
+                <li>Guardar el registro.</li>
+                <li>Generar o consultar comprobante PDF.</li>
+            </ol>
 
-        <h2>6.2 Procedimiento de selección y reembolso</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Identificar pago</h4><p>Buscar el pago por alumno, curso, concepto o fecha.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Revisar estado</h4><p>Confirmar si el pago está pagado, en proceso o anulado.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Registrar motivo</h4><p>Indicar causa de anulación o corrección.</p></div></div>
-        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Actualizar estado</h4><p>Modificar el registro según autorización administrativa.</p></div></div>
+            <h2>7.3 Medios y estados</h2>
+            <table>
+                <tr><th>Medio</th><th>Datos recomendados</th><th>Estado habitual</th></tr>
+                <tr><td>Efectivo</td><td>Fecha, monto, concepto y responsable.</td><td>Pagado</td></tr>
+                <tr><td>Transferencia</td><td>Número de operación o comprobante.</td><td>En proceso hasta validar</td></tr>
+                <tr><td>Tarjeta u otro medio</td><td>Referencia, autorización o identificador.</td><td>Pagado o en proceso</td></tr>
+            </table>
 
-        <h2>6.3 Motivos de devolución e impacto financiero</h2>
-        <table>
-            <tr><th>Motivo</th><th>Impacto</th></tr>
-            <tr><td>Pago duplicado</td><td>Debe anularse uno de los registros o marcarse como ajuste.</td></tr>
-            <tr><td>Alumno no corresponde al curso</td><td>Corregir curso asociado o anular pago.</td></tr>
-            <tr><td>Transferencia pendiente</td><td>Mantener en proceso hasta validación.</td></tr>
-            <tr><td>Baja de inscripción</td><td>Revisar política institucional antes de modificar pagos.</td></tr>
-        </table>
+            <h2>7.4 Anulación o corrección de pago</h2>
+            <p>Si un pago fue cargado por error, administración debe corregirlo conservando trazabilidad. La opción recomendada es cambiar estado, registrar motivo y, cuando corresponda, crear un nuevo registro correcto. No se recomienda eliminar pagos con impacto administrativo.</p>
+            <div class="callout"><strong>Control:</strong> antes de anular un pago, revisar alumno, curso, concepto, monto, medio de pago y comprobante asociado.</div>
+        </section>
 
-        <h2>6.4 Advertencias sobre recursos dañados o vencidos</h2>
-        <p>En el contexto educativo, esta advertencia se adapta a archivos o recursos académicos incorrectos, vencidos o no disponibles. Si un recurso se elimina o reemplaza, debe evitarse romper entregas, anuncios o tareas ya publicadas.</p>
+        <section id="classroom">
+            <h1>8. Classroom CEMI</h1>
+            <h2>8.1 Descripción general</h2>
+            <p>Classroom CEMI es el entorno académico donde profesores y alumnos gestionan tareas, entregas, anuncios, recursos, encuestas, calendario, comentarios y comunicación del curso. Está vinculado con cursos reales y respeta los permisos del usuario autenticado.</p>
 
-        <h1 id="informes">7. Módulo de Informes, Auditoría y Exportación</h1>
-        <h2>7.1 Reporte de pagos y ventas adaptadas</h2>
-        <p>El reporte de ventas se interpreta como reporte de pagos. Permite analizar total cobrado, cantidad de operaciones, pagos por curso, pagos pendientes, pagos anulados y conceptos más frecuentes.</p>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: classroom</span><span>Curso activo</span></div>
+                <div class="screen-body">
+                    <div class="mock-grid">
+                        <div class="mock-card"><strong>Tareas</strong><div class="mock-line"></div><span class="status warn">2 pendientes</span></div>
+                        <div class="mock-card"><strong>Anuncios</strong><div class="mock-line"></div><span class="status info">Nuevo aviso</span></div>
+                        <div class="mock-card"><strong>Recursos</strong><div class="mock-line"></div><span class="status">Disponible</span></div>
+                        <div class="mock-card"><strong>Entregas</strong><div class="mock-line"></div><span class="status">Recibidas</span></div>
+                        <div class="mock-card"><strong>Encuestas</strong><div class="mock-line"></div><span class="status info">Activa</span></div>
+                        <div class="mock-card"><strong>Chat</strong><div class="mock-line"></div><span class="status">Curso</span></div>
+                    </div>
+                </div>
+            </div>
 
-        <h2>7.2 Indicadores principales</h2>
-        <table>
-            <tr><th>Indicador</th><th>Descripción</th></tr>
-            <tr><td>Total facturado/cobrado</td><td>Suma de pagos confirmados en un período.</td></tr>
-            <tr><td>Cantidad de tickets</td><td>Cantidad de comprobantes o pagos registrados.</td></tr>
-            <tr><td>Ticket promedio</td><td>Total cobrado dividido por cantidad de pagos válidos.</td></tr>
-            <tr><td>Pagos pendientes</td><td>Operaciones en proceso que requieren revisión.</td></tr>
-            <tr><td>Pagos anulados</td><td>Operaciones canceladas que no deben contarse como cobro efectivo.</td></tr>
-        </table>
+            <h2>8.2 Funciones del profesor</h2>
+            <ul>
+                <li>Publicar tareas con título, consigna, fecha límite y archivos adjuntos.</li>
+                <li>Revisar entregas de alumnos y registrar devoluciones académicas.</li>
+                <li>Publicar anuncios para el curso.</li>
+                <li>Subir recursos o enlaces de estudio.</li>
+                <li>Crear encuestas y revisar respuestas.</li>
+                <li>Registrar calificaciones y asistencias.</li>
+                <li>Comunicarse con alumnos mediante chat académico.</li>
+            </ul>
 
-        <h2>7.3 Últimos movimientos y detalle de ticket</h2>
-        <p>Desde los listados administrativos se debe poder identificar alumno, curso, concepto, medio de pago, fecha, monto, estado y comprobante. El detalle permite auditar una operación y resolver consultas del alumno.</p>
+            <h2>8.3 Funciones del alumno</h2>
+            <ul>
+                <li>Ingresar a cursos activos.</li>
+                <li>Consultar tareas, fechas límite y recursos.</li>
+                <li>Enviar entregas con texto o archivo.</li>
+                <li>Consultar calificaciones, comentarios y estado de entrega.</li>
+                <li>Leer anuncios y responder encuestas.</li>
+                <li>Usar chat académico o soporte cuando corresponda.</li>
+            </ul>
 
-        <h2>7.4 Historial de movimientos de caja</h2>
-        <p>El historial financiero muestra pagos, anulaciones y estados. En futuras versiones puede ampliarse a caja contable con apertura, cierre, arqueo y conciliación por responsable.</p>
+            <h2>8.4 Procedimiento para publicar tarea</h2>
+            <ol>
+                <li>Ingresar como profesor.</li>
+                <li>Abrir el curso asignado.</li>
+                <li>Seleccionar <strong>Nueva tarea</strong>.</li>
+                <li>Completar título, descripción, fecha límite y adjuntos.</li>
+                <li>Publicar y verificar que aparezca en el listado del curso.</li>
+            </ol>
 
-        <h2>7.5 Herramientas de exportación</h2>
-        <ul>
-            <li>Comprobantes de pago en PDF.</li>
-            <li>Listados administrativos exportables en futuras versiones.</li>
-            <li>Reportes de alumnos, profesores y cursos.</li>
-            <li>Respaldo documental para auditorías internas.</li>
-        </ul>
+            <h2>8.5 Procedimiento para entregar tarea</h2>
+            <ol>
+                <li>Ingresar como alumno.</li>
+                <li>Abrir el curso correspondiente.</li>
+                <li>Seleccionar la tarea pendiente.</li>
+                <li>Leer consigna y adjuntar respuesta o archivo.</li>
+                <li>Presionar <strong>Enviar entrega</strong> y verificar estado.</li>
+            </ol>
+        </section>
 
-        <h1 id="utilidades">8. Utilidades de Interfaz y Administración de Usuarios</h1>
-        <h2>8.1 Barra superior y herramientas visuales</h2>
-        <p>La barra superior o menú principal permite acceder a secciones relevantes según el rol del usuario. Puede incluir navegación, perfil, notificaciones, ayuda, documentación y cierre de sesión.</p>
+        <section id="seguimiento">
+            <h1>9. Calificaciones, asistencias y reportes</h1>
+            <h2>9.1 Calificaciones</h2>
+            <p>El módulo de calificaciones permite registrar notas parciales, finales y observaciones por alumno y curso. El profesor puede cargar notas de sus cursos asignados, mientras que administración puede consultar información consolidada.</p>
 
-        <h2>8.2 Modo claro / modo oscuro</h2>
-        <p>Cuando el módulo lo permite, el selector visual cambia la apariencia del sistema. Este ajuste mejora la comodidad del usuario y permite trabajar en distintos entornos de iluminación.</p>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: seguimiento académico</span><span>Notas y asistencias</span></div>
+                <div class="screen-body">
+                    <table class="mock-table">
+                        <tr><th>Alumno</th><th>Curso</th><th>Parcial 1</th><th>Parcial 2</th><th>Final</th><th>Asistencia</th></tr>
+                        <tr><td>Alumno A</td><td>Inglés A1</td><td>8</td><td>9</td><td>8.5</td><td><span class="status">Presente</span></td></tr>
+                        <tr><td>Alumno B</td><td>Inglés A1</td><td>7</td><td>8</td><td>7.5</td><td><span class="status warn">Tardanza</span></td></tr>
+                    </table>
+                </div>
+            </div>
 
-        <h2>8.3 Sección Acerca de CEMI Sistema Gestor y Manual QR</h2>
-        <p>La sección informativa debe mostrar nombre del sistema, versión, institución, equipo de desarrollo y acceso al manual. Si se incorpora un QR, debe dirigir a la documentación oficial publicada dentro del sistema.</p>
+            <h2>9.2 Registro de asistencia</h2>
+            <ol>
+                <li>Seleccionar curso y fecha.</li>
+                <li>Verificar listado de alumnos inscritos.</li>
+                <li>Marcar presente, ausente, tardanza o justificado.</li>
+                <li>Agregar observación si corresponde.</li>
+                <li>Guardar asistencia y revisar resumen.</li>
+            </ol>
 
-        <h2>8.4 Menú de usuario y gestión de perfiles</h2>
-        <table>
-            <tr><th>Acción</th><th>Descripción</th></tr>
-            <tr><td>Ver perfil</td><td>Consulta datos personales, avatar, información académica y cuenta.</td></tr>
-            <tr><td>Cambiar contraseña</td><td>Permite actualizar credenciales según políticas de seguridad.</td></tr>
-            <tr><td>Notificaciones</td><td>Muestra eventos de tareas, anuncios, comentarios, pagos o soporte.</td></tr>
-            <tr><td>Ayuda</td><td>Acceso a guías, seguridad y soporte.</td></tr>
-            <tr><td>Cerrar sesión</td><td>Finaliza el acceso privado.</td></tr>
-        </table>
+            <h2>9.3 Reportes administrativos</h2>
+            <p>Los reportes permiten revisar información institucional. Pueden incluir alumnos por curso, profesores asignados, pagos por período, cuotas pendientes, asistencias, calificaciones y actividad de classroom.</p>
+            <table>
+                <tr><th>Reporte</th><th>Uso</th></tr>
+                <tr><td>Alumnos por curso</td><td>Controlar inscripciones y cupos.</td></tr>
+                <tr><td>Pagos por período</td><td>Consultar importes, estados y comprobantes.</td></tr>
+                <tr><td>Asistencias</td><td>Analizar presencia por curso y fecha.</td></tr>
+                <tr><td>Calificaciones</td><td>Consultar desempeño académico.</td></tr>
+                <tr><td>Classroom</td><td>Ver tareas, entregas y actividad.</td></tr>
+            </table>
+        </section>
 
-        <h2>8.5 Administración de usuarios</h2>
-        <p>Disponible solo para administradores. Permite crear cuentas, consultar usuarios, asignar roles, activar o inactivar estados y gestionar credenciales cuando sea necesario.</p>
-        <ul>
-            <li><strong>Crear usuario:</strong> registrar persona, email, perfil y contraseña inicial si corresponde.</li>
-            <li><strong>Lista de usuarios:</strong> consultar nombre, correo, rol y estado.</li>
-            <li><strong>Gestión de roles:</strong> asignar administrador, profesor o alumno según función real.</li>
-            <li><strong>Estado de usuario:</strong> activo permite ingreso; inactivo bloquea acceso.</li>
-        </ul>
+        <section id="comunicacion">
+            <h1>10. Comunicación, comunidad y soporte</h1>
+            <h2>10.1 Chat de soporte</h2>
+            <p>El chat de soporte permite que invitados, alumnos o usuarios registrados realicen consultas. Administración puede responder, cambiar estados de conversación y conservar seguimiento de cada caso.</p>
 
-        <h1 id="classroom">9. Classroom y Operación Académica</h1>
-        <h2>9.1 Funciones del profesor</h2>
-        <ul>
-            <li>Crear tareas con descripción, fecha límite y archivos.</li>
-            <li>Revisar entregas y registrar calificaciones.</li>
-            <li>Publicar anuncios y marcar importancia.</li>
-            <li>Crear encuestas y revisar respuestas.</li>
-            <li>Registrar asistencias por fecha.</li>
-            <li>Chatear con alumnos del curso.</li>
-        </ul>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: chat y comunidad</span><span>Soporte CEMI</span></div>
+                <div class="screen-body">
+                    <table class="mock-table">
+                        <tr><th>Conversación</th><th>Usuario</th><th>Estado</th><th>Último mensaje</th></tr>
+                        <tr><td>#1024</td><td>Alumno</td><td><span class="status info">Activa</span></td><td>Consulta por cuota</td></tr>
+                        <tr><td>#1025</td><td>Invitado</td><td><span class="status warn">Pendiente</span></td><td>Información de curso</td></tr>
+                    </table>
+                    <div class="mock-actions"><span class="mock-button">Responder</span><span class="mock-button secondary">Cerrar caso</span></div>
+                </div>
+            </div>
 
-        <h2>9.2 Funciones del alumno</h2>
-        <ul>
-            <li>Consultar cursos activos.</li>
-            <li>Ver tareas asignadas y fechas límite.</li>
-            <li>Entregar trabajos con texto o archivo.</li>
-            <li>Consultar calificaciones y comentarios.</li>
-            <li>Leer anuncios y responder encuestas.</li>
-            <li>Consultar pagos y comprobantes.</li>
-            <li>Participar en comunidad y chat.</li>
-        </ul>
+            <h2>10.2 Notificaciones</h2>
+            <p>Las notificaciones informan eventos relevantes: nueva tarea, entrega revisada, anuncio publicado, pago registrado, mensaje de soporte o cambio de estado. El usuario debe revisarlas con frecuencia para evitar omitir acciones importantes.</p>
 
-        <h2>9.3 Procedimiento para entregar tarea</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Ingresar a Classroom</h4><p>Seleccionar el curso correspondiente desde el perfil del alumno.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Abrir tarea</h4><p>Leer consigna, fecha límite y archivos adjuntos.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Cargar entrega</h4><p>Completar respuesta o adjuntar archivo.</p></div></div>
-        <div class="step"><span class="step-number">4</span><div class="step-content"><h4>Enviar</h4><p>Confirmar entrega y verificar estado.</p></div></div>
+            <h2>10.3 Comunidad CEMI</h2>
+            <p>La comunidad permite consultar novedades, publicaciones e información institucional. Puede ser utilizada por alumnos para mantenerse informados y por administración para fortalecer la comunicación interna.</p>
+        </section>
 
-        <h1 id="salida">10. Finalización de Sesión y Salida Segura</h1>
-        <h2>10.1 Procedimiento de salida</h2>
-        <div class="step"><span class="step-number">1</span><div class="step-content"><h4>Abrir menú de usuario</h4><p>Seleccionar el avatar, nombre o botón de cuenta.</p></div></div>
-        <div class="step"><span class="step-number">2</span><div class="step-content"><h4>Presionar Cerrar sesión</h4><p>El sistema elimina la sesión activa del navegador.</p></div></div>
-        <div class="step"><span class="step-number">3</span><div class="step-content"><h4>Confirmar redirección</h4><p>El usuario vuelve a la pantalla pública o login.</p></div></div>
+        <section id="usuarios">
+            <h1>11. Administración de usuarios y seguridad</h1>
+            <h2>11.1 Gestión de usuarios</h2>
+            <p>Disponible para administradores. Permite crear, consultar, editar, activar o inactivar usuarios. Cada usuario debe estar asociado a una persona y a un perfil. El perfil define qué módulos puede utilizar.</p>
 
-        <h2>10.2 Recomendaciones de seguridad</h2>
-        <ul>
-            <li>No guardar contraseñas en equipos compartidos.</li>
-            <li>No compartir códigos de recuperación.</li>
-            <li>Cerrar sesión después de operar pagos o datos personales.</li>
-            <li>Reportar accesos sospechosos a administración.</li>
-            <li>Actualizar contraseña si se sospecha exposición.</li>
-        </ul>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: usuarios y roles</span><span>Solo administración</span></div>
+                <div class="screen-body">
+                    <table class="mock-table">
+                        <tr><th>Usuario</th><th>Perfil</th><th>Estado</th><th>Acciones</th></tr>
+                        <tr><td>admin@cemi</td><td>Administrador</td><td><span class="status">Activo</span></td><td>Editar / Seguridad</td></tr>
+                        <tr><td>profesor@cemi</td><td>Profesor</td><td><span class="status">Activo</span></td><td>Editar</td></tr>
+                        <tr><td>alumno@cemi</td><td>Alumno</td><td><span class="status warn">Pendiente</span></td><td>Activar</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <h2>11.2 Roles disponibles</h2>
+            <table>
+                <tr><th>Rol</th><th>Permisos principales</th></tr>
+                <tr><td>Administrador</td><td>Acceso a gestión institucional, usuarios, pagos, cursos, reportes y soporte.</td></tr>
+                <tr><td>Profesor</td><td>Acceso a cursos asignados, classroom, asistencias, calificaciones y chat académico.</td></tr>
+                <tr><td>Alumno</td><td>Acceso a información personal, cursos, pagos, comprobantes, tareas y comunidad.</td></tr>
+                <tr><td>Invitado</td><td>Acceso a información pública y soporte inicial.</td></tr>
+            </table>
+
+            <h2>11.3 Seguridad de cuenta</h2>
+            <ul>
+                <li>Usar contraseñas personales y no reutilizadas.</li>
+                <li>No compartir credenciales por mensajes o capturas.</li>
+                <li>Solicitar cambio de contraseña si se sospecha acceso indebido.</li>
+                <li>Cerrar sesión en dispositivos compartidos.</li>
+                <li>Contactar a administración ante cambios de rol o estado.</li>
+            </ul>
+
+            <h2>11.4 CEMI Key</h2>
+            <p>CEMI Key es un acceso de seguridad complementario para perfiles habilitados. Su uso permite validar identidad en flujos específicos y reforzar el control de acceso. Si el usuario pierde o expone su clave, debe solicitar regeneración a administración.</p>
+        </section>
+
+        <section id="salida">
+            <h1>12. Salida segura y buenas prácticas</h1>
+            <h2>12.1 Procedimiento de cierre de sesión</h2>
+            <div class="screen">
+                <div class="screen-bar"><span>Representación visual: cierre de sesión</span><span>Cuenta</span></div>
+                <div class="screen-body">
+                    <div class="step-flow">
+                        <div class="flow-item">Abrir menú</div>
+                        <div class="flow-item">Elegir salir</div>
+                        <div class="flow-item">Confirmar</div>
+                        <div class="flow-item">Volver al acceso</div>
+                    </div>
+                </div>
+            </div>
+            <ol>
+                <li>Abrir el menú de usuario desde la barra superior o panel.</li>
+                <li>Seleccionar <strong>Cerrar sesión</strong>.</li>
+                <li>Esperar la redirección a la pantalla pública o login.</li>
+                <li>En equipos compartidos, cerrar también la ventana del navegador.</li>
+            </ol>
+
+            <h2>12.2 Buenas prácticas generales</h2>
+            <ul>
+                <li>Revisar los datos antes de guardar altas o modificaciones.</li>
+                <li>Usar estados inactivos antes que eliminar información con historial.</li>
+                <li>Registrar observaciones en correcciones administrativas.</li>
+                <li>Verificar alumno, curso y concepto antes de confirmar pagos.</li>
+                <li>Consultar notificaciones y mensajes pendientes al iniciar la jornada.</li>
+                <li>Reportar errores, accesos sospechosos o datos inconsistentes.</li>
+            </ul>
+        </section>
 
         <footer>
             <p>Manual de Usuario TFI - CEMI Sistema Gestor</p>
