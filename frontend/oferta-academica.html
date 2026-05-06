@@ -56,9 +56,12 @@
       font-weight: 800;
     }
     .brand img {
-      width: 42px;
-      height: 42px;
+      width: 226px;
+      height: 79px;
       object-fit: contain;
+    }
+    .brand span {
+      display: none;
     }
     .back-link {
       display: inline-flex;
@@ -179,7 +182,7 @@
       display: block;
       font-family: Georgia, "Times New Roman", serif;
       font-size: 29px;
-      font-weight: 400;
+      font-weight: 700;
       line-height: 1.08;
       margin-bottom: 9px;
     }
@@ -197,6 +200,8 @@
     }
     .section-head h2 {
       margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
       font-size: clamp(25px, 3vw, 36px);
       color: var(--ink);
       letter-spacing: 0;
@@ -236,7 +241,7 @@
       cursor: pointer;
       text-align: left;
       display: grid;
-      grid-template-columns: auto 1fr auto auto;
+      grid-template-columns: 1fr auto auto;
       align-items: center;
       gap: 16px;
       color: inherit;
@@ -244,22 +249,13 @@
     .language-item.inactive .language-button {
       background: linear-gradient(90deg, rgba(250,248,244,0.9), rgba(235,231,224,0.68));
     }
-    .emoji {
-      width: 54px;
-      height: 54px;
-      border-radius: 16px;
-      display: grid;
-      place-items: center;
-      font-size: 31px;
-      background: #f3eee5;
-      border: 1px solid var(--line);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.78);
-    }
     .language-title {
       min-width: 0;
     }
     .language-title h3 {
       margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
       color: #242321;
       font-size: 21px;
       letter-spacing: 0;
@@ -324,7 +320,7 @@
       border-top-color: var(--line);
     }
     .details-inner {
-      padding: 0 20px 20px 90px;
+      padding: 0 20px 20px;
       display: grid;
       gap: 16px;
     }
@@ -368,6 +364,8 @@
       margin-bottom: 5px;
     }
     .detail-box strong {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
       color: #2c2a27;
       font-size: 14px;
       line-height: 1.35;
@@ -410,16 +408,16 @@
         font-size: 13px;
       }
       .language-button {
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: 1fr auto;
         gap: 12px;
       }
       .status {
-        grid-column: 2 / -1;
+        grid-column: 1 / -1;
         justify-self: start;
         white-space: normal;
       }
       .chevron {
-        grid-column: 3;
+        grid-column: 2;
         grid-row: 1;
       }
       .details-inner {
@@ -431,7 +429,7 @@
 <body>
   <header class="topbar">
     <a class="brand" href="index.html">
-      <img src="images/logo.png" alt="CEMI">
+      <img src="images/logolongblack.png" alt="Logo CEMI">
       <span>CEMI</span>
     </a>
     <a class="back-link" href="index.html">
@@ -485,15 +483,15 @@
     const API_URL = window.API_URL || "http://localhost:3000/api";
     const list = document.getElementById('languagesList');
     const languageMeta = {
-      Aleman: { name: 'Alemán', emoji: '🥨', intro: 'Una opción sólida para perfiles técnicos, académicos y profesionales con proyección internacional.', focus: 'Lectura, conversación progresiva y vocabulario aplicado.' },
-      Frances: { name: 'Francés', emoji: '🗼', intro: 'Ideal para cultura, turismo, comunicación internacional y trayectos académicos.', focus: 'Pronunciación, estructuras cotidianas y comprensión oral.' },
-      Ingles: { name: 'Inglés', emoji: '💂', intro: 'El idioma clave para estudio, trabajo, tecnología y comunicación global.', focus: 'Comunicación práctica, gramática funcional y vocabulario moderno.' },
-      Italiano: { name: 'Italiano', emoji: '🍝', intro: 'Un recorrido cercano a la cultura, la conversación y la expresión cotidiana.', focus: 'Conversación, escucha activa y bases gramaticales.' },
-      Japones: { name: 'Japonés', emoji: '🌸', intro: 'Un aprendizaje gradual para acercarse a su escritura, cultura y comunicación básica.', focus: 'Introducción a escritura, pronunciación y frases esenciales.' },
-      Portugues: { name: 'Portugués', emoji: '🎶', intro: 'Una alternativa práctica para viajes, trabajo regional y comunicación en Sudamérica.', focus: 'Conversación regional, comprensión y vocabulario cotidiano.' },
-      'Chino Mandarin': { name: 'Chino Mandarín', emoji: '🏮', intro: 'Un acercamiento progresivo a uno de los idiomas más influyentes del mundo.', focus: 'Tonos, vocabulario inicial y comunicación básica.' },
-      Coreano: { name: 'Coreano', emoji: '🎧', intro: 'Una propuesta para iniciar lectura, pronunciación y comunicación cotidiana.', focus: 'Hangul, pronunciación y expresiones frecuentes.' },
-      Ruso: { name: 'Ruso', emoji: '🪆', intro: 'Una base para explorar su alfabeto, estructura y conversación inicial.', focus: 'Alfabeto cirílico, lectura inicial y frases útiles.' }
+      Aleman: { name: 'Alemán', intro: 'Una opción sólida para perfiles técnicos, académicos y profesionales con proyección internacional.', focus: 'Lectura, conversación progresiva y vocabulario aplicado.' },
+      Frances: { name: 'Francés', intro: 'Ideal para cultura, turismo, comunicación internacional y trayectos académicos.', focus: 'Pronunciación, estructuras cotidianas y comprensión oral.' },
+      Ingles: { name: 'Inglés', intro: 'El idioma clave para estudio, trabajo, tecnología y comunicación global.', focus: 'Comunicación práctica, gramática funcional y vocabulario moderno.' },
+      Italiano: { name: 'Italiano', intro: 'Un recorrido cercano a la cultura, la conversación y la expresión cotidiana.', focus: 'Conversación, escucha activa y bases gramaticales.' },
+      Japones: { name: 'Japonés', intro: 'Un aprendizaje gradual para acercarse a su escritura, cultura y comunicación básica.', focus: 'Introducción a escritura, pronunciación y frases esenciales.' },
+      Portugues: { name: 'Portugués', intro: 'Una alternativa práctica para viajes, trabajo regional y comunicación en Sudamérica.', focus: 'Conversación regional, comprensión y vocabulario cotidiano.' },
+      'Chino Mandarin': { name: 'Chino Mandarín', intro: 'Un acercamiento progresivo a uno de los idiomas más influyentes del mundo.', focus: 'Tonos, vocabulario inicial y comunicación básica.' },
+      Coreano: { name: 'Coreano', intro: 'Una propuesta para iniciar lectura, pronunciación y comunicación cotidiana.', focus: 'Hangul, pronunciación y expresiones frecuentes.' },
+      Ruso: { name: 'Ruso', intro: 'Una base para explorar su alfabeto, estructura y conversación inicial.', focus: 'Alfabeto cirílico, lectura inicial y frases útiles.' }
     };
 
     function normalizeLevel(level) {
@@ -503,7 +501,6 @@
     function getLanguageMeta(idioma) {
       return languageMeta[idioma.nombre_idioma] || {
         name: idioma.nombre_idioma,
-        emoji: '🌐',
         intro: 'Propuesta de idioma disponible para consulta presencial en CEMI.',
         focus: 'Niveles y orientación académica según disponibilidad institucional.'
       };
@@ -541,7 +538,6 @@
         return `
           <article class="language-item ${disponible ? 'active' : 'inactive'}" data-id="${idioma.id_idioma}">
             <button class="language-button" type="button" onclick="toggleLanguageItem(${idioma.id_idioma}, this)" aria-expanded="false">
-              <span class="emoji">${meta.emoji}</span>
               <span class="language-title">
                 <h3>${meta.name}</h3>
                 <span>${niveles.length || nivelesUniversales.length || 0} nivel${(niveles.length || nivelesUniversales.length) !== 1 ? 'es' : ''} publicados para consulta</span>
