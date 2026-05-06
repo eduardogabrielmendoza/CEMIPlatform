@@ -13,7 +13,18 @@ router.get("/", async (req, res) => {
     let where = [];
     let params = [];
 
-    if (estado) { where.push('a.estado = ?'); params.push(estado); }
+    if (estado) {
+      const estados = String(estado).split(',').map(item => item.trim()).filter(Boolean);
+      if (estados.includes('ninguno')) {
+        where.push('1=0');
+      } else if (estados.length === 1) {
+        where.push('a.estado = ?');
+        params.push(estados[0]);
+      } else if (estados.length > 1) {
+        where.push(`a.estado IN (${estados.map(() => '?').join(',')})`);
+        params.push(...estados);
+      }
+    }
     if (busqueda) {
       where.push('(p.nombre LIKE ? OR p.apellido LIKE ? OR a.legajo LIKE ? OR p.mail LIKE ? OR p.dni LIKE ?)');
       const b = `%${busqueda}%`;

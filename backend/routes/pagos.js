@@ -4,6 +4,7 @@ import { body, param, validationResult } from "express-validator";
 import eventLogger from "../utils/eventLogger.js";
 
 const router = express.Router();
+const MEDIOS_PAGO_BASE = ["Efectivo", "Transferencia", "Tarjeta de Credito", "Tarjeta de Debito"];
 
 function normalizeMedioPago(medio) {
   if (!medio) return medio;
@@ -21,6 +22,18 @@ function getMedioPagoVariants(medio) {
     return ["Tarjeta de Debito", "Tarjeta de Débito", "Tarjeta de D\u00c3\u00a9bito"];
   }
   return [medio];
+}
+
+async function getOrCreateMedioPagoId(medio) {
+  const normalized = normalizeMedioPago(medio);
+  const medios = getMedioPagoVariants(normalized);
+  const [rows] = await pool.query(
+    `SELECT id_medio_pago FROM medios_pago WHERE descripcion IN (${medios.map(() => "?").join(",")}) LIMIT 1`,
+    medios
+  );
+  if (rows.length > 0) return rows[0].id_medio_pago;
+  const [result] = await pool.query("INSERT INTO medios_pago (descripcion) VALUES (?)", [normalized]);
+  return result.insertId;
 }
 
 function buildDateFilter(query, alias = "pa") {
@@ -197,7 +210,12 @@ router.get("/", async (req, res) => {
       ...row,
       medio_pago: normalizeMedioPago(row.medio_pago)
     }));
-    const mediosPago = [...new Set(mediosRows.map(row => normalizeMedioPago(row.medio_pago)).filter(Boolean))];
+    const [mediosCatalogoRows] = await pool.query("SELECT descripcion FROM medios_pago ORDER BY descripcion");
+    const mediosPago = [...new Set([
+      ...MEDIOS_PAGO_BASE,
+      ...mediosCatalogoRows.map(row => normalizeMedioPago(row.descripcion)).filter(Boolean),
+      ...mediosRows.map(row => normalizeMedioPago(row.medio_pago)).filter(Boolean)
+    ])];
 
     res.json({
       pagos,
@@ -591,20 +609,7 @@ router.post("/realizar",
       });
     }
 
-    const mediosPago = getMedioPagoVariants(medio_pago);
-    const [medios] = await pool.query(
-      `SELECT id_medio_pago FROM medios_pago WHERE descripcion IN (${mediosPago.map(() => "?").join(",")}) LIMIT 1`,
-      mediosPago
-    );
-
-    if (medios.length === 0) {
-      return res.status(400).json({ 
-        success: false,
-        message: "Medio de pago no válido" 
-      });
-    }
-
-    const id_medio_pago = medios[0].id_medio_pago;
+    const id_medio_pago = await getOrCreateMedioPagoId(medio_pago);
 
     const id_concepto = mes_cuota === 'Matricula' ? 1 : 2;
 

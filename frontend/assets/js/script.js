@@ -141,6 +141,17 @@ function getProfesorEstadoParamFromStorage() {
   return `&estado=${encodeURIComponent(estados.length ? estados.join(',') : 'ninguno')}`;
 }
 
+function getAlumnoEstadoParamFromStorage() {
+  let state = { activo: true, inactivo: false };
+  try {
+    state = { ...state, ...JSON.parse(sessionStorage.getItem('cemi_filter_alumnos') || '{}') };
+  } catch (error) {}
+  const estados = [];
+  if (state.activo) estados.push('activo');
+  if (state.inactivo) estados.push('inactivo');
+  return `&estado=${encodeURIComponent(estados.length ? estados.join(',') : 'ninguno')}`;
+}
+
 function reloadProfesoresPorEstado() {
   if (typeof saveFilterState === 'function') saveFilterState('profesores');
   const btn = document.getElementById('btnProfesores');
@@ -201,7 +212,7 @@ function initAdminSPA() {
           endpoint = `${API_URL}/cursos?limit=999&offset=0`;
           break;
         case "alumnos":
-          endpoint = `${API_URL}/alumnos?limit=${PAGE_SIZE}&offset=0`;
+          endpoint = `${API_URL}/alumnos?limit=${PAGE_SIZE}&offset=0${getAlumnoEstadoParamFromStorage()}`;
           break;
         case "profesores":
           endpoint = `${API_URL}/profesores?limit=${PAGE_SIZE}&offset=0${getProfesorEstadoParamFromStorage()}`;
@@ -418,6 +429,7 @@ async function goToPage(section, pageOrDir) {
   try {
     const offset = (targetPage - 1) * state.pageSize;
     let url = `${API_URL}/${section}?limit=${state.pageSize}&offset=${offset}`;
+    if (section === 'alumnos') url += getAlumnoEstadoParamFromStorage();
     if (section === 'profesores') url += getProfesorEstadoParamFromStorage();
     const res = await fetch(url);
     const responseData = await res.json();
@@ -6009,6 +6021,7 @@ function debounceSearch(section, fn, delay) {
 // Server-side search across all records
 function searchServerSide(section, query) {
   var url = API_URL + '/' + section + '?busqueda=' + encodeURIComponent(query) + '&limit=100';
+  if (section === 'alumnos') url += getAlumnoEstadoParamFromStorage();
   if (section === 'profesores') url += getProfesorEstadoParamFromStorage();
   fetch(url).then(function(res) { return res.json(); }).then(function(data) {
     var rows = data.data || data;
