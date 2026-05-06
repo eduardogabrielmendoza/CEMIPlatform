@@ -281,6 +281,25 @@
       return level.descripcion || level.nombre || level.nivel || 'Nivel general';
     }
 
+    function formatLanguageName(name) {
+      const names = {
+        Aleman: 'Alemán',
+        Frances: 'Francés',
+        Ingles: 'Inglés',
+        Japones: 'Japonés',
+        Portugues: 'Portugués',
+        'Chino Mandarin': 'Chino Mandarín'
+      };
+      return names[name] || name;
+    }
+
+    function formatFlag(value) {
+      if (!value) return '🌐';
+      const clean = String(value).trim();
+      if (clean.length !== 2 || !/^[a-z]{2}$/i.test(clean)) return clean;
+      return clean.toUpperCase().replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt(0)));
+    }
+
     function renderOffer(data) {
       const idiomas = data.idiomas || [];
       const nivelesUniversales = data.niveles_universales || [];
@@ -305,8 +324,8 @@
           <article class="language-card ${disponible ? 'available' : 'unavailable'}" aria-disabled="${!disponible}">
             <div class="language-header">
               <div class="language-title">
-                <span class="flag">${idioma.bandera || '🌐'}</span>
-                <h3>${idioma.nombre_idioma}</h3>
+                <span class="flag">${formatFlag(idioma.bandera)}</span>
+                <h3>${formatLanguageName(idioma.nombre_idioma)}</h3>
               </div>
               <span class="status ${disponible ? 'available' : 'unavailable'}">
                 <i data-lucide="${disponible ? 'check-circle' : 'minus-circle'}"></i>
