@@ -10574,8 +10574,8 @@ function ajustarModalCodigoCemiVertical() {
   const popup = Swal.getPopup();
   if (!popup) return;
   popup.classList.add('codigo-cemi-modal');
-  popup.style.setProperty('width', 'min(420px, calc(100vw - 32px))', 'important');
-  popup.style.setProperty('max-width', '420px', 'important');
+  popup.style.setProperty('width', 'min(640px, calc(100vw - 32px))', 'important');
+  popup.style.setProperty('max-width', '640px', 'important');
   const html = popup.querySelector('.swal2-html-container');
   if (html) {
     html.style.setProperty('margin', '0', 'important');

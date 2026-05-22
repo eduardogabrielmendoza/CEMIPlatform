@@ -9832,7 +9832,8 @@ body.admin .swal2-html-container select {
 }
 
 body.admin .swal2-popup.codigo-cemi-modal {
-  width: min(420px, calc(100vw - 32px)) !important;
+  width: min(640px, calc(100vw - 32px)) !important;
+  max-width: 640px !important;
 }
 
 body.admin .swal2-popup.codigo-cemi-modal .swal2-html-container {
