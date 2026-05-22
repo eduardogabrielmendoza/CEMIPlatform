@@ -1764,6 +1764,188 @@
 
     // La función showNotification ya está definida arriba
 
+    const PROFESOR_PAGE_SIZE = 8;
+    const profesorPaginationState = {
+      cursoDetalle: { items: [], page: 1, search: '' },
+      calificaciones: { items: [], page: 1, search: '' },
+      asistencias: { items: [], page: 1 }
+    };
+
+    function buildProfesorPagination(handlerName, page, totalPages, total, pageSize) {
+      if (!total) return '';
+      const showFrom = (page - 1) * pageSize + 1;
+      const showTo = Math.min(page * pageSize, total);
+      return `
+        <div class="curso-alumnos-pagination">
+          <button class="pagination-icon-btn" onclick="${handlerName}(${page - 1})" ${page <= 1 ? 'disabled' : ''} title="Página anterior">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <input type="range" min="1" max="${totalPages}" value="${page}" oninput="${handlerName}(parseInt(this.value, 10))" aria-label="Página">
+          <span>Mostrando ${showFrom}-${showTo} de ${total}</span>
+          <button class="pagination-icon-btn" onclick="${handlerName}(${page + 1})" ${page >= totalPages ? 'disabled' : ''} title="Página siguiente">
+            <i data-lucide="chevron-right"></i>
+          </button>
+        </div>`;
+    }
+
+    function clampProfesorPage(page, totalPages) {
+      const parsed = parseInt(page, 10);
+      if (!parsed || parsed < 1) return 1;
+      return Math.min(parsed, totalPages);
+    }
+
+    function calcularPromedioAlumno(alumno) {
+      const valores = ['parcial1', 'parcial2', 'final']
+        .map(key => alumno[key] === null || alumno[key] === undefined || alumno[key] === '' ? null : parseFloat(alumno[key]))
+        .filter(value => Number.isFinite(value));
+      if (!valores.length) return null;
+      return valores.reduce((sum, value) => sum + value, 0) / valores.length;
+    }
+
+    function getEstadoCalificacion(promedio) {
+      if (promedio === null) return { texto: 'Pendiente', color: '#9ca3af', clase: 'pendiente' };
+      if (promedio >= 7) return { texto: 'Aprobado', color: '#22c55e', clase: 'aprobado' };
+      if (promedio >= 5) return { texto: 'Regular', color: '#f59e0b', clase: 'pendiente' };
+      return { texto: 'Reprobado', color: '#ef4444', clase: 'reprobado' };
+    }
+
+    function escapeProfesorAttribute(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function renderCursoDetalleRow(alumno) {
+      const promedio = calcularPromedioAlumno(alumno);
+      const estado = getEstadoCalificacion(promedio);
+      return `
+        <tr data-nombre="${escapeProfesorAttribute((alumno.nombre_completo || '').toLowerCase())}" data-email="${escapeProfesorAttribute((alumno.mail || '').toLowerCase())}">
+          <td><strong>${alumno.nombre_completo || '-'}</strong></td>
+          <td>${alumno.mail || '-'}</td>
+          <td>${alumno.fecha_inscripcion ? new Date(alumno.fecha_inscripcion).toLocaleDateString('es-AR') : '-'}</td>
+          <td class="center"><strong>${promedio !== null ? promedio.toFixed(2) : '-'}</strong></td>
+          <td class="center"><span class="calificacion-badge ${estado.clase}">${estado.texto}</span></td>
+        </tr>`;
+    }
+
+    window.renderCursoDetalleAlumnosPage = function(page = 1) {
+      const tbody = document.getElementById('tablaAlumnosDetalleBody');
+      const pagination = document.getElementById('cursoDetalleAlumnosPagination');
+      if (!tbody) return;
+      const state = profesorPaginationState.cursoDetalle;
+      const search = (state.search || '').toLowerCase();
+      const filtered = state.items.filter(alumno => {
+        const nombre = (alumno.nombre_completo || '').toLowerCase();
+        const email = (alumno.mail || '').toLowerCase();
+        return !search || nombre.includes(search) || email.includes(search);
+      });
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PROFESOR_PAGE_SIZE));
+      const safePage = clampProfesorPage(page, totalPages);
+      state.page = safePage;
+      const start = (safePage - 1) * PROFESOR_PAGE_SIZE;
+      const visible = filtered.slice(start, start + PROFESOR_PAGE_SIZE);
+      tbody.innerHTML = visible.length
+        ? visible.map(renderCursoDetalleRow).join('')
+        : '<tr><td colspan="5" style="text-align:center; padding: 40px;">No hay alumnos para mostrar</td></tr>';
+      if (pagination) {
+        pagination.innerHTML = buildProfesorPagination('renderCursoDetalleAlumnosPage', safePage, totalPages, filtered.length, PROFESOR_PAGE_SIZE);
+      }
+      lucide.createIcons();
+    };
+
+    function renderCalificacionRow(alumno) {
+      const promedio = calcularPromedioAlumno(alumno);
+      const estado = getEstadoCalificacion(promedio);
+      return `
+        <tr data-alumno-id="${alumno.id_alumno}" data-alumno="${escapeProfesorAttribute((alumno.nombre_completo || '').toLowerCase())}">
+          <td style="padding: 14px 16px; font-size: 14px; font-weight: 500;">${alumno.nombre_completo}</td>
+          <td style="padding: 14px 16px; text-align: center;">
+            <input type="number" class="nota-input" data-tipo="parcial1" value="${alumno.parcial1 || ''}" min="1" max="10" step="0.01" placeholder="-" onchange="actualizarCalificacionAlumno(${alumno.id_alumno}, 'parcial1', this.value); marcarModificado(${alumno.id_alumno})" style="width: 60px; padding: 6px 8px; border: 1px solid #e5e7eb; border-radius: 8px; text-align: center; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#4a5259'; this.style.boxShadow='0 0 0 3px rgba(74,82,89,0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'" />
+          </td>
+          <td style="padding: 14px 16px; text-align: center;">
+            <input type="number" class="nota-input" data-tipo="parcial2" value="${alumno.parcial2 || ''}" min="1" max="10" step="0.01" placeholder="-" onchange="actualizarCalificacionAlumno(${alumno.id_alumno}, 'parcial2', this.value); marcarModificado(${alumno.id_alumno})" style="width: 60px; padding: 6px 8px; border: 1px solid #e5e7eb; border-radius: 8px; text-align: center; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#4a5259'; this.style.boxShadow='0 0 0 3px rgba(74,82,89,0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'" />
+          </td>
+          <td style="padding: 14px 16px; text-align: center;">
+            <input type="number" class="nota-input" data-tipo="final" value="${alumno.final || ''}" min="1" max="10" step="0.01" placeholder="-" onchange="actualizarCalificacionAlumno(${alumno.id_alumno}, 'final', this.value); marcarModificado(${alumno.id_alumno})" style="width: 60px; padding: 6px 8px; border: 1px solid #e5e7eb; border-radius: 8px; text-align: center; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#4a5259'; this.style.boxShadow='0 0 0 3px rgba(74,82,89,0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'" />
+          </td>
+          <td style="padding: 14px 16px; text-align: center; font-weight: 600; color: ${estado.color};">
+            ${promedio !== null ? promedio.toFixed(1) : '-'}
+          </td>
+          <td style="padding: 14px 16px; text-align: center;">
+            <span style="background: ${estado.color}15; color: ${estado.color}; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">${estado.texto}</span>
+          </td>
+        </tr>`;
+    }
+
+    window.renderCalificacionesPage = function(page = 1) {
+      const tbody = document.getElementById('tablaCalificacionesBody');
+      const pagination = document.getElementById('calificacionesPagination');
+      if (!tbody) return;
+      const state = profesorPaginationState.calificaciones;
+      const search = (state.search || '').toLowerCase();
+      const filtered = state.items.filter(alumno => !search || (alumno.nombre_completo || '').toLowerCase().includes(search));
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PROFESOR_PAGE_SIZE));
+      const safePage = clampProfesorPage(page, totalPages);
+      state.page = safePage;
+      const start = (safePage - 1) * PROFESOR_PAGE_SIZE;
+      const visible = filtered.slice(start, start + PROFESOR_PAGE_SIZE);
+      tbody.innerHTML = visible.length
+        ? visible.map(renderCalificacionRow).join('')
+        : '<tr><td colspan="6" style="text-align:center; padding: 40px; color: #9ca3af;">No hay alumnos para mostrar</td></tr>';
+      if (pagination) {
+        pagination.innerHTML = buildProfesorPagination('renderCalificacionesPage', safePage, totalPages, filtered.length, PROFESOR_PAGE_SIZE);
+      }
+      lucide.createIcons();
+    };
+
+    window.actualizarCalificacionAlumno = function(idAlumno, tipo, valor) {
+      const alumno = profesorPaginationState.calificaciones.items.find(item => parseInt(item.id_alumno) === parseInt(idAlumno));
+      if (!alumno) return;
+      alumno[tipo] = valor === '' ? null : parseFloat(valor);
+    };
+
+    function renderAsistenciaRow(alumno) {
+      const estados = ['presente', 'ausente', 'tardanza', 'justificado'];
+      const iconos = { presente: 'check', ausente: 'x', tardanza: 'clock', justificado: 'file-text' };
+      const colores = { presente: '#22c55e', ausente: '#ef4444', tardanza: '#f59e0b', justificado: '#6b7280' };
+      const botonesEstado = estados.map(e => {
+        const isActive = alumno.estado === e;
+        return '<button class="btn-estado-asistencia ' + e + (isActive ? ' active' : '') + '" onclick="cambiarEstadoAsistencia(' + alumno.id_alumno + ', \'' + e + '\')" title="' + e.charAt(0).toUpperCase() + e.slice(1) + '" style="width: 34px; height: 34px; border-radius: 50%; border: 2px solid ' + (isActive ? colores[e] : '#e5e7eb') + '; background: ' + (isActive ? colores[e] + '15' : 'white') + '; color: ' + (isActive ? colores[e] : '#9ca3af') + '; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: all 0.15s;"><i data-lucide="' + iconos[e] + '" style="width: 14px; height: 14px;"></i></button>';
+      }).join('');
+      return '<tr data-alumno-id="' + alumno.id_alumno + '">' +
+        '<td style="padding: 14px 16px; font-size: 14px; font-weight: 500;">' + alumno.nombre_completo + '</td>' +
+        '<td style="padding: 14px 16px; text-align: center;"><div style="display: flex; gap: 6px; justify-content: center;">' + botonesEstado + '</div></td>' +
+        '<td style="padding: 14px 16px;"><input type="text" class="observaciones-input" placeholder="Observación..." value="' + escapeProfesorAttribute(alumno.observaciones || '') + '" data-alumno-id="' + alumno.id_alumno + '" oninput="actualizarObservacionAsistencia(' + alumno.id_alumno + ', this.value)" style="width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: Inter, sans-serif; outline: none;" onfocus="this.style.borderColor=\'#4a5259\'" onblur="this.style.borderColor=\'#e5e7eb\'" /></td>' +
+        '</tr>';
+    }
+
+    window.renderAsistenciasPage = function(page = 1) {
+      const tbody = document.getElementById('asistenciasTableBody');
+      const pagination = document.getElementById('asistenciasPagination');
+      if (!tbody) return;
+      const state = profesorPaginationState.asistencias;
+      const totalPages = Math.max(1, Math.ceil(state.items.length / PROFESOR_PAGE_SIZE));
+      const safePage = clampProfesorPage(page, totalPages);
+      state.page = safePage;
+      const start = (safePage - 1) * PROFESOR_PAGE_SIZE;
+      const visible = state.items.slice(start, start + PROFESOR_PAGE_SIZE);
+      tbody.innerHTML = visible.length
+        ? visible.map(renderAsistenciaRow).join('')
+        : '<tr><td colspan="3" style="text-align:center; padding: 40px; color: #9ca3af;">No hay alumnos inscritos en este curso</td></tr>';
+      if (pagination) {
+        pagination.innerHTML = buildProfesorPagination('renderAsistenciasPage', safePage, totalPages, state.items.length, PROFESOR_PAGE_SIZE);
+      }
+      lucide.createIcons();
+    };
+
+    window.actualizarObservacionAsistencia = function(idAlumno, valor) {
+      const alumno = profesorPaginationState.asistencias.items.find(item => parseInt(item.id_alumno) === parseInt(idAlumno));
+      if (alumno) alumno.observaciones = valor;
+    };
+
     // Función para abrir panel de detalles del curso
     window.openCursoDetalle = async function(idCurso) {
       try {
@@ -1795,6 +1977,7 @@
         loader.classList.add('hidden');
 
         const { curso, alumnos, estadisticas } = data;
+        profesorPaginationState.cursoDetalle = { items: alumnos || [], page: 1, search: '' };
 
         // Renderizar contenido del panel MEJORADO
         panel.innerHTML = `
@@ -1898,40 +2081,15 @@
                     <th>Alumno</th>
                     <th>Email</th>
                     <th>Inscripción</th>
-                    <th class="center">Parcial 1</th>
-                    <th class="center">Parcial 2</th>
-                    <th class="center">Final</th>
                     <th class="center">Promedio</th>
                     <th class="center">Estado</th>
                   </tr>
                 </thead>
-                <tbody>
-                  ${alumnos.length > 0 ? alumnos.map(alumno => {
-                    const promedio = parseFloat(alumno.promedio || 0);
-                    let badge = '';
-                    if (promedio === 0) {
-                      badge = '<span class="calificacion-badge pendiente">Pendiente</span>';
-                    } else if (promedio >= 7) {
-                      badge = '<span class="calificacion-badge aprobado">Aprobado</span>';
-                    } else {
-                      badge = '<span class="calificacion-badge reprobado">Reprobado</span>';
-                    }
-                    
-                    return `
-                      <tr data-nombre="${alumno.nombre_completo.toLowerCase()}">
-                        <td><strong>${alumno.nombre_completo}</strong></td>
-                        <td>${alumno.mail}</td>
-                        <td>${new Date(alumno.fecha_inscripcion).toLocaleDateString('es-ES')}</td>
-                        <td class="center">${alumno.parcial1 || '-'}</td>
-                        <td class="center">${alumno.parcial2 || '-'}</td>
-                        <td class="center">${alumno.final || '-'}</td>
-                        <td class="center"><strong>${promedio > 0 ? promedio.toFixed(2) : '-'}</strong></td>
-                        <td class="center">${badge}</td>
-                      </tr>
-                    `;
-                  }).join('') : '<tr><td colspan="8" style="text-align:center; padding: 40px;">No hay alumnos inscritos</td></tr>'}
+                <tbody id="tablaAlumnosDetalleBody">
+                  <tr><td colspan="5" style="text-align:center; padding: 40px;">Cargando alumnos...</td></tr>
                 </tbody>
               </table>
+              <div id="cursoDetalleAlumnosPagination"></div>
             </div>
           </div>
         `;
@@ -1944,6 +2102,7 @@
 
         // Reinicializar iconos
         lucide.createIcons();
+        renderCursoDetalleAlumnosPage(1);
 
         // Cerrar al hacer clic en overlay
         overlay.onclick = closeCursoDetalle;
@@ -1965,18 +2124,8 @@
 
     // Función para filtrar alumnos en el detalle del curso
     window.filtrarAlumnosDetalle = function() {
-      const busqueda = document.getElementById('buscarAlumnoDetalle').value.toLowerCase();
-      const tabla = document.getElementById('tablaAlumnosDetalle');
-      const filas = tabla.querySelectorAll('tbody tr');
-
-      filas.forEach(fila => {
-        const nombre = fila.dataset.nombre || '';
-        if (nombre.includes(busqueda)) {
-          fila.style.display = '';
-        } else {
-          fila.style.display = 'none';
-        }
-      });
+      profesorPaginationState.cursoDetalle.search = document.getElementById('buscarAlumnoDetalle').value.toLowerCase();
+      renderCursoDetalleAlumnosPage(1);
     };
 
     // Funciones para acciones rápidas desde el detalle
@@ -2006,6 +2155,7 @@
         const data = await res.json();
         
         const { alumnos, estadisticas } = data;
+        profesorPaginationState.calificaciones = { items: alumnos || [], page: 1, search: '' };
 
         const calificacionesContent = document.getElementById('calificacionesContent');
         calificacionesContent.style.display = 'block';
@@ -2102,12 +2252,14 @@
                 </tr>
               </thead>
               <tbody id="tablaCalificacionesBody">
-                ${filasAlumnos}
+                <tr><td colspan="6" style="text-align:center; padding: 40px; color: #9ca3af;">Cargando alumnos...</td></tr>
               </tbody>
             </table>
+            <div id="calificacionesPagination"></div>
           </div>
         `;
 
+        renderCalificacionesPage(1);
         calificacionesContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
         lucide.createIcons();
         loader.classList.add('hidden');
@@ -2134,19 +2286,17 @@
     // Guardar todas las calificaciones a la vez
     window.guardarTodasCalificaciones = async function(idCurso) {
       try {
-        const filas = document.querySelectorAll('#tablaCalificacionesBody tr[data-alumno-id]');
+        const alumnos = profesorPaginationState.calificaciones.items || [];
         let guardadas = 0;
         let errores = 0;
 
         loader.classList.remove('hidden');
 
-        for (const fila of filas) {
-          const idAlumno = fila.dataset.alumnoId;
-          const inputs = fila.querySelectorAll('.nota-input');
-          
-          const parcial1 = inputs[0].value ? parseFloat(inputs[0].value) : null;
-          const parcial2 = inputs[1].value ? parseFloat(inputs[1].value) : null;
-          const final = inputs[2].value ? parseFloat(inputs[2].value) : null;
+        for (const alumno of alumnos) {
+          const idAlumno = alumno.id_alumno;
+          const parcial1 = alumno.parcial1 === null || alumno.parcial1 === undefined || alumno.parcial1 === '' ? null : parseFloat(alumno.parcial1);
+          const parcial2 = alumno.parcial2 === null || alumno.parcial2 === undefined || alumno.parcial2 === '' ? null : parseFloat(alumno.parcial2);
+          const final = alumno.final === null || alumno.final === undefined || alumno.final === '' ? null : parseFloat(alumno.final);
 
           try {
             const response = await fetch(`${API_URL}/calificaciones/todas`, {
@@ -2162,7 +2312,6 @@
             });
 
             if (response.ok) {
-              fila.style.background = '#e8f5e9';
               guardadas++;
             } else {
               errores++;
@@ -2196,13 +2345,8 @@
 
     // Filtrar alumnos por nombre
     window.filtrarAlumnos = function() {
-      const busqueda = document.getElementById('buscarAlumno').value.toLowerCase();
-      const filas = document.querySelectorAll('#tablaCalificacionesBody tr');
-
-      filas.forEach(fila => {
-        const nombreAlumno = fila.dataset.alumno || '';
-        fila.style.display = nombreAlumno.includes(busqueda) ? '' : 'none';
-      });
+      profesorPaginationState.calificaciones.search = document.getElementById('buscarAlumno').value.toLowerCase();
+      renderCalificacionesPage(1);
     };
 
     // FUNCIONES DE ASISTENCIAS
@@ -2304,6 +2448,7 @@
                 </tr>
               </tbody>
             </table>
+            <div id="asistenciasPagination"></div>
           </div>
         `;
 
@@ -2330,6 +2475,7 @@
         const alumnos = await res.json();
 
         const tbody = document.getElementById('asistenciasTableBody');
+        profesorPaginationState.asistencias = { items: alumnos || [], page: 1 };
         
         if (alumnos.length === 0) {
           tbody.innerHTML = `
@@ -2339,28 +2485,12 @@
               </td>
             </tr>
           `;
+          const pagination = document.getElementById('asistenciasPagination');
+          if (pagination) pagination.innerHTML = '';
           return;
         }
 
-        const filasAsist = alumnos.map(alumno => {
-          const estados = ['presente', 'ausente', 'tardanza', 'justificado'];
-          const iconos = { presente: 'check', ausente: 'x', tardanza: 'clock', justificado: 'file-text' };
-          const colores = { presente: '#22c55e', ausente: '#ef4444', tardanza: '#f59e0b', justificado: '#6b7280' };
-
-          const botonesEstado = estados.map(e => {
-            const isActive = alumno.estado === e;
-            return '<button class="btn-estado-asistencia ' + e + (isActive ? ' active' : '') + '" onclick="cambiarEstadoAsistencia(' + alumno.id_alumno + ', \'' + e + '\')" title="' + e.charAt(0).toUpperCase() + e.slice(1) + '" style="width: 34px; height: 34px; border-radius: 50%; border: 2px solid ' + (isActive ? colores[e] : '#e5e7eb') + '; background: ' + (isActive ? colores[e] + '15' : 'white') + '; color: ' + (isActive ? colores[e] : '#9ca3af') + '; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; transition: all 0.15s;"><i data-lucide="' + iconos[e] + '" style="width: 14px; height: 14px;"></i></button>';
-          }).join('');
-
-          return '<tr data-alumno-id="' + alumno.id_alumno + '">' +
-            '<td style="padding: 14px 16px; font-size: 14px; font-weight: 500;">' + alumno.nombre_completo + '</td>' +
-            '<td style="padding: 14px 16px; text-align: center;"><div style="display: flex; gap: 6px; justify-content: center;">' + botonesEstado + '</div></td>' +
-            '<td style="padding: 14px 16px;"><input type="text" class="observaciones-input" placeholder="Observación..." value="' + (alumno.observaciones || '') + '" data-alumno-id="' + alumno.id_alumno + '" style="width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: Inter, sans-serif; outline: none;" onfocus="this.style.borderColor=\'#4a5259\'" onblur="this.style.borderColor=\'#e5e7eb\'" /></td>' +
-            '</tr>';
-        }).join('');
-
-        tbody.innerHTML = filasAsist;
-        lucide.createIcons();
+        renderAsistenciasPage(1);
 
       } catch (error) {
         console.error('Error:', error);
@@ -2369,7 +2499,10 @@
     };
 
     window.cambiarEstadoAsistencia = function(idAlumno, nuevoEstado) {
-      const row = document.querySelector(`tr[data-alumno-id="${idAlumno}"]`);
+      const alumno = profesorPaginationState.asistencias.items.find(item => parseInt(item.id_alumno) === parseInt(idAlumno));
+      if (alumno) alumno.estado = nuevoEstado;
+      const row = document.querySelector(`#asistenciasTableBody tr[data-alumno-id="${idAlumno}"]`);
+      if (!row) return;
       const botones = row.querySelectorAll('.btn-estado-asistencia');
       const colores = { presente: '#22c55e', ausente: '#ef4444', tardanza: '#f59e0b', justificado: '#6b7280' };
       
@@ -2399,27 +2532,11 @@
     window.guardarAsistenciasLote = async function(idCurso) {
       try {
         const fecha = fechaAsistenciaActual;
-        const filas = document.querySelectorAll('#asistenciasTableBody tr');
-        const asistencias = [];
-
-        filas.forEach(fila => {
-          const idAlumno = fila.dataset.alumnoId;
-          if (!idAlumno) return;
-
-          const botonActivo = fila.querySelector('.btn-estado-asistencia.active');
-          const observacionesInput = fila.querySelector('.observaciones-input');
-          
-          const estado = botonActivo ? botonActivo.classList.contains('presente') ? 'presente' :
-                                        botonActivo.classList.contains('ausente') ? 'ausente' :
-                                        botonActivo.classList.contains('tardanza') ? 'tardanza' :
-                                        'justificado' : 'ausente';
-
-          asistencias.push({
-            id_alumno: parseInt(idAlumno),
-            estado: estado,
-            observaciones: observacionesInput ? observacionesInput.value.trim() : ''
-          });
-        });
+        const asistencias = (profesorPaginationState.asistencias.items || []).map(alumno => ({
+          id_alumno: parseInt(alumno.id_alumno),
+          estado: alumno.estado || 'ausente',
+          observaciones: alumno.observaciones ? alumno.observaciones.trim() : ''
+        }));
 
         loader.classList.remove('hidden');
 
@@ -2454,15 +2571,11 @@
 
     // NUEVO: Marcar todos con el mismo estado
     window.marcarTodosEstado = function(estado) {
-      const filas = document.querySelectorAll('#asistenciasTableBody tr[data-alumno-id]');
-      
-      filas.forEach(fila => {
-        const idAlumno = parseInt(fila.dataset.alumnoId);
-        if (idAlumno) {
-          cambiarEstadoAsistencia(idAlumno, estado);
-        }
+      profesorPaginationState.asistencias.items.forEach(alumno => {
+        alumno.estado = estado;
       });
 
+      renderAsistenciasPage(profesorPaginationState.asistencias.page);
       showNotification(`Todos marcados como: ${estado}`, 'success');
       lucide.createIcons();
     };

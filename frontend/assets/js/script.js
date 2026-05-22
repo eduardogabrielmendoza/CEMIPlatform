@@ -221,7 +221,7 @@ function initAdminSPA() {
           endpoint = `${API_URL}/administradores?limit=${PAGE_SIZE}&offset=0`;
           break;
         case "pagos":
-          endpoint = `${API_URL}/pagos?rango=mes&limit=10&offset=0`;
+          endpoint = `${API_URL}/pagos?rango=mes&medio=Efectivo&limit=10&offset=0`;
           break;
         case "aulas":
           endpoint = `${API_URL}/aulas`;
@@ -388,7 +388,9 @@ function generatePaginationDots(current, totalPages, section) {
   const directHandlers = {
     pagos: 'goToPagosPage',
     cuotasPagos: 'goToCuotasPage',
-    registrosPagos: 'goToRegistrosPage'
+    registrosPagos: 'goToRegistrosPage',
+    recuperacionHistorial: 'goToRecuperacionHistorialPage',
+    codigosCemiUsados: 'goToCodigosCemiUsadosPage'
   };
   const directHandler = directHandlers[section];
   const clickHandler = directHandler || 'goToPage';
@@ -5361,7 +5363,7 @@ case "pagos":
       <div class="filter-group">
         <label>Medio de Pago</label>
         <select id="pagoFilterMedio">
-          <option value="">Todos</option>
+          <option value="Efectivo" selected>Efectivo</option>
         </select>
       </div>
       <div class="filter-group">
@@ -8875,7 +8877,19 @@ const CUOTAS_PAGE_SIZE = 10;
 let currentRegistrosPage = 1;
 let registrosTotal = 0;
 const REGISTROS_PAGE_SIZE = 10;
-let registrosDateFilter = { preset: 'mes', inicio: '', fin: '' };
+const HISTORIAL_ADMIN_PAGE_SIZE = 10;
+const adminToday = new Date();
+const adminMonthStart = new Date(adminToday.getFullYear(), adminToday.getMonth(), 1);
+let registrosDateFilter = { inicio: formatAdminDateInput(adminMonthStart), fin: formatAdminDateInput(adminToday) };
+let recuperacionHistorialState = { items: [], page: 1, total: 0 };
+let codigosCemiUsadosState = { items: [], page: 1, inicio: formatAdminDateInput(adminMonthStart), fin: formatAdminDateInput(adminToday) };
+
+function formatAdminDateInput(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
 function buildDateQuery(prefix) {
   const preset = document.getElementById(`${prefix}DatePreset`)?.value || '';
@@ -8906,12 +8920,8 @@ function mergeQueryStrings(...queries) {
 
 function buildDateQueryFromState(state) {
   const params = new URLSearchParams();
-  if (state.preset === 'semana' || state.preset === 'mes') {
-    params.set('rango', state.preset);
-  } else if (state.preset === 'custom') {
-    if (state.inicio) params.set('fecha_inicio', state.inicio);
-    if (state.fin) params.set('fecha_fin', state.fin);
-  }
+  if (state.inicio) params.set('fecha_inicio', state.inicio);
+  if (state.fin) params.set('fecha_fin', state.fin);
   const query = params.toString();
   return query ? `?${query}` : '';
 }
@@ -8930,7 +8940,7 @@ function buildRegistrosPageQuery(page = 1) {
 function buildPagosFilterQuery() {
   const params = new URLSearchParams();
   const search = document.getElementById('pagoSearchAlumno')?.value.trim();
-  const medio = document.getElementById('pagoFilterMedio')?.value || '';
+  const medio = document.getElementById('pagoFilterMedio')?.value || 'Efectivo';
   if (search) params.set('search', search);
   if (medio) params.set('medio', medio);
   const query = params.toString();
@@ -9005,10 +9015,10 @@ async function loadPagosData(queryParams = '', page = 1) {
 
     const mediosPago = [...new Set((data.medios_pago || allPagos.map(p => p.medio_pago).filter(Boolean)).map(normalizeMedioPago))];
     const selectMedio = document.getElementById('pagoFilterMedio');
-    const medioActual = selectMedio?.value || '';
-    selectMedio.innerHTML = '<option value="">Todos</option>' + 
-      mediosPago.map(m => `<option value="${m}">${m}</option>`).join('');
-    if (medioActual && mediosPago.includes(medioActual)) selectMedio.value = medioActual;
+    const medioActual = selectMedio?.value || 'Efectivo';
+    const mediosDisponibles = mediosPago.includes('Efectivo') ? mediosPago : ['Efectivo', ...mediosPago];
+    selectMedio.innerHTML = mediosDisponibles.map(m => `<option value="${m}">${m}</option>`).join('');
+    selectMedio.value = mediosDisponibles.includes(medioActual) ? medioActual : 'Efectivo';
 
     renderPagosTable(allPagos);
     renderPagosPagination();
@@ -9332,20 +9342,12 @@ async function loadRegistrosPagos(page = 1) {
         <button onclick="loadRegistrosPagos(currentRegistrosPage)" style="background:none;border:1px solid #e5e7eb;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;color:#6b7280;display:flex;align-items:center;gap:5px;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Actualizar</button>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:end; margin-bottom:14px; background:#f8f9fa; border:1px solid #e5e7eb; border-radius:10px; padding:12px;">
-        <div class="filter-group" style="min-width:180px;">
-          <label>Fecha</label>
-          <select id="registroDatePreset" onchange="handleRegistrosDatePresetChange()" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:8px;">
-            <option value="mes" ${registrosDateFilter.preset === 'mes' ? 'selected' : ''}>Último mes</option>
-            <option value="semana" ${registrosDateFilter.preset === 'semana' ? 'selected' : ''}>Última semana</option>
-            <option value="custom" ${registrosDateFilter.preset === 'custom' ? 'selected' : ''}>Rango personalizado</option>
-          </select>
-        </div>
-        <div class="filter-group registros-custom-date" style="${registrosDateFilter.preset === 'custom' ? '' : 'display:none;'} min-width:160px;">
-          <label>Fecha Inicio</label>
+        <div class="filter-group" style="min-width:160px;">
+          <label>Desde</label>
           <input type="date" id="registroFechaInicio" value="${registrosDateFilter.inicio}" onchange="handleRegistrosDatePresetChange()" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:8px;">
         </div>
-        <div class="filter-group registros-custom-date" style="${registrosDateFilter.preset === 'custom' ? '' : 'display:none;'} min-width:160px;">
-          <label>Fecha Fin</label>
+        <div class="filter-group" style="min-width:160px;">
+          <label>Hasta</label>
           <input type="date" id="registroFechaFin" value="${registrosDateFilter.fin}" onchange="handleRegistrosDatePresetChange()" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:8px;">
         </div>
       </div>
@@ -9419,11 +9421,9 @@ function setRegistrosFilter(filter) {
 }
 
 function handleRegistrosDatePresetChange() {
-  const preset = document.getElementById('registroDatePreset')?.value || '';
   registrosDateFilter = {
-    preset,
-    inicio: preset === 'custom' ? (document.getElementById('registroFechaInicio')?.value || '') : '',
-    fin: preset === 'custom' ? (document.getElementById('registroFechaFin')?.value || '') : ''
+    inicio: document.getElementById('registroFechaInicio')?.value || '',
+    fin: document.getElementById('registroFechaFin')?.value || ''
   };
   loadRegistrosPagos(1);
 }
@@ -14774,6 +14774,69 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+function buildAdminPagination(section, page, total, pageSize) {
+  if (!total) return '';
+  const handlers = {
+    recuperacionHistorial: 'goToRecuperacionHistorialPage',
+    codigosCemiUsados: 'goToCodigosCemiUsadosPage'
+  };
+  const handler = handlers[section];
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const showFrom = (page - 1) * pageSize + 1;
+  const showTo = Math.min(page * pageSize, total);
+  return `
+    <div class="pagination-slider-container" style="margin-top: 18px;">
+      <div class="pagination-meta">Mostrando <strong>${showFrom}-${showTo}</strong> de <strong>${total}</strong></div>
+      <div class="pagination-slider-wrapper">
+        <button class="pagination-arrow" onclick="${handler}('prev')" ${page <= 1 ? 'disabled' : ''}>
+          <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+        </button>
+        <div class="pagination-pages">${generatePaginationDots(page, totalPages, section)}</div>
+        <button class="pagination-arrow" onclick="${handler}('next')" ${page >= totalPages ? 'disabled' : ''}>
+          <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+        </button>
+      </div>
+    </div>`;
+}
+
+function renderRecuperacionHistorialItems(items) {
+  return items.map(s => `
+    <div style="background: white; border: 1px solid #e5e7eb; border-left: 4px solid ${s.estado === 'aprobada' ? '#22c55e' : '#ef4444'}; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <p style="font-weight: 500; margin: 0; font-size: 14px;">${s.nombre || ''} ${s.apellido || ''} - ${s.email || ''}</p>
+        <p style="color: #999; font-size: 12px; margin: 2px 0 0 0;">${s.fecha_solicitud ? new Date(s.fecha_solicitud).toLocaleString('es-AR') : ''}</p>
+      </div>
+      <span style="background: ${s.estado === 'aprobada' ? '#d1fae5' : '#fee2e2'}; color: ${s.estado === 'aprobada' ? '#065f46' : '#991b1b'}; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: capitalize;">
+        ${s.estado}
+      </span>
+    </div>
+  `).join('');
+}
+
+function renderRecuperacionHistorialPage(page = 1) {
+  const list = document.getElementById('recuperacionHistorialList');
+  const pagination = document.getElementById('recuperacionHistorialPagination');
+  if (!list) return;
+  const totalPages = Math.max(1, Math.ceil(recuperacionHistorialState.items.length / HISTORIAL_ADMIN_PAGE_SIZE));
+  const safePage = Math.min(Math.max(parseInt(page, 10) || 1, 1), totalPages);
+  recuperacionHistorialState.page = safePage;
+  const start = (safePage - 1) * HISTORIAL_ADMIN_PAGE_SIZE;
+  const visible = recuperacionHistorialState.items.slice(start, start + HISTORIAL_ADMIN_PAGE_SIZE);
+  list.innerHTML = visible.length ? renderRecuperacionHistorialItems(visible) : '';
+  if (pagination) pagination.innerHTML = buildAdminPagination('recuperacionHistorial', safePage, recuperacionHistorialState.items.length, HISTORIAL_ADMIN_PAGE_SIZE);
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function goToRecuperacionHistorialPage(pageOrDir) {
+  const totalPages = Math.max(1, Math.ceil(recuperacionHistorialState.items.length / HISTORIAL_ADMIN_PAGE_SIZE));
+  let targetPage;
+  if (pageOrDir === 'prev') targetPage = Math.max(1, recuperacionHistorialState.page - 1);
+  else if (pageOrDir === 'next') targetPage = Math.min(totalPages, recuperacionHistorialState.page + 1);
+  else targetPage = parseInt(pageOrDir, 10);
+  if (!targetPage || targetPage === recuperacionHistorialState.page) return;
+  renderRecuperacionHistorialPage(targetPage);
+}
+
 // =============================================
 // SECCIÓN: Recuperación de Contraseñas (Admin)
 // =============================================
@@ -14787,6 +14850,7 @@ async function renderRecuperacionSection() {
     
     const pendientes = Array.isArray(solicitudes) ? solicitudes.filter(s => s.estado === 'pendiente') : [];
     const procesadas = Array.isArray(solicitudes) ? solicitudes.filter(s => s.estado !== 'pendiente') : [];
+    recuperacionHistorialState = { items: procesadas, page: 1, total: procesadas.length };
 
     return `
       <div style="padding: 20px;">
@@ -14827,18 +14891,11 @@ async function renderRecuperacionSection() {
         
         ${procesadas.length > 0 ? `
           <h3 style="margin-bottom: 12px; color: #374151;">Historial</h3>
-          <div style="display: grid; gap: 8px;">
-            ${procesadas.slice(0, 20).map(s => `
-              <div style="background: white; border: 1px solid #e5e7eb; border-left: 4px solid ${s.estado === 'aprobada' ? '#22c55e' : '#ef4444'}; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                  <p style="font-weight: 500; margin: 0; font-size: 14px;">${s.nombre || ''} ${s.apellido || ''} - ${s.email || ''}</p>
-                  <p style="color: #999; font-size: 12px; margin: 2px 0 0 0;">${s.fecha_solicitud ? new Date(s.fecha_solicitud).toLocaleString('es-AR') : ''}</p>
-                </div>
-                <span style="background: ${s.estado === 'aprobada' ? '#d1fae5' : '#fee2e2'}; color: ${s.estado === 'aprobada' ? '#065f46' : '#991b1b'}; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: capitalize;">
-                  ${s.estado}
-                </span>
-              </div>
-            `).join('')}
+          <div id="recuperacionHistorialList" style="display: grid; gap: 8px;">
+            ${renderRecuperacionHistorialItems(procesadas.slice(0, HISTORIAL_ADMIN_PAGE_SIZE))}
+          </div>
+          <div id="recuperacionHistorialPagination">
+            ${buildAdminPagination('recuperacionHistorial', 1, procesadas.length, HISTORIAL_ADMIN_PAGE_SIZE)}
           </div>
         ` : ''}
       </div>
@@ -14917,6 +14974,64 @@ async function rechazarSolicitud(id) {
 // SECCIÓN: Códigos CEMI (Admin)
 // =============================================
 
+function renderCodigoCemiUsadoItems(items) {
+  return items.map(c => `
+    <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; opacity: 0.8;">
+      <div>
+        <span style="font-family: monospace; font-size: 14px; color: #666; text-decoration: line-through;">${c.codigo}</span>
+        <span style="font-size: 13px; color: #888; margin-left: 12px;">${c.nombre_destinatario || ''} (${c.rol})</span>
+      </div>
+      <span style="font-size: 12px; color: #999;">${c.fecha_uso ? new Date(c.fecha_uso).toLocaleDateString('es-AR') : 'Sin uso'}</span>
+    </div>
+  `).join('');
+}
+
+function getCodigosCemiUsadosFiltrados() {
+  const inicio = codigosCemiUsadosState.inicio || '';
+  const fin = codigosCemiUsadosState.fin || '';
+  return codigosCemiUsadosState.items.filter(c => {
+    if (!c.fecha_uso) return !inicio && !fin;
+    const fecha = formatAdminDateInput(new Date(c.fecha_uso));
+    return (!inicio || fecha >= inicio) && (!fin || fecha <= fin);
+  });
+}
+
+function renderCodigosCemiUsadosPage(page = 1) {
+  const list = document.getElementById('codigosCemiUsadosList');
+  const pagination = document.getElementById('codigosCemiUsadosPagination');
+  const meta = document.getElementById('codigosCemiUsadosMeta');
+  if (!list) return;
+  const filtered = getCodigosCemiUsadosFiltrados();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / HISTORIAL_ADMIN_PAGE_SIZE));
+  const safePage = Math.min(Math.max(parseInt(page, 10) || 1, 1), totalPages);
+  codigosCemiUsadosState.page = safePage;
+  const start = (safePage - 1) * HISTORIAL_ADMIN_PAGE_SIZE;
+  const visible = filtered.slice(start, start + HISTORIAL_ADMIN_PAGE_SIZE);
+  list.innerHTML = visible.length
+    ? renderCodigoCemiUsadoItems(visible)
+    : '<div style="text-align:center; padding: 28px; color:#888; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px;">No hay códigos usados en el rango seleccionado</div>';
+  if (pagination) pagination.innerHTML = buildAdminPagination('codigosCemiUsados', safePage, filtered.length, HISTORIAL_ADMIN_PAGE_SIZE);
+  if (meta) meta.textContent = `${filtered.length} código${filtered.length !== 1 ? 's' : ''} usado${filtered.length !== 1 ? 's' : ''}`;
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function goToCodigosCemiUsadosPage(pageOrDir) {
+  const filtered = getCodigosCemiUsadosFiltrados();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / HISTORIAL_ADMIN_PAGE_SIZE));
+  let targetPage;
+  if (pageOrDir === 'prev') targetPage = Math.max(1, codigosCemiUsadosState.page - 1);
+  else if (pageOrDir === 'next') targetPage = Math.min(totalPages, codigosCemiUsadosState.page + 1);
+  else targetPage = parseInt(pageOrDir, 10);
+  if (!targetPage || targetPage === codigosCemiUsadosState.page) return;
+  renderCodigosCemiUsadosPage(targetPage);
+}
+
+function aplicarFiltroCodigosCemiUsados() {
+  codigosCemiUsadosState.inicio = document.getElementById('codigoCemiFechaInicio')?.value || '';
+  codigosCemiUsadosState.fin = document.getElementById('codigoCemiFechaFin')?.value || '';
+  renderCodigosCemiUsadosPage(1);
+}
+
 async function renderCodigosCemiSection() {
   try {
     const res = await fetch(`${API_URL}/codigos-cemi`, {
@@ -14926,6 +15041,9 @@ async function renderCodigosCemiSection() {
     
     const activos = Array.isArray(codigos) ? codigos.filter(c => c.estado === 'activo') : [];
     const usados = Array.isArray(codigos) ? codigos.filter(c => c.estado === 'usado') : [];
+    codigosCemiUsadosState.items = usados;
+    codigosCemiUsadosState.page = 1;
+    const usadosFiltrados = getCodigosCemiUsadosFiltrados();
 
     return `
       <div style="padding: 20px;">
@@ -14974,17 +15092,27 @@ async function renderCodigosCemiSection() {
         `}
         
         ${usados.length > 0 ? `
-          <h3 style="margin-bottom: 12px; color: #374151;">Códigos Usados</h3>
-          <div style="display: grid; gap: 6px;">
-            ${usados.slice(0, 20).map(c => `
-              <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; opacity: 0.7;">
-                <div>
-                  <span style="font-family: monospace; font-size: 14px; color: #666; text-decoration: line-through;">${c.codigo}</span>
-                  <span style="font-size: 13px; color: #888; margin-left: 12px;">${c.nombre_destinatario || ''} (${c.rol})</span>
-                </div>
-                <span style="font-size: 12px; color: #999;">${c.fecha_uso ? new Date(c.fecha_uso).toLocaleDateString('es-AR') : 'Sin uso'}</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom: 12px;">
+            <div>
+              <h3 style="margin: 0; color: #374151;">Códigos Usados</h3>
+              <p id="codigosCemiUsadosMeta" style="margin:4px 0 0 0; color:#9ca3af; font-size:12px;">${usadosFiltrados.length} código${usadosFiltrados.length !== 1 ? 's' : ''} usado${usadosFiltrados.length !== 1 ? 's' : ''}</p>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:end; background:#f8f9fa; border:1px solid #e5e7eb; border-radius:10px; padding:10px;">
+              <div class="filter-group" style="min-width:150px;">
+                <label>Desde</label>
+                <input type="date" id="codigoCemiFechaInicio" value="${codigosCemiUsadosState.inicio}" onchange="aplicarFiltroCodigosCemiUsados()" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;">
               </div>
-            `).join('')}
+              <div class="filter-group" style="min-width:150px;">
+                <label>Hasta</label>
+                <input type="date" id="codigoCemiFechaFin" value="${codigosCemiUsadosState.fin}" onchange="aplicarFiltroCodigosCemiUsados()" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;">
+              </div>
+            </div>
+          </div>
+          <div id="codigosCemiUsadosList" style="display: grid; gap: 6px;">
+            ${usadosFiltrados.length ? renderCodigoCemiUsadoItems(usadosFiltrados.slice(0, HISTORIAL_ADMIN_PAGE_SIZE)) : '<div style="text-align:center; padding: 28px; color:#888; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px;">No hay códigos usados en el rango seleccionado</div>'}
+          </div>
+          <div id="codigosCemiUsadosPagination">
+            ${buildAdminPagination('codigosCemiUsados', 1, usadosFiltrados.length, HISTORIAL_ADMIN_PAGE_SIZE)}
           </div>
         ` : ''}
       </div>
