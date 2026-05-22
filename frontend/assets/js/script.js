@@ -8880,9 +8880,11 @@ const REGISTROS_PAGE_SIZE = 10;
 const HISTORIAL_ADMIN_PAGE_SIZE = 10;
 const adminToday = new Date();
 const adminMonthStart = new Date(adminToday.getFullYear(), adminToday.getMonth(), 1);
+const adminWeekStart = new Date(adminToday);
+adminWeekStart.setDate(adminWeekStart.getDate() - 7);
 let registrosDateFilter = { inicio: formatAdminDateInput(adminMonthStart), fin: formatAdminDateInput(adminToday) };
 let recuperacionHistorialState = { items: [], page: 1, total: 0 };
-let codigosCemiUsadosState = { items: [], page: 1, inicio: formatAdminDateInput(adminMonthStart), fin: formatAdminDateInput(adminToday) };
+let codigosCemiUsadosState = { items: [], page: 1, preset: 'semana', inicio: formatAdminDateInput(adminWeekStart), fin: formatAdminDateInput(adminToday) };
 
 function formatAdminDateInput(date) {
   const year = date.getFullYear();
@@ -10568,6 +10570,35 @@ async function eliminarInscripcion(id, alumno, curso) {
   }
 }
 
+function ajustarModalCodigoCemiVertical() {
+  const popup = Swal.getPopup();
+  if (!popup) return;
+  popup.style.width = 'min(420px, calc(100vw - 32px))';
+  popup.style.maxWidth = '420px';
+  const html = popup.querySelector('.swal2-html-container');
+  if (html) {
+    html.style.margin = '0';
+    html.style.width = '100%';
+  }
+  popup.querySelectorAll('.swal2-input').forEach(input => {
+    input.style.boxSizing = 'border-box';
+    input.style.width = '100%';
+    input.style.maxWidth = '100%';
+  });
+  const actions = popup.querySelector('.swal2-actions');
+  if (actions) {
+    actions.style.display = 'flex';
+    actions.style.flexDirection = 'column';
+    actions.style.gap = '8px';
+    actions.style.width = '100%';
+    actions.style.margin = '18px 0 0 0';
+  }
+  popup.querySelectorAll('.swal2-actions button').forEach(button => {
+    button.style.width = '100%';
+    button.style.margin = '0';
+  });
+}
+
 async function openNuevoAlumnoModal() {
   const { value: formValues } = await Swal.fire({
     title: 'Generar Código CEMI - Alumno',
@@ -10592,6 +10623,7 @@ async function openNuevoAlumnoModal() {
     confirmButtonText: 'Generar Código',
     cancelButtonText: 'Cancelar',
     confirmButtonColor: '#4a5259',
+    didOpen: ajustarModalCodigoCemiVertical,
     preConfirm: () => {
       const nombre = document.getElementById('nombre').value.trim();
       const apellido = document.getElementById('apellido').value.trim();
@@ -11286,6 +11318,7 @@ async function openNuevoProfesorModal() {
     confirmButtonText: 'Generar Código',
     cancelButtonText: 'Cancelar',
     confirmButtonColor: '#4a5259',
+    didOpen: ajustarModalCodigoCemiVertical,
     preConfirm: () => {
       const nombre = document.getElementById('nombre').value.trim();
       const apellido = document.getElementById('apellido').value.trim();
@@ -14986,7 +15019,36 @@ function renderCodigoCemiUsadoItems(items) {
   `).join('');
 }
 
+function getCodigosCemiPresetRange(preset) {
+  const today = new Date();
+  const start = new Date(today);
+  if (preset === 'mes') {
+    start.setMonth(start.getMonth() - 1);
+  } else {
+    start.setDate(start.getDate() - 7);
+  }
+  return {
+    inicio: formatAdminDateInput(start),
+    fin: formatAdminDateInput(today)
+  };
+}
+
+function syncCodigosCemiPresetRange() {
+  if (codigosCemiUsadosState.preset === 'custom') return;
+  const range = getCodigosCemiPresetRange(codigosCemiUsadosState.preset);
+  codigosCemiUsadosState.inicio = range.inicio;
+  codigosCemiUsadosState.fin = range.fin;
+}
+
+function actualizarVisibilidadFiltroCodigosCemi() {
+  const preset = document.getElementById('codigoCemiDatePreset')?.value || codigosCemiUsadosState.preset || 'semana';
+  document.querySelectorAll('.codigos-cemi-custom-date').forEach(el => {
+    el.style.display = preset === 'custom' ? 'block' : 'none';
+  });
+}
+
 function getCodigosCemiUsadosFiltrados() {
+  syncCodigosCemiPresetRange();
   const inicio = codigosCemiUsadosState.inicio || '';
   const fin = codigosCemiUsadosState.fin || '';
   return codigosCemiUsadosState.items.filter(c => {
@@ -15027,8 +15089,21 @@ function goToCodigosCemiUsadosPage(pageOrDir) {
 }
 
 function aplicarFiltroCodigosCemiUsados() {
-  codigosCemiUsadosState.inicio = document.getElementById('codigoCemiFechaInicio')?.value || '';
-  codigosCemiUsadosState.fin = document.getElementById('codigoCemiFechaFin')?.value || '';
+  const preset = document.getElementById('codigoCemiDatePreset')?.value || 'semana';
+  codigosCemiUsadosState.preset = preset;
+  if (preset === 'custom') {
+    codigosCemiUsadosState.inicio = document.getElementById('codigoCemiFechaInicio')?.value || '';
+    codigosCemiUsadosState.fin = document.getElementById('codigoCemiFechaFin')?.value || '';
+  } else {
+    const range = getCodigosCemiPresetRange(preset);
+    codigosCemiUsadosState.inicio = range.inicio;
+    codigosCemiUsadosState.fin = range.fin;
+    const inicioInput = document.getElementById('codigoCemiFechaInicio');
+    const finInput = document.getElementById('codigoCemiFechaFin');
+    if (inicioInput) inicioInput.value = range.inicio;
+    if (finInput) finInput.value = range.fin;
+  }
+  actualizarVisibilidadFiltroCodigosCemi();
   renderCodigosCemiUsadosPage(1);
 }
 
@@ -15098,11 +15173,19 @@ async function renderCodigosCemiSection() {
               <p id="codigosCemiUsadosMeta" style="margin:4px 0 0 0; color:#9ca3af; font-size:12px;">${usadosFiltrados.length} código${usadosFiltrados.length !== 1 ? 's' : ''} usado${usadosFiltrados.length !== 1 ? 's' : ''}</p>
             </div>
             <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:end; background:#f8f9fa; border:1px solid #e5e7eb; border-radius:10px; padding:10px;">
-              <div class="filter-group" style="min-width:150px;">
+              <div class="filter-group" style="min-width:170px;">
+                <label>Período</label>
+                <select id="codigoCemiDatePreset" onchange="aplicarFiltroCodigosCemiUsados()" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;">
+                  <option value="semana" ${codigosCemiUsadosState.preset === 'semana' ? 'selected' : ''}>Última semana</option>
+                  <option value="mes" ${codigosCemiUsadosState.preset === 'mes' ? 'selected' : ''}>Último mes</option>
+                  <option value="custom" ${codigosCemiUsadosState.preset === 'custom' ? 'selected' : ''}>Desde/Hasta</option>
+                </select>
+              </div>
+              <div class="filter-group codigos-cemi-custom-date" style="${codigosCemiUsadosState.preset === 'custom' ? '' : 'display:none;'} min-width:150px;">
                 <label>Desde</label>
                 <input type="date" id="codigoCemiFechaInicio" value="${codigosCemiUsadosState.inicio}" onchange="aplicarFiltroCodigosCemiUsados()" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;">
               </div>
-              <div class="filter-group" style="min-width:150px;">
+              <div class="filter-group codigos-cemi-custom-date" style="${codigosCemiUsadosState.preset === 'custom' ? '' : 'display:none;'} min-width:150px;">
                 <label>Hasta</label>
                 <input type="date" id="codigoCemiFechaFin" value="${codigosCemiUsadosState.fin}" onchange="aplicarFiltroCodigosCemiUsados()" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;">
               </div>
