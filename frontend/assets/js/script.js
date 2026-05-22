@@ -10573,29 +10573,37 @@ async function eliminarInscripcion(id, alumno, curso) {
 function ajustarModalCodigoCemiVertical() {
   const popup = Swal.getPopup();
   if (!popup) return;
-  popup.style.width = 'min(420px, calc(100vw - 32px))';
-  popup.style.maxWidth = '420px';
+  popup.classList.add('codigo-cemi-modal');
+  popup.style.setProperty('width', 'min(420px, calc(100vw - 32px))', 'important');
+  popup.style.setProperty('max-width', '420px', 'important');
   const html = popup.querySelector('.swal2-html-container');
   if (html) {
-    html.style.margin = '0';
-    html.style.width = '100%';
+    html.style.setProperty('margin', '0', 'important');
+    html.style.setProperty('width', '100%', 'important');
+  }
+  const form = html?.querySelector('div');
+  if (form) {
+    form.style.setProperty('display', 'flex', 'important');
+    form.style.setProperty('flex-direction', 'column', 'important');
+    form.style.setProperty('gap', '15px', 'important');
   }
   popup.querySelectorAll('.swal2-input').forEach(input => {
-    input.style.boxSizing = 'border-box';
-    input.style.width = '100%';
-    input.style.maxWidth = '100%';
+    input.style.setProperty('box-sizing', 'border-box', 'important');
+    input.style.setProperty('width', '100%', 'important');
+    input.style.setProperty('max-width', '100%', 'important');
+    input.style.setProperty('margin', '0', 'important');
   });
   const actions = popup.querySelector('.swal2-actions');
   if (actions) {
-    actions.style.display = 'flex';
-    actions.style.flexDirection = 'column';
-    actions.style.gap = '8px';
-    actions.style.width = '100%';
-    actions.style.margin = '18px 0 0 0';
+    actions.style.setProperty('display', 'flex', 'important');
+    actions.style.setProperty('flex-direction', 'column', 'important');
+    actions.style.setProperty('gap', '8px', 'important');
+    actions.style.setProperty('width', '100%', 'important');
+    actions.style.setProperty('margin', '18px 0 0 0', 'important');
   }
   popup.querySelectorAll('.swal2-actions button').forEach(button => {
-    button.style.width = '100%';
-    button.style.margin = '0';
+    button.style.setProperty('width', '100%', 'important');
+    button.style.setProperty('margin', '0', 'important');
   });
 }
 
@@ -10618,6 +10626,9 @@ async function openNuevoAlumnoModal() {
       </div>
     `,
     width: '500px',
+    customClass: {
+      popup: 'codigo-cemi-modal'
+    },
     focusConfirm: false,
     showCancelButton: true,
     confirmButtonText: 'Generar Código',
@@ -10717,6 +10728,9 @@ async function crearCredencialesAlumno(idAlumno, nombreCompleto) {
       </div>
     `,
     width: '500px',
+    customClass: {
+      popup: 'codigo-cemi-modal'
+    },
     focusConfirm: false,
     showCancelButton: true,
     showDenyButton: true,
@@ -15172,22 +15186,22 @@ async function renderCodigosCemiSection() {
               <h3 style="margin: 0; color: #374151;">Códigos Usados</h3>
               <p id="codigosCemiUsadosMeta" style="margin:4px 0 0 0; color:#9ca3af; font-size:12px;">${usadosFiltrados.length} código${usadosFiltrados.length !== 1 ? 's' : ''} usado${usadosFiltrados.length !== 1 ? 's' : ''}</p>
             </div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:end; background:#f8f9fa; border:1px solid #e5e7eb; border-radius:10px; padding:10px;">
-              <div class="filter-group" style="min-width:170px;">
+            <div class="codigos-cemi-filters">
+              <div class="filter-group">
                 <label>Período</label>
-                <select id="codigoCemiDatePreset" onchange="aplicarFiltroCodigosCemiUsados()" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;">
+                <select id="codigoCemiDatePreset" onchange="aplicarFiltroCodigosCemiUsados()">
                   <option value="semana" ${codigosCemiUsadosState.preset === 'semana' ? 'selected' : ''}>Última semana</option>
                   <option value="mes" ${codigosCemiUsadosState.preset === 'mes' ? 'selected' : ''}>Último mes</option>
                   <option value="custom" ${codigosCemiUsadosState.preset === 'custom' ? 'selected' : ''}>Desde/Hasta</option>
                 </select>
               </div>
-              <div class="filter-group codigos-cemi-custom-date" style="${codigosCemiUsadosState.preset === 'custom' ? '' : 'display:none;'} min-width:150px;">
+              <div class="filter-group codigos-cemi-custom-date" style="${codigosCemiUsadosState.preset === 'custom' ? '' : 'display:none;'}">
                 <label>Desde</label>
-                <input type="date" id="codigoCemiFechaInicio" value="${codigosCemiUsadosState.inicio}" onchange="aplicarFiltroCodigosCemiUsados()" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;">
+                <input type="date" id="codigoCemiFechaInicio" value="${codigosCemiUsadosState.inicio}" onchange="aplicarFiltroCodigosCemiUsados()">
               </div>
-              <div class="filter-group codigos-cemi-custom-date" style="${codigosCemiUsadosState.preset === 'custom' ? '' : 'display:none;'} min-width:150px;">
+              <div class="filter-group codigos-cemi-custom-date" style="${codigosCemiUsadosState.preset === 'custom' ? '' : 'display:none;'}">
                 <label>Hasta</label>
-                <input type="date" id="codigoCemiFechaFin" value="${codigosCemiUsadosState.fin}" onchange="aplicarFiltroCodigosCemiUsados()" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;">
+                <input type="date" id="codigoCemiFechaFin" value="${codigosCemiUsadosState.fin}" onchange="aplicarFiltroCodigosCemiUsados()">
               </div>
             </div>
           </div>

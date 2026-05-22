@@ -9831,6 +9831,65 @@ body.admin .swal2-html-container select {
   min-width: 0 !important;
 }
 
+body.admin .swal2-popup.codigo-cemi-modal {
+  width: min(420px, calc(100vw - 32px)) !important;
+}
+
+body.admin .swal2-popup.codigo-cemi-modal .swal2-html-container {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+body.admin .swal2-popup.codigo-cemi-modal .swal2-html-container > div:has(.swal2-input) {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+}
+
+body.admin .swal2-popup.codigo-cemi-modal .swal2-input {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+body.admin .swal2-popup.codigo-cemi-modal .swal2-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 18px 0 0 0 !important;
+}
+
+body.admin .swal2-popup.codigo-cemi-modal .swal2-actions button {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.codigos-cemi-filters {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  align-items: end;
+  width: min(100%, 620px);
+  box-sizing: border-box;
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.codigos-cemi-filters .filter-group {
+  min-width: 0 !important;
+}
+
+.codigos-cemi-filters input,
+.codigos-cemi-filters select {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
 body.admin .modal-content {
   max-width: min(1120px, calc(100vw - 40px)) !important;
   max-height: calc(100vh - 40px) !important;
