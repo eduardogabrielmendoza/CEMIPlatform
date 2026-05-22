@@ -10571,72 +10571,27 @@ async function eliminarInscripcion(id, alumno, curso) {
 }
 
 function ajustarModalCodigoCemiVertical() {
-  const popup = Swal.getPopup();
-  if (!popup) return;
-  popup.classList.add('codigo-cemi-modal');
-  popup.style.setProperty('width', 'min(640px, calc(100vw - 32px))', 'important');
-  popup.style.setProperty('max-width', '640px', 'important');
-  const html = popup.querySelector('.swal2-html-container');
-  if (html) {
-    html.style.setProperty('margin', '0', 'important');
-    html.style.setProperty('width', '100%', 'important');
-  }
-  const form = html?.querySelector('div');
-  if (form) {
-    form.style.setProperty('display', 'flex', 'important');
-    form.style.setProperty('flex-direction', 'column', 'important');
-    form.style.setProperty('gap', '15px', 'important');
-    form.style.setProperty('align-items', 'stretch', 'important');
-    form.style.setProperty('width', 'min(100%, 520px)', 'important');
-    form.style.setProperty('margin', '0 auto', 'important');
-    form.querySelectorAll(':scope > div').forEach(field => {
-      field.style.setProperty('width', '100%', 'important');
-    });
-  }
-  popup.querySelectorAll('.swal2-input').forEach(input => {
-    input.style.setProperty('box-sizing', 'border-box', 'important');
-    input.style.setProperty('width', '100%', 'important');
-    input.style.setProperty('max-width', '100%', 'important');
-    input.style.setProperty('margin', '0', 'important');
-  });
-  const actions = popup.querySelector('.swal2-actions');
-  if (actions) {
-    actions.style.setProperty('display', 'flex', 'important');
-    actions.style.setProperty('flex-direction', 'row', 'important');
-    actions.style.setProperty('justify-content', 'center', 'important');
-    actions.style.setProperty('gap', '10px', 'important');
-    actions.style.setProperty('width', 'auto', 'important');
-    actions.style.setProperty('margin', '20px auto 0 auto', 'important');
-  }
-  popup.querySelectorAll('.swal2-actions button').forEach(button => {
-    button.style.setProperty('width', 'auto', 'important');
-    button.style.setProperty('min-width', '150px', 'important');
-    button.style.setProperty('max-width', '220px', 'important');
-    button.style.setProperty('margin', '0', 'important');
-    button.style.setProperty('padding-left', '22px', 'important');
-    button.style.setProperty('padding-right', '22px', 'important');
-  });
+  // Layout is handled entirely via CSS (.codigo-cemi-modal class)
 }
 
 async function openNuevoAlumnoModal() {
   const { value: formValues } = await Swal.fire({
     title: 'Generar Código CEMI - Alumno',
     html: `
-      <div style="text-align: left;">
-        <p style="margin-bottom: 16px; color: #666; font-size: 14px;">
+      <div>
+        <p class="cemi-modal-desc">
           Se generará un código único para que un nuevo alumno pueda registrarse en el sistema.
         </p>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Nombre del alumno (referencia)</label>
-          <input id="nombre" class="swal2-input" placeholder="Nombre" style="width: 100%; margin: 0;">
+        <div class="cemi-field-group">
+          <label class="cemi-field-label" for="nombre">Nombre del alumno (referencia)</label>
+          <input id="nombre" class="swal2-input" placeholder="Ingrese el nombre">
         </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Apellido del alumno (referencia)</label>
-          <input id="apellido" class="swal2-input" placeholder="Apellido" style="width: 100%; margin: 0;">
+        <div class="cemi-field-group">
+          <label class="cemi-field-label" for="apellido">Apellido del alumno (referencia)</label>
+          <input id="apellido" class="swal2-input" placeholder="Ingrese el apellido">
         </div>
       </div>
     `,
-    width: '500px',
     customClass: {
       popup: 'codigo-cemi-modal'
     },
@@ -10645,7 +10600,6 @@ async function openNuevoAlumnoModal() {
     confirmButtonText: 'Generar Código',
     cancelButtonText: 'Cancelar',
     confirmButtonColor: '#4a5259',
-    didOpen: ajustarModalCodigoCemiVertical,
     preConfirm: () => {
       const nombre = document.getElementById('nombre').value.trim();
       const apellido = document.getElementById('apellido').value.trim();
@@ -11323,27 +11277,28 @@ async function openNuevoProfesorModal() {
   const { value: formValues } = await Swal.fire({
     title: 'Generar Código CEMI - Profesor',
     html: `
-      <div style="text-align: left;">
-        <p style="margin-bottom: 16px; color: #666; font-size: 14px;">
+      <div>
+        <p class="cemi-modal-desc">
           Se generará un código único para que un nuevo profesor pueda registrarse en el sistema.
         </p>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Nombre del profesor (referencia)</label>
-          <input id="nombre" class="swal2-input" placeholder="Nombre" style="width: 100%; margin: 0;">
+        <div class="cemi-field-group">
+          <label class="cemi-field-label" for="nombre">Nombre del profesor (referencia)</label>
+          <input id="nombre" class="swal2-input" placeholder="Ingrese el nombre">
         </div>
-        <div style="margin-bottom: 15px;">
-          <label style="display: block; margin-bottom: 5px; font-weight: 400; padding-bottom: 10px; text-align: left;">Apellido del profesor (referencia)</label>
-          <input id="apellido" class="swal2-input" placeholder="Apellido" style="width: 100%; margin: 0;">
+        <div class="cemi-field-group">
+          <label class="cemi-field-label" for="apellido">Apellido del profesor (referencia)</label>
+          <input id="apellido" class="swal2-input" placeholder="Ingrese el apellido">
         </div>
       </div>
     `,
-    width: '500px',
+    customClass: {
+      popup: 'codigo-cemi-modal'
+    },
     focusConfirm: false,
     showCancelButton: true,
     confirmButtonText: 'Generar Código',
     cancelButtonText: 'Cancelar',
     confirmButtonColor: '#4a5259',
-    didOpen: ajustarModalCodigoCemiVertical,
     preConfirm: () => {
       const nombre = document.getElementById('nombre').value.trim();
       const apellido = document.getElementById('apellido').value.trim();
