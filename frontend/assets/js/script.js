@@ -10586,6 +10586,12 @@ function ajustarModalCodigoCemiVertical() {
     form.style.setProperty('display', 'flex', 'important');
     form.style.setProperty('flex-direction', 'column', 'important');
     form.style.setProperty('gap', '15px', 'important');
+    form.style.setProperty('align-items', 'stretch', 'important');
+    form.style.setProperty('width', 'min(100%, 520px)', 'important');
+    form.style.setProperty('margin', '0 auto', 'important');
+    form.querySelectorAll(':scope > div').forEach(field => {
+      field.style.setProperty('width', '100%', 'important');
+    });
   }
   popup.querySelectorAll('.swal2-input').forEach(input => {
     input.style.setProperty('box-sizing', 'border-box', 'important');
@@ -10596,14 +10602,19 @@ function ajustarModalCodigoCemiVertical() {
   const actions = popup.querySelector('.swal2-actions');
   if (actions) {
     actions.style.setProperty('display', 'flex', 'important');
-    actions.style.setProperty('flex-direction', 'column', 'important');
-    actions.style.setProperty('gap', '8px', 'important');
-    actions.style.setProperty('width', '100%', 'important');
-    actions.style.setProperty('margin', '18px 0 0 0', 'important');
+    actions.style.setProperty('flex-direction', 'row', 'important');
+    actions.style.setProperty('justify-content', 'center', 'important');
+    actions.style.setProperty('gap', '10px', 'important');
+    actions.style.setProperty('width', 'auto', 'important');
+    actions.style.setProperty('margin', '20px auto 0 auto', 'important');
   }
   popup.querySelectorAll('.swal2-actions button').forEach(button => {
-    button.style.setProperty('width', '100%', 'important');
+    button.style.setProperty('width', 'auto', 'important');
+    button.style.setProperty('min-width', '150px', 'important');
+    button.style.setProperty('max-width', '220px', 'important');
     button.style.setProperty('margin', '0', 'important');
+    button.style.setProperty('padding-left', '22px', 'important');
+    button.style.setProperty('padding-right', '22px', 'important');
   });
 }
 

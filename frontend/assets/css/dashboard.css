@@ -9845,6 +9845,13 @@ body.admin .swal2-popup.codigo-cemi-modal .swal2-html-container > div:has(.swal2
   display: flex !important;
   flex-direction: column !important;
   gap: 15px !important;
+  align-items: stretch !important;
+  width: min(100%, 520px) !important;
+  margin: 0 auto !important;
+}
+
+body.admin .swal2-popup.codigo-cemi-modal .swal2-html-container > div:has(.swal2-input) > div {
+  width: 100% !important;
 }
 
 body.admin .swal2-popup.codigo-cemi-modal .swal2-input {
@@ -9856,15 +9863,20 @@ body.admin .swal2-popup.codigo-cemi-modal .swal2-input {
 
 body.admin .swal2-popup.codigo-cemi-modal .swal2-actions {
   display: flex !important;
-  flex-direction: column !important;
-  gap: 8px !important;
-  width: 100% !important;
-  margin: 18px 0 0 0 !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  width: auto !important;
+  margin: 20px auto 0 auto !important;
 }
 
 body.admin .swal2-popup.codigo-cemi-modal .swal2-actions button {
-  width: 100% !important;
+  width: auto !important;
+  min-width: 150px !important;
+  max-width: 220px !important;
   margin: 0 !important;
+  padding-left: 22px !important;
+  padding-right: 22px !important;
 }
 
 .codigos-cemi-filters {
