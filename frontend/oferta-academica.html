@@ -18,29 +18,29 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg-primary: #111113;
-      --bg-secondary: #19191b;
-      --bg-elevated: #212124;
-      --bg-card: rgba(255,255,255,0.04);
-      --bg-card-hover: rgba(255,255,255,0.07);
-      --bg-glass: rgba(255,255,255,0.05);
+      --bg-primary: #f8f6f2;
+      --bg-secondary: #efece6;
+      --bg-elevated: #ffffff;
+      --bg-card: rgba(255,255,255,0.72);
+      --bg-card-hover: rgba(255,255,255,0.92);
+      --bg-glass: rgba(255,255,255,0.6);
 
-      --text-primary: #f0eeeb;
-      --text-secondary: rgba(240,238,235,0.72);
-      --text-tertiary: rgba(240,238,235,0.48);
-      --text-muted: rgba(240,238,235,0.32);
+      --text-primary: #1a1a1a;
+      --text-secondary: #4a4a4a;
+      --text-tertiary: #7a7a7a;
+      --text-muted: #a8a8a8;
 
-      --border-subtle: rgba(255,255,255,0.07);
-      --border-light: rgba(255,255,255,0.12);
-      --border-active: rgba(255,255,255,0.22);
+      --border-subtle: rgba(0,0,0,0.08);
+      --border-light: rgba(0,0,0,0.13);
+      --border-active: rgba(0,0,0,0.22);
 
-      --accent: rgba(255,255,255,0.88);
-      --success-bg: rgba(76,175,80,0.12);
-      --success-border: rgba(76,175,80,0.24);
-      --success-text: #81c784;
-      --inactive-bg: rgba(255,255,255,0.06);
-      --inactive-border: rgba(255,255,255,0.08);
-      --inactive-text: rgba(240,238,235,0.4);
+      --accent: #1a1a1a;
+      --success-bg: #edf5ee;
+      --success-border: #c8deca;
+      --success-text: #3d7a42;
+      --inactive-bg: #f2f0ec;
+      --inactive-border: #e2dfd9;
+      --inactive-text: #9a9590;
 
       --radius-sm: 10px;
       --radius-md: 14px;
@@ -48,9 +48,9 @@
       --radius-xl: 28px;
       --radius-pill: 999px;
 
-      --shadow-soft: 0 4px 24px rgba(0,0,0,0.2);
-      --shadow-medium: 0 8px 40px rgba(0,0,0,0.3);
-      --shadow-heavy: 0 20px 60px rgba(0,0,0,0.4);
+      --shadow-soft: 0 4px 24px rgba(0,0,0,0.06);
+      --shadow-medium: 0 8px 40px rgba(0,0,0,0.09);
+      --shadow-heavy: 0 20px 60px rgba(0,0,0,0.14);
 
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
@@ -59,7 +59,7 @@
     body {
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text-primary);
-      background: var(--bg-primary);
+      background: linear-gradient(180deg, var(--bg-primary) 0%, #eeebe4 50%, var(--bg-primary) 100%);
       min-height: 100vh;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
@@ -76,7 +76,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      background: rgba(17,17,19,0.82);
+      background: rgba(255,255,255,0.82);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
       top: 0;
@@ -97,7 +97,6 @@
       width: 226px;
       height: 79px;
       object-fit: contain;
-      filter: invert(1) brightness(2);
       transition: opacity 0.3s ease;
     }
 
@@ -160,7 +159,7 @@
       right: -80px;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(0,0,0,0.025) 0%, transparent 70%);
       pointer-events: none;
       animation: ambientPulse 8s ease-in-out infinite;
     }
@@ -282,21 +281,21 @@
       min-height: 500px;
       display: block;
       object-fit: cover;
-      opacity: 0.6;
-      filter: saturate(0.5) contrast(0.9) brightness(0.7);
+      opacity: 0.82;
+      filter: saturate(0.8) contrast(0.96);
       transition: all 0.8s var(--ease-smooth);
     }
 
     .hero-panel:hover img {
-      opacity: 0.7;
-      filter: saturate(0.6) contrast(0.95) brightness(0.75);
+      opacity: 0.9;
+      filter: saturate(0.85) contrast(1);
       transform: scale(1.03);
     }
 
     .panel-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(17,17,19,0) 30%, rgba(17,17,19,0.92) 100%);
+      background: linear-gradient(180deg, rgba(30,30,30,0.02) 20%, rgba(30,30,30,0.82) 100%);
       z-index: 1;
     }
 
@@ -306,7 +305,7 @@
       right: 28px;
       bottom: 28px;
       z-index: 2;
-      color: var(--text-primary);
+      color: #fffaf2;
     }
 
     .panel-content strong {
@@ -319,7 +318,7 @@
     }
 
     .panel-content span {
-      color: var(--text-secondary);
+      color: rgba(255,250,242,0.84);
       line-height: 1.55;
       font-size: 14px;
     }
