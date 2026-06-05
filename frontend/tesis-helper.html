@@ -3,567 +3,237 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guía de Defensa - CEMI</title>
+  <title>Guía de Defensa — CEMI</title>
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0a0a0f;
-      --bg-secondary: #12121a;
-      --bg-card: #1a1a25;
-      --bg-card-hover: #22222f;
-      --border: #2a2a3a;
-      --text-primary: #e8e8ed;
-      --text-secondary: #9898a8;
-      --text-muted: #6868788;
-      --accent-admin: #667eea;
-      --accent-profesor: #f59e0b;
-      --accent-alumno: #10b981;
-      --accent-security: #ef4444;
-      --accent-blue: #3b82f6;
-      --accent-purple: #8b5cf6;
-      --gradient-admin: linear-gradient(135deg, #667eea, #764ba2);
-      --gradient-profesor: linear-gradient(135deg, #f59e0b, #d97706);
-      --gradient-alumno: linear-gradient(135deg, #10b981, #059669);
-      --gradient-security: linear-gradient(135deg, #ef4444, #dc2626);
+      --bg: #ffffff;
+      --bg-alt: #f8f9fa;
+      --bg-card: #ffffff;
+      --border: #e5e7eb;
+      --border-hover: #d1d5db;
+      --text: #1e1e1e;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --accent: #1e1e1e;
+      --accent-light: #374151;
+      --accent-subtle: #93a1ad;
+      --tag-admin: #1e1e1e;
+      --tag-profesor: #92400e;
+      --tag-alumno: #065f46;
+      --tag-security: #991b1b;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.7;
-      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== SCROLLBAR ===== */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-primary); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-    /* ===== HEADER ===== */
-    .thesis-header {
-      position: fixed;
+    /* HEADER */
+    .th-header {
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
       z-index: 100;
-      background: rgba(10, 10, 15, 0.85);
-      backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding: 0 32px;
+      padding: 0 40px;
     }
-
-    .header-inner {
-      max-width: 1200px;
+    .th-header-inner {
+      max-width: 820px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 60px;
+      height: 52px;
     }
-
-    .header-brand {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      letter-spacing: -0.01em;
+    .th-brand { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+    .th-brand span { font-weight: 400; color: var(--text-secondary); }
+    .th-nav { display: flex; gap: 2px; }
+    .th-nav a {
+      color: var(--text-secondary); text-decoration: none; font-size: 12px;
+      padding: 5px 10px; border-radius: 5px; transition: all 0.15s; font-weight: 500;
     }
-
-    .header-brand span {
-      color: var(--text-secondary);
-      font-weight: 400;
+    .th-nav a:hover { color: var(--text); background: var(--bg-alt); }
+    .th-back {
+      color: var(--text-secondary); text-decoration: none; font-size: 12px;
+      padding: 5px 12px; border-radius: 5px; border: 1px solid var(--border); transition: all 0.15s; font-weight: 500;
     }
+    .th-back:hover { color: var(--text); border-color: var(--border-hover); }
 
-    .header-nav {
-      display: flex;
-      gap: 4px;
+    /* HERO */
+    .th-hero { padding: 80px 40px 48px; text-align: center; }
+    .th-hero-badge {
+      display: inline-block; padding: 4px 12px; background: var(--bg-alt);
+      border: 1px solid var(--border); border-radius: 4px;
+      font-size: 10px; font-weight: 600; color: var(--text-secondary);
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px;
     }
-
-    .header-nav a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 13px;
-      padding: 6px 14px;
-      border-radius: 6px;
-      transition: all 0.2s;
-      font-weight: 500;
+    .th-hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 600;
+      letter-spacing: -0.03em; line-height: 1.2; color: var(--text); margin-bottom: 10px;
     }
+    .th-hero p { font-size: 14px; color: var(--text-secondary); max-width: 480px; margin: 0 auto; }
 
-    .header-nav a:hover {
-      color: var(--text-primary);
-      background: rgba(255,255,255,0.05);
+    /* CONTENT */
+    .th-content { max-width: 820px; margin: 0 auto; padding: 0 40px 80px; }
+
+    /* SECTION */
+    .th-section { margin-bottom: 56px; }
+    .th-section-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
     }
-
-    .btn-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 13px;
-      padding: 6px 14px;
-      border-radius: 6px;
-      transition: all 0.2s;
-      border: 1px solid var(--border);
+    .th-section-tag {
+      padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
     }
+    .th-section-tag.admin { background: #f3f4f6; color: var(--tag-admin); }
+    .th-section-tag.profesor { background: #fffbeb; color: var(--tag-profesor); }
+    .th-section-tag.alumno { background: #ecfdf5; color: var(--tag-alumno); }
+    .th-section-tag.security { background: #fef2f2; color: var(--tag-security); }
+    .th-section-tag.backend { background: #f3f4f6; color: #4b5563; }
+    .th-section-tag.questions { background: #f3f4f6; color: #4b5563; }
 
-    .btn-back:hover {
-      color: var(--text-primary);
-      border-color: var(--text-secondary);
+    .th-section-title { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+    .th-section-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+    /* CARDS */
+    .th-card {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 20px; margin-bottom: 12px; transition: border-color 0.15s;
     }
+    .th-card:hover { border-color: var(--border-hover); }
+    .th-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+    .th-card p, .th-card li { font-size: 13px; color: var(--text-secondary); line-height: 1.8; }
+    .th-card ul { list-style: none; padding: 0; }
+    .th-card ul li { padding: 3px 0 3px 16px; position: relative; }
+    .th-card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--text-muted); font-weight: 700; }
 
-    /* ===== HERO ===== */
-    .hero {
-      padding: 140px 32px 80px;
-      text-align: center;
-      position: relative;
+    /* BUTTON GRID */
+    .th-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+    .th-btn-item {
+      border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px;
+      transition: border-color 0.15s;
     }
+    .th-btn-item:hover { border-color: var(--border-hover); }
+    .th-btn-item h4 { font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+    .th-btn-item p { font-size: 11.5px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, transparent 70%);
-      pointer-events: none;
+    /* CODE */
+    .th-code {
+      background: #fafafa; border: 1px solid var(--border); border-radius: 6px;
+      padding: 14px 16px; margin: 10px 0; font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11.5px; color: var(--text); overflow-x: auto; line-height: 1.6;
     }
+    .th-code .cm { color: #9ca3af; } /* comment */
+    .th-code .kw { color: #7c3aed; } /* keyword */
+    .th-code .st { color: #059669; } /* string */
+    .th-code .fn { color: #2563eb; } /* function */
+    .th-code .vr { color: #d97706; } /* var */
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: rgba(102, 126, 234, 0.1);
-      border: 1px solid rgba(102, 126, 234, 0.2);
-      border-radius: 20px;
-      font-size: 12px;
-      color: var(--accent-admin);
-      font-weight: 500;
-      margin-bottom: 24px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+    /* FLOW */
+    .th-flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 12px 0; }
+    .th-flow-step {
+      padding: 5px 12px; background: var(--bg-alt); border: 1px solid var(--border);
+      border-radius: 5px; font-size: 11px; font-weight: 500; color: var(--text); white-space: nowrap;
     }
+    .th-flow-arrow { color: var(--text-muted); font-size: 11px; }
 
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #e8e8ed 30%, #667eea 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    /* TAGS */
+    .th-tag {
+      display: inline-block; padding: 1px 6px; border-radius: 3px;
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;
     }
+    .th-tag.get { background: #ecfdf5; color: #065f46; }
+    .th-tag.post { background: #eff6ff; color: #1e40af; }
+    .th-tag.put { background: #fffbeb; color: #92400e; }
+    .th-tag.delete { background: #fef2f2; color: #991b1b; }
 
-    .hero p {
-      font-size: 16px;
-      color: var(--text-secondary);
-      max-width: 560px;
-      margin: 0 auto;
-    }
-
-    /* ===== NAVIGATION PILLS ===== */
-    .nav-pills {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      padding: 0 32px 48px;
-    }
-
-    .nav-pill {
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: none;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      transition: all 0.2s;
-    }
-
-    .nav-pill:hover {
-      color: var(--text-primary);
-      border-color: var(--text-secondary);
-      transform: translateY(-1px);
-    }
-
-    .nav-pill.admin { border-left: 3px solid var(--accent-admin); }
-    .nav-pill.profesor { border-left: 3px solid var(--accent-profesor); }
-    .nav-pill.alumno { border-left: 3px solid var(--accent-alumno); }
-    .nav-pill.security { border-left: 3px solid var(--accent-security); }
-    .nav-pill.backend { border-left: 3px solid var(--accent-purple); }
-    .nav-pill.questions { border-left: 3px solid var(--accent-blue); }
-
-    /* ===== CONTENT ===== */
-    .content {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 32px 80px;
-    }
-
-    /* ===== SECTION ===== */
-    .section {
-      margin-bottom: 64px;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 32px;
-      padding-bottom: 16px;
+    /* ENDPOINT TABLE */
+    .th-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 10px 0; }
+    .th-table th {
+      text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);
       border-bottom: 1px solid var(--border);
     }
-
-    .section-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
+    .th-table td { padding: 8px 10px; border-bottom: 1px solid #f3f4f6; color: var(--text-secondary); }
+    .th-table td code {
+      font-family: 'SF Mono', monospace; font-size: 11px;
+      background: var(--bg-alt); padding: 1px 5px; border-radius: 3px; color: var(--text);
     }
 
-    .section-icon.admin { background: rgba(102, 126, 234, 0.15); color: var(--accent-admin); }
-    .section-icon.profesor { background: rgba(245, 158, 11, 0.15); color: var(--accent-profesor); }
-    .section-icon.alumno { background: rgba(16, 185, 129, 0.15); color: var(--accent-alumno); }
-    .section-icon.security { background: rgba(239, 68, 68, 0.15); color: var(--accent-security); }
-    .section-icon.backend { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
-    .section-icon.questions { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+    /* Q&A */
+    .th-qa {
+      border: 1px solid var(--border); border-radius: 8px;
+      margin-bottom: 8px; overflow: hidden; transition: border-color 0.15s;
+    }
+    .th-qa:hover { border-color: var(--border-hover); }
+    .th-qa-q {
+      padding: 14px 18px; cursor: pointer; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px; user-select: none; transition: background 0.15s;
+    }
+    .th-qa-q:hover { background: var(--bg-alt); }
+    .th-qa-q h4 { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+    .th-qa-toggle {
+      width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center;
+      justify-content: center; color: var(--text-muted); font-size: 13px; transition: all 0.2s; flex-shrink: 0;
+    }
+    .th-qa.active .th-qa-toggle { transform: rotate(45deg); color: var(--text); }
+    .th-qa-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .th-qa.active .th-qa-a { max-height: 600px; }
+    .th-qa-a-inner {
+      padding: 0 18px 16px; font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+      border-top: 1px solid var(--border); padding-top: 14px;
+    }
+    .th-qa-a-inner strong { color: var(--text); }
 
-    .section-title {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
+    /* HIGHLIGHT */
+    .th-hl { padding: 12px 16px; border-radius: 6px; margin: 10px 0; font-size: 12px; border-left: 3px solid; }
+    .th-hl.info { background: #f8fafc; border-color: var(--accent-subtle); color: var(--text-secondary); }
+    .th-hl.warn { background: #fffbeb; border-color: #d97706; color: #92400e; }
+    .th-hl.ok { background: #f0fdf4; border-color: #16a34a; color: #065f46; }
+    .th-hl.err { background: #fef2f2; border-color: #dc2626; color: #991b1b; }
+
+    /* SEPARATOR */
+    .th-sep { height: 1px; background: var(--border); margin: 40px 0; }
+
+    /* LABEL */
+    .th-label {
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text-muted); margin: 24px 0 10px; display: block;
     }
 
-    .section-subtitle {
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-
-    /* ===== CARDS ===== */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 16px;
-      transition: all 0.2s;
-    }
-
-    .card:hover {
-      background: var(--bg-card-hover);
-      border-color: #3a3a4a;
-    }
-
-    .card h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card p, .card li {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.8;
-    }
-
-    .card ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .card ul li {
-      padding: 4px 0;
-      padding-left: 20px;
-      position: relative;
-    }
-
-    .card ul li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: var(--text-muted);
-      font-size: 12px;
-    }
-
-    /* ===== CODE BLOCK ===== */
-    .code-block {
-      background: #0d0d14;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin: 12px 0;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12.5px;
-      color: #c8c8d8;
-      overflow-x: auto;
-      line-height: 1.6;
-    }
-
-    .code-block .comment { color: #5c6370; }
-    .code-block .keyword { color: #c678dd; }
-    .code-block .string { color: #98c379; }
-    .code-block .func { color: #61afef; }
-    .code-block .var { color: #e5c07b; }
-
-    /* ===== FLOW DIAGRAM ===== */
-    .flow {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      padding: 16px 0;
-    }
-
-    .flow-step {
-      padding: 8px 16px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-primary);
-      white-space: nowrap;
-    }
-
-    .flow-arrow {
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    /* ===== TAG / BADGE ===== */
-    .tag {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .tag.admin { background: rgba(102, 126, 234, 0.15); color: var(--accent-admin); }
-    .tag.profesor { background: rgba(245, 158, 11, 0.15); color: var(--accent-profesor); }
-    .tag.alumno { background: rgba(16, 185, 129, 0.15); color: var(--accent-alumno); }
-    .tag.security { background: rgba(239, 68, 68, 0.15); color: var(--accent-security); }
-    .tag.backend { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
-    .tag.get { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-    .tag.post { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-    .tag.put { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    .tag.delete { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-
-    /* ===== ENDPOINT TABLE ===== */
-    .endpoint-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      margin: 12px 0;
-      font-size: 13px;
-    }
-
-    .endpoint-table th {
-      text-align: left;
-      padding: 10px 14px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .endpoint-table td {
-      padding: 10px 14px;
-      border-bottom: 1px solid rgba(42, 42, 58, 0.5);
-      color: var(--text-secondary);
-    }
-
-    .endpoint-table td code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      background: rgba(0,0,0,0.3);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: var(--text-primary);
-    }
-
-    .endpoint-table tr:hover td {
-      background: rgba(255,255,255,0.02);
-    }
-
-    /* ===== Q&A ===== */
-    .qa-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 12px;
-      overflow: hidden;
-      transition: all 0.2s;
-    }
-
-    .qa-item:hover {
-      border-color: #3a3a4a;
-    }
-
-    .qa-question {
-      padding: 18px 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      user-select: none;
-      transition: background 0.2s;
-    }
-
-    .qa-question:hover {
-      background: rgba(255,255,255,0.02);
-    }
-
-    .qa-question h4 {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-primary);
-      flex: 1;
-    }
-
-    .qa-toggle {
-      width: 24px;
-      height: 24px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.05);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      font-size: 14px;
-      transition: all 0.3s;
-      flex-shrink: 0;
-    }
-
-    .qa-item.active .qa-toggle {
-      transform: rotate(45deg);
-      background: rgba(102, 126, 234, 0.15);
-      color: var(--accent-admin);
-    }
-
-    .qa-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .qa-item.active .qa-answer {
-      max-height: 800px;
-    }
-
-    .qa-answer-inner {
-      padding: 0 24px 20px;
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      border-top: 1px solid var(--border);
-      padding-top: 16px;
-    }
-
-    .qa-answer-inner strong {
-      color: var(--text-primary);
-    }
-
-    /* ===== HIGHLIGHT BOX ===== */
-    .highlight {
-      padding: 16px 20px;
-      border-radius: 8px;
-      margin: 12px 0;
-      font-size: 13px;
-      border-left: 3px solid;
-    }
-
-    .highlight.info {
-      background: rgba(59, 130, 246, 0.08);
-      border-color: var(--accent-blue);
-      color: #93b8f6;
-    }
-
-    .highlight.warning {
-      background: rgba(245, 158, 11, 0.08);
-      border-color: var(--accent-profesor);
-      color: #f5c87b;
-    }
-
-    .highlight.success {
-      background: rgba(16, 185, 129, 0.08);
-      border-color: var(--accent-alumno);
-      color: #6fd5b0;
-    }
-
-    .highlight.danger {
-      background: rgba(239, 68, 68, 0.08);
-      border-color: var(--accent-security);
-      color: #f5a0a0;
-    }
-
-    /* ===== GRID ===== */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    /* ===== SEPARATOR ===== */
-    .separator {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-      margin: 48px 0;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
-      .header-nav { display: none; }
-      .grid-2 { grid-template-columns: 1fr; }
-      .hero { padding: 120px 20px 60px; }
-      .content { padding: 0 20px 60px; }
-      .nav-pills { padding: 0 20px 32px; }
-      .flow { flex-direction: column; align-items: flex-start; }
-      .flow-arrow { transform: rotate(90deg); }
+    @media (max-width: 700px) {
+      .th-nav { display: none; }
+      .th-btn-grid { grid-template-columns: 1fr; }
+      .th-hero { padding: 64px 20px 36px; }
+      .th-content { padding: 0 20px 60px; }
+      .th-header { padding: 0 20px; }
+      .th-flow { flex-direction: column; align-items: flex-start; }
+      .th-flow-arrow { transform: rotate(90deg); }
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header class="thesis-header">
-    <div class="header-inner">
-      <div class="header-brand">CEMI <span>/ Defensa de Tesis</span></div>
-      <nav class="header-nav">
+  <header class="th-header">
+    <div class="th-header-inner">
+      <div class="th-brand">CEMI <span>/ Defensa de Tesis</span></div>
+      <nav class="th-nav">
         <a href="#admin">Admin</a>
         <a href="#profesor">Profesor</a>
         <a href="#alumno">Alumno</a>
@@ -571,794 +241,673 @@
         <a href="#comunicacion">Backend</a>
         <a href="#preguntas">Preguntas</a>
       </nav>
-      <a href="index.html" class="btn-back">← Volver</a>
+      <a href="index.html" class="th-back">← Volver</a>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-badge">📋 Guía de Defensa</div>
-    <h1>Plataforma CEMI<br>Funcionamiento Integral</h1>
-    <p>Documentación técnica y funcional de los tres paneles del sistema, con foco especial en la arquitectura de seguridad.</p>
+  <section class="th-hero">
+    <div class="th-hero-badge">Guía de Defensa</div>
+    <h1>Plataforma CEMI — Funcionamiento Integral</h1>
+    <p>Documentación técnica y funcional de los tres paneles del sistema, con foco en la arquitectura de seguridad.</p>
   </section>
 
-  <!-- NAV PILLS -->
-  <div class="nav-pills">
-    <a href="#admin" class="nav-pill admin">🛡️ Panel Admin</a>
-    <a href="#profesor" class="nav-pill profesor">👨‍🏫 Panel Profesor</a>
-    <a href="#alumno" class="nav-pill alumno">🎓 Panel Alumno</a>
-    <a href="#seguridad" class="nav-pill security">🔒 Seguridad</a>
-    <a href="#comunicacion" class="nav-pill backend">⚡ Backend-Frontend</a>
-    <a href="#preguntas" class="nav-pill questions">❓ Posibles Preguntas</a>
-  </div>
+  <div class="th-content">
 
-  <!-- CONTENT -->
-  <div class="content">
-
-    <!-- ============================================================ -->
+    <!-- ═══════════════════════════════════════════ -->
     <!-- PANEL ADMINISTRADOR -->
-    <!-- ============================================================ -->
-    <section class="section" id="admin">
-      <div class="section-header">
-        <div class="section-icon admin">🛡️</div>
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="th-section" id="admin">
+      <div class="th-section-header">
+        <span class="th-section-tag admin">Admin</span>
         <div>
-          <h2 class="section-title">Panel de Administrador</h2>
-          <p class="section-subtitle">Control total del sistema — dashboard_admin.html</p>
+          <h2 class="th-section-title">Panel de Administrador</h2>
+          <p class="th-section-sub">dashboard_admin.html — Control total del sistema</p>
         </div>
       </div>
 
-      <div class="card">
-        <h3>🎯 Rol y Propósito</h3>
-        <p>El administrador tiene <strong>acceso total</strong> al sistema. Es quien gestiona todos los recursos de la institución: alumnos, profesores, cursos, pagos, aulas e idiomas. El panel se renderiza como una <strong>Single Page Application (SPA)</strong> donde cada sección se carga dinámicamente sin recargar la página.</p>
+      <div class="th-card">
+        <h3>Descripción General</h3>
+        <p>El administrador tiene acceso completo al sistema. El panel funciona como una <strong>SPA (Single Page Application)</strong>: cada botón del sidebar ejecuta una función JavaScript que hace fetch a la API, recibe datos en JSON y genera el HTML dinámicamente dentro del contenedor <code>mainContent</code>, sin recargar la página. El sidebar se organiza en <strong>dos grupos colapsables</strong> (Administración General y Seguridad) más botones individuales.</p>
       </div>
 
-      <div class="card">
-        <h3>📂 Secciones del Sidebar</h3>
-        <p>El sidebar se organiza en grupos colapsables:</p>
-        <ul>
-          <li><strong>Administración General:</strong> Cursos, Alumnos, Profesores, Administradores, Aulas, Idiomas</li>
-          <li><strong>Seguridad:</strong> Status del sistema, Recuperación de contraseñas, Códigos CEMI</li>
-          <li><strong>Pagos:</strong> Gestión completa de cuotas y registros financieros</li>
-          <li><strong>Chat Soporte:</strong> Sistema de chat en tiempo real con Socket.IO</li>
-          <li><strong>Ayuda:</strong> Centro de documentación integrado</li>
-        </ul>
-      </div>
+      <span class="th-label">Grupo: Administración General</span>
 
-      <div class="grid-2">
-        <div class="card">
-          <h3>👥 Gestión de Usuarios</h3>
-          <ul>
-            <li>CRUD completo de alumnos y profesores</li>
-            <li>Asignación de cursos a profesores</li>
-            <li>Inscripción de alumnos a cursos</li>
-            <li>Cambio de credenciales del Classroom</li>
-            <li>Generación de CemiKeys de acceso</li>
-            <li>Gestión de estados (activo/inactivo)</li>
-          </ul>
+      <div class="th-btn-grid">
+        <div class="th-btn-item">
+          <h4>📚 Cursos</h4>
+          <p>Hace <code>GET /api/cursos</code>. Renderiza una tabla con acordeones expandibles por curso que muestran: profesor asignado, alumnos inscriptos, aula, horario, nivel e idioma. Permite crear cursos nuevos (<code>POST</code>), editarlos (<code>PUT</code>), eliminarlos (<code>DELETE</code>), asignar profesor y gestionar inscripciones. Incluye filtros por idioma, nivel y estado, paginación tipo slider, y exportación PDF con jsPDF.</p>
         </div>
-        <div class="card">
-          <h3>📊 Gestión Académica</h3>
-          <ul>
-            <li>Creación y edición de cursos</li>
-            <li>Gestión de idiomas con banderas</li>
-            <li>Administración de aulas y capacidades</li>
-            <li>Control de niveles por idioma</li>
-            <li>Ciclo lectivo y estados de cursos</li>
-            <li>Generación de reportes PDF</li>
-          </ul>
+        <div class="th-btn-item">
+          <h4>👥 Alumnos</h4>
+          <p>Hace <code>GET /api/alumnos</code>. Tabla con todos los alumnos mostrando legajo, nombre, apellido, email, DNI y estado. Cada fila se puede expandir para ver cursos inscriptos, calificaciones y pagos. Permite crear alumno (<code>POST</code>), editar datos (<code>PUT</code>), cambiar estado activo/inactivo, cambiar credenciales del Classroom, y eliminar (<code>DELETE</code>). Incluye barra de búsqueda en tiempo real.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>👨‍🏫 Profesores</h4>
+          <p>Hace <code>GET /api/profesores</code>. Misma estructura que Alumnos. Muestra datos personales y cursos asignados. CRUD completo. El admin puede asignar/desasignar cursos al profesor directamente, cambiar credenciales Classroom, y gestionar estado. Cada profesor tiene CemiKey y legajo únicos.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>🛡️ Administradores</h4>
+          <p>Hace <code>GET /api/administradores</code>. Lista de todos los administradores con su CemiKey, legajo, y datos personales. El admin puede crear otros administradores, editarlos y cambiar sus credenciales. Esta sección solo es visible para usuarios con rol administrador.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>🚪 Aulas</h4>
+          <p>Hace <code>GET /api/aulas</code>. CRUD de aulas físicas: nombre, capacidad máxima, edificio/ubicación. Las aulas se vinculan a los cursos. Se puede verificar disponibilidad y conflictos de horario. Tabla simple con botones de editar y eliminar.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>🌐 Idiomas</h4>
+          <p>Hace <code>GET /api/idiomas</code>. CRUD de idiomas disponibles en la institución: nombre del idioma y bandera emoji asociada. Los idiomas se relacionan con los cursos y niveles. Al crear un curso, el admin selecciona idioma y luego nivel.</p>
         </div>
       </div>
 
-      <div class="card">
-        <h3>💬 Chat de Soporte en Tiempo Real</h3>
-        <p>El admin recibe y gestiona conversaciones de soporte mediante <strong>Socket.IO</strong>. Puede filtrar por estado (pendiente, activa, cerrada, resuelta), responder mensajes en tiempo real, y recibir notificaciones de escritorio.</p>
-        <div class="flow">
-          <span class="flow-step">Usuario envía mensaje</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Socket.IO transmite</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Admin recibe notificación</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Respuesta en tiempo real</span>
+      <span class="th-label">Grupo: Seguridad (detallado en la sección Seguridad)</span>
+
+      <div class="th-btn-grid">
+        <div class="th-btn-item">
+          <h4>📊 Status</h4>
+          <p>Monitor en tiempo real del estado del sistema. Muestra servicios, métricas del servidor, logs y gestión de incidentes. <em>Ver sección Seguridad para detalle completo.</em></p>
+        </div>
+        <div class="th-btn-item">
+          <h4>🔑 Recuperación</h4>
+          <p>Gestión de solicitudes de cambio de contraseña. El admin aprueba o rechaza pedidos. <em>Ver sección Seguridad para detalle completo.</em></p>
         </div>
       </div>
 
-      <div class="highlight info">
-        <strong>Dato clave para la defensa:</strong> El Panel Admin usa tablas con paginación slider, filtros avanzados, y acordeones para cursos. Genera PDFs con jsPDF y jsPDF-AutoTable para reportes institucionales.
+      <div class="th-btn-grid">
+        <div class="th-btn-item">
+          <h4>🎟️ Códigos CEMI</h4>
+          <p>Generación y administración de códigos de registro. <em>Ver sección Seguridad para detalle completo.</em></p>
+        </div>
+      </div>
+
+      <span class="th-label">Botones Individuales</span>
+
+      <div class="th-btn-grid">
+        <div class="th-btn-item">
+          <h4>💳 Pagos</h4>
+          <p>Hace <code>GET /api/pagos</code>. Gestión financiera completa: listado de cuotas por alumno/curso, registro de pagos, generación de recibos, filtros por estado (pagado, pendiente, vencido), y reportes financieros en PDF. Permite registrar pagos individuales o masivos y generar tickets de pago estilizados.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>💬 Chat Soporte</h4>
+          <p>Usa <strong>Socket.IO</strong> para comunicación en tiempo real. El admin ve todas las conversaciones de soporte, puede filtrar por estado (pendiente, activa, cerrada, resuelta), responder mensajes, y recibe notificaciones de escritorio con sonido. Clase <code>AdminChatManager</code> gestiona la conexión WebSocket.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>❓ Ayuda</h4>
+          <p>Centro de ayuda integrado con documentación del sistema, preguntas frecuentes, y guías de uso para el administrador. Contenido renderizado directamente desde HTML estático en el mainContent.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>🚪 Cerrar Sesión</h4>
+          <p>Ejecuta <code>localStorage.clear()</code> y redirige a <code>login.html</code>. Elimina token JWT, datos del usuario y cualquier cache de sesión. Confirma con SweetAlert2 antes de ejecutar.</p>
+        </div>
       </div>
     </section>
 
-    <div class="separator"></div>
+    <div class="th-sep"></div>
 
-    <!-- ============================================================ -->
+    <!-- ═══════════════════════════════════════════ -->
     <!-- PANEL PROFESOR -->
-    <!-- ============================================================ -->
-    <section class="section" id="profesor">
-      <div class="section-header">
-        <div class="section-icon profesor">👨‍🏫</div>
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="th-section" id="profesor">
+      <div class="th-section-header">
+        <span class="th-section-tag profesor">Profesor</span>
         <div>
-          <h2 class="section-title">Panel del Profesor</h2>
-          <p class="section-subtitle">Gestión de cursos y alumnos asignados — dashboard_profesor.html</p>
+          <h2 class="th-section-title">Panel del Profesor</h2>
+          <p class="th-section-sub">dashboard_profesor.html — Gestión académica de cursos asignados</p>
         </div>
       </div>
 
-      <div class="card">
-        <h3>🎯 Rol y Propósito</h3>
-        <p>El profesor accede a un panel enfocado en la <strong>gestión académica</strong> de sus cursos. Puede visualizar sus cursos activos e históricos, cargar calificaciones, registrar asistencias, y comunicarse con soporte.</p>
+      <div class="th-card">
+        <h3>Descripción General</h3>
+        <p>El profesor accede a un panel enfocado en la gestión académica de sus cursos. <strong>No tiene permisos</strong> de escritura sobre datos administrativos (no puede inscribir alumnos, ni crear cursos, ni gestionar pagos). El sidebar es plano, sin grupos colapsables. Al cargar, muestra "Mis Cursos" automáticamente.</p>
       </div>
 
-      <div class="card">
-        <h3>📂 Secciones Disponibles</h3>
-        <ul>
-          <li><strong>Mis Cursos:</strong> Lista de cursos activos con estadísticas (total cursos, total alumnos, promedio por curso). Incluye tabla de cursos activos e historial de finalizados.</li>
-          <li><strong>Calificaciones:</strong> Seleccionar un curso → ver tabla de alumnos → cargar/editar notas (Parcial 1, Parcial 2, Final). Cálculo automático de promedios.</li>
-          <li><strong>Asistencias:</strong> Seleccionar un curso → registrar asistencia por fecha con estados (Presente, Ausente, Tarde, Justificado).</li>
-          <li><strong>Mi Perfil:</strong> Vista de datos personales (no editables) e información profesional con estadísticas.</li>
-          <li><strong>Classroom:</strong> Enlace directo al aula virtual.</li>
-          <li><strong>Chat Soporte:</strong> Comunicación con administración vía Socket.IO.</li>
-        </ul>
-      </div>
+      <span class="th-label">Botones del Sidebar — Detalle</span>
 
-      <div class="card">
-        <h3>⚙️ Flujo de Carga de Calificaciones</h3>
-        <div class="flow">
-          <span class="flow-step">Profesor selecciona curso</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">GET /api/calificaciones/:id_curso</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Renderiza tabla editable</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">PUT /api/calificaciones</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">BD actualizada</span>
+      <div class="th-btn-grid">
+        <div class="th-btn-item">
+          <h4>📖 Mis Cursos</h4>
+          <p>Hace <code>GET /api/cursos/profesor/:id</code>. Muestra tarjetas de estadísticas (total cursos, total alumnos, promedio) y una tabla de cursos activos con idioma, nivel, horario, aula y cantidad de alumnos. Incluye historial de cursos finalizados en una segunda tabla. El profesor puede ver el detalle expandible de cada curso.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>📋 Calificaciones</h4>
+          <p>Primero muestra un <strong>selector de curso</strong> (dropdown con los cursos asignados). Al seleccionar, hace <code>GET /api/calificaciones/:id_curso</code> y renderiza una tabla editable con columnas: Alumno, Parcial 1, Parcial 2, Final, Promedio. El profesor modifica las notas inline y al guardar ejecuta <code>PUT /api/calificaciones</code>. El promedio se calcula automáticamente en el frontend.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>📅 Asistencias</h4>
+          <p>Selector de curso + selector de fecha. Hace <code>GET /api/asistencias/:id_curso/:fecha</code>. Muestra tabla con cada alumno y un dropdown de estado: Presente, Ausente, Tarde, Justificado. Al guardar, ejecuta <code>POST /api/asistencias</code>. Incluye vista de historial de asistencias por fecha con resumen estadístico.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>👤 Mi Perfil</h4>
+          <p>Hace <code>GET /api/profesores/:id</code>. Muestra datos personales en modo <strong>solo lectura</strong> (nombre, apellido, email, DNI, legajo, CemiKey). No se pueden editar — solo el admin puede modificar datos de un profesor. Incluye estadísticas de cursos activos e históricos.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>🏫 Classroom</h4>
+          <p>Botón de redirección directa a <code>classroom.html</code>. No carga contenido en el mainContent. Ejecuta <code>window.location.href</code> para navegar al aula virtual, donde el profesor gestiona tareas, anuncios, recursos y foros de sus cursos.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>💬 Chat Soporte</h4>
+          <p>Usa <code>UserChatManager</code> con Socket.IO. Permite al profesor enviar mensajes al equipo de administración. Muestra historial de conversaciones y estado de la solicitud. Recibe notificaciones de respuesta en tiempo real con badge de notificación en el botón del sidebar.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>❓ Ayuda</h4>
+          <p>Centro de ayuda con documentación específica para profesores: cómo cargar notas, registrar asistencias, usar el Classroom, etc.</p>
+        </div>
+        <div class="th-btn-item">
+          <h4>🚪 Cerrar Sesión</h4>
+          <p>Limpia localStorage y redirige a login. Confirma con SweetAlert2.</p>
         </div>
       </div>
 
-      <div class="highlight warning">
-        <strong>Dato clave:</strong> El profesor NO puede editar datos personales ni inscribir alumnos. Esas acciones están reservadas al administrador. Esta separación de responsabilidades es parte del diseño de seguridad del sistema.
+      <div class="th-hl warn">
+        <strong>Dato clave:</strong> El profesor NO puede editar datos personales, inscribir alumnos ni gestionar pagos. Esta separación de responsabilidades es parte del diseño RBAC del sistema.
       </div>
     </section>
 
-    <div class="separator"></div>
+    <div class="th-sep"></div>
 
-    <!-- ============================================================ -->
+    <!-- ═══════════════════════════════════════════ -->
     <!-- PANEL ALUMNO -->
-    <!-- ============================================================ -->
-    <section class="section" id="alumno">
-      <div class="section-header">
-        <div class="section-icon alumno">🎓</div>
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="th-section" id="alumno">
+      <div class="th-section-header">
+        <span class="th-section-tag alumno">Alumno</span>
         <div>
-          <h2 class="section-title">Panel del Alumno</h2>
-          <p class="section-subtitle">Consulta académica y financiera — dashboard_alumno.html</p>
+          <h2 class="th-section-title">Panel del Alumno</h2>
+          <p class="th-section-sub">dashboard_alumno.html — Consulta académica y financiera</p>
         </div>
       </div>
 
-      <div class="card">
-        <h3>🎯 Rol y Propósito</h3>
-        <p>El alumno tiene un panel de <strong>consulta</strong> donde visualiza sus cursos, calificaciones y pagos. No tiene permisos de escritura sobre datos académicos, solo de lectura. Puede acceder al Classroom y comunicarse con soporte.</p>
+      <div class="th-card">
+        <h3>Descripción General</h3>
+        <p>El alumno tiene un panel de <strong>solo lectura</strong> sobre datos académicos. No puede modificar notas, inscripciones ni pagos — solo consultarlos. Tiene acceso al Classroom y al chat de soporte. Sidebar plano sin grupos.</p>
       </div>
 
-      <div class="card">
-        <h3>📂 Secciones Disponibles</h3>
-        <ul>
-          <li><strong>Mis Cursos:</strong> Cursos activos con promedio, estado (Aprobado, Regular, Reprobado, Pendiente), horario, y detalle expandible. Historial de cursos finalizados.</li>
-          <li><strong>Mis Calificaciones:</strong> Tabla con Parcial 1, Parcial 2, Final y Promedio por curso. Escala visual de colores según rendimiento.</li>
-          <li><strong>Mis Pagos:</strong> Estado financiero con total pagado, total pendiente y cuotas impagas. Desglose por curso con sistema de tickets de pago estilo tarjeta de crédito.</li>
-          <li><strong>Mi Perfil:</strong> Datos personales, legajo, y estadísticas de rendimiento.</li>
-          <li><strong>Classroom:</strong> Acceso al aula virtual.</li>
-          <li><strong>Chat Soporte:</strong> Canal de comunicación con la administración.</li>
-        </ul>
-      </div>
+      <span class="th-label">Botones del Sidebar — Detalle</span>
 
-      <div class="grid-2">
-        <div class="card">
-          <h3>📈 Estadísticas del Alumno</h3>
-          <ul>
-            <li>Cursos Activos (contador)</li>
-            <li>Promedio General (calculado)</li>
-            <li>Cursos Aprobados / Total</li>
-            <li>Total Pagado vs Pendiente</li>
-            <li>Cuotas Impagas (alerta)</li>
-          </ul>
+      <div class="th-btn-grid">
+        <div class="th-btn-item">
+          <h4>📖 Mis Cursos</h4>
+          <p>Hace <code>GET /api/cursos/alumno/:id</code>. Muestra tarjetas de estadísticas (cursos activos, promedio general, aprobados) y tabla de cursos con estado visual: <strong style="color:#059669">Aprobado</strong> (≥7.0), <strong style="color:#d97706">Regular</strong> (4.0–6.9), <strong style="color:#dc2626">Reprobado</strong> (&lt;4.0), <strong style="color:#9ca3af">Pendiente</strong>. Cada curso se puede expandir para ver horario, profesor, aula y detalle de notas.</p>
         </div>
-        <div class="card">
-          <h3>🎨 Sistema de Estados Visuales</h3>
-          <ul>
-            <li><strong style="color:#10b981">Aprobado:</strong> Promedio ≥ 7.0</li>
-            <li><strong style="color:#f59e0b">Regular:</strong> Promedio 4.0 - 6.9</li>
-            <li><strong style="color:#ef4444">Reprobado:</strong> Promedio &lt; 4.0</li>
-            <li><strong style="color:#9ca3af">Pendiente:</strong> Sin notas</li>
-          </ul>
+        <div class="th-btn-item">
+          <h4>📋 Mis Calificaciones</h4>
+          <p>Hace <code>GET /api/calificaciones/alumno/:id</code>. Tabla de solo lectura con columnas: Curso, Parcial 1, Parcial 2, Final, Promedio. Escala visual de colores según rendimiento. Muestra el promedio general del alumno calculado en el frontend sumando y promediando todas las notas. Solo consulta, no puede editar.</p>
         </div>
-      </div>
-
-      <div class="highlight success">
-        <strong>Dato clave:</strong> El sistema de pagos incluye tarjetas estilizadas (credit-card.css) que muestran el estado de cada cuota de forma visual e intuitiva, con tickets descargables.
-      </div>
-    </section>
-
-    <div class="separator"></div>
-
-    <!-- ============================================================ -->
-    <!-- SEGURIDAD - SECCIÓN PRINCIPAL -->
-    <!-- ============================================================ -->
-    <section class="section" id="seguridad">
-      <div class="section-header">
-        <div class="section-icon security">🔒</div>
-        <div>
-          <h2 class="section-title">Apartado de Seguridad</h2>
-          <p class="section-subtitle">Arquitectura completa de protección del sistema</p>
+        <div class="th-btn-item">
+          <h4>💳 Mis Pagos</h4>
+          <p>Hace <code>GET /api/pagos/alumno/:id</code>. Muestra resumen financiero (total pagado, total pendiente, cuotas impagas) y tarjetas estilizadas tipo credit-card para cada cuota. Cada tarjeta muestra: monto, fecha de vencimiento, estado (Pagado/Pendiente/Vencido), y número de referencia. Puede descargar tickets de pago como comprobante. Usa <code>credit-card.css</code> para el diseño visual.</p>
         </div>
-      </div>
-
-      <div class="highlight danger">
-        <strong>⚠️ Este es el apartado más importante para la defensa.</strong> El sistema implementa múltiples capas de seguridad tanto en frontend como en backend.
-      </div>
-
-      <!-- 1. Autenticación -->
-      <div class="card">
-        <h3>🔐 1. Sistema de Autenticación</h3>
-        <p>El sistema soporta <strong>dos métodos de autenticación</strong>:</p>
-        <ul>
-          <li><strong>Login tradicional:</strong> Usuario + Contraseña → validación contra la BD con <code>bcrypt</code> para hashing.</li>
-          <li><strong>Login por CemiKey:</strong> Clave de acceso única en formato <code>XXXX-XXXX-XXXX</code> que identifica al usuario sin necesidad de usuario/contraseña.</li>
-        </ul>
-        <div class="code-block">
-<span class="comment">// Verificación de contraseña con bcrypt</span>
-<span class="keyword">const</span> <span class="var">stored</span> = String(user.password_hash);
-<span class="keyword">let</span> <span class="var">ok</span> = <span class="keyword">false</span>;
-<span class="keyword">if</span> (<span class="func">isBcrypt</span>(stored)) ok = bcrypt.<span class="func">compareSync</span>(pw, stored);
-<span class="comment">// En producción NUNCA se permite plaintext</span>
-<span class="keyword">else if</span> (ALLOW_PLAINTEXT && !isProd) ok = pw === stored;
+        <div class="th-btn-item">
+          <h4>👤 Mi Perfil</h4>
+          <p>Hace <code>GET /api/alumnos/:id</code>. Datos personales en solo lectura: nombre, apellido, email, DNI, legajo, CemiKey. Incluye estadísticas de rendimiento académico (promedio, cursos aprobados, porcentaje de asistencia). No editable por el alumno.</p>
         </div>
-      </div>
-
-      <!-- 2. JWT -->
-      <div class="card">
-        <h3>🎫 2. JSON Web Tokens (JWT)</h3>
-        <p>Tras la autenticación exitosa, se genera un <strong>token JWT</strong> que contiene:</p>
-        <ul>
-          <li><code>id_usuario</code> — Identificador único del usuario</li>
-          <li><code>id_persona</code> — Referencia a datos personales</li>
-          <li><code>rol</code> — Determina acceso (admin, profesor, alumno)</li>
-          <li><code>username</code> — Para logging y auditoría</li>
-          <li><code>id_especifico</code> — ID del rol (id_administrador, id_profesor, o id_alumno)</li>
-        </ul>
-        <div class="code-block">
-<span class="comment">// authMiddleware.js - Generación y verificación de tokens</span>
-<span class="keyword">const</span> <span class="var">JWT_SECRET</span> = process.env.JWT_SECRET;
-<span class="keyword">const</span> <span class="var">JWT_EXPIRES_IN</span> = process.env.JWT_EXPIRES_IN || <span class="string">'24h'</span>;
-
-<span class="keyword">export const</span> <span class="func">generarToken</span> = (payload) => {
-  <span class="keyword">return</span> jwt.<span class="func">sign</span>(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-};
-
-<span class="keyword">export const</span> <span class="func">verificarToken</span> = (req, res, next) => {
-  <span class="keyword">const</span> <span class="var">token</span> = authHeader.<span class="func">split</span>(<span class="string">' '</span>)[1]; <span class="comment">// Bearer TOKEN</span>
-  <span class="keyword">const</span> <span class="var">decoded</span> = jwt.<span class="func">verify</span>(token, JWT_SECRET);
-  req.user = decoded;
-  <span class="func">next</span>();
-};
+        <div class="th-btn-item">
+          <h4>🏫 Classroom</h4>
+          <p>Redirección directa a <code>classroom.html</code>. Acceso al aula virtual para ver tareas, entregas, anuncios, recursos y participar en foros de discusión de sus cursos inscriptos.</p>
         </div>
-      </div>
-
-      <!-- 3. RBAC -->
-      <div class="card">
-        <h3>👮 3. Control de Acceso Basado en Roles (RBAC)</h3>
-        <p>El sistema implementa un middleware <code>verificarRol</code> que restringe rutas según el rol del token:</p>
-        <div class="code-block">
-<span class="keyword">export const</span> <span class="func">verificarRol</span> = (...rolesPermitidos) => {
-  <span class="keyword">return</span> (req, res, next) => {
-    <span class="keyword">const</span> <span class="var">rolNormalizado</span> = req.user.rol?.<span class="func">toLowerCase</span>();
-    <span class="keyword">if</span> (!rolesNormalizados.<span class="func">includes</span>(rolNormalizado)) {
-      <span class="keyword">return</span> res.<span class="func">status</span>(403).<span class="func">json</span>({
-        message: <span class="string">'No tienes permisos para esta acción.'</span>
-      });
-    }
-    <span class="func">next</span>();
-  };
-};
+        <div class="th-btn-item">
+          <h4>💬 Chat Soporte</h4>
+          <p>Mismo <code>UserChatManager</code> que el profesor. Permite comunicarse con la administración para consultas, problemas técnicos o solicitudes. Notificaciones en tiempo real vía Socket.IO.</p>
         </div>
-        <p style="margin-top: 12px;">Además, en el frontend, cada dashboard verifica al cargarse:</p>
-        <div class="code-block">
-<span class="comment">// Verificación inmediata al cargar la página</span>
-<span class="keyword">if</span> (!localStorage.<span class="func">getItem</span>(<span class="string">'token'</span>)) {
-  window.location.href = <span class="string">'login.html?session=expired'</span>;
-}
+        <div class="th-btn-item">
+          <h4>❓ Ayuda</h4>
+          <p>Documentación para alumnos: cómo ver notas, entender estados de pago, acceder al Classroom, etc.</p>
         </div>
-      </div>
-
-      <!-- 4. Helmet -->
-      <div class="card">
-        <h3>🪖 4. Helmet.js — Cabeceras HTTP de Seguridad</h3>
-        <p>Se configura <code>helmet</code> con una <strong>Content Security Policy (CSP)</strong> estricta:</p>
-        <ul>
-          <li><code>defaultSrc: ["'self'"]</code> — Solo permite recursos propios</li>
-          <li><code>scriptSrc</code> — Solo CDNs aprobados (unpkg, jsdelivr, cdnjs)</li>
-          <li><code>objectSrc: ["'none'"]</code> — Bloquea plugins (Flash, Java)</li>
-          <li><code>frameSrc: ["'none'"]</code> — Previene clickjacking</li>
-        </ul>
-      </div>
-
-      <!-- 5. Rate Limiting -->
-      <div class="card">
-        <h3>⏱️ 5. Rate Limiting</h3>
-        <p>Protección contra ataques de fuerza bruta y DDoS:</p>
-        <div class="code-block">
-<span class="keyword">const</span> <span class="var">limiter</span> = <span class="func">rateLimit</span>({
-  windowMs: 15 * 60 * 1000,  <span class="comment">// ventana de 15 minutos</span>
-  max: 1000,                  <span class="comment">// máximo 1000 requests por IP</span>
-  message: <span class="string">'Demasiadas peticiones, intente más tarde.'</span>,
-  skip: (req) => req.path.<span class="func">startsWith</span>(<span class="string">'/api/chat'</span>) <span class="comment">// excluir chat</span>
-});
-        </div>
-      </div>
-
-      <!-- 6. CORS -->
-      <div class="card">
-        <h3>🌐 6. CORS (Cross-Origin Resource Sharing)</h3>
-        <p>Solo se permiten orígenes registrados explícitamente:</p>
-        <div class="code-block">
-<span class="keyword">const</span> <span class="var">allowedOrigins</span> = [
-  <span class="string">'http://localhost:8080'</span>,
-  <span class="string">'http://localhost:3000'</span>,
-  process.env.FRONTEND_URL,
-  process.env.RAILWAY_PUBLIC_DOMAIN
-].<span class="func">filter</span>(Boolean);
-        </div>
-      </div>
-
-      <!-- 7. Validación -->
-      <div class="card">
-        <h3>✅ 7. Validación de Datos (express-validator)</h3>
-        <p>Todas las rutas POST/PUT usan validación de entrada:</p>
-        <ul>
-          <li>Sanitización de inputs con <code>trim()</code> y <code>normalizeEmail()</code></li>
-          <li>Validación de tipos: <code>isEmail()</code>, <code>isLength()</code>, <code>matches()</code></li>
-          <li>Patrón de username: <code>/^[a-zA-Z0-9_.-]+$/</code></li>
-          <li>Contraseña mínima: 6 caracteres</li>
-          <li>Protección contra SQL Injection mediante <strong>queries parametrizadas</strong></li>
-        </ul>
-      </div>
-
-      <!-- 8. CemiKey -->
-      <div class="card">
-        <h3>🔑 8. Sistema CemiKey</h3>
-        <p>Cada usuario recibe una clave de acceso única generada con caracteres no ambiguos (sin 0, O, 1, I, L):</p>
-        <div class="code-block">
-<span class="keyword">const</span> <span class="var">ALLOWED_CHARS</span> = <span class="string">'ABCDEFGHJKMNPQRSTUVWXYZ23456789'</span>;
-<span class="comment">// Genera formato: XXXX-XXXX-XXXX</span>
-<span class="comment">// Verifica unicidad en administradores, profesores y alumnos</span>
-<span class="comment">// Máximo 10 intentos de generación para evitar colisiones</span>
-        </div>
-      </div>
-
-      <!-- 9. Event Logger -->
-      <div class="card">
-        <h3>📝 9. Sistema de Auditoría (Event Logger)</h3>
-        <p>El módulo <code>eventLogger</code> registra eventos críticos de seguridad:</p>
-        <ul>
-          <li><code>auth.loginSuccess</code> — Login exitoso con IP</li>
-          <li><code>auth.loginFailed</code> — Intentos fallidos con razón</li>
-          <li><code>auth.passwordRecovery</code> — Solicitudes de recuperación</li>
-          <li><code>auth.register</code> — Registros nuevos</li>
-        </ul>
-      </div>
-
-      <!-- 10. Módulos de seguridad frontend -->
-      <div class="card">
-        <h3>🖥️ 10. Centro de Seguridad (Frontend)</h3>
-        <p>El sistema cuenta con <strong>16 páginas de seguridad</strong> dedicadas:</p>
-        <ul>
-          <li><strong>Verificación en dos pasos</strong> — Configuración de 2FA</li>
-          <li><strong>Dispositivos activos</strong> — Gestión de sesiones</li>
-          <li><strong>Historial de acceso</strong> — Registro de logins</li>
-          <li><strong>Alertas de acceso</strong> — Notificaciones de seguridad</li>
-          <li><strong>Ubicaciones sospechosas</strong> — Detección geográfica</li>
-          <li><strong>Códigos de recuperación</strong> — Backup de acceso</li>
-          <li><strong>Cambiar contraseña</strong> — Con verificación de actual</li>
-          <li><strong>Cerrar sesiones</strong> — En todos los dispositivos</li>
-          <li><strong>Descargar datos (GDPR)</strong> — Exportación de datos</li>
-          <li><strong>Eliminar cuenta</strong> — Solicitud regulada</li>
-          <li><strong>Verificador de seguridad</strong> — Chequeo de configuración</li>
-          <li><strong>Exportar actividad</strong> — Log personal</li>
-        </ul>
-      </div>
-
-      <!-- 11. GDPR -->
-      <div class="card">
-        <h3>🇪🇺 11. Cumplimiento GDPR</h3>
-        <p>El sistema implementa rutas de cumplimiento con el Reglamento General de Protección de Datos:</p>
-        <ul>
-          <li><code>POST /api/gdpr/solicitar-exportacion</code> — Exportar datos personales (JSON, CSV, PDF)</li>
-          <li><code>POST /api/gdpr/solicitar-eliminacion</code> — Derecho al olvido</li>
-          <li>Generación de <strong>referencias únicas</strong> para seguimiento</li>
-          <li>Notificación por email al usuario y al administrador</li>
-          <li>Sistema de <strong>cookies configurables</strong> con banner informativo</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h3>🏗️ 12. Arquitectura de Seguridad en Capas</h3>
-        <div class="flow">
-          <span class="flow-step">Request HTTP</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Helmet (Headers)</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">CORS</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Rate Limit</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">JWT Verify</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">RBAC</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Validación</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">SQL Parametrizado</span>
+        <div class="th-btn-item">
+          <h4>🚪 Cerrar Sesión</h4>
+          <p>Limpia localStorage y redirige. Confirma con SweetAlert2.</p>
         </div>
       </div>
     </section>
 
-    <div class="separator"></div>
+    <div class="th-sep"></div>
 
-    <!-- ============================================================ -->
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SEGURIDAD -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="th-section" id="seguridad">
+      <div class="th-section-header">
+        <span class="th-section-tag security">Seguridad</span>
+        <div>
+          <h2 class="th-section-title">Apartado de Seguridad</h2>
+          <p class="th-section-sub">Arquitectura de protección + Secciones del panel admin</p>
+        </div>
+      </div>
+
+      <div class="th-hl err">
+        <strong>Sección clave para la defensa.</strong> El sistema implementa múltiples capas de seguridad tanto en backend como frontend.
+      </div>
+
+      <!-- STATUS -->
+      <div class="th-card">
+        <h3>📊 Sección "Status" (Panel Admin → Seguridad → Status)</h3>
+        <p>Sistema de <strong>monitoreo en tiempo real</strong> del estado de la plataforma. Al hacer clic en "Status" se renderizan las siguientes funcionalidades:</p>
+        <ul>
+          <li><strong>Estado Global:</strong> Indicador visual (operational / degraded / outage / maintenance) calculado a partir del estado de los servicios individuales y el incidente activo.</li>
+          <li><strong>Servicios:</strong> Lista de 5 servicios monitoreados: Plataforma Principal, Classroom, Sistema de Pagos, Chat de Soporte, API/Backend. Cada uno tiene un estado que el admin puede cambiar manualmente (<code>PUT /api/status/services</code>).</li>
+          <li><strong>Métricas del Servidor:</strong> Hace <code>GET /api/status/metrics</code> que devuelve datos reales del servidor: uso de CPU (<code>os.cpus()</code>), memoria RAM (<code>os.totalmem/freemem</code>), uptime del proceso, versión de Node.js, hostname, PID del proceso, requests/segundo y conexiones activas.</li>
+          <li><strong>Ping a Servicios:</strong> Botón para hacer <code>GET /api/status/ping/:service</code> que mide la latencia real del servicio. Para la BD ejecuta <code>SELECT 1</code> y mide el tiempo. Devuelve latencia en ms y paquetes enviados/recibidos.</li>
+          <li><strong>Gestión de Incidentes:</strong> El admin puede crear incidentes (<code>POST /api/status/incident</code>) con título, mensaje, severidad y servicios afectados. Puede agregar actualizaciones al incidente (<code>PUT</code>), resolverlo (restaura el estado de los servicios afectados a operational), o eliminarlo. Los incidentes activos muestran un banner en la página principal de CEMI.</li>
+          <li><strong>Logs del Sistema:</strong> Hace <code>GET /api/status/logs</code> que combina logs internos (<code>systemLogs</code>) con el <code>eventLogger</code> centralizado. Muestra timestamp, nivel (INFO/WARN/ERROR/DEBUG), mensaje, servicio, y categoría. Filtrable por servicio y nivel.</li>
+          <li><strong>Actividad Reciente:</strong> Feed de actividad real desde <code>GET /api/status/activity</code> que muestra eventos del <code>eventLogger</code>: logins, mensajes de chat, tareas del classroom, pagos, errores, etc.</li>
+          <li><strong>Reinicio de Servicios:</strong> Botón para simular reinicio de un servicio (<code>POST /api/status/restart/:service</code>). Ejecuta pasos secuenciales (detener → limpiar cache → iniciar → healthcheck) con feedback visual.</li>
+        </ul>
+      </div>
+
+      <!-- RECUPERACIÓN -->
+      <div class="th-card">
+        <h3>🔑 Sección "Recuperación" (Panel Admin → Seguridad → Recuperación)</h3>
+        <p>Sistema de <strong>recuperación de contraseñas supervisado por el administrador</strong>. No es un reset automático — requiere aprobación humana.</p>
+        <ul>
+          <li><strong>Flujo completo:</strong> El usuario va a la página de recuperación → ingresa email + DNI → se verifica que coincidan en la BD (<code>POST /api/recuperacion/solicitar</code>) → se crea una solicitud con estado "pendiente" → se envía notificación automática a todos los administradores activos via <code>notificaciones_sistema</code>.</li>
+          <li><strong>Vista del Admin:</strong> Hace <code>GET /api/recuperacion/pendientes</code> (requiere token). Muestra tabla con todas las solicitudes: nombre del solicitante, username, rol, email, DNI, fecha, estado. Las pendientes tienen badge de notificación en el sidebar.</li>
+          <li><strong>Aprobar:</strong> <code>PUT /api/recuperacion/:id/aprobar</code>. Cambia el estado a "aprobada" y registra qué administrador aprobó. El usuario puede entonces cambiar su contraseña desde la página pública.</li>
+          <li><strong>Rechazar:</strong> <code>PUT /api/recuperacion/:id/rechazar</code>. Cambia estado a "rechazada" y envía notificación al usuario informándole que fue rechazada.</li>
+          <li><strong>Cambio de contraseña:</strong> Una vez aprobada, el usuario accede a <code>POST /api/recuperacion/cambiar-password</code>. La nueva contraseña se hashea con <code>bcrypt (salt 10 rounds)</code> y se actualiza en la BD. La solicitud se marca como "completada" y se notifica al usuario.</li>
+          <li><strong>Seguridad:</strong> Los endpoints de solicitar, verificar y cambiar contraseña son públicos (sin token) porque el usuario no puede loguearse. Los endpoints de aprobar/rechazar/listar requieren token JWT con rol admin.</li>
+        </ul>
+      </div>
+
+      <!-- CÓDIGOS CEMI -->
+      <div class="th-card">
+        <h3>🎟️ Sección "Códigos CEMI" (Panel Admin → Seguridad → Códigos CEMI)</h3>
+        <p>Sistema de <strong>códigos de invitación</strong> para controlar el registro de nuevos usuarios.</p>
+        <ul>
+          <li><strong>¿Qué son?</strong> Códigos únicos tipo <code>CEMI-AXXXXXX</code> (alumno) o <code>CEMI-PXXXXXX</code> (profesor) que el admin genera para habilitar el registro. Sin código, nadie puede registrarse.</li>
+          <li><strong>Generación:</strong> <code>POST /api/codigos-cemi/generar</code>. El admin ingresa: rol destino (alumno/profesor) y nombre del destinatario. Se genera un código con <code>crypto.randomBytes(6)</code> usando caracteres no ambiguos (sin 0, O, 1, I, L). Se verifica unicidad en la BD con máximo 10 intentos.</li>
+          <li><strong>Listado:</strong> <code>GET /api/codigos-cemi</code>. Tabla con todos los códigos generados: código, rol, destinatario, nombre del admin que lo generó, fecha, y estado (activo/usado).</li>
+          <li><strong>Validación (registro):</strong> <code>POST /api/codigos-cemi/validar</code>. Cuando un usuario intenta registrarse, ingresa el código. El sistema verifica que exista y esté en estado "activo". Si es válido, retorna el rol y nombre del destinatario. Al completar el registro, el código se marca como "usado".</li>
+          <li><strong>Eliminación:</strong> <code>DELETE /api/codigos-cemi/:id</code>. Solo se pueden eliminar códigos en estado "activo" (no usados).</li>
+        </ul>
+      </div>
+
+      <div class="th-sep" style="margin: 28px 0;"></div>
+
+      <span class="th-label">Arquitectura de Seguridad del Backend</span>
+
+      <!-- AUTENTICACIÓN -->
+      <div class="th-card">
+        <h3>1. Autenticación (bcrypt + CemiKey)</h3>
+        <p>Dos métodos de login:</p>
+        <ul>
+          <li><strong>Usuario + Contraseña:</strong> Se compara con hash bcrypt almacenado. La función <code>isBcrypt()</code> verifica prefijo <code>$2</code>. Salt de 10 rounds.</li>
+          <li><strong>CemiKey:</strong> Clave única formato <code>XXXX-XXXX-XXXX</code> con caracteres no ambiguos. Busca en las 3 tablas de roles (administradores, profesores, alumnos).</li>
+        </ul>
+      </div>
+
+      <!-- JWT -->
+      <div class="th-card">
+        <h3>2. JWT (JSON Web Tokens)</h3>
+        <p>Tras login exitoso se genera un token con: <code>id_usuario</code>, <code>id_persona</code>, <code>rol</code>, <code>username</code>, <code>id_especifico</code>. Expira en <strong>24h</strong> (configurable). El middleware <code>verificarToken</code> extrae el token del header <code>Authorization: Bearer TOKEN</code>, lo verifica con <code>jwt.verify()</code>, y adjunta <code>req.user</code>.</p>
+      </div>
+
+      <!-- RBAC -->
+      <div class="th-card">
+        <h3>3. RBAC (Control de Acceso por Roles)</h3>
+        <p>Middleware <code>verificarRol(...rolesPermitidos)</code> se encadena después de <code>verificarToken</code>. Compara <code>req.user.rol</code> con los roles permitidos. Si no coincide, retorna <strong>403 Forbidden</strong>. Tres roles: administrador, profesor, alumno.</p>
+      </div>
+
+      <!-- HELMET -->
+      <div class="th-card">
+        <h3>4. Helmet.js (Headers HTTP)</h3>
+        <p>Content Security Policy estricta: <code>defaultSrc: ["'self'"]</code>, solo CDNs aprobados en <code>scriptSrc</code>, <code>objectSrc: ["'none'"]</code> (bloquea plugins), <code>frameSrc</code> controlado (previene clickjacking).</p>
+      </div>
+
+      <!-- RATE LIMITING -->
+      <div class="th-card">
+        <h3>5. Rate Limiting</h3>
+        <p>Ventana de 15 minutos, máximo 1000 requests por IP. Excluye rutas de chat (<code>/api/chat</code>) para no afectar la comunicación en tiempo real. Mensaje personalizado al exceder.</p>
+      </div>
+
+      <!-- CORS -->
+      <div class="th-card">
+        <h3>6. CORS</h3>
+        <p>Solo orígenes registrados: <code>localhost:8080</code>, <code>localhost:3000</code>, <code>FRONTEND_URL</code>, <code>RAILWAY_PUBLIC_DOMAIN</code>. Se filtran con <code>.filter(Boolean)</code> para ignorar variables no definidas.</p>
+      </div>
+
+      <!-- VALIDACIÓN -->
+      <div class="th-card">
+        <h3>7. Validación de Datos</h3>
+        <p><code>express-validator</code> en todas las rutas POST/PUT. Sanitización con <code>trim()</code>, <code>normalizeEmail()</code>. Validación de tipos: <code>isEmail()</code>, <code>isLength()</code>, <code>matches(/^[a-zA-Z0-9_.-]+$/)</code>. Queries parametrizadas (<code>?</code>) contra SQL injection.</p>
+      </div>
+
+      <!-- EVENT LOGGER -->
+      <div class="th-card">
+        <h3>8. Auditoría (eventLogger)</h3>
+        <p>Registra eventos críticos: <code>auth.loginSuccess</code>, <code>auth.loginFailed</code>, <code>auth.passwordRecovery</code>, <code>auth.register</code>. Cada evento incluye timestamp, categoría, severidad, mensaje e IP del request. Se consultan desde Status.</p>
+      </div>
+
+      <!-- GDPR -->
+      <div class="th-card">
+        <h3>9. GDPR</h3>
+        <p>Exportación de datos (<code>POST /api/gdpr/solicitar-exportacion</code>, formatos JSON/CSV/PDF), eliminación de cuenta (<code>POST /api/gdpr/solicitar-eliminacion</code>), sistema de cookies configurables con banner, referencias únicas para seguimiento, notificaciones por email al usuario y admin.</p>
+      </div>
+
+      <div class="th-card">
+        <h3>10. Capas de Seguridad — Flujo Completo</h3>
+        <div class="th-flow">
+          <span class="th-flow-step">Request HTTP</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">Helmet</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">CORS</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">Rate Limit</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">JWT Verify</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">RBAC</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">Validación</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">SQL Param</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="th-sep"></div>
+
+    <!-- ═══════════════════════════════════════════ -->
     <!-- COMUNICACIÓN BACKEND-FRONTEND -->
-    <!-- ============================================================ -->
-    <section class="section" id="comunicacion">
-      <div class="section-header">
-        <div class="section-icon backend">⚡</div>
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="th-section" id="comunicacion">
+      <div class="th-section-header">
+        <span class="th-section-tag backend">Backend</span>
         <div>
-          <h2 class="section-title">Comunicación Backend ↔ Frontend</h2>
-          <p class="section-subtitle">Arquitectura REST API + WebSockets</p>
+          <h2 class="th-section-title">Comunicación Backend ↔ Frontend</h2>
+          <p class="th-section-sub">REST API + WebSockets</p>
         </div>
       </div>
 
-      <div class="card">
-        <h3>🏗️ Stack Tecnológico</h3>
+      <div class="th-card">
+        <h3>Stack Tecnológico</h3>
         <ul>
           <li><strong>Backend:</strong> Node.js + Express.js (ES Modules)</li>
           <li><strong>Base de Datos:</strong> MySQL con mysql2/promise (pool de conexiones)</li>
           <li><strong>Frontend:</strong> HTML5/CSS3/JavaScript Vanilla (SPA dinámica)</li>
-          <li><strong>Tiempo Real:</strong> Socket.IO para chat</li>
-          <li><strong>Emails:</strong> Nodemailer con templates HTML</li>
-          <li><strong>Deployment:</strong> Railway (PaaS)</li>
+          <li><strong>Tiempo Real:</strong> Socket.IO para chat de soporte</li>
+          <li><strong>Emails:</strong> Nodemailer con templates HTML personalizados</li>
+          <li><strong>Deployment:</strong> Railway (PaaS). Frontend servido como estáticos por Express.</li>
         </ul>
       </div>
 
-      <div class="card">
-        <h3>🔄 Patrón de Comunicación</h3>
-        <p>El frontend consume una <strong>REST API</strong> organizada en módulos:</p>
-        <div class="code-block">
-<span class="comment">// Todas las rutas protegidas usan verificarToken como middleware</span>
-app.<span class="func">use</span>(<span class="string">"/api/auth"</span>, authRoutes);              <span class="comment">// Público</span>
-app.<span class="func">use</span>(<span class="string">"/api/alumnos"</span>, verificarToken, alumnosRoutes);    <span class="comment">// Protegido</span>
-app.<span class="func">use</span>(<span class="string">"/api/profesores"</span>, verificarToken, profesoresRoutes);
-app.<span class="func">use</span>(<span class="string">"/api/cursos"</span>, verificarToken, cursosRoutes);
-app.<span class="func">use</span>(<span class="string">"/api/pagos"</span>, verificarToken, pagosRoutes);
-app.<span class="func">use</span>(<span class="string">"/api/classroom"</span>, verificarToken, classroomRoutes);
-<span class="comment">// ... 25+ módulos de rutas</span>
+      <div class="th-card">
+        <h3>Patrón de Comunicación</h3>
+        <p>El frontend consume una <strong>REST API</strong> con 31 archivos de rutas. Todas las rutas protegidas pasan por <code>verificarToken</code> como middleware.</p>
+        <div class="th-code">
+<span class="cm">// server.js — Montaje de rutas</span>
+app.<span class="fn">use</span>(<span class="st">"/api/auth"</span>, authRoutes);              <span class="cm">// Público</span>
+app.<span class="fn">use</span>(<span class="st">"/api/alumnos"</span>, verificarToken, alumnosRoutes);
+app.<span class="fn">use</span>(<span class="st">"/api/profesores"</span>, verificarToken, profesoresRoutes);
+app.<span class="fn">use</span>(<span class="st">"/api/cursos"</span>, verificarToken, cursosRoutes);
+app.<span class="fn">use</span>(<span class="st">"/api/pagos"</span>, verificarToken, pagosRoutes);
+app.<span class="fn">use</span>(<span class="st">"/api/classroom"</span>, verificarToken, classroomRoutes);
+<span class="cm">// ... 25+ módulos más</span>
         </div>
       </div>
 
-      <div class="card">
-        <h3>📡 Flujo de una Petición Típica</h3>
-        <div class="flow">
-          <span class="flow-step">Frontend (fetch)</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Authorization: Bearer TOKEN</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Express middleware</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">Route handler</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">MySQL query</span>
-          <span class="flow-arrow">→</span>
-          <span class="flow-step">JSON response</span>
+      <div class="th-card">
+        <h3>Flujo de una Petición Típica</h3>
+        <div class="th-flow">
+          <span class="th-flow-step">Frontend (fetch)</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">Authorization: Bearer TOKEN</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">Express middleware</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">Route handler</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">MySQL query</span>
+          <span class="th-flow-arrow">→</span>
+          <span class="th-flow-step">JSON response</span>
         </div>
-        <div class="code-block">
-<span class="comment">// Ejemplo: Cargar datos del alumno desde el frontend</span>
-<span class="keyword">const</span> <span class="var">response</span> = <span class="keyword">await</span> <span class="func">fetch</span>(`${API_URL}/alumnos/${id_alumno}`, {
+        <div class="th-code">
+<span class="cm">// Frontend: petición con token</span>
+<span class="kw">const</span> <span class="vr">res</span> = <span class="kw">await</span> <span class="fn">fetch</span>(`${API_URL}/alumnos/${id}`, {
   headers: {
-    <span class="string">'Authorization'</span>: `Bearer ${localStorage.<span class="func">getItem</span>(<span class="string">'token'</span>)}`,
-    <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>
+    <span class="st">'Authorization'</span>: `Bearer ${localStorage.<span class="fn">getItem</span>(<span class="st">'token'</span>)}`,
+    <span class="st">'Content-Type'</span>: <span class="st">'application/json'</span>
   }
 });
-<span class="keyword">const</span> <span class="var">data</span> = <span class="keyword">await</span> response.<span class="func">json</span>();
+<span class="kw">const</span> <span class="vr">data</span> = <span class="kw">await</span> res.<span class="fn">json</span>();
         </div>
       </div>
 
-      <div class="card">
-        <h3>📋 Endpoints Principales</h3>
-        <table class="endpoint-table">
-          <thead>
-            <tr>
-              <th>Método</th>
-              <th>Endpoint</th>
-              <th>Descripción</th>
-              <th>Rol</th>
-            </tr>
-          </thead>
+      <div class="th-card">
+        <h3>Endpoints Principales</h3>
+        <table class="th-table">
+          <thead><tr><th>Método</th><th>Endpoint</th><th>Descripción</th><th>Acceso</th></tr></thead>
           <tbody>
-            <tr><td><span class="tag post">POST</span></td><td><code>/api/auth/login</code></td><td>Login usuario/contraseña</td><td><span class="tag backend">Público</span></td></tr>
-            <tr><td><span class="tag post">POST</span></td><td><code>/api/auth/login-key</code></td><td>Login por CemiKey</td><td><span class="tag backend">Público</span></td></tr>
-            <tr><td><span class="tag post">POST</span></td><td><code>/api/auth/register</code></td><td>Registro con código CEMI</td><td><span class="tag backend">Público</span></td></tr>
-            <tr><td><span class="tag get">GET</span></td><td><code>/api/alumnos/:id</code></td><td>Datos completos del alumno</td><td><span class="tag alumno">Alumno</span></td></tr>
-            <tr><td><span class="tag get">GET</span></td><td><code>/api/cursos</code></td><td>Lista de cursos</td><td><span class="tag admin">Admin/Prof</span></td></tr>
-            <tr><td><span class="tag put">PUT</span></td><td><code>/api/calificaciones</code></td><td>Actualizar notas</td><td><span class="tag profesor">Profesor</span></td></tr>
-            <tr><td><span class="tag get">GET</span></td><td><code>/api/pagos/alumno/:id</code></td><td>Pagos del alumno</td><td><span class="tag alumno">Alumno</span></td></tr>
-            <tr><td><span class="tag post">POST</span></td><td><code>/api/gdpr/solicitar-exportacion</code></td><td>Exportar datos GDPR</td><td><span class="tag security">Protegido</span></td></tr>
+            <tr><td><span class="th-tag post">POST</span></td><td><code>/api/auth/login</code></td><td>Login usuario/contraseña</td><td>Público</td></tr>
+            <tr><td><span class="th-tag post">POST</span></td><td><code>/api/auth/login-key</code></td><td>Login por CemiKey</td><td>Público</td></tr>
+            <tr><td><span class="th-tag post">POST</span></td><td><code>/api/auth/register</code></td><td>Registro con código CEMI</td><td>Público</td></tr>
+            <tr><td><span class="th-tag get">GET</span></td><td><code>/api/cursos</code></td><td>Todos los cursos</td><td>Admin</td></tr>
+            <tr><td><span class="th-tag get">GET</span></td><td><code>/api/alumnos/:id</code></td><td>Datos del alumno</td><td>Admin/Alumno</td></tr>
+            <tr><td><span class="th-tag put">PUT</span></td><td><code>/api/calificaciones</code></td><td>Actualizar notas</td><td>Profesor</td></tr>
+            <tr><td><span class="th-tag post">POST</span></td><td><code>/api/asistencias</code></td><td>Registrar asistencia</td><td>Profesor</td></tr>
+            <tr><td><span class="th-tag get">GET</span></td><td><code>/api/pagos/alumno/:id</code></td><td>Pagos del alumno</td><td>Admin/Alumno</td></tr>
+            <tr><td><span class="th-tag get">GET</span></td><td><code>/api/status/metrics</code></td><td>Métricas del servidor</td><td>Admin</td></tr>
+            <tr><td><span class="th-tag post">POST</span></td><td><code>/api/codigos-cemi/generar</code></td><td>Generar código registro</td><td>Admin</td></tr>
+            <tr><td><span class="th-tag get">GET</span></td><td><code>/api/recuperacion/pendientes</code></td><td>Solicitudes de password</td><td>Admin</td></tr>
           </tbody>
         </table>
       </div>
 
-      <div class="card">
-        <h3>🗄️ Modelo de Base de Datos</h3>
-        <p>Las tablas principales y sus relaciones:</p>
+      <div class="th-card">
+        <h3>Modelo de Base de Datos (tablas principales)</h3>
         <ul>
           <li><code>personas</code> → Datos base (nombre, apellido, mail, dni)</li>
           <li><code>usuarios</code> → Credenciales (FK: id_persona, id_perfil)</li>
           <li><code>perfiles</code> → Roles (1=admin, 2=profesor, 3=alumno)</li>
-          <li><code>alumnos</code> / <code>profesores</code> / <code>administradores</code> → Datos específicos por rol</li>
-          <li><code>cursos</code> → Con FK a idiomas, niveles, profesores</li>
-          <li><code>inscripciones</code> → Relación alumno-curso</li>
+          <li><code>alumnos</code> / <code>profesores</code> / <code>administradores</code> → Datos específicos con legajo y CemiKey</li>
+          <li><code>cursos</code> → FK a idiomas, niveles, profesores, aulas</li>
+          <li><code>inscripciones</code> → Relación alumno↔curso</li>
           <li><code>calificaciones</code> → Notas vinculadas a inscripciones</li>
           <li><code>pagos</code> → Control financiero por alumno/curso</li>
-          <li><code>chat_conversaciones</code> / <code>chat_mensajes</code> → Sistema de soporte</li>
+          <li><code>chat_conversaciones</code> / <code>chat_mensajes</code> → Chat de soporte</li>
           <li><code>codigos_cemi</code> → Códigos de registro</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h3>🔄 Auto-Migraciones</h3>
-        <p>El servidor ejecuta migraciones automáticas al iniciar, garantizando compatibilidad:</p>
-        <ul>
-          <li>Agrega columnas faltantes (bandera, estado, ciclo_lectivo)</li>
-          <li>Crea tablas nuevas si no existen (registros_pagos, depuraciones_backup)</li>
-          <li>Actualiza ENUMs (agrega 'resuelta' a estados de chat)</li>
-          <li>Pobla datos por defecto (banderas de idiomas)</li>
+          <li><code>solicitudes_recuperacion</code> → Flujo de reset de password</li>
+          <li><code>notificaciones_sistema</code> → Notificaciones internas</li>
+          <li><code>sistema_servicios</code> / <code>sistema_incidentes</code> → Status del sistema</li>
         </ul>
       </div>
     </section>
 
-    <div class="separator"></div>
+    <div class="th-sep"></div>
 
-    <!-- ============================================================ -->
+    <!-- ═══════════════════════════════════════════ -->
     <!-- POSIBLES PREGUNTAS -->
-    <!-- ============================================================ -->
-    <section class="section" id="preguntas">
-      <div class="section-header">
-        <div class="section-icon questions">❓</div>
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="th-section" id="preguntas">
+      <div class="th-section-header">
+        <span class="th-section-tag questions">Preguntas</span>
         <div>
-          <h2 class="section-title">Posibles Preguntas de Defensa</h2>
-          <p class="section-subtitle">Preguntas frecuentes del tribunal y cómo responderlas</p>
+          <h2 class="th-section-title">Posibles Preguntas de Defensa</h2>
+          <p class="th-section-sub">Hacé clic en cada pregunta para ver la respuesta sugerida</p>
         </div>
       </div>
 
-      <div class="highlight info">
-        <strong>Tip:</strong> Hacé clic en cada pregunta para ver la respuesta sugerida. Respondé siempre de forma concisa, técnica y con ejemplos concretos del proyecto.
-      </div>
+      <span class="th-label">Arquitectura y Tecnología</span>
 
-      <!-- ARQUITECTURA -->
-      <h3 style="font-size: 14px; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; font-weight: 600;">Arquitectura y Tecnología</h3>
-
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Por qué eligieron Node.js como tecnología backend?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Node.js nos permite usar <strong>JavaScript tanto en frontend como en backend</strong>, lo que simplifica el desarrollo al mantener un solo lenguaje. Además, su modelo de <strong>I/O no bloqueante</strong> es ideal para manejar múltiples conexiones simultáneas, como el chat en tiempo real con Socket.IO. Express.js nos da un framework minimalista y flexible para construir la API REST.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          Node.js nos permite usar <strong>JavaScript tanto en frontend como en backend</strong>, simplificando el desarrollo con un solo lenguaje. Su modelo de <strong>I/O no bloqueante</strong> es ideal para manejar múltiples conexiones simultáneas, como el chat en tiempo real con Socket.IO. Express.js nos da un framework minimalista y flexible para construir la API REST.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Por qué MySQL y no MongoDB u otra base NoSQL?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            El dominio del problema es <strong>altamente relacional</strong>: alumnos están inscritos en cursos, los cursos tienen profesores, las calificaciones dependen de inscripciones, los pagos se vinculan a alumnos y cursos. Una base de datos relacional como MySQL garantiza <strong>integridad referencial</strong> con foreign keys, soporta <strong>transacciones ACID</strong> (como en el registro de usuarios), y nos permite hacer JOINs complejos para obtener datos consolidados de forma eficiente.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          El dominio es <strong>altamente relacional</strong>: alumnos inscritos en cursos, cursos con profesores, calificaciones dependientes de inscripciones, pagos vinculados a alumnos y cursos. MySQL garantiza <strong>integridad referencial</strong> con foreign keys, soporta <strong>transacciones ACID</strong> (usadas en el registro de usuarios con ROLLBACK), y permite JOINs complejos para datos consolidados.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Cómo funciona el patrón SPA que implementaron?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Los dashboards funcionan como <strong>Single Page Applications (SPA)</strong> sin framework. Cada botón del sidebar ejecuta una función JavaScript que: <strong>1)</strong> hace fetch a la API REST, <strong>2)</strong> recibe datos en JSON, <strong>3)</strong> genera el HTML dinámicamente con template literals, y <strong>4)</strong> lo inyecta en el contenedor <code>mainContent</code>. Esto evita recargas de página completas, brindando una experiencia más fluida. Usamos <code>classList</code> para animaciones de transición entre secciones.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          Los dashboards son <strong>SPA sin framework</strong>. Cada botón del sidebar ejecuta una función que: <strong>1)</strong> hace fetch a la API REST, <strong>2)</strong> recibe datos en JSON, <strong>3)</strong> genera HTML con template literals, y <strong>4)</strong> lo inyecta en el contenedor <code>mainContent</code> con <code>innerHTML</code>. Esto evita recargas de página completas. Usamos <code>classList</code> para animaciones de transición entre secciones.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Cómo se despliega la aplicación en producción?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Usamos <strong>Railway</strong> como plataforma de deployment. Railway detecta automáticamente el entorno Node.js, ejecuta <code>npm start</code> que corre <code>server.js</code>. Las variables de entorno (JWT_SECRET, credenciales de BD, etc.) se configuran en el dashboard de Railway. La base de datos MySQL también está hosteada en Railway, con las variables MYSQL* configuradas automáticamente. El frontend es servido como archivos estáticos por Express.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          Usamos <strong>Railway</strong> como PaaS. Detecta Node.js automáticamente, ejecuta <code>npm start</code> → <code>server.js</code>. Las variables de entorno (JWT_SECRET, credenciales de BD, etc.) se configuran en el dashboard de Railway. MySQL también está hosteada ahí. El frontend es servido como archivos estáticos por Express con <code>express.static('frontend')</code>.
+        </div></div>
       </div>
 
-      <!-- SEGURIDAD -->
-      <h3 style="font-size: 14px; color: var(--accent-security); text-transform: uppercase; letter-spacing: 1px; margin: 32px 0 12px; font-weight: 600;">Seguridad</h3>
+      <span class="th-label">Seguridad</span>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Cómo protegen las contraseñas de los usuarios?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Las contraseñas se hashean con <strong>bcrypt</strong> usando un salt de 10 rounds. Nunca almacenamos contraseñas en texto plano en producción. La función <code>isBcrypt()</code> verifica que el hash almacenado comience con <code>$2</code>, que es el prefijo estándar de bcrypt. En desarrollo existe una variable <code>ALLOW_PLAINTEXT_LOGIN</code> que <strong>nunca se activa en producción</strong> (<code>isProd</code> la bloquea).
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          Se hashean con <strong>bcrypt</strong> usando salt de 10 rounds. Nunca se almacenan en texto plano en producción. La función <code>isBcrypt()</code> verifica que el hash comience con <code>$2</code> (prefijo estándar de bcrypt). La variable <code>ALLOW_PLAINTEXT_LOGIN</code> existe para desarrollo pero <strong>nunca se activa en producción</strong> gracias al flag <code>isProd</code>.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Cómo previenen inyecciones SQL?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Usamos <strong>queries parametrizadas</strong> en todas las consultas a MySQL. La librería <code>mysql2</code> utiliza <strong>prepared statements</strong> donde los valores se pasan como parámetros separados: <code>pool.query("SELECT * FROM usuarios WHERE username = ?", [username])</code>. Esto garantiza que los valores nunca se interpretan como código SQL. Además, <code>express-validator</code> sanitiza y valida todos los inputs antes de que lleguen a las queries.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          <strong>Queries parametrizadas</strong> en todas las consultas. La librería <code>mysql2</code> usa prepared statements: <code>pool.query("SELECT * FROM usuarios WHERE username = ?", [username])</code>. Los valores nunca se interpretan como código SQL. Además, <code>express-validator</code> sanitiza inputs antes de que lleguen a las queries.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Qué pasa si un token JWT expira?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Cuando un token expira, el middleware <code>verificarToken</code> captura el error <code>TokenExpiredError</code> y responde con un <strong>status 401</strong> y el flag <code>expired: true</code>. En el frontend, cada dashboard verifica al cargar si existe un token en <code>localStorage</code>; si no existe, redirige automáticamente a <code>login.html?session=expired</code>. Los tokens tienen un tiempo de vida de <strong>24 horas</strong> por defecto, configurable via <code>JWT_EXPIRES_IN</code>.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          El middleware captura <code>TokenExpiredError</code> y responde con <strong>status 401</strong> y flag <code>expired: true</code>. En el frontend, cada dashboard verifica al cargar si existe token en <code>localStorage</code>; si no existe, redirige a <code>login.html?session=expired</code>. Tokens expiran en <strong>24 horas</strong> por defecto.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Cómo implementaron el sistema de roles?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Hay tres roles: <strong>administrador</strong>, <strong>profesor</strong> y <strong>alumno</strong>. Se almacenan en la tabla <code>perfiles</code> (id_perfil: 1=admin, 2=profesor, 3=alumno). Al hacer login, el rol se incluye en el JWT. El middleware <code>verificarRol(...roles)</code> actúa como segundo middleware después de <code>verificarToken</code>, verificando que el rol del token esté dentro de los roles permitidos. Cada dashboard (admin, profesor, alumno) es un archivo HTML separado que carga solo las funciones correspondientes al rol.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          Tres roles en tabla <code>perfiles</code>: admin (1), profesor (2), alumno (3). Al hacer login, el rol se incluye en el JWT. El middleware <code>verificarRol(...roles)</code> verifica que el rol del token esté permitido para esa ruta. Cada dashboard es un HTML separado que carga solo funciones de su rol. Un alumno no puede acceder a rutas de admin aunque tenga un token válido.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
-          <h4>¿Cómo protegen contra ataques XSS?</h4>
-          <span class="qa-toggle">+</span>
-        </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Usamos <strong>Helmet.js</strong> que configura la <strong>Content Security Policy (CSP)</strong>, limitando de dónde se pueden cargar scripts y estilos. Solo se permiten CDNs específicos (unpkg, jsdelivr, cdnjs). Además, <code>objectSrc</code> está configurado como <code>'none'</code> para bloquear plugins, y <code>frameSrc</code> como <code>'none'</code> para prevenir clickjacking. Los datos del usuario se insertan en el DOM como <code>textContent</code> cuando es posible, y la validación de inputs con <code>express-validator</code> sanitiza los datos antes del procesamiento.
-          </div>
-        </div>
-      </div>
-
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Qué es el sistema CemiKey y para qué sirve?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            CemiKey es un <strong>sistema de autenticación alternativo</strong>. Cada usuario (alumno, profesor o administrador) recibe una clave única en formato <code>XXXX-XXXX-XXXX</code>, generada con caracteres no ambiguos (excluye 0, O, 1, I, L para evitar confusión visual). Permite acceder al sistema <strong>sin necesidad de recordar usuario y contraseña</strong>. El generador verifica unicidad en las tres tablas de roles antes de asignar una clave, con un máximo de 10 intentos para evitar loops infinitos.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          CemiKey es un <strong>sistema de autenticación alternativo</strong>. Cada usuario recibe una clave única en formato <code>XXXX-XXXX-XXXX</code>, generada con <code>crypto.randomBytes</code> y caracteres no ambiguos (excluye 0, O, 1, I, L). Permite acceder <strong>sin usuario/contraseña</strong>. El generador verifica unicidad en las tres tablas de roles antes de asignar, con máximo 10 intentos.
+        </div></div>
       </div>
 
-      <!-- FUNCIONALIDAD -->
-      <h3 style="font-size: 14px; color: var(--accent-alumno); text-transform: uppercase; letter-spacing: 1px; margin: 32px 0 12px; font-weight: 600;">Funcionalidad</h3>
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
+          <h4>¿Cómo protegen contra ataques XSS?</h4>
+          <span class="th-qa-toggle">+</span>
+        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          <strong>Helmet.js</strong> configura Content Security Policy limitando de dónde se cargan scripts (solo CDNs aprobados). <code>objectSrc: 'none'</code> bloquea plugins, <code>frameSrc</code> controlado previene clickjacking. La validación con <code>express-validator</code> sanitiza datos de entrada. Los datos se insertan como <code>textContent</code> cuando es posible.
+        </div></div>
+      </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <span class="th-label">Funcionalidad</span>
+
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Cómo funciona el registro de usuarios?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            El registro requiere un <strong>Código CEMI</strong> válido (generado previamente por un administrador). Este código determina el rol del nuevo usuario (alumno o profesor). El proceso usa una <strong>transacción MySQL</strong>: <strong>1)</strong> Crea registro en <code>personas</code>, <strong>2)</strong> Crea usuario en <code>usuarios</code> con contraseña hasheada, <strong>3)</strong> Genera CemiKey única, <strong>4)</strong> Crea entrada en la tabla del rol (alumnos o profesores) con legajo auto-incrementado, <strong>5)</strong> Marca el código CEMI como usado. Si cualquier paso falla, se ejecuta <code>ROLLBACK</code> para mantener la integridad.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          Requiere un <strong>Código CEMI</strong> válido generado por un admin. El proceso usa una <strong>transacción MySQL</strong>: 1) Crea en <code>personas</code>, 2) Crea en <code>usuarios</code> con password hasheado, 3) Genera CemiKey única, 4) Crea en tabla del rol (alumnos/profesores) con legajo auto-incrementado, 5) Marca código como usado. Si cualquier paso falla → <code>ROLLBACK</code>.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Cómo funciona el chat en tiempo real?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Usamos <strong>Socket.IO</strong> sobre HTTP. El servidor crea una instancia de <code>ChatServer</code> que maneja conexiones WebSocket. Los usuarios (alumnos/profesores) usan <code>UserChatManager</code> y los administradores usan <code>AdminChatManager</code>. Los mensajes se persisten en MySQL (<code>chat_conversaciones</code> y <code>chat_mensajes</code>) y se transmiten en tiempo real. Las conversaciones tienen estados (pendiente, activa, cerrada, resuelta) y soportan notificaciones push del navegador.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          <strong>Socket.IO</strong> sobre HTTP. El servidor crea <code>ChatServer</code> que maneja conexiones WebSocket. Usuarios usan <code>UserChatManager</code>, admins usan <code>AdminChatManager</code>. Mensajes se persisten en MySQL (<code>chat_conversaciones</code> + <code>chat_mensajes</code>) y transmiten en tiempo real. Conversaciones tienen estados (pendiente, activa, cerrada, resuelta) y notificaciones push del navegador.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿El sistema cumple con normativas de protección de datos?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Sí, implementamos funcionalidades alineadas con el <strong>GDPR</strong>: derecho a exportar datos personales (en formatos JSON, CSV o PDF), derecho a solicitar eliminación de cuenta, sistema de cookies configurables con banner informativo, política de privacidad detallada, y un sistema de referencias para seguimiento de solicitudes. Cada solicitud genera emails automáticos tanto al usuario como al administrador.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          Implementamos funcionalidades alineadas con <strong>GDPR</strong>: derecho a exportar datos (JSON, CSV, PDF), derecho a solicitar eliminación de cuenta, cookies configurables con banner, política de privacidad, y sistema de referencias para seguimiento. Cada solicitud genera emails automáticos al usuario y al admin con Nodemailer.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Cómo manejan los errores del servidor?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Todas las rutas usan bloques <strong>try/catch</strong> que capturan errores y devuelven respuestas JSON estructuradas con <code>{ success: false, message: "..." }</code>. Se usa <strong>Morgan</strong> para logging HTTP (formato 'dev' en desarrollo, 'combined' en producción). El <code>eventLogger</code> registra eventos de seguridad. En el frontend, cada fetch tiene manejo de errores que muestra mensajes amigables al usuario usando <strong>SweetAlert2</strong>.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          Todas las rutas usan <strong>try/catch</strong> que devuelven JSON estructurado: <code>{ success: false, message: "..." }</code>. <strong>Morgan</strong> para logging HTTP. El <code>eventLogger</code> registra eventos de seguridad. En el frontend, cada fetch tiene manejo de errores con <strong>SweetAlert2</strong> para mensajes amigables.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
           <h4>¿Qué mejoras implementarían a futuro?</h4>
-          <span class="qa-toggle">+</span>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            <strong>1)</strong> Migrar a un framework frontend como React o Vue para mejor mantenimiento. <strong>2)</strong> Implementar refresh tokens para renovar JWTs sin re-login. <strong>3)</strong> Agregar autenticación de dos factores (2FA) funcional con TOTP. <strong>4)</strong> Implementar un sistema de backups automáticos programados. <strong>5)</strong> Agregar tests unitarios y de integración con Jest. <strong>6)</strong> Implementar CI/CD con GitHub Actions. <strong>7)</strong> Agregar un dashboard de métricas y monitoreo en tiempo real.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          <strong>1)</strong> Migrar a React o Vue para mejor mantenimiento. <strong>2)</strong> Refresh tokens para renovar JWTs sin re-login. <strong>3)</strong> 2FA funcional con TOTP. <strong>4)</strong> Backups automáticos programados. <strong>5)</strong> Tests con Jest. <strong>6)</strong> CI/CD con GitHub Actions. <strong>7)</strong> Dashboard de métricas con monitoreo real.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
-          <h4>¿Cómo manejaron el trabajo en equipo y la organización?</h4>
-          <span class="qa-toggle">+</span>
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
+          <h4>¿Qué es el Classroom y cómo se relaciona con el Dashboard?</h4>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            Usamos <strong>Git</strong> para control de versiones y <strong>GitHub</strong> como repositorio remoto. El equipo se dividió entre frontend y backend, con un jefe de proyecto coordinando las entregas. Implementamos un flujo de trabajo con branches por funcionalidad y merges controlados. La comunicación fue constante para asegurar que la API cumpliera con las necesidades del frontend.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          El <strong>Classroom</strong> es el aula virtual (tareas, entregas, anuncios, recursos, foros). El <strong>Dashboard</strong> es el panel administrativo-académico (inscripciones, calificaciones, asistencias, pagos). Comparten credenciales pero tienen logins separados: Dashboard usa <code>/api/auth/login</code>, Classroom usa <code>/api/auth/classroom-login</code>. Ambos generan tokens JWT válidos.
+        </div></div>
       </div>
 
-      <div class="qa-item">
-        <div class="qa-question" onclick="this.parentElement.classList.toggle('active')">
-          <h4>¿Qué es el sistema de Classroom y cómo se relaciona con el Dashboard?</h4>
-          <span class="qa-toggle">+</span>
+      <div class="th-qa">
+        <div class="th-qa-q" onclick="this.parentElement.classList.toggle('active')">
+          <h4>¿Cómo manejaron el trabajo en equipo?</h4>
+          <span class="th-qa-toggle">+</span>
         </div>
-        <div class="qa-answer">
-          <div class="qa-answer-inner">
-            El <strong>Classroom</strong> es el aula virtual donde se gestiona el contenido académico diario: tareas, entregas, anuncios, recursos, foros de discusión, y chat por curso. El <strong>Dashboard</strong> es el panel administrativo-académico que gestiona datos estructurales: inscripciones, calificaciones, asistencias, pagos. Ambos comparten las mismas credenciales de usuario (<code>tabla usuarios</code>), y se puede acceder desde uno al otro con un botón directo en el sidebar. Tienen login separado por diseño: el Dashboard usa <code>/api/auth/login</code> y el Classroom usa <code>/api/auth/classroom-login</code>, aunque ambos generan tokens JWT válidos.
-          </div>
-        </div>
+        <div class="th-qa-a"><div class="th-qa-a-inner">
+          <strong>Git</strong> para control de versiones y <strong>GitHub</strong> como repositorio. Equipo dividido entre frontend y backend, con jefe de proyecto coordinando entregas. Branches por funcionalidad y merges controlados. Comunicación constante para asegurar que la API cumpla con las necesidades del frontend.
+        </div></div>
       </div>
 
     </section>
 
   </div>
 
-  <!-- FOOTER -->
-  <footer style="text-align: center; padding: 40px 20px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px;">
-    CEMI — Documentación interna de defensa de tesis &bull; No distribuir
+  <footer style="text-align: center; padding: 32px 20px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 11px; font-family: 'Inter', sans-serif;">
+    CEMI — Documentación interna · No distribuir
   </footer>
 
 </body>
