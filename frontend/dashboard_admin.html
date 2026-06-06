@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,15 +27,15 @@
   <link rel="stylesheet" href="assets/css/animations.css" />
   <link rel="stylesheet" href="assets/css/user-chat-manager.css" />
   <link rel="stylesheet" href="assets/css/ayuda-section.css" />
-  
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  
+
   <!-- Sistema de gestion de consola -->
   <script src="assets/js/console-manager.js"></script>
   <script src="assets/js/config.js"></script>
-  
+
   <script src="https://unpkg.com/lucide@latest"></script>
-  
+
   <style>
     /* ===== ESTILOS PARA CHAT ADMIN ===== */
     .admin-chat-container {
@@ -43,9 +44,9 @@
       background: white;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-    
+
     /* Panel Izquierdo - Lista de Conversaciones */
     .chat-conversations-panel {
       width: 380px;
@@ -54,14 +55,14 @@
       flex-direction: column;
       background: white;
     }
-    
+
     .chat-panel-header {
       padding: 39px;
       background: #4a5259;
       color: white;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
+
     .chat-panel-header h3 {
       margin: 0;
       font-size: 18px;
@@ -70,23 +71,23 @@
       align-items: center;
       gap: 10px;
     }
-    
+
     /* Ocultar botón volver en desktop */
     .chat-back-btn {
       display: none;
     }
-    
+
     /* Ocultar botón volver a bandeja en desktop */
     .chat-return-to-list-btn {
       display: none;
     }
-    
+
     .chat-panel-header p {
       margin: 0;
       font-size: 13px;
       opacity: 0.9;
     }
-    
+
     .chat-filters {
       padding: 16px;
       background: white;
@@ -94,7 +95,7 @@
       display: flex;
       gap: 8px;
     }
-    
+
     .chat-filter-btn {
       flex: 1;
       padding: 8px 12px;
@@ -109,17 +110,17 @@
       justify-content: center;
       gap: 6px;
     }
-    
+
     .chat-filter-btn:hover {
       background: #f3f4f6;
     }
-    
+
     .chat-filter-btn.active {
       background: #667eea;
       color: white;
       border-color: #667eea;
     }
-    
+
     .chat-filter-badge {
       background: #ef4444;
       color: white;
@@ -128,17 +129,17 @@
       font-size: 11px;
       font-weight: 600;
     }
-    
+
     .chat-filter-btn.active .chat-filter-badge {
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.3);
     }
-    
+
     .chat-search {
       padding: 12px 16px;
       background: white;
       border-bottom: 1px solid #e5e7eb;
     }
-    
+
     .chat-search input {
       width: 100%;
       padding: 10px 12px;
@@ -147,17 +148,17 @@
       font-size: 14px;
       font-family: 'Poppins', sans-serif;
     }
-    
+
     .chat-search input:focus {
       outline: none;
       border-color: #667eea;
     }
-    
+
     .chat-conversations-list {
       flex: 1;
       overflow-y: auto;
     }
-    
+
     .chat-conversation-item {
       padding: 16px;
       border-bottom: 1px solid #e5e7eb;
@@ -168,16 +169,16 @@
       gap: 12px;
       align-items: flex-start;
     }
-    
+
     .chat-conversation-item:hover {
       background: #f9fafb;
     }
-    
+
     .chat-conversation-item.active {
       background: #ede9fe;
       border-left: 3px solid #667eea;
     }
-    
+
     .chat-conv-avatar {
       width: 48px;
       height: 48px;
@@ -191,27 +192,27 @@
       font-weight: 600;
       flex-shrink: 0;
     }
-    
+
     .chat-conv-avatar.invitado {
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
-    
+
     .chat-conv-avatar.profesor {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     }
-    
+
     .chat-conv-info {
       flex: 1;
       min-width: 0;
     }
-    
+
     .chat-conv-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 4px;
     }
-    
+
     .chat-conv-name {
       font-weight: 600;
       font-size: 14px;
@@ -220,7 +221,7 @@
       align-items: center;
       gap: 6px;
     }
-    
+
     .chat-conv-type {
       font-size: 11px;
       padding: 2px 6px;
@@ -229,12 +230,12 @@
       color: #6b7280;
       font-weight: 500;
     }
-    
+
     .chat-conv-time {
       font-size: 11px;
       color: #9ca3af;
     }
-    
+
     .chat-conv-preview {
       font-size: 13px;
       color: #6b7280;
@@ -243,35 +244,35 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    
+
     .chat-conv-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .chat-conv-status {
       font-size: 11px;
       padding: 3px 8px;
       border-radius: 12px;
       font-weight: 500;
     }
-    
+
     .chat-conv-status.pendiente {
       background: #fef3c7;
       color: #92400e;
     }
-    
+
     .chat-conv-status.activa {
       background: #d1fae5;
       color: #065f46;
     }
-    
+
     .chat-conv-status.cerrada {
       background: #e5e7eb;
       color: #6b7280;
     }
-    
+
     .chat-conv-unread {
       background: #ef4444;
       color: white;
@@ -282,7 +283,7 @@
       min-width: 20px;
       text-align: center;
     }
-    
+
     /* Panel Derecho - Conversacion Activa */
     .chat-messages-panel {
       flex: 1;
@@ -290,7 +291,7 @@
       flex-direction: column;
       background: white;
     }
-    
+
     .chat-messages-header {
       padding: 16px 20px;
       background: white;
@@ -299,30 +300,30 @@
       align-items: center;
       justify-content: space-between;
     }
-    
+
     .chat-messages-header-info {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    
+
     .chat-messages-header-text h4 {
       margin: 0;
       font-size: 16px;
       color: #1f2937;
     }
-    
+
     .chat-messages-header-text p {
       margin: 4px 0 0 0;
       font-size: 13px;
       color: #6b7280;
     }
-    
+
     .chat-messages-actions {
       display: flex;
       gap: 8px;
     }
-    
+
     .chat-action-btn {
       padding: 8px 16px;
       border: 1px solid #e5e7eb;
@@ -336,17 +337,17 @@
       gap: 6px;
       font-family: 'Poppins', sans-serif;
     }
-    
+
     .chat-action-btn:hover {
       background: #f3f4f6;
     }
-    
+
     .chat-action-btn.danger:hover {
       background: #fee2e2;
       border-color: #ef4444;
       color: #ef4444;
     }
-    
+
     .chat-messages-area {
       flex: 1;
       overflow-y: auto;
@@ -356,28 +357,29 @@
       flex-direction: column;
       gap: 16px;
     }
-    
+
     .admin-chat-message {
       display: flex;
       gap: 10px;
       animation: slideInMessage 0.3s ease-out;
     }
-    
+
     @keyframes slideInMessage {
       from {
         opacity: 0;
         transform: translateY(10px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
-    
+
     .admin-chat-message.sent {
       flex-direction: row-reverse;
     }
-    
+
     .admin-chat-message-avatar {
       width: 36px;
       height: 36px;
@@ -391,12 +393,12 @@
       color: #6b7280;
       flex-shrink: 0;
     }
-    
+
     .admin-chat-message.sent .admin-chat-message-avatar {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
     }
-    
+
     .admin-chat-message-bubble {
       max-width: 65%;
       padding: 12px 16px;
@@ -404,41 +406,41 @@
       background: white;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
-    
+
     .admin-chat-message.sent .admin-chat-message-bubble {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
     }
-    
+
     .admin-chat-message-sender {
       font-size: 12px;
       font-weight: 600;
       margin-bottom: 4px;
       color: #6b7280;
     }
-    
+
     .admin-chat-message.sent .admin-chat-message-sender {
       color: rgba(255, 255, 255, 0.9);
     }
-    
+
     .admin-chat-message-text {
       font-size: 14px;
       line-height: 1.5;
       margin: 0;
       word-wrap: break-word;
     }
-    
+
     .admin-chat-message-time {
       font-size: 11px;
       color: #9ca3af;
       margin-top: 4px;
     }
-    
+
     .admin-chat-message.sent .admin-chat-message-time {
       color: rgba(255, 255, 255, 0.8);
       text-align: right;
     }
-    
+
     .chat-messages-input {
       padding: 16px 20px;
       background: white;
@@ -447,7 +449,7 @@
       gap: 12px;
       align-items: flex-end;
     }
-    
+
     .chat-input-wrapper-admin {
       flex: 1;
       display: flex;
@@ -457,7 +459,7 @@
       padding: 8px 16px;
       gap: 8px;
     }
-    
+
     .chat-input-wrapper-admin input {
       flex: 1;
       border: none;
@@ -466,7 +468,7 @@
       font-family: 'Poppins', sans-serif;
       outline: none;
     }
-    
+
     .chat-send-btn-admin {
       width: 44px;
       height: 44px;
@@ -481,22 +483,22 @@
       transition: all 0.2s;
       flex-shrink: 0;
     }
-    
+
     .chat-send-btn-admin:hover {
       transform: scale(1.1);
       background: #2d2d2d;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
-    
+
     .chat-send-btn-admin:active {
       transform: scale(0.95);
     }
-    
+
     .chat-send-btn-admin:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
-    
+
     .chat-empty-state-admin {
       flex: 1;
       display: flex;
@@ -507,25 +509,25 @@
       text-align: center;
       padding: 40px;
     }
-    
+
     .chat-empty-state-admin svg {
       width: 80px;
       height: 80px;
       margin-bottom: 16px;
       opacity: 0.5;
     }
-    
+
     .chat-empty-state-admin h3 {
       margin: 0 0 8px 0;
       color: #6b7280;
       font-size: 18px;
     }
-    
+
     .chat-empty-state-admin p {
       margin: 0;
       font-size: 14px;
     }
-    
+
     .chat-typing-indicator-admin {
       display: flex;
       align-items: center;
@@ -535,46 +537,46 @@
       border-radius: 12px;
       width: fit-content;
     }
-    
+
     .chat-typing-indicator-admin span {
       font-size: 13px;
       color: #6b7280;
     }
-    
+
     /* Scrollbar personalizado */
     .chat-conversations-list::-webkit-scrollbar,
     .chat-messages-area::-webkit-scrollbar {
       width: 6px;
     }
-    
+
     .chat-conversations-list::-webkit-scrollbar-track,
     .chat-messages-area::-webkit-scrollbar-track {
       background: #f3f4f6;
     }
-    
+
     .chat-conversations-list::-webkit-scrollbar-thumb,
     .chat-messages-area::-webkit-scrollbar-thumb {
       background: #d1d5db;
       border-radius: 3px;
     }
-    
+
     .chat-conversations-list::-webkit-scrollbar-thumb:hover,
     .chat-messages-area::-webkit-scrollbar-thumb:hover {
       background: #9ca3af;
     }
-    
+
     /* Responsive */
     @media (max-width: 1024px) {
       .chat-conversations-panel {
         width: 320px;
       }
     }
-    
+
     @media (max-width: 768px) {
       .admin-chat-container {
         flex-direction: column;
       }
-      
+
       .chat-conversations-panel {
         width: 100%;
         max-height: 300px;
@@ -601,25 +603,37 @@
       margin-top: 8px;
       opacity: 0.7;
     }
-    .sidebar-group-toggle:hover { opacity: 1; }
-    .sidebar-group-toggle.active { opacity: 1; color: #fff; }
+
+    .sidebar-group-toggle:hover {
+      opacity: 1;
+    }
+
+    .sidebar-group-toggle.active {
+      opacity: 1;
+      color: #fff;
+    }
+
     .sidebar-group-toggle .sidebar-chevron {
       margin-left: auto;
       width: 16px;
       height: 16px;
       transition: transform 0.3s ease;
     }
+
     .sidebar-group-toggle.open .sidebar-chevron {
       transform: rotate(180deg);
     }
+
     .sidebar-group {
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.3s ease;
     }
+
     .sidebar-group.open {
       max-height: 400px;
     }
+
     .sidebar-sub {
       padding-left: 32px !important;
       font-size: 13px !important;
@@ -632,15 +646,25 @@
       width: 40px;
       height: 22px;
     }
-    .estado-switch input { opacity: 0; width: 0; height: 0; }
+
+    .estado-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
     .estado-switch .slider {
       position: absolute;
       cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background-color: #ccc;
       transition: 0.3s;
       border-radius: 22px;
     }
+
     .estado-switch .slider:before {
       position: absolute;
       content: "";
@@ -652,8 +676,14 @@
       transition: 0.3s;
       border-radius: 50%;
     }
-    .estado-switch input:checked + .slider { background-color: #22c55e; }
-    .estado-switch input:checked + .slider:before { transform: translateX(18px); }
+
+    .estado-switch input:checked+.slider {
+      background-color: #22c55e;
+    }
+
+    .estado-switch input:checked+.slider:before {
+      transform: translateX(18px);
+    }
 
     /* Admin tables */
     .admin-table {
@@ -663,8 +693,9 @@
       background: white;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
+
     .admin-table thead th {
       background: #f8f9fa;
       padding: 14px 16px;
@@ -676,6 +707,7 @@
       letter-spacing: 0.5px;
       border-bottom: 1px solid #e5e7eb;
     }
+
     .admin-table tbody td {
       padding: 14px 16px;
       font-size: 14px;
@@ -683,8 +715,15 @@
       border-bottom: 1px solid #f3f4f6;
       vertical-align: middle;
     }
-    .admin-table tbody tr:hover { background: #f9fafb; }
-    .admin-table tbody tr:last-child td { border-bottom: none; }
+
+    .admin-table tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .admin-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
     .btn-load-more {
       display: block;
       width: 100%;
@@ -700,7 +739,10 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    .btn-load-more:hover { background: #e5e7eb; }
+
+    .btn-load-more:hover {
+      background: #e5e7eb;
+    }
 
     /* Filter panel */
     .filter-panel {
@@ -714,6 +756,7 @@
       border-radius: 10px;
       border: 1px solid #e5e7eb;
     }
+
     .filter-panel label {
       display: flex;
       align-items: center;
@@ -722,9 +765,11 @@
       color: #4b5563;
       cursor: pointer;
     }
+
     .filter-panel label input[type="checkbox"] {
       accent-color: #4a5259;
     }
+
     .filter-panel select {
       padding: 6px 12px;
       border: 1px solid #d1d5db;
@@ -741,48 +786,151 @@
       background: white;
       transition: box-shadow 0.3s ease;
     }
-    .curso-accordion-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    .curso-accordion-item.open { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-    .curso-accordion-header {
-      display: flex; align-items: center; justify-content: space-between;
-      width: 100%; padding: 16px 20px; background: white; border: none;
-      cursor: pointer; transition: background 0.2s; font-family: inherit; font-size: 14px;
+
+    .curso-accordion-item:hover {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     }
-    .curso-accordion-header:hover { background: #f9fafb; }
-    .curso-accordion-item.open .curso-accordion-header { background: #f8f9fa; border-bottom: 1px solid #e5e7eb; }
-    .curso-accordion-title { display: flex; align-items: center; gap: 12px; }
-    .curso-accordion-title span:first-of-type { font-weight: 600; color: #1f2937; font-size: 15px; }
+
+    .curso-accordion-item.open {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .curso-accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 16px 20px;
+      background: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .curso-accordion-header:hover {
+      background: #f9fafb;
+    }
+
+    .curso-accordion-item.open .curso-accordion-header {
+      background: #f8f9fa;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .curso-accordion-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .curso-accordion-title span:first-of-type {
+      font-weight: 600;
+      color: #1f2937;
+      font-size: 15px;
+    }
+
     .curso-accordion-count {
-      font-size: 12px !important; font-weight: 400 !important; color: #9ca3af !important;
-      background: #f3f4f6; padding: 3px 10px; border-radius: 12px;
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      color: #9ca3af !important;
+      background: #f3f4f6;
+      padding: 3px 10px;
+      border-radius: 12px;
     }
 
     /* === Pagination Slider === */
-    .pagination-slider-container { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 20px 0 8px; }
-    .pagination-meta { font-size: 13px; color: #6b7280; }
+    .pagination-slider-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0 8px;
+    }
+
+    .pagination-meta {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
     .pagination-slider-wrapper {
-      display: flex; align-items: center; gap: 6px; background: #f8f9fa;
-      padding: 6px 10px; border-radius: 12px; border: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8f9fa;
+      padding: 6px 10px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
     }
+
     .pagination-arrow {
-      display: flex; align-items: center; justify-content: center;
-      width: 34px; height: 34px; border: none; background: transparent;
-      border-radius: 8px; cursor: pointer; color: #4a5259; transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #4a5259;
+      transition: all 0.2s;
     }
-    .pagination-arrow:hover:not(:disabled) { background: #e5e7eb; }
-    .pagination-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
-    .pagination-pages { display: flex; align-items: center; gap: 4px; }
+
+    .pagination-arrow:hover:not(:disabled) {
+      background: #e5e7eb;
+    }
+
+    .pagination-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .pagination-pages {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .pagination-dot {
-      display: flex; align-items: center; justify-content: center;
-      min-width: 34px; height: 34px; border: none; background: transparent;
-      border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500;
-      color: #6b7280; font-family: inherit; transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 34px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6b7280;
+      font-family: inherit;
+      transition: all 0.2s;
     }
-    .pagination-dot:hover:not(.active) { background: #e5e7eb; color: #1f2937; }
-    .pagination-dot.active { background: #4a5259; color: white; font-weight: 600; }
-    .pagination-ellipsis { display: flex; align-items: center; justify-content: center; width: 24px; color: #9ca3af; font-size: 14px; }
+
+    .pagination-dot:hover:not(.active) {
+      background: #e5e7eb;
+      color: #1f2937;
+    }
+
+    .pagination-dot.active {
+      background: #4a5259;
+      color: white;
+      font-weight: 600;
+    }
+
+    .pagination-ellipsis {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      color: #9ca3af;
+      font-size: 14px;
+    }
   </style>
 </head>
+
 <body class="dashboard-body admin">
 
   <button class="mobile-menu-toggle" id="mobileMenuToggle">
@@ -792,8 +940,10 @@
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <aside class="sidebar entrance-sidebar" id="sidebar">
-    <div class="sidebar-header animate-fadeIn" style="display: flex; justify-content: center; align-items: center; padding: 24px 12px;">
-      <img src="images/logodashboard.png" alt="Logo Cemi" class="logo-hover" style="width: 100%; max-width: 200px; height: auto;">
+    <div class="sidebar-header animate-fadeIn"
+      style="display: flex; justify-content: center; align-items: center; padding: 24px 12px;">
+      <img src="images/logodashboard.png" alt="Logo Cemi" class="logo-hover"
+        style="width: 100%; max-width: 200px; height: auto;">
     </div>
     <nav class="sidebar-menu">
       <button class="sidebar-group-toggle active stagger-item hover-lift" data-group="admin">
@@ -801,12 +951,16 @@
         <i data-lucide="chevron-down" class="sidebar-chevron"></i>
       </button>
       <div class="sidebar-group open" id="groupAdmin">
-        <button id="btnCursos" class="sidebar-sub active stagger-item hover-lift"><i data-lucide="book"></i> Cursos</button>
+        <button id="btnCursos" class="sidebar-sub active stagger-item hover-lift"><i data-lucide="book"></i>
+          Cursos</button>
         <button id="btnAlumnos" class="sidebar-sub stagger-item hover-lift"><i data-lucide="users"></i> Alumnos</button>
-        <button id="btnProfesores" class="sidebar-sub stagger-item hover-lift"><i data-lucide="graduation-cap"></i> Profesores</button>
-        <button id="btnAdministradores" class="sidebar-sub stagger-item hover-lift"><i data-lucide="shield"></i> Administradores</button>
+        <button id="btnProfesores" class="sidebar-sub stagger-item hover-lift"><i data-lucide="graduation-cap"></i>
+          Profesores</button>
+        <button id="btnAdministradores" class="sidebar-sub stagger-item hover-lift"><i data-lucide="shield"></i>
+          Administradores</button>
         <button id="btnAulas" class="sidebar-sub stagger-item hover-lift"><i data-lucide="door-open"></i> Aulas</button>
-        <button id="btnIdiomas" class="sidebar-sub stagger-item hover-lift"><i data-lucide="languages"></i> Idiomas</button>
+        <button id="btnIdiomas" class="sidebar-sub stagger-item hover-lift"><i data-lucide="languages"></i>
+          Idiomas</button>
       </div>
 
       <button class="sidebar-group-toggle stagger-item hover-lift" data-group="seguridad">
@@ -815,12 +969,14 @@
       </button>
       <div class="sidebar-group" id="groupSeguridad">
         <!-- <button id="btnInvestigacion" class="sidebar-sub stagger-item hover-lift"><i data-lucide="flask-conical"></i> Investigación</button> -->
-        <button id="btnStatus" class="sidebar-sub stagger-item hover-lift"><i data-lucide="activity"></i> Status</button>
+        <button id="btnStatus" class="sidebar-sub stagger-item hover-lift"><i data-lucide="activity"></i>
+          Status</button>
         <button id="btnRecuperacion" class="sidebar-sub stagger-item hover-lift" style="position: relative;">
           <i data-lucide="key-round"></i> Recuperación
           <span id="recuperacionBadge" class="notification-badge" style="display: none;"></span>
         </button>
-        <button id="btnCodigosCemi" class="sidebar-sub stagger-item hover-lift"><i data-lucide="ticket"></i> Códigos CEMI</button>
+        <button id="btnCodigosCemi" class="sidebar-sub stagger-item hover-lift"><i data-lucide="ticket"></i> Códigos
+          CEMI</button>
       </div>
 
       <button id="btnPagos" class="stagger-item hover-lift"><i data-lucide="credit-card"></i> Pagos</button>
@@ -835,11 +991,13 @@
 
   <main class="dashboard-main">
     <header class="dashboard-header entrance-header">
-      <h1 class="animate-fadeInDown">Panel de Administracion</h1>
+      <h1 class="animate-fadeInDown">Panel de Administración</h1>
       <div class="user-info animate-fadeInRight" style="display: flex; align-items: center; gap: 16px;">
-        <button id="btnNotificacionesBell" title="Notificaciones" style="background: none; border: none; cursor: pointer; position: relative; padding: 6px;">
+        <button id="btnNotificacionesBell" title="Notificaciones"
+          style="background: none; border: none; cursor: pointer; position: relative; padding: 6px;">
           <i data-lucide="bell" style="width: 22px; height: 22px; color: #374151;"></i>
-          <span id="notifBellBadge" style="display: none; position: absolute; top: 0; right: 0; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;"></span>
+          <span id="notifBellBadge"
+            style="display: none; position: absolute; top: 0; right: 0; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;"></span>
         </button>
         <div><i data-lucide="user"></i> <span id="welcomeMessage">Administrador</span></div>
       </div>
@@ -848,34 +1006,34 @@
     <div id="loader" class="loader hidden"></div>
 
     <section id="mainContent" class="dashboard-content spa-animate entrance-content"></section>
-    
+
     <div id="adminChatContainer" style="display: none;"></div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  
+
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="assets/js/script.js"></script>
   <script src="assets/js/documentos-pdf.js"></script>
   <script src="assets/js/admin-chat-manager.js?v=2.0"></script>
-  
+
   <script>
     // Crear instancia global del admin chat manager
     const adminChatManager = new AdminChatManager();
-    
+
     // Inicializar WebSocket autom�ticamente
     console.log(' Inicializando admin chat manager autom�ticamente...');
     adminChatManager.init();
-    
+
     // Solicitar permisos de notificaci�n
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
-    
+
     // REMOVER TODO EL C�DIGO ANTIGUO DEL ADMINCHATMANAGER - AHORA EST� EN admin-chat-manager.js
     /* OLD CODE REMOVED - class AdminChatManager {
       constructor() {
@@ -1495,29 +1653,29 @@
       }
     */
   </script>
-  
+
   <script>
     // Funcionalidad del men� mobile
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const mobileMenuToggle = document.getElementById('mobileMenuToggle');
       const sidebar = document.getElementById('sidebar');
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       const dashboardMain = document.querySelector('.dashboard-main');
-      
+
       // Solo colapsar sidebar en m�viles (<=768px)
       if (window.innerWidth <= 768) {
         sidebar.classList.add('collapsed');
       }
-      
+
       if (mobileMenuToggle && sidebar && sidebarOverlay) {
         // Abrir/cerrar sidebar
-        mobileMenuToggle.addEventListener('click', function() {
+        mobileMenuToggle.addEventListener('click', function () {
           sidebar.classList.toggle('collapsed');
           sidebarOverlay.classList.toggle('active');
           if (dashboardMain) {
             dashboardMain.classList.toggle('sidebar-open');
           }
-          
+
           // Cambiar icono
           const icon = this.querySelector('i');
           if (!sidebar.classList.contains('collapsed')) {
@@ -1527,15 +1685,15 @@
           }
           lucide.createIcons();
         });
-        
+
         // Cerrar sidebar al hacer clic en overlay
-        sidebarOverlay.addEventListener('click', function() {
+        sidebarOverlay.addEventListener('click', function () {
           sidebar.classList.add('collapsed');
           sidebarOverlay.classList.remove('active');
           if (dashboardMain) {
             dashboardMain.classList.remove('sidebar-open');
           }
-          
+
           const icon = mobileMenuToggle.querySelector('i');
           icon.setAttribute('data-lucide', 'menu');
           lucide.createIcons();
@@ -1543,7 +1701,8 @@
       }
     });
   </script>
-  
+
   <script>lucide.createIcons();</script>
 </body>
+
 </html>
